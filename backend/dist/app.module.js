@@ -33,7 +33,6 @@ exports.AppModule = AppModule = __decorate([
                     '.env',
                     '.env.production',
                     '.env.local',
-                    '.env.example',
                 ],
             }),
             database_module_1.DatabaseModule,

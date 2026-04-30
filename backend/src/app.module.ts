@@ -21,7 +21,6 @@ import { ApprovalsModule } from './modules/approvals/approvals.module';
                 '.env',
                 '.env.production',
                 '.env.local',
-                '.env.example',
             ],
         }),
         DatabaseModule,
