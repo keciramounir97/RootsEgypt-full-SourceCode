@@ -17,11 +17,7 @@ import { ApprovalsModule } from './modules/approvals/approvals.module';
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            envFilePath: [
-                '.env',
-                '.env.production',
-                '.env.local',
-            ],
+            ignoreEnvFile: true,
         }),
         DatabaseModule,
         ActivityModule,

@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const objection_1 = require("objection");
 const Knex = require("knex");
-const { DB_ENV_HELP, ENV_FILE_STRATEGY, buildDbConfigErrorMessage, resolveDbConfig, } = require("../../db-config");
+const { DB_ENV_HELP, buildDbConfigErrorMessage, resolveDbConfig } = require("../../db-config");
 let DatabaseModule = class DatabaseModule {
 };
 exports.DatabaseModule = DatabaseModule;
@@ -25,14 +25,14 @@ exports.DatabaseModule = DatabaseModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: async (configService) => {
                     const resolved = resolveDbConfig((key) => configService.get(key), process.env);
-                    console.log(`INFO DB CONFIG bootstrap envFiles=${ENV_FILE_STRATEGY.join(",")} secretsSource=host-env-vars-first help="${DB_ENV_HELP}"`);
+                    console.log(`INFO DB CONFIG bootstrap tried=${resolved.bootstrapFilesTried.join(",")} loaded=${resolved.bootstrapFilesLoaded.join(",") || "none"} resolutionSource=${resolved.resolutionSource} help="${DB_ENV_HELP}"`);
                     console.log(`INFO DB ENV presence ${JSON.stringify(resolved.envPresence)}`);
                     if (resolved.missingFields.length > 0) {
                         const errorMessage = buildDbConfigErrorMessage(resolved.missingFields);
                         console.error(`ERROR DB CONFIG ${errorMessage}`);
                         throw new Error(errorMessage);
                     }
-                    console.log(`INFO DB CONFIG resolved host=${resolved.connection.host} port=${resolved.connection.port} database=${resolved.connection.database} user=${resolved.connection.user}`);
+                    console.log(`INFO DB CONFIG resolved source=${resolved.resolutionSource} host=${resolved.connection.host} port=${resolved.connection.port} database=${resolved.connection.database} user=${resolved.connection.user}`);
                     const knexConfig = {
                         client: "mysql2",
                         connection: Object.assign(Object.assign({}, resolved.connection), { typeCast(field, next) {

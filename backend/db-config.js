@@ -1,9 +1,9 @@
 "use strict";
 
-const DB_ENV_HELP =
-  "Production expects host-injected env vars. Set DATABASE_URL (recommended) or DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME. Compatibility aliases also work: MYSQL_URL, MYSQL_URI, DB_URL, MYSQL_*, DATABASE_*.";
+const { getEnvBootstrapMeta, getEnvSource } = require("./env-bootstrap");
 
-const ENV_FILE_STRATEGY = [".env", ".env.production", ".env.local"];
+const DB_ENV_HELP =
+  "Production resolves DB config in this order: host env vars, then .env.production, then local development files. Set DATABASE_URL (recommended) or DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME. Compatibility aliases also work: MYSQL_URL, MYSQL_URI, DB_URL, MYSQL_*, DATABASE_*.";
 
 function pickFirstDefined(...values) {
   for (const value of values) {
@@ -41,69 +41,145 @@ function readConnectionFromDatabaseUrl(databaseUrl) {
 
 function createLookup(getValue, env) {
   return (...keys) => {
+    const candidates = [];
+
     for (const key of keys) {
       const configValue = typeof getValue === "function" ? getValue(key) : undefined;
       const resolved = pickFirstDefined(configValue, env[key]);
       if (resolved !== undefined) {
-        return resolved;
+        const candidate = {
+          key,
+          value: resolved,
+          source: getEnvSource(key) || "config-service",
+        };
+        candidates.push(candidate);
+        if (candidate.source === "host-env") {
+          return candidate;
+        }
       }
     }
 
-    return undefined;
+    if (candidates.length > 0) {
+      return candidates[0];
+    }
+
+    return {
+      key: undefined,
+      value: undefined,
+      source: undefined,
+    };
   };
+}
+
+function summarizeResolutionSource(fieldSources) {
+  const decisiveValues = [
+    fieldSources.host,
+    fieldSources.port,
+    fieldSources.user,
+    fieldSources.password,
+    fieldSources.database,
+  ].filter(Boolean);
+  const values = decisiveValues.length
+    ? decisiveValues
+    : Object.values(fieldSources).filter(Boolean);
+  if (values.includes("host-env")) {
+    return "host-env";
+  }
+  if (values.includes(".env.production")) {
+    return ".env.production";
+  }
+  if (values.includes(".env.local")) {
+    return ".env.local";
+  }
+  if (values.includes(".env")) {
+    return ".env";
+  }
+  return "unknown";
+}
+
+function chooseCandidate(...candidates) {
+  const defined = candidates.filter(
+    (candidate) => candidate && pickFirstDefined(candidate.value) !== undefined,
+  );
+  if (defined.length === 0) {
+    return { value: undefined, source: undefined };
+  }
+
+  const hostEnvCandidate = defined.find((candidate) => candidate.source === "host-env");
+  if (hostEnvCandidate) {
+    return hostEnvCandidate;
+  }
+
+  return defined[0];
 }
 
 function resolveDbConfig(getValue, env = process.env) {
   const lookup = createLookup(getValue, env);
-  const url = lookup("DATABASE_URL", "MYSQL_URL", "MYSQL_URI", "DB_URL");
-  const fromUrl = readConnectionFromDatabaseUrl(url);
+  const urlCandidate = lookup("DATABASE_URL", "MYSQL_URL", "MYSQL_URI", "DB_URL");
+  const fromUrl = readConnectionFromDatabaseUrl(urlCandidate.value);
+  const urlSource = urlCandidate.source || "url";
 
-  const host = pickFirstDefined(
-    lookup("DB_HOST", "MYSQL_HOST", "MYSQLHOST", "DATABASE_HOST"),
-    fromUrl.host,
+  const hostCandidate = lookup("DB_HOST", "MYSQL_HOST", "MYSQLHOST", "DATABASE_HOST");
+  const portCandidate = lookup("DB_PORT", "MYSQL_PORT", "DATABASE_PORT");
+  const userCandidate = lookup("DB_USER", "MYSQL_USER", "MYSQLUSER", "DATABASE_USER");
+  const passwordCandidate = lookup(
+    "DB_PASSWORD",
+    "MYSQL_PASSWORD",
+    "MYSQLPASSWORD",
+    "DATABASE_PASSWORD",
   );
-  const portValue = pickFirstDefined(
-    lookup("DB_PORT", "MYSQL_PORT", "DATABASE_PORT"),
-    fromUrl.port,
-    3306,
-  );
-  const user = pickFirstDefined(
-    lookup("DB_USER", "MYSQL_USER", "MYSQLUSER", "DATABASE_USER"),
-    fromUrl.user,
-  );
-  const password = pickFirstDefined(
-    lookup("DB_PASSWORD", "MYSQL_PASSWORD", "MYSQLPASSWORD", "DATABASE_PASSWORD"),
-    fromUrl.password,
-  );
-  const database = pickFirstDefined(
-    lookup(
-      "DB_NAME",
-      "DB_DATABASE",
-      "MYSQL_DATABASE",
-      "MYSQLDATABASE",
-      "DATABASE_NAME",
-    ),
-    fromUrl.database,
+  const databaseCandidate = lookup(
+    "DB_NAME",
+    "DB_DATABASE",
+    "MYSQL_DATABASE",
+    "MYSQLDATABASE",
+    "DATABASE_NAME",
   );
 
+  const chosenHost = chooseCandidate(hostCandidate, {
+    value: fromUrl.host,
+    source: fromUrl.host ? urlSource : undefined,
+  });
+  const chosenPort = chooseCandidate(portCandidate, {
+    value: fromUrl.port,
+    source: fromUrl.port ? urlSource : undefined,
+  });
+  const chosenUser = chooseCandidate(userCandidate, {
+    value: fromUrl.user,
+    source: fromUrl.user ? urlSource : undefined,
+  });
+  const chosenPassword = chooseCandidate(passwordCandidate, {
+    value: fromUrl.password,
+    source: fromUrl.password ? urlSource : undefined,
+  });
+  const chosenDatabase = chooseCandidate(databaseCandidate, {
+    value: fromUrl.database,
+    source: fromUrl.database ? urlSource : undefined,
+  });
+
+  const host = chosenHost.value;
+  const portValue = pickFirstDefined(chosenPort.value, 3306);
+  const user = chosenUser.value;
+  const password = chosenPassword.value;
+  const database = chosenDatabase.value;
   const port = Number(portValue || 3306);
+
+  const fieldSources = {
+    url: urlCandidate.value ? urlSource : undefined,
+    host: chosenHost.source,
+    port: chosenPort.source,
+    user: chosenUser.source,
+    password: chosenPassword.source,
+    database: chosenDatabase.source,
+  };
+
   const envPresence = {
-    url: Boolean(url),
-    host: Boolean(lookup("DB_HOST", "MYSQL_HOST", "MYSQLHOST", "DATABASE_HOST")),
-    port: Boolean(lookup("DB_PORT", "MYSQL_PORT", "DATABASE_PORT")),
-    user: Boolean(lookup("DB_USER", "MYSQL_USER", "MYSQLUSER", "DATABASE_USER")),
-    password: Boolean(
-      lookup("DB_PASSWORD", "MYSQL_PASSWORD", "MYSQLPASSWORD", "DATABASE_PASSWORD"),
-    ),
-    database: Boolean(
-      lookup(
-        "DB_NAME",
-        "DB_DATABASE",
-        "MYSQL_DATABASE",
-        "MYSQLDATABASE",
-        "DATABASE_NAME",
-      ),
-    ),
+    url: Boolean(urlCandidate.value),
+    host: Boolean(hostCandidate.value),
+    port: Boolean(portCandidate.value),
+    user: Boolean(userCandidate.value),
+    password: Boolean(passwordCandidate.value),
+    database: Boolean(databaseCandidate.value),
   };
 
   const missingFields = [];
@@ -117,8 +193,9 @@ function resolveDbConfig(getValue, env = process.env) {
     missingFields.push("database");
   }
 
+  const bootstrapMeta = getEnvBootstrapMeta();
+
   return {
-    url,
     connection: {
       host,
       port,
@@ -129,6 +206,10 @@ function resolveDbConfig(getValue, env = process.env) {
     },
     envPresence,
     missingFields,
+    fieldSources,
+    resolutionSource: summarizeResolutionSource(fieldSources),
+    bootstrapFilesTried: bootstrapMeta.candidateFiles,
+    bootstrapFilesLoaded: bootstrapMeta.loadedFiles,
   };
 }
 
@@ -142,7 +223,6 @@ function buildDbConfigErrorMessage(missingFields = []) {
 
 module.exports = {
   DB_ENV_HELP,
-  ENV_FILE_STRATEGY,
   buildDbConfigErrorMessage,
   pickFirstDefined,
   readConnectionFromDatabaseUrl,

@@ -1,5 +1,4 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
-import { isMockMode, mockAdapter } from "../lib/mockApi";
 
 /**
  * ===============================
@@ -7,6 +6,11 @@ import { isMockMode, mockAdapter } from "../lib/mockApi";
  * ===============================
  */
 const getApiRoot = (): string => {
+  const configured = String(import.meta.env.VITE_API_URL || "").trim();
+  if (configured) {
+    return configured.replace(/\/+$/, "");
+  }
+
   if (import.meta.env.DEV) {
     if (
       typeof window !== "undefined" &&
@@ -18,7 +22,7 @@ const getApiRoot = (): string => {
     return "http://localhost:5000";
   }
 
-  return import.meta.env.VITE_API_URL || "https://api.rootsegypt.org";
+  return "https://api.rootsegypt.org";
 };
 
 const API_ROOT = getApiRoot();
@@ -37,11 +41,6 @@ export const api = axios.create({
   },
   withCredentials: false,
 });
-
-// ── Install mock adapter when in mock mode ─────────────────────────
-if (isMockMode()) {
-  (api as any).defaults.adapter = mockAdapter;
-}
 
 const dispatchAuthEvent = (name: string, detail: any) => {
   if (typeof window === "undefined") return;
@@ -72,9 +71,6 @@ const getRequestPath = (value: any): string => {
  */
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Skip auth checks in mock mode — the mock adapter handles everything
-    if (isMockMode()) return config;
-
     const token = localStorage.getItem("token");
 
     const url = String(config?.url || "");
@@ -104,9 +100,7 @@ api.interceptors.request.use(
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  },
+  (error) => Promise.reject(error),
 );
 
 /**
@@ -116,7 +110,6 @@ api.interceptors.request.use(
  */
 api.interceptors.response.use(
   (response) => {
-    // Unwrap API Envelope { statusCode, data, meta } -> data
     if (
       response.data &&
       response.data.data &&
@@ -130,9 +123,6 @@ api.interceptors.response.use(
     return response;
   },
   async (error: any) => {
-    // In mock mode, errors from the mock adapter are intentional
-    if (isMockMode()) return Promise.reject(error);
-
     const status = error?.response?.status;
     const code = error?.code;
     const message = error?.message || "";
@@ -145,7 +135,7 @@ api.interceptors.response.use(
     ) {
       error.isConnectionError = true;
       error.userMessage =
-        "Cannot connect to server. Enable Mock Mode (bottom-right button) to use demo data, or start your backend.";
+        "Cannot connect to the Roots Egypt server. Please verify that the backend is deployed and reachable.";
       dispatchAuthEvent("api:connection_error", {
         message: error.userMessage,
         code,
@@ -171,7 +161,6 @@ api.interceptors.response.use(
       }
     }
 
-    // Token invalid / expired — try refresh token
     if (status === 401) {
       const refreshToken = localStorage.getItem("refreshToken");
       if (refreshToken && !error.config?._retry) {
@@ -192,8 +181,9 @@ api.interceptors.response.use(
 
           if (newToken) {
             localStorage.setItem("token", newToken);
-            if (newRefreshToken)
+            if (newRefreshToken) {
               localStorage.setItem("refreshToken", newRefreshToken);
+            }
             error.config.headers = error.config.headers || {};
             error.config.headers.Authorization = `Bearer ${newToken}`;
             error.config._retry = true;
@@ -203,6 +193,7 @@ api.interceptors.response.use(
           // Refresh failed
         }
       }
+
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
       dispatchAuthEvent("auth:expired", { status });

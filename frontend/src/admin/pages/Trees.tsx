@@ -63,17 +63,6 @@ interface PersonItem {
   [key: string]: unknown;
 }
 
-const buildMockTrees = () =>
-  Array.from({ length: 10 }).map((_, i) => ({
-    id: `mock-tree-${i}`,
-    title: `Family Tree of Clan ${i + 1}`,
-    description: `A mock tree with 20 members for testing.`,
-    owner: "kameladmin",
-    isPublic: i % 2 === 0,
-    hasGedcom: true,
-    createdAt: new Date().toISOString(),
-  }));
-
 export default function Trees() {
   const { theme } = useThemeStore();
 
@@ -159,12 +148,6 @@ export default function Trees() {
     setTreesError("");
     setSaveError("");
 
-    const isMock =
-      import.meta.env.DEV &&
-      localStorage.getItem("mockupDataActive") === "true";
-
-    const mockTrees = isMock ? buildMockTrees() : [];
-
     const mergeById = (list: TreeItem[]) => {
       const map = new Map();
 
@@ -202,33 +185,25 @@ export default function Trees() {
       if (mineRes.status === "fulfilled") {
         const mine = mineRes.value?.data;
 
-        const myList = mergeById([
-          ...(Array.isArray(mine) ? mine.map((t) => normalizeTree(t, { isPublic: !!t?.is_public || !!t?.isPublic })) : []),
-          ...mockTrees,
-        ]);
+        const myList = mergeById(
+          Array.isArray(mine)
+            ? mine.map((t) => normalizeTree(t, { isPublic: !!t?.is_public || !!t?.isPublic }))
+            : [],
+        );
 
         setMyTrees(myList);
-      } else if (isMock) {
-        setMyTrees((prev) =>
-          Array.isArray(prev) && prev.length ? prev : mockTrees
-        );
       }
 
       if (pubRes.status === "fulfilled") {
         const pub = pubRes.value?.data;
 
-        const publicList = mergeById([
-          ...(Array.isArray(pub) ? pub.map((t) => normalizeTree(t, { isPublic: true })) : []),
-          ...mockTrees.filter((t) => t.isPublic),
-        ]);
+        const publicList = mergeById(
+          Array.isArray(pub)
+            ? pub.map((t) => normalizeTree(t, { isPublic: true }))
+            : [],
+        );
 
         setPublicTrees(publicList);
-      } else if (isMock) {
-        setPublicTrees((prev) =>
-          Array.isArray(prev) && prev.length
-            ? prev
-            : mockTrees.filter((t) => t.isPublic)
-        );
       }
 
       const err =
@@ -329,9 +304,7 @@ export default function Trees() {
   const trees = tab === "public" ? publicTrees : myTrees;
 
   const canUpdateSelected =
-    selectedTree &&
-    !String(selectedTree.id).startsWith("mock-") &&
-    (selectedScope === "my" || isAdmin);
+    selectedTree && (selectedScope === "my" || isAdmin);
 
   const builderReadOnly = !!selectedTree && !canUpdateSelected;
 
@@ -430,142 +403,10 @@ export default function Trees() {
     setLoadingGedcom(true);
 
     try {
-    if (!tree?.hasGedcom) {
-      setPeople([]);
-
-      peopleDirtyRef.current = false;
-
-      setSaveSuccess(t("tree_loaded", "Tree loaded."));
-
-      return;
-    }
-
-      if (String(tree.id).startsWith("mock-")) {
-        // GENERATE REALISTIC ARABIC FAMILY MEMBERS
-
-        const familyName = (tree.title || "").split(" ").pop(); // e.g., "Al-Fulan"
-
-        const mockPeople = [
-          // Grandfather (Gen 0)
-
-          {
-            id: "m1",
-            names: { en: `Ahmed ${familyName}`, ar: `أحمد ${familyName}` },
-            gender: "Male",
-            birthYear: "1920",
-            details: "The patriarch.",
-            color: "#f8f5ef",
-            children: ["m3", "m4"],
-            spouse: "m2",
-          },
-
-          {
-            id: "m2",
-            names: { en: `Fatima ${familyName}`, ar: `فاطمة ${familyName}` },
-            gender: "Female",
-            birthYear: "1925",
-            details: "Matriarch.",
-            color: "#f8f5ef",
-            children: ["m3", "m4"],
-            spouse: "m1",
-          },
-
-          // Children (Gen 1)
-
-          {
-            id: "m3",
-            names: { en: `Omar ${familyName}`, ar: `عمر ${familyName}` },
-            gender: "Male",
-            birthYear: "1950",
-            details: "Eldest son.",
-            color: "#f8f5ef",
-            father: "m1",
-            mother: "m2",
-            children: ["m5", "m6"],
-            spouse: "s1",
-          },
-
-          {
-            id: "m4",
-            names: { en: `Layla ${familyName}`, ar: `ليلى ${familyName}` },
-            gender: "Female",
-            birthYear: "1955",
-            details: "Daughter.",
-            color: "#f8f5ef",
-            father: "m1",
-            mother: "m2",
-            children: ["m7"],
-            spouse: "s2",
-          },
-
-          // Spouses (Gen 1)
-
-          {
-            id: "s1",
-            names: { en: "Amina Al-Jazairi", ar: "آمنة الجزائري" },
-            gender: "Female",
-            birthYear: "1952",
-            details: "Wife of Omar.",
-            color: "#f8f5ef",
-            spouse: "m3",
-            children: ["m5", "m6"],
-          },
-
-          {
-            id: "s2",
-            names: { en: "Youssef Al-Tunisi", ar: "يوسف التونسي" },
-            gender: "Male",
-            birthYear: "1950",
-            details: "Husband of Layla.",
-            color: "#f8f5ef",
-            spouse: "m4",
-            children: ["m7"],
-          },
-
-          // Grandchildren (Gen 2)
-
-          {
-            id: "m5",
-            names: { en: `Khaled ${familyName}`, ar: `خالد ${familyName}` },
-            gender: "Male",
-            birthYear: "1980",
-            details: "Grandson.",
-            color: "#f8f5ef",
-            father: "m3",
-            mother: "s1",
-          },
-
-          {
-            id: "m6",
-            names: { en: `Zainab ${familyName}`, ar: `زينب ${familyName}` },
-            gender: "Female",
-            birthYear: "1985",
-            details: "Granddaughter.",
-            color: "#f8f5ef",
-            father: "m3",
-            mother: "s1",
-          },
-
-          {
-            id: "m7",
-            names: { en: `Hassan Al-Tunisi`, ar: `حسن التونسي` },
-            gender: "Male",
-            birthYear: "1982",
-            details: "Grandson.",
-            color: "#f8f5ef",
-            father: "s2",
-            mother: "m4",
-          },
-        ];
-
-        setPeople(mockPeople);
-
+      if (!tree?.hasGedcom) {
+        setPeople([]);
         peopleDirtyRef.current = false;
-
         setSaveSuccess(t("tree_loaded", "Tree loaded."));
-
-        setLoadingGedcom(false);
-
         return;
       }
 
@@ -583,136 +424,28 @@ export default function Trees() {
         tab === "public"
           ? [tryAdmin, tryPublic, tryMy]
           : [tryAdmin, tryMy, tryPublic],
-        fallbackGedcom
+        fallbackGedcom,
       );
 
-      const raw = typeof res?.data === "string" ? res.data : (res?.data && (res.data as any).data != null ? String((res.data as any).data) : "");
+      const raw =
+        typeof res?.data === "string"
+          ? res.data
+          : res?.data && (res.data as any).data != null
+            ? String((res.data as any).data)
+            : "";
       const isGedcomX = tree.data_format === "gedcomx";
       setPeople(isGedcomX ? parseGedcomX(raw) : parseGedcom(raw));
 
       peopleDirtyRef.current = false;
-
       setSaveSuccess(t("tree_loaded", "Tree loaded."));
     } catch (err) {
       setPeople([]);
-
       setGedcomError(getApiErrorMessage(err, "Failed to load tree file"));
-
       peopleDirtyRef.current = false;
       setSaveError(getApiErrorMessage(err, "Failed to load tree file"));
     } finally {
       setLoadingGedcom(false);
     }
-  };
-
-  const shouldFallbackTreeWrite = (err: { response?: { status?: number } }) =>
-    shouldFallbackRoute(err) || err?.response?.status === 500;
-
-  const submitTree = async ({
-    treeId,
-    title,
-    description,
-    archiveSource,
-    documentCode,
-    isPublic,
-    people = [] as PersonItem[],
-    includeFile = true,
-  }: {
-    treeId?: string | number;
-    title?: string;
-    description?: string;
-    archiveSource?: string;
-    documentCode?: string;
-    isPublic?: boolean;
-    people?: PersonItem[];
-    includeFile?: boolean;
-  }) => {
-    const safeTitle = String(title || "").trim();
-
-    if (!safeTitle) throw new Error("Title is required");
-
-    const fd = new FormData();
-
-    fd.append("title", safeTitle);
-
-    fd.append("description", String(description || ""));
-
-    const archiveValue = String(archiveSource || "").trim();
-    if (archiveValue) fd.append("archiveSource", archiveValue);
-
-    const documentValue = String(documentCode || "").trim();
-    if (documentValue) fd.append("documentCode", documentValue);
-
-    fd.append("isPublic", String(!!isPublic));
-
-    if (includeFile) {
-      const safePeople = Array.isArray(people) ? people : [];
-      let content = "";
-      let mime = "text/plain";
-      let ext = "ged";
-      try {
-        if (saveFormat === "gedcom") {
-          content = buildGedcom(safePeople, locale, t);
-          mime = "text/plain";
-          ext = "ged";
-        } else if (saveFormat === "gedcom7") {
-          content = buildGedcom7(safePeople, locale, t);
-          mime = "text/plain";
-          ext = "ged";
-        } else {
-          if (saveFormat === "gedcomx_json") {
-            content = buildGedcomXJson(safePeople, locale, t);
-            mime = "application/json";
-            ext = "json";
-          } else {
-            content = buildGedcomXXml(safePeople, locale, t);
-            mime = saveFormat === "gedcomx_gedx" ? "application/xml" : "application/xml";
-            ext = saveFormat === "gedcomx_gedx" ? "gedx" : "xml";
-          }
-        }
-      } catch (err) {
-        throw new Error(
-          (err instanceof Error ? err.message : "") ||
-            (saveFormat === "gedcom7"
-              ? t("gedcom7_build_failed", "Failed to build GEDCOM 7.0")
-              : saveFormat === "gedcom"
-                ? t("gedcom_build_failed", "Failed to build GEDCOM")
-                : t("gedcomx_build_failed", "Failed to build GEDCOM X"))
-        );
-      }
-      const blob = new Blob([content], { type: mime });
-      if (blob.size > MAX_GEDCOM_BYTES) {
-        throw new Error(t("file_too_large", "File is too large (max 50MB)."));
-      }
-      const fileName = `${safeTitle}.${ext}`;
-      if (typeof File === "function") {
-        const file = new File([blob], fileName, { type: mime });
-        fd.append("file", file);
-      } else {
-        fd.append("file", blob, fileName);
-      }
-      if (saveFormat === "gedcom7") fd.append("dataFormat", "gedcom7");
-      else if (saveFormat === "gedcom") fd.append("dataFormat", "gedcom");
-      else if (saveFormat.startsWith("gedcomx")) fd.append("dataFormat", "gedcomx");
-    }
-
-    if (treeId) {
-      await requestWithFallback(
-        [
-          () => api.put(`/my/trees/${treeId}`, fd),
-          () => api.post(`/my/trees/${treeId}/save`, fd),
-        ],
-        shouldFallbackTreeWrite
-      );
-      return treeId;
-    }
-
-    const { data } = await requestWithFallback(
-      [() => api.post("/my/trees", fd)],
-      shouldFallbackTreeWrite
-    );
-
-    return data?.id;
   };
 
   const downloadTreeFile = async (tree: TreeItem, scope: string) => {
@@ -1528,3 +1261,4 @@ export default function Trees() {
     </div>
   );
 }
+

@@ -1,8 +1,7 @@
-require("dotenv").config({ path: ".env" });
-require("dotenv").config({ path: ".env.production", override: false });
-require("dotenv").config({ path: ".env.local", override: false });
-
+const { bootstrapEnv } = require("../../env-bootstrap");
 const { buildDbConfigErrorMessage, resolveDbConfig } = require("../../db-config");
+
+bootstrapEnv();
 
 const resolved = resolveDbConfig(undefined, process.env);
 if (resolved.missingFields.length > 0) {

@@ -1433,67 +1433,13 @@ export default function TreesBuilder({
 
   useEffect(() => {
     if (!canMutatePeople) return;
-    const isMock = localStorage.getItem("mockupDataActive") === "true";
 
-    if (isMock && people.length === 0) {
-      const mockPeople = [
-        {
-          id: "mock1",
-
-          names: { en: "Kamel Admin" },
-
-          gender: "Male",
-
-          birthYear: "1980",
-
-          details: "Founder of Roots Egypt",
-
-          children: ["mock3"],
-
-          spouse: "mock2",
-
-          color: "#f8f5ef",
-        },
-
-        {
-          id: "mock2",
-
-          names: { en: "Sarah Admin" },
-
-          gender: "Female",
-
-          birthYear: "1982",
-
-          details: "Co-Founder",
-
-          children: ["mock3"],
-
-          spouse: "mock1",
-
-          color: "#f8f5ef",
-        },
-
-        {
-          id: "mock3",
-
-          names: { en: "Junior Admin" },
-
-          gender: "Male",
-
-          birthYear: "2010",
-
-          details: "Future CEO",
-
-          father: "mock1",
-
-          mother: "mock2",
-
-          color: "#f8f5ef",
-        },
-      ];
-
-      setPeople(mockPeople);
-    } else if (!isMock && people.some((p) => p.id === "mock1")) {
+    if (
+      people.some((p) => String(p?.id || "").startsWith("mock")) &&
+      people.every((p) =>
+        ["mock1", "mock2", "mock3"].includes(String(p?.id || "")),
+      )
+    ) {
       setPeople([]);
     }
   }, [canMutatePeople, people, setPeople]);

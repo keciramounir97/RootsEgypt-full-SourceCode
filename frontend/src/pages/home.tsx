@@ -155,9 +155,6 @@ function FloatingParticles() {
   );
 }
 
-/** Mock GEDCOM node fill */
-const MOCK_TREE_NODE_COLOR = "#f7f3eb";
-
 interface FeaturedTree {
   id: string | number;
   title: string;
@@ -252,108 +249,6 @@ export default function Home() {
     setViewLoading(true);
 
     try {
-      if (String(tree.id).startsWith("mock-")) {
-        const familyName = tree.title.split(" ").pop() || "Mock";
-        const mockPeople: Person[] = [
-          {
-            id: "m1",
-            names: { en: `Ahmed ${familyName}`, ar: `أحمد ${familyName}` },
-            gender: "Male",
-            birthYear: "1920",
-            details: "The patriarch.",
-            color: MOCK_TREE_NODE_COLOR,
-            children: ["m3", "m4"],
-            spouse: "m2",
-          },
-          {
-            id: "m2",
-            names: { en: `Fatima ${familyName}`, ar: `فاطمة ${familyName}` },
-            gender: "Female",
-            birthYear: "1925",
-            details: "Matriarch.",
-            color: MOCK_TREE_NODE_COLOR,
-            children: ["m3", "m4"],
-            spouse: "m1",
-          },
-          {
-            id: "m3",
-            names: { en: `Omar ${familyName}`, ar: `عمر ${familyName}` },
-            gender: "Male",
-            birthYear: "1950",
-            details: "Eldest son.",
-            color: MOCK_TREE_NODE_COLOR,
-            father: "m1",
-            mother: "m2",
-            children: ["m5", "m6"],
-            spouse: "s1",
-          },
-          {
-            id: "m4",
-            names: { en: `Layla ${familyName}`, ar: `ليلى ${familyName}` },
-            gender: "Female",
-            birthYear: "1955",
-            details: "Daughter.",
-            color: MOCK_TREE_NODE_COLOR,
-            father: "m1",
-            mother: "m2",
-            children: ["m7"],
-            spouse: "s2",
-          },
-          {
-            id: "s1",
-            names: { en: "Amina Al-Masri", ar: "آمنة المصري" },
-            gender: "Female",
-            birthYear: "1952",
-            details: "Wife of Omar.",
-            color: MOCK_TREE_NODE_COLOR,
-            spouse: "m3",
-            children: ["m5", "m6"],
-          },
-          {
-            id: "s2",
-            names: { en: "Youssef Al-Misri", ar: "يوسف المصري" },
-            gender: "Male",
-            birthYear: "1950",
-            details: "Husband of Layla.",
-            color: MOCK_TREE_NODE_COLOR,
-            spouse: "m4",
-            children: ["m7"],
-          },
-          {
-            id: "m5",
-            names: { en: `Khaled ${familyName}`, ar: `خالد ${familyName}` },
-            gender: "Male",
-            birthYear: "1980",
-            details: "Grandson.",
-            color: MOCK_TREE_NODE_COLOR,
-            father: "m3",
-            mother: "s1",
-          },
-          {
-            id: "m6",
-            names: { en: `Zainab ${familyName}`, ar: `زينب ${familyName}` },
-            gender: "Female",
-            birthYear: "1985",
-            details: "Granddaughter.",
-            color: MOCK_TREE_NODE_COLOR,
-            father: "m3",
-            mother: "s1",
-          },
-          {
-            id: "m7",
-            names: { en: `Hassan Al-Misri`, ar: `حسن المصري` },
-            gender: "Male",
-            birthYear: "1982",
-            details: "Grandson.",
-            color: MOCK_TREE_NODE_COLOR,
-            father: "s2",
-            mother: "m4",
-          },
-        ];
-        setViewPeople(mockPeople);
-        setViewLoading(false);
-        return;
-      }
       if (!tree.hasGedcom) {
         setViewTreeError(
           t("no_gedcom_available", "No GEDCOM file available yet."),

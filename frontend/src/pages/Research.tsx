@@ -47,10 +47,6 @@ export default function Research() {
     [apiRoot]
   );
 
-  const egyptDemoCities = useMemo(
-    () => ["Cairo", "Alexandria", "Luxor", "Aswan", "Mansoura", "Tanta"],
-    []
-  );
 
   const handleSearch = useCallback(
     async (queryOverride) => {
@@ -65,75 +61,18 @@ export default function Research() {
 
       try {
         const { data } = await api.get(`/search?q=${encodeURIComponent(q)}`);
-        let foundTrees = data.trees || [];
-        let foundBooks = data.books || [];
-        let foundPeople = data.people || [];
-
-        const isMock = localStorage.getItem("mockupDataActive") === "true";
-        if (isMock) {
-          const mockTrees = Array.from({ length: 10 }).map((_, idx) => ({
-            id: `mock-tree-${idx}`,
-            title: `${t("research_mock_tree_label", "Egypt — public tree")} — ${egyptDemoCities[idx % egyptDemoCities.length]}`,
-            description: t("research_mock_tree_demo"),
-            owner_name: "kameladmin",
-            isPublic: true,
-          }));
-          const mockBooks = [
-            {
-              id: "mb1",
-              title: t("research_mock_book_1_title"),
-              author: t("research_mock_book_1_author"),
-              category: "History",
-              isPublic: true,
-            },
-            {
-              id: "mb2",
-              title: t("research_mock_book_2_title"),
-              author: t("research_mock_book_2_author"),
-              category: "Genealogy",
-              isPublic: true,
-            },
-          ];
-          const mockPeople = mockTrees.flatMap((tree, idx) => [
-            {
-              id: `mp-${idx}-1`,
-              name: `Youssef — ${tree.title}`,
-              tree_title: tree.title,
-              tree_id: tree.id,
-              owner_name: tree.owner_name,
-              tree_is_public: true,
-            },
-            {
-              id: `mp-${idx}-2`,
-              name: `Mariam — ${tree.title}`,
-              tree_title: tree.title,
-              tree_id: tree.id,
-              owner_name: tree.owner_name,
-              tree_is_public: true,
-            },
-          ]);
-          const filteredTrees = mockTrees.filter((tree) =>
-            tree.title.toLowerCase().includes(q.toLowerCase())
-          );
-          const filteredBooks = mockBooks.filter((book) =>
-            book.title.toLowerCase().includes(q.toLowerCase())
-          );
-          const filteredPeople = mockPeople.filter((person) =>
-            person.name.toLowerCase().includes(q.toLowerCase())
-          );
-          foundTrees = [...foundTrees, ...filteredTrees];
-          foundBooks = [...foundBooks, ...filteredBooks];
-          foundPeople = [...foundPeople, ...filteredPeople];
-        }
-
-        setResults({ trees: foundTrees, books: foundBooks, people: foundPeople });
+        setResults({
+          trees: Array.isArray(data?.trees) ? data.trees : [],
+          books: Array.isArray(data?.books) ? data.books : [],
+          people: Array.isArray(data?.people) ? data.people : [],
+        });
       } catch (err) {
         // Search error
       } finally {
         setLoading(false);
       }
     },
-    [searchQuery, t, egyptDemoCities]
+    [searchQuery]
   );
 
   useEffect(() => {
@@ -144,18 +83,6 @@ export default function Research() {
     } else {
       (async () => {
         try {
-          const isMock = localStorage.getItem("mockupDataActive") === "true";
-          if (isMock) {
-            const mockTrees = Array.from({ length: 6 }).map((_, idx) => ({
-              id: `mock-${idx}`,
-              title: `${t("research_mock_tree_label", "Egypt — public tree")} — ${egyptDemoCities[idx % egyptDemoCities.length]}`,
-              description: t("research_mock_tree_demo"),
-              owner_name: "admin",
-              isPublic: true,
-            }));
-            setSuggestedTrees(mockTrees);
-            return;
-          }
           const { data } = await api.get("/trees");
           setSuggestedTrees(Array.isArray(data) ? data.slice(0, 6) : []);
         } catch {
@@ -163,7 +90,7 @@ export default function Research() {
         }
       })();
     }
-  }, [t, egyptDemoCities]);
+  }, []);
 
   useEffect(() => {
     const q = String(searchQuery || "").trim();
@@ -199,36 +126,19 @@ export default function Research() {
     setViewLoading(true);
 
     try {
-      if (String(tree.id).startsWith("mock-")) {
-        const familyName = tree.title.split(" ").pop() || "Mock";
-        const mockPeople = [
-          {
-            id: "m1",
-            names: { en: `Ahmed ${familyName}`, ar: "" },
-            gender: "Male",
-            birthYear: "1920",
-            details: "Patriarch.",
-            color: "#f8f5ef",
-            children: ["m3", "m4"],
-            spouse: "m2",
-          },
-        ];
-        setViewPeople(mockPeople);
-      } else {
-        const isPublic =
-          tree?.isPublic ?? tree?.is_public ?? tree?.tree_is_public ?? true;
-        const endpoint = isPublic
-          ? `/trees/${tree.id}/gedcom`
-          : `/my/trees/${tree.id}/gedcom`;
-        const { data } = await api.get(endpoint, { responseType: "text" });
-        const raw = typeof data === "string" ? data : (data && data.data != null ? String(data.data) : "");
-        const isGedcomX = /^\s*(\{|\<\?xml)/.test(raw);
-        const people = isGedcomX ? parseGedcomX(raw) : parseGedcom(raw);
-        const list = Array.isArray(people) ? people : [];
-        setViewPeople(list);
-        if (!list.length) {
-          setViewTreeError(t("gedcom_no_people", "No individuals found in GEDCOM."));
-        }
+      const isPublic =
+        tree?.isPublic ?? tree?.is_public ?? tree?.tree_is_public ?? true;
+      const endpoint = isPublic
+        ? `/trees/${tree.id}/gedcom`
+        : `/my/trees/${tree.id}/gedcom`;
+      const { data } = await api.get(endpoint, { responseType: "text" });
+      const raw = typeof data === "string" ? data : (data && data.data != null ? String(data.data) : "");
+      const isGedcomX = /^\s*(\{|\<\?xml)/.test(raw);
+      const people = isGedcomX ? parseGedcomX(raw) : parseGedcom(raw);
+      const list = Array.isArray(people) ? people : [];
+      setViewPeople(list);
+      if (!list.length) {
+        setViewTreeError(t("gedcom_no_people", "No individuals found in GEDCOM."));
       }
     } catch (err) {
       setViewPeople([]);
@@ -665,7 +575,7 @@ function BookResult({ book, downloadUrl, borderColor }) {
           {book.category}
         </div>
       </div>
-      {!String(book.id || "").startsWith("mb") ? (
+      {book?.id ? (
         <a
           href={downloadUrl(book.id)}
           target="_blank"
@@ -677,7 +587,7 @@ function BookResult({ book, downloadUrl, borderColor }) {
         </a>
       ) : (
         <span className="text-xs opacity-50 italic self-start sm:self-center">
-          {t("mock_entry_label", "Preview entry (sample data)")}
+          {t("unavailable", "Unavailable")}
         </span>
       )}
     </div>
@@ -734,6 +644,9 @@ function TreeResult({ tree, borderColor, onView }) {
     </div>
   );
 }
+
+
+
 
 
 

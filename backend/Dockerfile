@@ -2,7 +2,7 @@
 # EasyPanel settings for this service:
 # - Build context: backend
 # - Dockerfile path: backend/Dockerfile
-# - Runtime secrets: host-injected env vars only
+# - Runtime secrets precedence: host env vars, then .env.production fallback
 
 FROM node:20-alpine AS builder
 WORKDIR /app
@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY tsconfig.json knexfile.js server.js db-config.js ./
+COPY tsconfig.json knexfile.js server.js db-config.js env-bootstrap.js ./
 COPY src ./src
 
 RUN npm run build
@@ -25,8 +25,10 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/knexfile.js ./knexfile.js
 COPY --from=builder /app/server.js ./server.js
 COPY --from=builder /app/db-config.js ./db-config.js
+COPY --from=builder /app/env-bootstrap.js ./env-bootstrap.js
 COPY --from=builder /app/src/db/migrations ./src/db/migrations
 COPY --from=builder /app/src/db/seeds ./src/db/seeds
+COPY .env.production ./.env.production
 
 RUN mkdir -p uploads private_uploads
 
@@ -35,4 +37,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 
 EXPOSE 5000
 
-CMD ["node", "server.js"]
+CMD ["npm", "run", "start:easypanel"]

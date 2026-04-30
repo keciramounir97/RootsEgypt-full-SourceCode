@@ -29,11 +29,7 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
-                envFilePath: [
-                    '.env',
-                    '.env.production',
-                    '.env.local',
-                ],
+                ignoreEnvFile: true,
             }),
             database_module_1.DatabaseModule,
             activity_module_1.ActivityModule,

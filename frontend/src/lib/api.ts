@@ -12,6 +12,11 @@ const dispatchAuthEvent = (name: string, detail?: any) => {
 };
 
 const API_ROOT = (() => {
+  const configured = String(import.meta.env.VITE_API_URL || "").trim();
+  if (configured) {
+    return configured.replace(/\/+$/, "");
+  }
+
   if (import.meta.env.DEV) {
     if (
       typeof window !== "undefined" &&
@@ -22,7 +27,8 @@ const API_ROOT = (() => {
     }
     return "http://localhost:5000";
   }
-  return import.meta.env.VITE_API_URL || "https://api.rootsegypt.org";
+
+  return "https://api.rootsegypt.org";
 })();
 
 const baseURL = `${API_ROOT.replace(/\/+$/, "")}/api`;
@@ -83,7 +89,9 @@ api.interceptors.response.use(
 
     // Handle Network Errors
     if (!error.response) {
-      toast.error("Network error. Check your connection or server status.");
+      toast.error(
+        "Cannot connect to the Roots Egypt server. Please verify that the backend is deployed and reachable.",
+      );
       return Promise.reject(error);
     }
 

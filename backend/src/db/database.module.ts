@@ -3,12 +3,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { Model } from "objection";
 import * as Knex from "knex";
 
-const {
-  DB_ENV_HELP,
-  ENV_FILE_STRATEGY,
-  buildDbConfigErrorMessage,
-  resolveDbConfig,
-} = require("../../db-config");
+const { DB_ENV_HELP, buildDbConfigErrorMessage, resolveDbConfig } = require("../../db-config");
 
 @Global()
 @Module({
@@ -24,7 +19,7 @@ const {
         );
 
         console.log(
-          `INFO DB CONFIG bootstrap envFiles=${ENV_FILE_STRATEGY.join(",")} secretsSource=host-env-vars-first help="${DB_ENV_HELP}"`,
+          `INFO DB CONFIG bootstrap tried=${resolved.bootstrapFilesTried.join(",")} loaded=${resolved.bootstrapFilesLoaded.join(",") || "none"} resolutionSource=${resolved.resolutionSource} help="${DB_ENV_HELP}"`,
         );
         console.log(`INFO DB ENV presence ${JSON.stringify(resolved.envPresence)}`);
 
@@ -35,7 +30,7 @@ const {
         }
 
         console.log(
-          `INFO DB CONFIG resolved host=${resolved.connection.host} port=${resolved.connection.port} database=${resolved.connection.database} user=${resolved.connection.user}`,
+          `INFO DB CONFIG resolved source=${resolved.resolutionSource} host=${resolved.connection.host} port=${resolved.connection.port} database=${resolved.connection.database} user=${resolved.connection.user}`,
         );
 
         const knexConfig = {
