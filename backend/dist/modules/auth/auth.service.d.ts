@@ -1,3 +1,4 @@
+import { Knex } from "knex";
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { ActivityService } from '../activity/activity.service';
@@ -6,7 +7,7 @@ export declare class AuthService {
     private jwtService;
     private activityService;
     private readonly knex;
-    constructor(usersService: UsersService, jwtService: JwtService, activityService: ActivityService, knex: any);
+    constructor(usersService: UsersService, jwtService: JwtService, activityService: ActivityService, knex: Knex);
     validateUser(email: string, pass: string): Promise<any>;
     login(user: any): Promise<{
         token: string;

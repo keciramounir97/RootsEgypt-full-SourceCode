@@ -1,12 +1,13 @@
+import { Knex } from "knex";
 export declare class ContactDataService {
     private readonly knex;
-    constructor(knex: any);
+    constructor(knex: Knex);
     saveContactMessage(payload: {
         name: string;
         email: string;
         message: string;
-    }): Promise<any>;
-    listContactMessages(): Promise<any>;
+    }): Promise<number>;
+    listContactMessages(): Promise<any[]>;
     upsertNewsletterSubscriber(email: string): Promise<any>;
-    listNewsletterSubscribers(): Promise<any>;
+    listNewsletterSubscribers(): Promise<any[]>;
 }

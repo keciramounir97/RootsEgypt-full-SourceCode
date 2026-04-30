@@ -540,6 +540,20 @@ async function bootstrap() {
         console.log("============================================");
         console.log("  ✅  BACKEND DEPLOYMENT SUCCESSFUL  ✅  ");
         console.log("============================================");
+        const modules = [
+            "Auth (login, signup, forgot-password, reset-password)",
+            "Users",
+            "Gallery",
+            "Trees",
+            "Books",
+            "Audio",
+            "Admin Panel",
+        ];
+        for (const m of modules) {
+            console.log(`  ✅  ${m} module loaded`);
+        }
+        console.log(`  ✅  Admin seeding completed — check logs above for seeded users`);
+        console.log("============================================");
         process.on("SIGTERM", async () => {
             await app.close();
             process.exit(0);

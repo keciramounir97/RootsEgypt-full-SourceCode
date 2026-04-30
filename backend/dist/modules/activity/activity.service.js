@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActivityService = void 0;
 const common_1 = require("@nestjs/common");
+const knex_1 = require("knex");
 const ActivityLog_1 = require("../../models/ActivityLog");
 let ActivityService = class ActivityService {
     constructor(knex) {
@@ -21,28 +22,30 @@ let ActivityService = class ActivityService {
     }
     async log(userId, type, description) {
         try {
-            await this.knex('activity_logs').insert({
+            await this.knex("activity_logs").insert({
                 actor_user_id: userId,
                 type,
                 description,
-                created_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                created_at: new Date().toISOString().slice(0, 19).replace("T", " "),
             });
         }
         catch (err) {
-            console.error('Failed to log activity:', err.message);
+            console.error("Failed to log activity:", err.message);
         }
     }
     async findAll(limit = 50, type, q) {
         const query = ActivityLog_1.ActivityLog.query(this.knex)
-            .withGraphFetched('actor')
-            .orderBy('created_at', 'desc');
-        if (type && type !== 'all') {
-            query.where('type', type);
+            .withGraphFetched("actor")
+            .orderBy("created_at", "desc");
+        if (type && type !== "all") {
+            query.where("type", type);
         }
         if (q && String(q).trim()) {
             const search = `%${String(q).trim()}%`;
             query.where((builder) => {
-                builder.where('description', 'like', search).orWhere('type', 'like', search);
+                builder
+                    .where("description", "like", search)
+                    .orWhere("type", "like", search);
             });
         }
         const rows = await query.limit(limit);
@@ -52,7 +55,7 @@ let ActivityService = class ActivityService {
                 id: row.id,
                 type: row.type,
                 description: row.description,
-                user: ((_a = row.actor) === null || _a === void 0 ? void 0 : _a.full_name) || 'System',
+                user: ((_a = row.actor) === null || _a === void 0 ? void 0 : _a.full_name) || "System",
                 date: row.created_at,
             });
         });
@@ -61,7 +64,7 @@ let ActivityService = class ActivityService {
 exports.ActivityService = ActivityService;
 exports.ActivityService = ActivityService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)('KnexConnection')),
-    __metadata("design:paramtypes", [Object])
+    __param(0, (0, common_1.Inject)("KnexConnection")),
+    __metadata("design:paramtypes", [Function])
 ], ActivityService);
 //# sourceMappingURL=activity.service.js.map

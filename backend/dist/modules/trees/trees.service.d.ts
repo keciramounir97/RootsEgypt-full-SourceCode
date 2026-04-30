@@ -1,9 +1,10 @@
+import { Knex } from "knex";
 import { Tree } from '../../models/Tree';
 import { ActivityService } from '../activity/activity.service';
 export declare class TreesService {
     private readonly knex;
     private readonly activityService;
-    constructor(knex: any, activityService: ActivityService);
+    constructor(knex: Knex, activityService: ActivityService);
     listPublic(): Promise<Tree[]>;
     getPublic(id: number): Promise<Tree>;
     listByUser(userId: number): Promise<Tree[]>;

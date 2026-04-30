@@ -51,7 +51,6 @@ interface SuggestionsState {
 }
 
 export default function Navbar() {
-  // @ts-ignore - useThemeStore not typed yet
   const { theme, toggleTheme } = useThemeStore();
   const { user, logout } = useAuth();
   const { t } = useTranslation();
@@ -309,7 +308,9 @@ export default function Navbar() {
                 onClick={() => setResourceMenuOpen((o) => !o)}
               >
                 {t("resources", "Resources")}
-                <ChevronDown className="navbar-dropdown-chevron" />
+                <ChevronDown
+                  className={`navbar-dropdown-chevron${resourceMenuOpen ? " open" : ""}`}
+                />
               </button>
               {resourceMenuOpen ? (
                 <div

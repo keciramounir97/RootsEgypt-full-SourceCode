@@ -7,6 +7,9 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# Install curl for healthchecks (not present in vanilla alpine)
+RUN apk add --no-cache curl
+
 COPY package.json package-lock.json ./
 RUN npm ci
 
@@ -18,6 +21,9 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app
 
+# Install curl for healthchecks (not present in vanilla alpine)
+RUN apk add --no-cache curl
+
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
@@ -28,12 +34,12 @@ COPY --from=builder /app/db-config.js ./db-config.js
 COPY --from=builder /app/env-bootstrap.js ./env-bootstrap.js
 COPY --from=builder /app/src/db/migrations ./src/db/migrations
 COPY --from=builder /app/src/db/seeds ./src/db/seeds
-COPY .env.production ./.env.production
+RUN if [ -f .env.production ]; then cp .env.production ./.env.production; fi
 
 RUN mkdir -p uploads private_uploads
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -qO- http://localhost:5000/api/health || exit 1
+  CMD curl -fsS http://localhost:5000/api/health || exit 1
 
 EXPOSE 5000
 

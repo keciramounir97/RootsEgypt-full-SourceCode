@@ -22,7 +22,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
+import { Response, Request as ExpressRequest } from "express";
 import * as fs from 'fs';
 import * as path from 'path';
 import { CreateBookDto, UpdateBookDto } from './dto/book.dto';
@@ -70,13 +70,16 @@ export class BooksController {
   // My Routes
   @Get("my/books")
   @UseGuards(JwtAuthGuard)
-  async listMy(@Request() req) {
+  async listMy(@Request() req: ExpressRequest) {
     return this.booksService.listByUser(req.user.id);
   }
 
   @Get("my/books/:id")
   @UseGuards(JwtAuthGuard)
-  async getMy(@Param("id", ParseIntPipe) id: number, @Request() req) {
+  async getMy(
+    @Param("id", ParseIntPipe) id: number,
+    @Request() req: ExpressRequest,
+  ) {
     const book = await this.booksService.findOne(id);
     if (book.uploaded_by !== req.user.id) throw new ForbiddenException();
     return book;
@@ -92,7 +95,7 @@ export class BooksController {
   )
   async createMy(
     @Body() body: CreateBookDto,
-    @Request() req,
+    @Request() req: ExpressRequest,
     @UploadedFiles()
     files: { file?: Express.Multer.File[]; cover?: Express.Multer.File[] },
   ) {
@@ -110,18 +113,25 @@ export class BooksController {
   async updateMy(
     @Param("id", ParseIntPipe) id: number,
     @Body() body: UpdateBookDto,
-    @Request() req,
+    @Request() req: ExpressRequest,
     @UploadedFiles()
     files: { file?: Express.Multer.File[]; cover?: Express.Multer.File[] },
   ) {
-    const userRole = req.user?.role_id ?? req.user?.roleId ?? req.user?.role;
+    const userRole = Number(
+      req.user?.role_id ?? req.user?.roleId ?? req.user?.role ?? 0,
+    );
     return this.booksService.update(id, body, req.user.id, userRole, files);
   }
 
   @Delete("my/books/:id")
   @UseGuards(JwtAuthGuard)
-  async deleteMy(@Param("id", ParseIntPipe) id: number, @Request() req) {
-    const userRole = req.user?.role_id ?? req.user?.roleId ?? req.user?.role;
+  async deleteMy(
+    @Param("id", ParseIntPipe) id: number,
+    @Request() req: ExpressRequest,
+  ) {
+    const userRole = Number(
+      req.user?.role_id ?? req.user?.roleId ?? req.user?.role ?? 0,
+    );
     return this.booksService.delete(id, req.user.id, userRole);
   }
 
@@ -130,7 +140,7 @@ export class BooksController {
   async downloadMy(
     @Param("id", ParseIntPipe) id: number,
     @Res() res: Response,
-    @Request() req,
+    @Request() req: ExpressRequest,
   ) {
     const book = await this.booksService.findOne(id);
     if (book.uploaded_by !== req.user.id) throw new ForbiddenException();
@@ -169,7 +179,7 @@ export class BooksController {
   )
   async createAdmin(
     @Body() body: CreateBookDto,
-    @Request() req,
+    @Request() req: ExpressRequest,
     @UploadedFiles()
     files: { file?: Express.Multer.File[]; cover?: Express.Multer.File[] },
   ) {
@@ -188,19 +198,26 @@ export class BooksController {
   async updateAdmin(
     @Param("id", ParseIntPipe) id: number,
     @Body() body: UpdateBookDto,
-    @Request() req,
+    @Request() req: ExpressRequest,
     @UploadedFiles()
     files: { file?: Express.Multer.File[]; cover?: Express.Multer.File[] },
   ) {
-    const userRole = req.user?.role_id ?? req.user?.roleId ?? req.user?.role;
+    const userRole = Number(
+      req.user?.role_id ?? req.user?.roleId ?? req.user?.role ?? 0,
+    );
     return this.booksService.update(id, body, req.user.id, userRole, files);
   }
 
   @Delete("admin/books/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin", "super_admin")
-  async deleteAdmin(@Param("id", ParseIntPipe) id: number, @Request() req) {
-    const userRole = req.user?.role_id ?? req.user?.roleId ?? req.user?.role;
+  async deleteAdmin(
+    @Param("id", ParseIntPipe) id: number,
+    @Request() req: ExpressRequest,
+  ) {
+    const userRole = Number(
+      req.user?.role_id ?? req.user?.roleId ?? req.user?.role ?? 0,
+    );
     return this.booksService.delete(id, req.user.id, userRole);
   }
 }

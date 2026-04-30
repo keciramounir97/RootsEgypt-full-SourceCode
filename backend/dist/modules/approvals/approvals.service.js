@@ -21,6 +21,7 @@ const activity_service_1 = require("../activity/activity.service");
 const crypto = require("crypto");
 const mailer_service_1 = require("../../common/mailer/mailer.service");
 const config_1 = require("@nestjs/config");
+const knex_1 = require("knex");
 let ApprovalsService = class ApprovalsService {
     constructor(knex, activityService, mailerService, configService) {
         this.knex = knex;
@@ -225,7 +226,7 @@ exports.ApprovalsService = ApprovalsService;
 exports.ApprovalsService = ApprovalsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)("KnexConnection")),
-    __metadata("design:paramtypes", [Object, activity_service_1.ActivityService,
+    __metadata("design:paramtypes", [Function, activity_service_1.ActivityService,
         mailer_service_1.MailerService,
         config_1.ConfigService])
 ], ApprovalsService);

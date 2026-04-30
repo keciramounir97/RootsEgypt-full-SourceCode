@@ -1,5 +1,5 @@
 import { BooksService } from './books.service';
-import { Response } from 'express';
+import { Response, Request as ExpressRequest } from "express";
 import { CreateBookDto, UpdateBookDto } from './dto/book.dto';
 export declare class BooksController {
     private readonly booksService;
@@ -8,35 +8,35 @@ export declare class BooksController {
     listPublic(): Promise<import("../../models/Book").Book[]>;
     getPublic(id: number): Promise<import("../../models/Book").Book>;
     downloadPublic(id: number, res: Response): Promise<void>;
-    listMy(req: any): Promise<import("../../models/Book").Book[]>;
-    getMy(id: number, req: any): Promise<import("../../models/Book").Book>;
-    createMy(body: CreateBookDto, req: any, files: {
+    listMy(req: ExpressRequest): Promise<import("../../models/Book").Book[]>;
+    getMy(id: number, req: ExpressRequest): Promise<import("../../models/Book").Book>;
+    createMy(body: CreateBookDto, req: ExpressRequest, files: {
         file?: Express.Multer.File[];
         cover?: Express.Multer.File[];
     }): Promise<import("../../models/Book").Book>;
-    updateMy(id: number, body: UpdateBookDto, req: any, files: {
+    updateMy(id: number, body: UpdateBookDto, req: ExpressRequest, files: {
         file?: Express.Multer.File[];
         cover?: Express.Multer.File[];
     }): Promise<{
         id: number;
     }>;
-    deleteMy(id: number, req: any): Promise<{
+    deleteMy(id: number, req: ExpressRequest): Promise<{
         message: string;
     }>;
-    downloadMy(id: number, res: Response, req: any): Promise<void>;
+    downloadMy(id: number, res: Response, req: ExpressRequest): Promise<void>;
     listAdmin(): Promise<import("../../models/Book").Book[]>;
     getAdmin(id: number): Promise<import("../../models/Book").Book>;
-    createAdmin(body: CreateBookDto, req: any, files: {
+    createAdmin(body: CreateBookDto, req: ExpressRequest, files: {
         file?: Express.Multer.File[];
         cover?: Express.Multer.File[];
     }): Promise<import("../../models/Book").Book>;
-    updateAdmin(id: number, body: UpdateBookDto, req: any, files: {
+    updateAdmin(id: number, body: UpdateBookDto, req: ExpressRequest, files: {
         file?: Express.Multer.File[];
         cover?: Express.Multer.File[];
     }): Promise<{
         id: number;
     }>;
-    deleteAdmin(id: number, req: any): Promise<{
+    deleteAdmin(id: number, req: ExpressRequest): Promise<{
         message: string;
     }>;
 }

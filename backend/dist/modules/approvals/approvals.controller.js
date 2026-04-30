@@ -46,61 +46,61 @@ let ApprovalsController = class ApprovalsController {
 };
 exports.ApprovalsController = ApprovalsController;
 __decorate([
-    (0, common_1.Get)('stats'),
+    (0, common_1.Get)("stats"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ApprovalsController.prototype, "getStats", null);
 __decorate([
-    (0, common_1.Get)('password-reset'),
-    __param(0, (0, common_1.Query)('status')),
+    (0, common_1.Get)("password-reset"),
+    __param(0, (0, common_1.Query)("status")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ApprovalsController.prototype, "getPasswordResetRequests", null);
 __decorate([
-    (0, common_1.Put)('password-reset/:id/approve'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, common_1.Put)("password-reset/:id/approve"),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], ApprovalsController.prototype, "approvePasswordReset", null);
 __decorate([
-    (0, common_1.Put)('password-reset/:id/reject'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, common_1.Put)("password-reset/:id/reject"),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], ApprovalsController.prototype, "rejectPasswordReset", null);
 __decorate([
-    (0, common_1.Get)('account-deletion'),
-    __param(0, (0, common_1.Query)('status')),
+    (0, common_1.Get)("account-deletion"),
+    __param(0, (0, common_1.Query)("status")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ApprovalsController.prototype, "getAccountDeletionRequests", null);
 __decorate([
-    (0, common_1.Put)('account-deletion/:id/approve'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, common_1.Put)("account-deletion/:id/approve"),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], ApprovalsController.prototype, "approveAccountDeletion", null);
 __decorate([
-    (0, common_1.Put)('account-deletion/:id/reject'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, common_1.Put)("account-deletion/:id/reject"),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], ApprovalsController.prototype, "rejectAccountDeletion", null);
 exports.ApprovalsController = ApprovalsController = __decorate([
-    (0, common_1.Controller)('admin/approvals'),
+    (0, common_1.Controller)("admin/approvals"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('super_admin'),
+    (0, roles_decorator_1.Roles)("super_admin"),
     __metadata("design:paramtypes", [approvals_service_1.ApprovalsService])
 ], ApprovalsController);
 let UserRequestsController = class UserRequestsController {
@@ -116,22 +116,22 @@ let UserRequestsController = class UserRequestsController {
 };
 exports.UserRequestsController = UserRequestsController;
 __decorate([
-    (0, common_1.Post)('password-reset'),
+    (0, common_1.Post)("password-reset"),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserRequestsController.prototype, "requestPasswordReset", null);
 __decorate([
-    (0, common_1.Post)('account-deletion'),
-    __param(0, (0, common_1.Body)('reason')),
+    (0, common_1.Post)("account-deletion"),
+    __param(0, (0, common_1.Body)("reason")),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], UserRequestsController.prototype, "requestAccountDeletion", null);
 exports.UserRequestsController = UserRequestsController = __decorate([
-    (0, common_1.Controller)('user/requests'),
+    (0, common_1.Controller)("user/requests"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __metadata("design:paramtypes", [approvals_service_1.ApprovalsService])
 ], UserRequestsController);

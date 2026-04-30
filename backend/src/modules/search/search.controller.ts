@@ -2,6 +2,7 @@ import { Controller, Get, Query, Request, UseGuards } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { JwtService } from '@nestjs/jwt';
+import { Request as ExpressRequest } from "express";
 
 // Optional Auth Guard
 // NestJS doesn't have a built-in "Optional" guard easily without custom logic or just checking headers manually
@@ -20,21 +21,21 @@ export class OptionalJwtAuthGuard extends AuthGuard('jwt') {
 
 @Controller()
 export class SearchController {
-    constructor(private readonly searchService: SearchService) { }
+  constructor(private readonly searchService: SearchService) {}
 
-    @Get('search')
-    @UseGuards(OptionalJwtAuthGuard)
-    async search(@Query('q') q: string, @Request() req) {
-        return this.searchService.search(q, req.user);
-    }
+  @Get("search")
+  @UseGuards(OptionalJwtAuthGuard)
+  async search(@Query("q") q: string, @Request() req: ExpressRequest) {
+    return this.searchService.search(q, req.user as any);
+  }
 
-    @Get('search/suggest')
-    @UseGuards(OptionalJwtAuthGuard)
-    async suggest(@Query('q') q: string, @Request() req) {
-        const results = await this.searchService.search(q, req.user);
-        return {
-            trees: Array.isArray(results?.trees) ? results.trees.slice(0, 8) : [],
-            people: Array.isArray(results?.people) ? results.people.slice(0, 8) : [],
-        };
-    }
+  @Get("search/suggest")
+  @UseGuards(OptionalJwtAuthGuard)
+  async suggest(@Query("q") q: string, @Request() req: ExpressRequest) {
+    const results = await this.searchService.search(q, req.user as any);
+    return {
+      trees: Array.isArray(results?.trees) ? results.trees.slice(0, 8) : [],
+      people: Array.isArray(results?.people) ? results.people.slice(0, 8) : [],
+    };
+  }
 }

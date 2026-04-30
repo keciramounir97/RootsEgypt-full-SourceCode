@@ -53,7 +53,7 @@ export default function AdminLayout() {
         onToggle={() => setOpen((v) => !v)}
       />
       <main
-        className={`transition-all duration-300 pt-20 pb-10 px-4 sm:px-6 ${
+        className={`admin-main transition-all duration-300 pt-20 pb-12 px-4 sm:px-6 ${
           open ? "lg:pl-72" : ""
         }`}
       >
@@ -63,7 +63,7 @@ export default function AdminLayout() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="admin-panel-shell rounded-xl backdrop-blur-sm relative overflow-hidden">
+          <div className="admin-panel-shell admin-panel-stack rounded-xl backdrop-blur-sm relative overflow-hidden">
             {/* Subtle inner glow */}
             <div
               className="absolute inset-0 pointer-events-none rounded-xl"

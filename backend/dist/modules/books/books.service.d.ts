@@ -1,9 +1,10 @@
+import { Knex } from "knex";
 import { Book } from '../../models/Book';
 import { ActivityService } from '../activity/activity.service';
 export declare class BooksService {
     private readonly knex;
     private readonly activityService;
-    constructor(knex: any, activityService: ActivityService);
+    constructor(knex: Knex, activityService: ActivityService);
     listPublic(): Promise<Book[]>;
     getPublic(id: number): Promise<Book>;
     listByUser(userId: number): Promise<Book[]>;

@@ -12,6 +12,7 @@ import { Knex } from "knex";
 import { CorsOptions as ExpressCorsOptions } from "cors";
 import cors = require("cors");
 import * as bcrypt from "bcryptjs";
+import { Request, Response, NextFunction } from "express";
 
 /** Production CORS origins: RootsEgypt .org domains + EasyPanel + dev localhost */
 const ALLOWED_CORS_ORIGINS = [
@@ -417,7 +418,9 @@ async function seedInitialData(knex: Knex) {
         .trim()
         .toLowerCase();
       const seedPassword = String(process.env[`${prefix}_PASSWORD`] || "");
-      const seedFullName = String(process.env[`${prefix}_FULL_NAME`] || "").trim();
+      const seedFullName = String(
+        process.env[`${prefix}_FULL_NAME`] || "",
+      ).trim();
       const seedRoleId = parseInt(process.env[`${prefix}_ROLE_ID`] || "1", 10);
 
       if (!rawSeedEmail && !seedPassword && !seedFullName) {
@@ -445,7 +448,10 @@ async function seedInitialData(knex: Knex) {
         });
         console.log(`INFO seeded admin user: ${seedEmail}`);
       } else {
-        const matches = await bcrypt.compare(seedPassword, existing.password || "");
+        const matches = await bcrypt.compare(
+          seedPassword,
+          existing.password || "",
+        );
         if (!matches) {
           const hash = await bcrypt.hash(seedPassword, 10);
           await knex("users").where({ id: existing.id }).update({
@@ -497,8 +503,8 @@ async function bootstrap() {
     app.setGlobalPrefix("api");
 
     // Request ID for tracing
-    app.use((req: any, _res, next) => {
-      req.id = req.headers["x-request-id"] || randomUUID();
+    app.use((req: Request, _res: Response, next: NextFunction) => {
+      (req as any).id = req.headers["x-request-id"] || randomUUID();
       next();
     });
 
@@ -544,7 +550,7 @@ async function bootstrap() {
     // Recovery middleware: some reverse proxies rewrite unknown requests
     // to /api/errors/not-found. If they preserve original URI headers,
     // restore the original path so routing and CORS preflight still work.
-    app.use((req: any, _res, next) => {
+    app.use((req: Request, _res: Response, next: NextFunction) => {
       if (req.path === "/api/errors/not-found") {
         const originalPath = getForwardedOriginalPath(req);
         if (originalPath && originalPath !== req.path) {
@@ -631,7 +637,7 @@ async function bootstrap() {
       crossOriginResourcePolicy: { policy: "cross-origin" },
     };
     app.use(helmet.default(helmetOptions));
-    app.use((_req, res, next) => {
+    app.use((_req: Request, res: Response, next: NextFunction) => {
       res.setHeader("Pragma", "no-cache");
       res.setHeader("X-Frame-Options", "DENY");
       res.setHeader("X-Content-Type-Options", "nosniff");
@@ -650,11 +656,11 @@ async function bootstrap() {
     });
 
     // Production diagnostics: log failed requests with origin and request id.
-    app.use((req: any, res, next) => {
+    app.use((req: Request, res: Response, next: NextFunction) => {
       res.on("finish", () => {
         if (res.statusCode >= 400) {
           const origin = req.headers.origin || "-";
-          const requestId = req.id || "-";
+          const requestId = (req as any).id || "-";
           console.warn(
             `🟠 HTTP ${res.statusCode} ${req.method} ${req.originalUrl} origin=${origin} reqId=${requestId}`,
           );

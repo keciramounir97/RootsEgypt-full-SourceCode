@@ -6,10 +6,16 @@ import { UsersService } from '../../users/users.service';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(private usersService: UsersService) {
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+          throw new Error(
+            "JWT_SECRET environment variable is required. Set it in EasyPanel or your deployment environment.",
+          );
+        }
         super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            ignoreExpiration: false,
-            secretOrKey: process.env.JWT_SECRET || 'fallback_secret',
+          jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+          ignoreExpiration: false,
+          secretOrKey: secret,
         });
     }
 

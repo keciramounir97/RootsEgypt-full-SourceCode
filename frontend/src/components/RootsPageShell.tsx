@@ -30,10 +30,12 @@ function RootsPageShell({
     .join(" ");
 
   return (
-    <div className={`roots-shell roots-shell--decorated page-container w-full mx-auto ${className}`}>
+    <div
+      className={`roots-shell roots-shell--decorated roots-shell--spacious page-container w-full mx-auto ${className}`}
+    >
       {hero ? (
         <section className={`heritage-hero text-center ${heroClassName}`}>
-          {hero}
+          <div className="heritage-hero__inner">{hero}</div>
         </section>
       ) : null}
       <div className={stackClass}>{children}</div>

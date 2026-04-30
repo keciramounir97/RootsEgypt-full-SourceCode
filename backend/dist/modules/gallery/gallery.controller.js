@@ -52,18 +52,18 @@ let GalleryController = GalleryController_1 = class GalleryController {
         return item;
     }
     async saveMy(id, body, req, file) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         return this.galleryService.update(id, body, req.user.id, userRole, file);
     }
     async updateMy(id, body, req, file) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         return this.galleryService.update(id, body, req.user.id, userRole, file);
     }
     async deleteMy(id, req) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         await this.galleryService.delete(id, req.user.id, userRole);
         return { message: "Deleted successfully" };
     }
@@ -77,38 +77,38 @@ let GalleryController = GalleryController_1 = class GalleryController {
         return this.galleryService.create(body, req.user.id, file);
     }
     async saveAdmin(id, body, req, file) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         return this.galleryService.update(id, body, req.user.id, userRole, file);
     }
     async updateAdmin(id, body, req, file) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         return this.galleryService.update(id, body, req.user.id, userRole, file);
     }
     async deleteAdmin(id, req) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         await this.galleryService.delete(id, req.user.id, userRole);
         return { message: "Deleted successfully" };
     }
 };
 exports.GalleryController = GalleryController;
 __decorate([
-    (0, common_1.Get)('gallery'),
+    (0, common_1.Get)("gallery"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "listPublic", null);
 __decorate([
-    (0, common_1.Get)('gallery/:id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, common_1.Get)("gallery/:id"),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "getPublic", null);
 __decorate([
-    (0, common_1.Get)('my/gallery'),
+    (0, common_1.Get)("my/gallery"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -116,154 +116,172 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "listMy", null);
 __decorate([
-    (0, common_1.Get)('my/gallery/:id'),
+    (0, common_1.Get)("my/gallery/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "getMy", null);
 __decorate([
-    (0, common_1.Post)('my/gallery'),
+    (0, common_1.Post)("my/gallery"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("image")),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Request)()),
     __param(2, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: [
             new common_1.MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
-            new common_1.FileTypeValidator({ fileType: /^image\/(jpe?g|png|webp|gif)$/i, skipMagicNumbersValidation: true }),
+            new common_1.FileTypeValidator({
+                fileType: /^image\/(jpe?g|png|webp|gif)$/i,
+                skipMagicNumbersValidation: true,
+            }),
         ],
-        fileIsRequired: true
+        fileIsRequired: true,
     }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [gallery_dto_1.CreateGalleryDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "createMy", null);
 __decorate([
-    (0, common_1.Post)('my/gallery/:id/save'),
+    (0, common_1.Post)("my/gallery/:id/save"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("image")),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Request)()),
     __param(3, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: [
             new common_1.MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
-            new common_1.FileTypeValidator({ fileType: /^image\/(jpe?g|png|webp|gif)$/i, skipMagicNumbersValidation: true }),
+            new common_1.FileTypeValidator({
+                fileType: /^image\/(jpe?g|png|webp|gif)$/i,
+                skipMagicNumbersValidation: true,
+            }),
         ],
-        fileIsRequired: false
+        fileIsRequired: false,
     }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, gallery_dto_1.UpdateGalleryDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "saveMy", null);
 __decorate([
-    (0, common_1.Put)('my/gallery/:id'),
+    (0, common_1.Put)("my/gallery/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("image")),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Request)()),
     __param(3, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: [
             new common_1.MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
-            new common_1.FileTypeValidator({ fileType: /^image\/(jpe?g|png|webp|gif)$/i, skipMagicNumbersValidation: true }),
+            new common_1.FileTypeValidator({
+                fileType: /^image\/(jpe?g|png|webp|gif)$/i,
+                skipMagicNumbersValidation: true,
+            }),
         ],
-        fileIsRequired: false
+        fileIsRequired: false,
     }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, gallery_dto_1.UpdateGalleryDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "updateMy", null);
 __decorate([
-    (0, common_1.Delete)('my/gallery/:id'),
+    (0, common_1.Delete)("my/gallery/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "deleteMy", null);
 __decorate([
-    (0, common_1.Get)('admin/gallery'),
+    (0, common_1.Get)("admin/gallery"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('admin', 'super_admin'),
+    (0, roles_decorator_1.Roles)("admin", "super_admin"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "listAdmin", null);
 __decorate([
-    (0, common_1.Get)('admin/gallery/:id'),
+    (0, common_1.Get)("admin/gallery/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('admin', 'super_admin'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, roles_decorator_1.Roles)("admin", "super_admin"),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "getAdmin", null);
 __decorate([
-    (0, common_1.Post)('admin/gallery'),
+    (0, common_1.Post)("admin/gallery"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('admin', 'super_admin'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
+    (0, roles_decorator_1.Roles)("admin", "super_admin"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("image")),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Request)()),
     __param(2, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: [
             new common_1.MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
-            new common_1.FileTypeValidator({ fileType: /^image\/(jpe?g|png|webp|gif)$/i, skipMagicNumbersValidation: true }),
+            new common_1.FileTypeValidator({
+                fileType: /^image\/(jpe?g|png|webp|gif)$/i,
+                skipMagicNumbersValidation: true,
+            }),
         ],
-        fileIsRequired: true
+        fileIsRequired: true,
     }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [gallery_dto_1.CreateGalleryDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "createAdmin", null);
 __decorate([
-    (0, common_1.Post)('admin/gallery/:id/save'),
+    (0, common_1.Post)("admin/gallery/:id/save"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('admin', 'super_admin'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, roles_decorator_1.Roles)("admin", "super_admin"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("image")),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Request)()),
     __param(3, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: [
             new common_1.MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
-            new common_1.FileTypeValidator({ fileType: /^image\/(jpe?g|png|webp|gif)$/i, skipMagicNumbersValidation: true }),
+            new common_1.FileTypeValidator({
+                fileType: /^image\/(jpe?g|png|webp|gif)$/i,
+                skipMagicNumbersValidation: true,
+            }),
         ],
-        fileIsRequired: false
+        fileIsRequired: false,
     }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, gallery_dto_1.UpdateGalleryDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "saveAdmin", null);
 __decorate([
-    (0, common_1.Put)('admin/gallery/:id'),
+    (0, common_1.Put)("admin/gallery/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('admin', 'super_admin'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, roles_decorator_1.Roles)("admin", "super_admin"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("image")),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Request)()),
     __param(3, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: [
             new common_1.MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
-            new common_1.FileTypeValidator({ fileType: /^image\/(jpe?g|png|webp|gif)$/i, skipMagicNumbersValidation: true }),
+            new common_1.FileTypeValidator({
+                fileType: /^image\/(jpe?g|png|webp|gif)$/i,
+                skipMagicNumbersValidation: true,
+            }),
         ],
-        fileIsRequired: false
+        fileIsRequired: false,
     }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, gallery_dto_1.UpdateGalleryDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], GalleryController.prototype, "updateAdmin", null);
 __decorate([
-    (0, common_1.Delete)('admin/gallery/:id'),
+    (0, common_1.Delete)("admin/gallery/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('admin', 'super_admin'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, roles_decorator_1.Roles)("admin", "super_admin"),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),

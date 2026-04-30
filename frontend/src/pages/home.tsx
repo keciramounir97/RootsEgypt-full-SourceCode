@@ -211,6 +211,8 @@ export default function Home() {
   const downloadTreeUrl = (id: string | number) =>
     `${apiRoot}/api/trees/${id}/gedcom`;
 
+  const homeSectionSpace = "mt-8 md:mt-10 lg:mt-12";
+
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -287,7 +289,7 @@ export default function Home() {
   /*  RENDER                                                            */
   /* ================================================================== */
   return (
-    <div className="heritage-page-root">
+    <div className="heritage-page-root home-page-stack space-y-8 md:space-y-10 lg:space-y-12">
       {/* ==================== HERO SECTION — Photo Background ==================== */}
       <section
         ref={heroRef}
@@ -343,7 +345,7 @@ export default function Home() {
         {/* Content */}
         <motion.div
           style={{ opacity: heroOpacity }}
-          className="relative z-10 text-center px-6 max-w-5xl mx-auto space-y-8"
+          className="relative z-10 text-center px-6 max-w-6xl mx-auto space-y-8 md:space-y-10"
         >
           {/* Badge */}
           <motion.div
@@ -403,6 +405,49 @@ export default function Home() {
               {t("browse_trees", "Browse Family Trees")}
             </NavLink>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1 }}
+            className="grid gap-3 sm:grid-cols-3 max-w-4xl mx-auto"
+          >
+            {[
+              {
+                value: t("home_hero_metric_1_value", "Civil to Ottoman"),
+                label: t(
+                  "home_hero_metric_1_label",
+                  "Bridge modern civil records into deeper archive generations",
+                ),
+              },
+              {
+                value: t("home_hero_metric_2_value", "Photos to Proof"),
+                label: t(
+                  "home_hero_metric_2_label",
+                  "Connect portraits, oral memory, and documents in one place",
+                ),
+              },
+              {
+                value: t("home_hero_metric_3_value", "Roots to Diaspora"),
+                label: t(
+                  "home_hero_metric_3_label",
+                  "Trace Egyptian family movement across governorates and beyond",
+                ),
+              },
+            ].map((item) => (
+              <div
+                key={item.value}
+                className="rounded-2xl border border-white/15 bg-white/8 px-4 py-4 backdrop-blur-md text-left"
+              >
+                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#d4a843]">
+                  {item.value}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-white/82">
+                  {item.label}
+                </p>
+              </div>
+            ))}
+          </motion.div>
         </motion.div>
 
         {/* Scroll indicator */}
@@ -427,7 +472,7 @@ export default function Home() {
 
       {/* ==================== STATS SECTION ==================== */}
       <ScrollReveal>
-        <section className="px-4 sm:px-6 lg:px-10 xl:px-14 py-8 md:py-10">
+        <section className={`px-4 sm:px-6 lg:px-10 xl:px-14 py-8 md:py-10 ${homeSectionSpace}`}>
           <div
             className={`w-full max-w-[var(--content-max,1600px)] mx-auto py-16 rounded-[2rem] border overflow-hidden ${isDark ? "bg-[#0d1b2a] border-[#d4a843]/15" : "bg-[#f5f1e8] border-[#d8c7b0]/45"}`}
           >
@@ -491,9 +536,80 @@ export default function Home() {
         </section>
       </ScrollReveal>
 
+      <ScrollReveal>
+        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
+          <div className="max-w-6xl mx-auto grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-start">
+            <div className="space-y-6 text-left">
+              <div>
+                <p className="text-sm uppercase tracking-[0.3em] text-[#d4a843] font-semibold mb-3">
+                  {t("home_editorial_label", "Why Roots Egypt")}
+                </p>
+                <h2 className="roots-heading">
+                  {t(
+                    "home_editorial_title",
+                    "A modern Egyptian heritage platform with the depth of an archive",
+                  )}
+                </h2>
+              </div>
+              <p className="text-lg leading-8 opacity-90">
+                {t(
+                  "home_editorial_paragraph_1",
+                  "Roots Egypt is built for families who do not want to lose meaning while they organize evidence. It is not only a tree builder. It is a place to hold lineage, migration, photographs, court references, civil extracts, and the stories elders still carry.",
+                )}
+              </p>
+              <p className="text-base leading-7 opacity-80">
+                {t(
+                  "home_editorial_paragraph_2",
+                  "That means one branch can preserve a studio portrait from Alexandria, another can document a village origin in the Delta, and another can connect an oral memory to a marriage record, waqf note, or church register without flattening the family story.",
+                )}
+              </p>
+            </div>
+
+            <div className="grid gap-4">
+              {[
+                {
+                  icon: Archive,
+                  title: t("home_editorial_card_1_title", "Archive-led research"),
+                  desc: t(
+                    "home_editorial_card_1_desc",
+                    "Designed around the record families Egyptian researchers actually use: civil, court, parish, waqf, and institutional archives.",
+                  ),
+                },
+                {
+                  icon: Heart,
+                  title: t("home_editorial_card_2_title", "Story-first preservation"),
+                  desc: t(
+                    "home_editorial_card_2_desc",
+                    "Keep oral history, context, nicknames, and family memory beside the documented facts instead of losing them in scattered notes.",
+                  ),
+                },
+                {
+                  icon: Sparkles,
+                  title: t("home_editorial_card_3_title", "A more elegant public memory"),
+                  desc: t(
+                    "home_editorial_card_3_desc",
+                    "Present trees, galleries, and collections in a polished format that feels worthy of Egyptian family heritage.",
+                  ),
+                },
+              ].map((item) => (
+                <motion.div
+                  key={item.title}
+                  whileHover={{ y: -4 }}
+                  className="roots-card p-6 text-left"
+                >
+                  <item.icon className="w-8 h-8 text-teal mb-4" />
+                  <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
+                  <p className="text-sm leading-7 opacity-85">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
+
       {/* ==================== HOW IT WORKS ==================== */}
       <ScrollReveal>
-        <section className="roots-section roots-section-alt">
+        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
           <div className="max-w-6xl mx-auto text-center space-y-10">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-teal font-semibold mb-3">
@@ -569,7 +685,7 @@ export default function Home() {
 
       {/* ==================== EXPLORE PLATFORM ==================== */}
       <ScrollReveal>
-        <section className="roots-section">
+        <section className={`roots-section ${homeSectionSpace}`}>
           <div className="max-w-6xl mx-auto text-center space-y-10">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-[#d4a843] font-semibold mb-3">
@@ -697,7 +813,7 @@ export default function Home() {
 
       {/* ==================== FEATURED TREES ==================== */}
       <ScrollReveal>
-        <section className="roots-section roots-section-alt">
+        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
           <div className="w-full max-w-7xl mx-auto space-y-10">
             <div className="text-center">
               <p className="text-sm uppercase tracking-[0.3em] text-teal font-semibold mb-3">
@@ -843,7 +959,7 @@ export default function Home() {
 
       {/* ==================== EGYPTIAN TIMELINE — DETAILED ERAS ==================== */}
       <ScrollReveal>
-        <section className="roots-section">
+        <section className={`roots-section ${homeSectionSpace}`}>
           <div className="max-w-6xl mx-auto space-y-10 text-center">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-terracotta font-semibold mb-3">
@@ -1029,7 +1145,7 @@ export default function Home() {
 
       {/* ==================== ANCESTRAL STORIES ==================== */}
       <ScrollReveal>
-        <section className="roots-section roots-section-alt">
+        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
           <div className="max-w-6xl mx-auto space-y-10 text-center">
             <div>
               <h2 className="roots-heading">
@@ -1081,7 +1197,7 @@ export default function Home() {
 
       {/* ==================== LIBRARY TAGS ==================== */}
       <ScrollReveal>
-        <section className="roots-section">
+        <section className={`roots-section ${homeSectionSpace}`}>
           <div className="max-w-6xl mx-auto space-y-10 text-center">
             <div>
               <h2 className="roots-heading">
@@ -1148,9 +1264,82 @@ export default function Home() {
         </section>
       </ScrollReveal>
 
+      <ScrollReveal>
+        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
+          <div className="max-w-6xl mx-auto space-y-10">
+            <div className="text-center">
+              <p className="text-sm uppercase tracking-[0.3em] text-teal font-semibold mb-3">
+                {t("home_memory_streams_label", "More to Preserve")}
+              </p>
+              <h2 className="roots-heading">
+                {t(
+                  "home_memory_streams_title",
+                  "The homepage keeps the broader Roots Egypt experience visible",
+                )}
+              </h2>
+              <p className="max-w-3xl mx-auto text-lg opacity-85">
+                {t(
+                  "home_memory_streams_intro",
+                  "Research is only one part of family heritage. Roots Egypt also needs space for voices, images, commentary, and contextual records that make a lineage feel alive.",
+                )}
+              </p>
+            </div>
+
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+              {[
+                {
+                  icon: Headphones,
+                  color: "text-teal",
+                  title: t("home_stream_audio_title", "Audio Memory"),
+                  desc: t(
+                    "home_stream_audio_desc",
+                    "Record elders, recitations, songs, and spoken family memory before those voices disappear.",
+                  ),
+                },
+                {
+                  icon: Image,
+                  color: "text-terracotta",
+                  title: t("home_stream_gallery_title", "Visual Heritage"),
+                  desc: t(
+                    "home_stream_gallery_desc",
+                    "Preserve portraits, studio photography, neighborhood images, and scanned documents with context and provenance.",
+                  ),
+                },
+                {
+                  icon: Newspaper,
+                  color: "text-[#d4a843]",
+                  title: t("home_stream_articles_title", "Research Writing"),
+                  desc: t(
+                    "home_stream_articles_desc",
+                    "Turn findings into readable family narratives, archive guides, and published notes for relatives and researchers.",
+                  ),
+                },
+                {
+                  icon: MessageCircle,
+                  color: "text-teal",
+                  title: t("home_stream_dialogue_title", "Family Dialogue"),
+                  desc: t(
+                    "home_stream_dialogue_desc",
+                    "Give branches of the family one place to react, correct, expand, and deepen the shared record together.",
+                  ),
+                },
+              ].map((item) => (
+                <StaggerItem key={item.title}>
+                  <motion.div whileHover={{ y: -4 }} className="roots-card h-full text-left">
+                    <item.icon className={`w-9 h-9 mb-4 ${item.color}`} />
+                    <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+                    <p className="text-sm leading-7 opacity-85">{item.desc}</p>
+                  </motion.div>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </div>
+        </section>
+      </ScrollReveal>
+
       {/* ==================== COMMUNITY CTA ==================== */}
       <ScrollReveal>
-        <section className="roots-section roots-section-alt">
+        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <motion.div
               initial={{ scale: 0.9 }}

@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StatsService = void 0;
 const common_1 = require("@nestjs/common");
+const knex_1 = require("knex");
 const User_1 = require("../../models/User");
 const Book_1 = require("../../models/Book");
 const Tree_1 = require("../../models/Tree");
@@ -35,7 +36,7 @@ let StatsService = class StatsService {
 exports.StatsService = StatsService;
 exports.StatsService = StatsService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)('KnexConnection')),
-    __metadata("design:paramtypes", [Object])
+    __param(0, (0, common_1.Inject)("KnexConnection")),
+    __metadata("design:paramtypes", [Function])
 ], StatsService);
 //# sourceMappingURL=stats.service.js.map

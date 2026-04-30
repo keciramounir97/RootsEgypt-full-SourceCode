@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
+const knex_1 = require("knex");
 const User_1 = require("../../models/User");
 const Book_1 = require("../../models/Book");
 const Tree_1 = require("../../models/Tree");
@@ -38,7 +39,7 @@ let UsersService = class UsersService {
         }
         catch (_a) {
             return String(value)
-                .split(',')
+                .split(",")
                 .map((v) => v.trim())
                 .filter(Boolean);
         }
@@ -53,21 +54,21 @@ let UsersService = class UsersService {
     }
     async findAll() {
         return User_1.User.query(this.knex)
-            .select('users.id', 'users.full_name as fullName', 'users.phone_number as phoneNumber', 'users.email', 'users.role_id as roleId', 'users.status', 'users.admin_privileges as adminPrivileges', 'users.created_at as createdAt', 'users.last_login as lastLogin', 'role.name as roleName')
-            .joinRelated('role')
-            .orderBy('users.created_at', 'desc')
+            .select("users.id", "users.full_name as fullName", "users.phone_number as phoneNumber", "users.email", "users.role_id as roleId", "users.status", "users.admin_privileges as adminPrivileges", "users.created_at as createdAt", "users.last_login as lastLogin", "role.name as roleName")
+            .joinRelated("role")
+            .orderBy("users.created_at", "desc")
             .limit(100)
             .then((rows) => rows.map((row) => (Object.assign(Object.assign({}, row), { permissions: this.parsePrivileges(row.adminPrivileges) }))));
     }
     async findOne(id) {
         var _a, _b;
-        const row = await this.knex('users')
-            .select('users.id', 'users.full_name as fullName', 'users.phone_number as phoneNumber', 'users.email', 'users.role_id', 'users.role_id as roleId', 'users.status', 'users.admin_privileges as adminPrivileges', 'users.created_at as createdAt', 'users.last_login as lastLogin', 'roles.name as roleName')
-            .leftJoin('roles', 'users.role_id', 'roles.id')
-            .where('users.id', id)
+        const row = await this.knex("users")
+            .select("users.id", "users.full_name as fullName", "users.phone_number as phoneNumber", "users.email", "users.role_id", "users.role_id as roleId", "users.status", "users.admin_privileges as adminPrivileges", "users.created_at as createdAt", "users.last_login as lastLogin", "roles.name as roleName")
+            .leftJoin("roles", "users.role_id", "roles.id")
+            .where("users.id", id)
             .first();
         if (!row)
-            throw new common_1.NotFoundException('User not found');
+            throw new common_1.NotFoundException("User not found");
         row.role_id = (_a = row.role_id) !== null && _a !== void 0 ? _a : row.roleId;
         row.roleId = (_b = row.roleId) !== null && _b !== void 0 ? _b : row.role_id;
         row.permissions = this.parsePrivileges(row.adminPrivileges);
@@ -80,15 +81,15 @@ let UsersService = class UsersService {
         var _a, _b;
         const existing = await this.findByEmail(data.email);
         if (existing)
-            throw new common_1.BadRequestException('Email already registered');
+            throw new common_1.BadRequestException("Email already registered");
         let passwordHash;
         if (adminId != null) {
-            const randomPassword = crypto.randomBytes(24).toString('hex');
+            const randomPassword = crypto.randomBytes(24).toString("hex");
             passwordHash = await bcrypt.hash(randomPassword, 10);
         }
         else {
             if (!data.password || String(data.password).length < 6) {
-                throw new common_1.BadRequestException('Password must be at least 6 characters');
+                throw new common_1.BadRequestException("Password must be at least 6 characters");
             }
             passwordHash = await bcrypt.hash(data.password, 10);
         }
@@ -106,24 +107,24 @@ let UsersService = class UsersService {
         }
         const newUser = await User_1.User.query(this.knex).insertAndFetch(insertPayload);
         if (adminId != null) {
-            await this.activityService.log(adminId, 'users', `Created user: ${data.email}`);
+            await this.activityService.log(adminId, "users", `Created user: ${data.email}`);
         }
         else {
-            await this.activityService.log(newUser.id, 'users', `Signed up: ${data.email}`);
+            await this.activityService.log(newUser.id, "users", `Signed up: ${data.email}`);
         }
         return newUser;
     }
     async update(id, data, adminId) {
         const user = await User_1.User.query(this.knex).findById(id);
         if (!user)
-            throw new common_1.NotFoundException('User not found');
+            throw new common_1.NotFoundException("User not found");
         const actor = await User_1.User.query(this.knex).findById(adminId);
         if (!actor)
-            throw new common_1.NotFoundException('Actor not found');
+            throw new common_1.NotFoundException("Actor not found");
         const isAdminActor = Number(actor.role_id) === 1 || Number(actor.role_id) === 3;
         const isSelfUpdate = Number(adminId) === Number(id);
         if (!isAdminActor && !isSelfUpdate) {
-            throw new common_1.ForbiddenException('You can only update your own account');
+            throw new common_1.ForbiddenException("You can only update your own account");
         }
         const updateData = {};
         if (data.fullName !== undefined)
@@ -146,27 +147,33 @@ let UsersService = class UsersService {
             if (data.status !== undefined)
                 updateData.status = data.status;
         }
-        await User_1.User.query(this.knex).patch(updateData).where('id', id);
-        await this.activityService.log(adminId, 'users', `Updated user #${id}`);
-        return { message: 'User updated' };
+        await User_1.User.query(this.knex).patch(updateData).where("id", id);
+        await this.activityService.log(adminId, "users", `Updated user #${id}`);
+        return { message: "User updated" };
     }
     async delete(id, adminId) {
         if (Number(id) === Number(adminId)) {
-            throw new common_1.BadRequestException('You cannot delete your own account');
+            throw new common_1.BadRequestException("You cannot delete your own account");
         }
         const user = await User_1.User.query(this.knex).findById(id);
         if (!user)
-            throw new common_1.NotFoundException('User not found');
+            throw new common_1.NotFoundException("User not found");
         await User_1.User.transaction(this.knex, async (trx) => {
-            await Book_1.Book.query(trx).patch({ uploaded_by: null }).where('uploaded_by', id);
-            await Tree_1.Tree.query(trx).patch({ user_id: null }).where('user_id', id);
-            await Gallery_1.Gallery.query(trx).patch({ uploaded_by: null }).where('uploaded_by', id);
-            await ActivityLog_1.ActivityLog.query(trx).patch({ actor_user_id: null }).where('actor_user_id', id);
-            await trx('password_resets').delete().where('email', user.email);
+            await Book_1.Book.query(trx)
+                .patch({ uploaded_by: null })
+                .where("uploaded_by", id);
+            await Tree_1.Tree.query(trx).patch({ user_id: null }).where("user_id", id);
+            await Gallery_1.Gallery.query(trx)
+                .patch({ uploaded_by: null })
+                .where("uploaded_by", id);
+            await ActivityLog_1.ActivityLog.query(trx)
+                .patch({ actor_user_id: null })
+                .where("actor_user_id", id);
+            await trx("password_resets").delete().where("email", user.email);
             await User_1.User.query(trx).deleteById(id);
         });
-        await this.activityService.log(adminId, 'users', `Deleted user #${id}`);
-        return { message: 'User deleted' };
+        await this.activityService.log(adminId, "users", `Deleted user #${id}`);
+        return { message: "User deleted" };
     }
     async findAdmins() {
         return this.findAll().then((rows) => rows.filter((u) => Number(u.roleId) === 1 || Number(u.roleId) === 3));
@@ -178,7 +185,7 @@ let UsersService = class UsersService {
     async updateAdmin(id, data, superAdminId) {
         const target = await this.findOne(id);
         if (Number(target.roleId) === 3) {
-            throw new common_1.ForbiddenException('Cannot edit super admin through admin manager');
+            throw new common_1.ForbiddenException("Cannot edit super admin through admin manager");
         }
         return this.update(id, Object.assign(Object.assign({}, data), { roleId: 1 }), superAdminId);
     }
@@ -186,7 +193,7 @@ let UsersService = class UsersService {
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)('KnexConnection')),
-    __metadata("design:paramtypes", [Object, activity_service_1.ActivityService])
+    __param(0, (0, common_1.Inject)("KnexConnection")),
+    __metadata("design:paramtypes", [Function, activity_service_1.ActivityService])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

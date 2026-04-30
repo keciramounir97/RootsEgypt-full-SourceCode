@@ -1,9 +1,10 @@
+import { Knex } from "knex";
 import { User } from '../../models/User';
 import { ActivityService } from '../activity/activity.service';
 export declare class UsersService {
     private readonly knex;
     private readonly activityService;
-    constructor(knex: any, activityService: ActivityService);
+    constructor(knex: Knex, activityService: ActivityService);
     private parsePrivileges;
     private serializePrivileges;
     findAll(): Promise<any[]>;

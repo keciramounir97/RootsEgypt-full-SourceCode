@@ -9,21 +9,32 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ActivityModule } from '../activity/activity.module';
 
 @Module({
-    imports: [
-        UsersModule,
-        PassportModule,
-        ActivityModule,
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            useFactory: async (configService: ConfigService) => ({
-                secret: configService.get<string>('JWT_SECRET') || 'fallback_secret',
-                signOptions: { expiresIn: configService.get<string>('JWT_EXPIRES_IN') || '1d' },
-            }),
-            inject: [ConfigService],
-        }),
-    ],
-    controllers: [AuthController],
-    providers: [AuthService, JwtStrategy],
-    exports: [AuthService],
+  imports: [
+    UsersModule,
+    PassportModule,
+    ActivityModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const secret =
+          configService.get<string>("JWT_SECRET") || process.env.JWT_SECRET;
+        if (!secret) {
+          throw new Error(
+            "JWT_SECRET environment variable is required. Set it in EasyPanel or your deployment environment.",
+          );
+        }
+        return {
+          secret,
+          signOptions: {
+            expiresIn: configService.get<string>("JWT_EXPIRES_IN") || "1d",
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
+  exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -1,9 +1,10 @@
+import { Knex } from "knex";
 import { Gallery } from '../../models/Gallery';
 import { ActivityService } from '../activity/activity.service';
 export declare class GalleryService {
     private readonly knex;
     private readonly activityService;
-    constructor(knex: any, activityService: ActivityService);
+    constructor(knex: Knex, activityService: ActivityService);
     listPublic(): Promise<Gallery[]>;
     getPublic(id: number): Promise<Gallery>;
     listByUser(userId: number): Promise<Gallery[]>;

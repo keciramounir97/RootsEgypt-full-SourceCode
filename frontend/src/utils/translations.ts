@@ -4088,6 +4088,13 @@ const normalizeTranslationText = (value: string): string => {
   }
 };
 
+const humanizeTranslationKey = (key: string): string =>
+  key
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
 export const tForLocale = (locale: string, key: string, fallback?: string): string => {
   const dict = translations[locale] || translations[DEFAULT_LOCALE];
   const value = dict?.[key];
@@ -4099,5 +4106,5 @@ export const tForLocale = (locale: string, key: string, fallback?: string): stri
     if (enVal) return normalizeTranslationText(enVal);
   }
 
-  return fallback || key;
+  return normalizeTranslationText(fallback || humanizeTranslationKey(key));
 };

@@ -67,18 +67,18 @@ let TreesController = TreesController_1 = class TreesController {
         return this.treesService.create(body, req.user.id, file);
     }
     async updateMy(id, body, req, file) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         return this.treesService.update(id, body, req.user.id, userRole, file);
     }
     async saveMy(id, body, req, file) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         return this.treesService.update(id, body, req.user.id, userRole, file);
     }
     async deleteMy(id, req) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         return this.treesService.delete(id, req.user.id, userRole);
     }
     async downloadMyGedcom(id, res, req) {
@@ -119,18 +119,18 @@ let TreesController = TreesController_1 = class TreesController {
         return this.treesService.create(body, req.user.id, file);
     }
     async saveAdmin(id, body, req, file) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         return this.treesService.update(id, body, req.user.id, userRole, file);
     }
     async updateAdmin(id, body, req, file) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         return this.treesService.update(id, body, req.user.id, userRole, file);
     }
     async deleteAdmin(id, req) {
-        var _a, _b, _c, _d, _e;
-        const userRole = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role;
+        var _a, _b, _c, _d, _e, _f;
+        const userRole = Number((_f = (_d = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role_id) !== null && _b !== void 0 ? _b : (_c = req.user) === null || _c === void 0 ? void 0 : _c.roleId) !== null && _d !== void 0 ? _d : (_e = req.user) === null || _e === void 0 ? void 0 : _e.role) !== null && _f !== void 0 ? _f : 0);
         return this.treesService.delete(id, req.user.id, userRole);
     }
 };

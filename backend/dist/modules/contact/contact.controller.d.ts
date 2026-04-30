@@ -10,5 +10,5 @@ export declare class ContactController {
     sendContact(body: ContactDto): Promise<{
         message: string;
     }>;
-    listContactMessages(): Promise<any>;
+    listContactMessages(): Promise<any[]>;
 }

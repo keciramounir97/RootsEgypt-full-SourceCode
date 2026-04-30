@@ -43,18 +43,18 @@ let SearchController = class SearchController {
 };
 exports.SearchController = SearchController;
 __decorate([
-    (0, common_1.Get)('search'),
+    (0, common_1.Get)("search"),
     (0, common_1.UseGuards)(OptionalJwtAuthGuard),
-    __param(0, (0, common_1.Query)('q')),
+    __param(0, (0, common_1.Query)("q")),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], SearchController.prototype, "search", null);
 __decorate([
-    (0, common_1.Get)('search/suggest'),
+    (0, common_1.Get)("search/suggest"),
     (0, common_1.UseGuards)(OptionalJwtAuthGuard),
-    __param(0, (0, common_1.Query)('q')),
+    __param(0, (0, common_1.Query)("q")),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),

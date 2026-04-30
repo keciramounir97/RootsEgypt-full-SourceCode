@@ -14,12 +14,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContactDataService = void 0;
 const common_1 = require("@nestjs/common");
+const knex_1 = require("knex");
 let ContactDataService = class ContactDataService {
     constructor(knex) {
         this.knex = knex;
     }
     async saveContactMessage(payload) {
-        const [id] = await this.knex('contact_messages').insert({
+        const [id] = await this.knex("contact_messages").insert({
             name: payload.name,
             email: payload.email,
             message: payload.message,
@@ -28,32 +29,32 @@ let ContactDataService = class ContactDataService {
         return id;
     }
     async listContactMessages() {
-        return this.knex('contact_messages')
-            .select('*')
-            .orderBy('created_at', 'desc');
+        return this.knex("contact_messages")
+            .select("*")
+            .orderBy("created_at", "desc");
     }
     async upsertNewsletterSubscriber(email) {
-        const existing = await this.knex('newsletter_subscribers')
-            .where('email', email)
+        const existing = await this.knex("newsletter_subscribers")
+            .where("email", email)
             .first();
         if (existing)
             return existing.id;
-        const [id] = await this.knex('newsletter_subscribers').insert({
+        const [id] = await this.knex("newsletter_subscribers").insert({
             email,
             created_at: this.knex.fn.now(),
         });
         return id;
     }
     async listNewsletterSubscribers() {
-        return this.knex('newsletter_subscribers')
-            .select('*')
-            .orderBy('created_at', 'desc');
+        return this.knex("newsletter_subscribers")
+            .select("*")
+            .orderBy("created_at", "desc");
     }
 };
 exports.ContactDataService = ContactDataService;
 exports.ContactDataService = ContactDataService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)('KnexConnection')),
-    __metadata("design:paramtypes", [Object])
+    __param(0, (0, common_1.Inject)("KnexConnection")),
+    __metadata("design:paramtypes", [Function])
 ], ContactDataService);
 //# sourceMappingURL=contact-data.service.js.map

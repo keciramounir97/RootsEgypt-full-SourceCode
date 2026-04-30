@@ -1,9 +1,11 @@
 import { TreesService } from './trees.service';
 import { Person } from '../../models/Person';
+import { Knex } from "knex";
+import { Request as ExpressRequest } from "express";
 export declare class PersonsController {
     private readonly treesService;
     private readonly knex;
-    constructor(treesService: TreesService, knex: any);
+    constructor(treesService: TreesService, knex: Knex);
     private ensureTreeAccess;
     listPublicPeople(treeId: number): Promise<Person[]>;
     getPublicPerson(id: number): Promise<{
@@ -14,8 +16,8 @@ export declare class PersonsController {
             title: string;
         };
     }>;
-    listMyPeople(treeId: number, req: any): Promise<Person[]>;
-    getMyPerson(id: number, req: any): Promise<{
+    listMyPeople(treeId: number, req: ExpressRequest): Promise<Person[]>;
+    getMyPerson(id: number, req: ExpressRequest): Promise<{
         id: number;
         name: string;
         tree: {
@@ -23,13 +25,13 @@ export declare class PersonsController {
             title: string;
         };
     }>;
-    createMyPerson(treeId: number, body: any, req: any): Promise<{
+    createMyPerson(treeId: number, body: any, req: ExpressRequest): Promise<{
         id: number;
     }>;
-    updateMyPerson(treeId: number, id: number, body: any, req: any): Promise<{
+    updateMyPerson(treeId: number, id: number, body: any, req: ExpressRequest): Promise<{
         id: number;
     }>;
-    deleteMyPerson(treeId: number, id: number, req: any): Promise<{
+    deleteMyPerson(treeId: number, id: number, req: ExpressRequest): Promise<{
         message: string;
     }>;
 }

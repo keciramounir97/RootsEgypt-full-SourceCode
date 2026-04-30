@@ -11,11 +11,12 @@ import { ActivityService } from "../activity/activity.service";
 import * as crypto from "crypto";
 import { MailerService } from "../../common/mailer/mailer.service";
 import { ConfigService } from "@nestjs/config";
+import { Knex } from "knex";
 
 @Injectable()
 export class ApprovalsService {
   constructor(
-    @Inject("KnexConnection") private readonly knex,
+    @Inject("KnexConnection") private readonly knex: Knex,
     private readonly activityService: ActivityService,
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,

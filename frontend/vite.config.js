@@ -27,7 +27,7 @@ export default defineConfig({
     include: ["react", "react-dom"],
   },
   server: {
-    port: 80,
+    port: 5173,
     host: "0.0.0.0",
     strictPort: false,
   },

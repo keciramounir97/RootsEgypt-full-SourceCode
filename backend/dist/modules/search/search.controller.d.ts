@@ -1,4 +1,5 @@
 import { SearchService } from './search.service';
+import { Request as ExpressRequest } from "express";
 declare const OptionalJwtAuthGuard_base: import("@nestjs/passport").Type<import("@nestjs/passport").IAuthGuard>;
 export declare class OptionalJwtAuthGuard extends OptionalJwtAuthGuard_base {
     handleRequest(err: any, user: any, info: any): any;
@@ -6,7 +7,7 @@ export declare class OptionalJwtAuthGuard extends OptionalJwtAuthGuard_base {
 export declare class SearchController {
     private readonly searchService;
     constructor(searchService: SearchService);
-    search(q: string, req: any): Promise<{
+    search(q: string, req: ExpressRequest): Promise<{
         books: import("../../models/Book").Book[];
         trees: any[];
         people: {
@@ -19,7 +20,7 @@ export declare class SearchController {
             owner_name: any;
         }[];
     }>;
-    suggest(q: string, req: any): Promise<{
+    suggest(q: string, req: ExpressRequest): Promise<{
         trees: any[];
         people: {
             id: any;

@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BooksService = void 0;
 const common_1 = require("@nestjs/common");
+const knex_1 = require("knex");
 const Book_1 = require("../../models/Book");
 const activity_service_1 = require("../activity/activity.service");
 const file_utils_1 = require("../../common/utils/file.utils");
@@ -26,36 +27,38 @@ let BooksService = class BooksService {
     }
     async listPublic() {
         return Book_1.Book.query(this.knex)
-            .where('is_public', true)
-            .orderBy('created_at', 'desc')
-            .withGraphFetched('uploader')
-            .modifyGraph('uploader', (builder) => builder.select('id', 'full_name'));
+            .where("is_public", true)
+            .orderBy("created_at", "desc")
+            .withGraphFetched("uploader")
+            .modifyGraph("uploader", (builder) => builder.select("id", "full_name"));
     }
     async getPublic(id) {
         const book = await Book_1.Book.query(this.knex)
             .findById(id)
-            .where('is_public', true)
-            .withGraphFetched('uploader')
-            .modifyGraph('uploader', (builder) => builder.select('id', 'full_name'));
+            .where("is_public", true)
+            .withGraphFetched("uploader")
+            .modifyGraph("uploader", (builder) => builder.select("id", "full_name"));
         if (!book)
-            throw new common_1.NotFoundException('Book not found');
+            throw new common_1.NotFoundException("Book not found");
         return book;
     }
     async listByUser(userId) {
         return Book_1.Book.query(this.knex)
-            .where('uploaded_by', userId)
-            .orderBy('created_at', 'desc');
+            .where("uploaded_by", userId)
+            .orderBy("created_at", "desc");
     }
     async listAdmin() {
         return Book_1.Book.query(this.knex)
-            .orderBy('created_at', 'desc')
-            .withGraphFetched('uploader')
-            .modifyGraph('uploader', (builder) => builder.select('id', 'full_name', 'email'));
+            .orderBy("created_at", "desc")
+            .withGraphFetched("uploader")
+            .modifyGraph("uploader", (builder) => builder.select("id", "full_name", "email"));
     }
     async findOne(id) {
-        const book = await Book_1.Book.query(this.knex).findById(id).withGraphFetched('uploader');
+        const book = await Book_1.Book.query(this.knex)
+            .findById(id)
+            .withGraphFetched("uploader");
         if (!book)
-            throw new common_1.NotFoundException('Book not found');
+            throw new common_1.NotFoundException("Book not found");
         return book;
     }
     async create(data, userId, files) {
@@ -63,9 +66,9 @@ let BooksService = class BooksService {
         const bookFile = (_a = files.file) === null || _a === void 0 ? void 0 : _a[0];
         const coverFile = (_b = files.cover) === null || _b === void 0 ? void 0 : _b[0];
         if (!data.title || !bookFile) {
-            throw new common_1.BadRequestException('Title and file are required');
+            throw new common_1.BadRequestException("Title and file are required");
         }
-        const isPublic = data.isPublic === 'true' || data.isPublic === true;
+        const isPublic = data.isPublic === "true" || data.isPublic === true;
         let filePath = `/uploads/books/${bookFile.filename}`;
         if (!isPublic) {
             const src = bookFile.path;
@@ -86,9 +89,9 @@ let BooksService = class BooksService {
             file_size: bookFile.size,
             uploaded_by: userId,
             is_public: isPublic,
-            download_count: 0
+            download_count: 0,
         });
-        await this.activityService.log(userId, 'books', `Uploaded book: ${data.title}`);
+        await this.activityService.log(userId, "books", `Uploaded book: ${data.title}`);
         return newBook;
     }
     async update(id, data, userId, userRole, files) {
@@ -98,7 +101,7 @@ let BooksService = class BooksService {
         const isAdmin = roleId === 1 || roleId === 3;
         const isOwner = book.uploaded_by === userId;
         if (!isAdmin && !isOwner) {
-            throw new common_1.ForbiddenException('Forbidden');
+            throw new common_1.ForbiddenException("Forbidden");
         }
         const updateData = {};
         if (data.title)
@@ -114,7 +117,9 @@ let BooksService = class BooksService {
         if (data.documentCode !== undefined)
             updateData.document_code = data.documentCode;
         const isPublic = data.isPublic !== undefined
-            ? (data.isPublic === 'true' || data.isPublic === true || data.isPublic === 1)
+            ? data.isPublic === "true" ||
+                data.isPublic === true ||
+                data.isPublic === 1
             : !!book.is_public;
         updateData.is_public = Boolean(isPublic);
         const bookFile = (_a = files === null || files === void 0 ? void 0 : files.file) === null || _a === void 0 ? void 0 : _a[0];
@@ -152,8 +157,8 @@ let BooksService = class BooksService {
                 (0, file_utils_1.safeUnlink)((0, file_utils_1.resolveStoredFilePath)(book.cover_path));
             updateData.cover_path = `/uploads/books/${coverFile.filename}`;
         }
-        await Book_1.Book.query(this.knex).patch(updateData).where('id', id);
-        await this.activityService.log(userId, 'books', `Updated book: ${book.title}`);
+        await Book_1.Book.query(this.knex).patch(updateData).where("id", id);
+        await this.activityService.log(userId, "books", `Updated book: ${book.title}`);
         return { id };
     }
     async delete(id, userId, userRole) {
@@ -162,18 +167,18 @@ let BooksService = class BooksService {
         const isAdmin = roleId === 1 || roleId === 3;
         const isOwner = book.uploaded_by === userId;
         if (!isAdmin && !isOwner) {
-            throw new common_1.ForbiddenException('Forbidden');
+            throw new common_1.ForbiddenException("Forbidden");
         }
         if (book.file_path)
             (0, file_utils_1.safeUnlink)((0, file_utils_1.resolveStoredFilePath)(book.file_path));
         if (book.cover_path)
             (0, file_utils_1.safeUnlink)((0, file_utils_1.resolveStoredFilePath)(book.cover_path));
         await Book_1.Book.query(this.knex).deleteById(id);
-        await this.activityService.log(userId, 'books', `Deleted book: ${book.title}`);
-        return { message: 'Deleted' };
+        await this.activityService.log(userId, "books", `Deleted book: ${book.title}`);
+        return { message: "Deleted" };
     }
     async incrementDownload(id) {
-        await Book_1.Book.query(this.knex).increment('download_count', 1).where('id', id);
+        await Book_1.Book.query(this.knex).increment("download_count", 1).where("id", id);
     }
     getFilePath(book) {
         return (0, file_utils_1.resolveStoredFilePath)(book.file_path);
@@ -182,7 +187,7 @@ let BooksService = class BooksService {
 exports.BooksService = BooksService;
 exports.BooksService = BooksService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)('KnexConnection')),
-    __metadata("design:paramtypes", [Object, activity_service_1.ActivityService])
+    __param(0, (0, common_1.Inject)("KnexConnection")),
+    __metadata("design:paramtypes", [Function, activity_service_1.ActivityService])
 ], BooksService);
 //# sourceMappingURL=books.service.js.map

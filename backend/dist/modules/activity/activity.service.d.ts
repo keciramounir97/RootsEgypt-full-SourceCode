@@ -1,6 +1,7 @@
+import { Knex } from "knex";
 export declare class ActivityService {
     private readonly knex;
-    constructor(knex: any);
+    constructor(knex: Knex);
     log(userId: number | null, type: string, description: string): Promise<void>;
     findAll(limit?: number, type?: string, q?: string): Promise<{
         id: any;

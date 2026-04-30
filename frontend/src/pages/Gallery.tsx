@@ -57,6 +57,20 @@ const formatDate = (raw: string | undefined) => {
 
 const ITEMS_PER_PAGE = 12;
 
+const isAbsoluteUrl = (value: string) => /^https?:\/\//i.test(value);
+
+const normalizeGalleryPath = (path: string | undefined) => {
+  if (!path) return "";
+  const raw = String(path).trim();
+  if (!raw) return "";
+  if (isAbsoluteUrl(raw)) return raw;
+  if (raw.startsWith("/uploads/")) return raw;
+  if (raw.startsWith("uploads/")) return `/${raw}`;
+  if (raw.startsWith("/assets/")) return raw;
+  if (raw.startsWith("assets/")) return `/${raw}`;
+  return `/uploads/gallery/${raw.replace(/^\/+/, "")}`;
+};
+
 /* ------------------------------------------------------------------ */
 /*  Framer-motion variants                                             */
 /* ------------------------------------------------------------------ */
@@ -114,6 +128,7 @@ function GalleryCard({
   t,
 }: GalleryCardProps) {
   const [loaded, setLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const category =
     item.category ||
@@ -142,7 +157,7 @@ function GalleryCard({
     >
       {/* Image container with variable aspect ratio */}
       <div className="relative overflow-hidden bg-gradient-to-br from-[#0c4a6e]/10 via-teal/5 to-[#d4a84b]/8">
-        {imageSrc ? (
+        {imageSrc && !hasError ? (
           <>
             {/* Blur-up placeholder */}
             {!loaded && (
@@ -157,19 +172,9 @@ function GalleryCard({
                 ${loaded ? "opacity-100" : "opacity-0"}
               `}
               loading="lazy"
+              decoding="async"
               onLoad={() => setLoaded(true)}
-              onError={(e) => {
-                const target = e.currentTarget;
-                target.style.display = "none";
-                const parent = target.parentElement;
-                if (parent && !parent.querySelector(".gallery-fallback")) {
-                  const fallback = document.createElement("div");
-                  fallback.className =
-                    "gallery-fallback absolute inset-0 flex items-center justify-center bg-[#0c4a6e]/10 text-[#0c4a6e]/60";
-                  fallback.innerHTML = `<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect width='18' height='18' x='3' y='3' rx='2' ry='2'/><circle cx='9' cy='9' r='2'/><path d='m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21'/></svg>`;
-                  parent.appendChild(fallback);
-                }
-              }}
+              onError={() => setHasError(true)}
             />
           </>
         ) : (
@@ -598,11 +603,15 @@ export default function GalleryPage() {
           imagePath: item.imagePath,
         }));
         const merged = [...curated, ...raw].reduce<any[]>((acc, item) => {
-          const nextPath = String(item.image_path ?? item.imagePath ?? "");
+          const nextPath = normalizeGalleryPath(
+            item.image_path ?? item.imagePath
+          );
           const duplicate = acc.some(
             (existing) =>
               String(existing.id) === String(item.id) ||
-              String(existing.image_path ?? existing.imagePath ?? "") === nextPath
+              normalizeGalleryPath(
+                existing.image_path ?? existing.imagePath
+              ) === nextPath
           );
           if (!duplicate) acc.push(item);
           return acc;
@@ -610,7 +619,7 @@ export default function GalleryPage() {
         setGallery(
           merged.map((item: any) => ({
             ...item,
-            imagePath: item.image_path ?? item.imagePath,
+            imagePath: normalizeGalleryPath(item.image_path ?? item.imagePath),
           }))
         );
       } catch (err) {
@@ -631,14 +640,14 @@ export default function GalleryPage() {
   /* ---------- file URL resolver ---------- */
   const fileUrl = useCallback(
     (path: string | undefined, { isGallery = false } = {}) => {
-      if (!path) return "";
-      const raw = String(path).trim();
-      if (raw.startsWith("http")) return raw;
-      let p = raw.startsWith("/") ? raw : `/${raw}`;
-      if (isGallery && !p.startsWith("/uploads/")) {
-        p = `/uploads/gallery/${raw.replace(/^\/+/, "")}`;
+      const normalized = normalizeGalleryPath(path);
+      if (!normalized) return "";
+      if (isAbsoluteUrl(normalized)) return normalized;
+      if (normalized.startsWith("/assets/")) return normalized;
+      if (!isGallery && normalized.startsWith("/uploads/")) {
+        return `${apiRoot.replace(/\/+$/, "")}${normalized}`;
       }
-      return `${apiRoot.replace(/\/+$/, "")}${p}`;
+      return `${apiRoot.replace(/\/+$/, "")}${normalized}`;
     },
     [apiRoot]
   );

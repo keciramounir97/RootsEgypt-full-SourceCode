@@ -13,5 +13,5 @@ export declare class NewsletterController {
     }): Promise<{
         message: string;
     }>;
-    listSubscribers(): Promise<any>;
+    listSubscribers(): Promise<any[]>;
 }

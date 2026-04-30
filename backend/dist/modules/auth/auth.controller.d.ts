@@ -4,6 +4,7 @@ import { SignupDto } from './dto/signup.dto';
 import { RequestResetDto } from './dto/request-reset.dto';
 import { VerifyResetDto } from './dto/verify-reset.dto';
 import { UsersService } from '../users/users.service';
+import { Request as ExpressRequest } from "express";
 export declare class AuthController {
     private authService;
     private usersService;
@@ -42,9 +43,9 @@ export declare class AuthController {
         message: string;
         code: string;
     }>;
-    logout(req: any): Promise<{
+    logout(req: ExpressRequest): Promise<{
         message: string;
     }>;
-    me(req: any): Promise<any>;
-    updateMe(body: any, req: any): Promise<any>;
+    me(req: ExpressRequest): Promise<Express.User>;
+    updateMe(body: any, req: ExpressRequest): Promise<any>;
 }

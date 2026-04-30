@@ -3,12 +3,13 @@ import { AccountDeletionRequest } from "../../models/AccountDeletionRequest";
 import { ActivityService } from "../activity/activity.service";
 import { MailerService } from "../../common/mailer/mailer.service";
 import { ConfigService } from "@nestjs/config";
+import { Knex } from "knex";
 export declare class ApprovalsService {
     private readonly knex;
     private readonly activityService;
     private readonly mailerService;
     private readonly configService;
-    constructor(knex: any, activityService: ActivityService, mailerService: MailerService, configService: ConfigService);
+    constructor(knex: Knex, activityService: ActivityService, mailerService: MailerService, configService: ConfigService);
     private getFrontendBaseUrl;
     private sendUserEmail;
     findAllPasswordResetRequests(status?: string): Promise<PasswordResetRequest[]>;

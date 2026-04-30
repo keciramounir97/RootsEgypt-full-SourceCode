@@ -1,5 +1,5 @@
 import { TreesService } from './trees.service';
-import { Response } from 'express';
+import { Response, Request as ExpressRequest } from "express";
 import { CreateTreeDto, UpdateTreeDto } from './dto/tree.dto';
 export declare class TreesController {
     private readonly treesService;
@@ -8,30 +8,30 @@ export declare class TreesController {
     listPublic(): Promise<import("../../models/Tree").Tree[]>;
     downloadPublicGedcom(id: number, res: Response): Promise<void>;
     getPublic(id: number): Promise<import("../../models/Tree").Tree>;
-    listMy(req: any): Promise<import("../../models/Tree").Tree[]>;
-    getMy(id: number, req: any): Promise<import("../../models/Tree").Tree>;
-    createMy(body: CreateTreeDto, req: any, file?: Express.Multer.File): Promise<import("../../models/Tree").Tree>;
-    updateMy(id: number, body: UpdateTreeDto, req: any, file?: Express.Multer.File): Promise<{
+    listMy(req: ExpressRequest): Promise<import("../../models/Tree").Tree[]>;
+    getMy(id: number, req: ExpressRequest): Promise<import("../../models/Tree").Tree>;
+    createMy(body: CreateTreeDto, req: ExpressRequest, file?: Express.Multer.File): Promise<import("../../models/Tree").Tree>;
+    updateMy(id: number, body: UpdateTreeDto, req: ExpressRequest, file?: Express.Multer.File): Promise<{
         id: number;
     }>;
-    saveMy(id: number, body: UpdateTreeDto, req: any, file?: Express.Multer.File): Promise<{
+    saveMy(id: number, body: UpdateTreeDto, req: ExpressRequest, file?: Express.Multer.File): Promise<{
         id: number;
     }>;
-    deleteMy(id: number, req: any): Promise<{
+    deleteMy(id: number, req: ExpressRequest): Promise<{
         message: string;
     }>;
-    downloadMyGedcom(id: number, res: Response, req: any): Promise<void>;
+    downloadMyGedcom(id: number, res: Response, req: ExpressRequest): Promise<void>;
     listAdmin(): Promise<import("../../models/Tree").Tree[]>;
     getAdmin(id: number): Promise<import("../../models/Tree").Tree>;
     downloadAdminGedcom(id: number, res: Response): Promise<void>;
-    createAdmin(body: CreateTreeDto, req: any, file?: Express.Multer.File): Promise<import("../../models/Tree").Tree>;
-    saveAdmin(id: number, body: UpdateTreeDto, req: any, file?: Express.Multer.File): Promise<{
+    createAdmin(body: CreateTreeDto, req: ExpressRequest, file?: Express.Multer.File): Promise<import("../../models/Tree").Tree>;
+    saveAdmin(id: number, body: UpdateTreeDto, req: ExpressRequest, file?: Express.Multer.File): Promise<{
         id: number;
     }>;
-    updateAdmin(id: number, body: UpdateTreeDto, req: any, file?: Express.Multer.File): Promise<{
+    updateAdmin(id: number, body: UpdateTreeDto, req: ExpressRequest, file?: Express.Multer.File): Promise<{
         id: number;
     }>;
-    deleteAdmin(id: number, req: any): Promise<{
+    deleteAdmin(id: number, req: ExpressRequest): Promise<{
         message: string;
     }>;
 }

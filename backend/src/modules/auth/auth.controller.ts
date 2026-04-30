@@ -19,6 +19,7 @@ import { SignupDto } from './dto/signup.dto';
 import { RequestResetDto } from './dto/request-reset.dto';
 import { VerifyResetDto } from './dto/verify-reset.dto';
 import { UsersService } from '../users/users.service';
+import { Request as ExpressRequest } from "express";
 
 @Controller("auth")
 export class AuthController {
@@ -107,19 +108,19 @@ export class AuthController {
   @Post("logout")
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
-  async logout(@Request() req) {
+  async logout(@Request() req: ExpressRequest) {
     return this.authService.logout(req.user.id);
   }
 
   @Get("me")
   @UseGuards(JwtAuthGuard)
-  async me(@Request() req) {
+  async me(@Request() req: ExpressRequest) {
     return req.user;
   }
 
   @Patch("me")
   @UseGuards(JwtAuthGuard)
-  async updateMe(@Body() body: any, @Request() req) {
+  async updateMe(@Body() body: any, @Request() req: ExpressRequest) {
     await this.usersService.update(req.user.id, body, req.user.id);
     return this.usersService.findOne(req.user.id);
   }
