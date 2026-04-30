@@ -30,7 +30,7 @@ function RootsPageShell({
     .join(" ");
 
   return (
-    <div className={`roots-shell page-container w-full mx-auto ${className}`}>
+    <div className={`roots-shell roots-shell--decorated page-container w-full mx-auto ${className}`}>
       {hero ? (
         <section className={`heritage-hero text-center ${heroClassName}`}>
           {hero}

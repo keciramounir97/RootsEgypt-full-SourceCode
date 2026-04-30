@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../admin/components/AuthContext";
 import { useTranslation } from "../context/TranslationContext";
 import RootsPageShell from "../components/RootsPageShell";
-import { isMockMode } from "../lib/mockApi";
 import {
   EyeOfHorus,
   PapyrusCard,
@@ -18,29 +17,12 @@ import {
   EGYPT_EASE,
 } from "../components/motion/EgyptianMotion";
 
-const DEMO_ACCOUNTS = [
-  {
-    label: "Admin",
-    email: "admin@rootsegypt.org",
-    password: "password123",
-    color: "text-amber-600 dark:text-amber-400",
-    badge: "bg-amber-100 dark:bg-amber-900/40",
-  },
-  {
-    label: "Researcher",
-    email: "researcher@rootsegypt.org",
-    password: "research123",
-    color: "text-teal-600 dark:text-teal-400",
-    badge: "bg-teal-100 dark:bg-teal-900/40",
-  },
-  {
-    label: "Member",
-    email: "demo@rootsegypt.org",
-    password: "demo123",
-    color: "text-blue-600 dark:text-blue-400",
-    badge: "bg-blue-100 dark:bg-blue-900/40",
-  },
-];
+const DEMO_ACCOUNTS: Array<{
+  label: string;
+  email: string;
+  password: string;
+  color: string;
+}> = [];
 
 export default function Login() {
   const { theme } = useThemeStore();
@@ -53,7 +35,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const mockMode = isMockMode();
+  const mockMode = false;
 
   useEffect(() => {
     if (user) {
@@ -64,6 +46,7 @@ export default function Login() {
   const isDark = theme === "dark";
   const inputBg = isDark ? "bg-white/5" : "bg-black/5";
   const borderColor = isDark ? "border-[#d4a843]/20" : "border-[#d4a843]/25";
+  const fillDemo = () => {};
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,12 +86,6 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fillDemo = (account: (typeof DEMO_ACCOUNTS)[0]) => {
-    setEmail(account.email);
-    setPassword(account.password);
-    setError("");
   };
 
   return (

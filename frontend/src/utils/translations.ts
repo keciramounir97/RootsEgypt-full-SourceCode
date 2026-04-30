@@ -3769,15 +3769,30 @@ const translations: Record<string, Record<string, string>> = {
   },
 };
 
+const looksMojibake = (value: string) =>
+  /(?:Ã|Â|â€|â€”|â€“|â€¢|â€¦|Ù|Ø|ï¿½)/.test(value);
+
+const normalizeTranslationText = (value: string): string => {
+  if (!looksMojibake(value)) return value;
+
+  try {
+    const bytes = Uint8Array.from([...value].map((char) => char.charCodeAt(0)));
+    const decoded = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+    return decoded.includes("�") ? value : decoded;
+  } catch {
+    return value;
+  }
+};
+
 export const tForLocale = (locale: string, key: string, fallback?: string): string => {
   const dict = translations[locale] || translations[DEFAULT_LOCALE];
   const value = dict?.[key];
-  if (value) return value; // Found direct match
+  if (value) return normalizeTranslationText(value);
 
   // Fallback to English if not found in current locale
   if (locale !== DEFAULT_LOCALE) {
     const enVal = translations?.[DEFAULT_LOCALE]?.[key];
-    if (enVal) return enVal;
+    if (enVal) return normalizeTranslationText(enVal);
   }
 
   return fallback || key;

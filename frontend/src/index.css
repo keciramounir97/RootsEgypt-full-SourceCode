@@ -3510,3 +3510,100 @@ img, video, svg, canvas {
 .dark .heritage-page-root .bg-\[\#0c4a6e\]\/20 {
   background: rgba(13, 148, 136, 0.2);
 }
+
+/* ==========================================================
+   ROOTS EGYPT 2026 REFRESH
+   Shared decorative background + translucent content surfaces
+   ========================================================== */
+
+body {
+  background:
+    linear-gradient(180deg, rgba(247, 241, 229, 0.82), rgba(238, 228, 211, 0.86)),
+    url("/assets/roots-page-bg.jpg") center/cover fixed no-repeat;
+}
+
+.dark body,
+html.dark body {
+  background:
+    linear-gradient(180deg, rgba(7, 14, 24, 0.84), rgba(8, 18, 31, 0.9)),
+    url("/assets/roots-page-bg.jpg") center/cover fixed no-repeat;
+}
+
+.roots-shell--decorated,
+.heritage-page-root,
+.admin-panel-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.navbar-header,
+.roots-section,
+.roots-section-alt,
+.roots-card,
+.heritage-panel,
+.admin-panel-shell,
+.admin-surface-header {
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+}
+
+.navbar-header {
+  background: rgba(255, 250, 241, 0.78);
+  border-bottom: 1px solid rgba(12, 74, 110, 0.1);
+  box-shadow: 0 18px 40px rgba(12, 33, 56, 0.08);
+}
+
+.dark .navbar-header {
+  background: rgba(9, 19, 32, 0.78);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+}
+
+.roots-section,
+.roots-section-alt,
+.heritage-panel,
+.roots-card,
+.admin-panel-shell {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(205, 179, 142, 0.28);
+  box-shadow: 0 24px 60px rgba(12, 33, 56, 0.08);
+}
+
+.dark .roots-section,
+.dark .roots-section-alt,
+.dark .heritage-panel,
+.dark .roots-card,
+.dark .admin-panel-shell {
+  background: rgba(9, 18, 31, 0.74);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
+
+.roots-section,
+.roots-section-alt {
+  border-radius: 1.75rem;
+}
+
+.heritage-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 30px 80px rgba(12, 33, 56, 0.18);
+}
+
+.heritage-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(6, 21, 32, 0.42), rgba(13, 148, 136, 0.08));
+  pointer-events: none;
+}
+
+.heritage-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dark .heritage-hero {
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32);
+}

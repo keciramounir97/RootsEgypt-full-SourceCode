@@ -14,14 +14,14 @@ import { queryClient } from "./lib/queryClient";
 import { GlobalProvider } from "./context/GlobalContext";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import { NotificationProvider } from "./context/NotificationContext";
-import BackendPanel from "./components/BackendPanel";
 
-import { seedMockStorage } from "./lib/seedMockStorage";
-import { isMockMode } from "./lib/mockApi";
-
-// Seed mock articles/comments into localStorage on first load
-if (isMockMode()) {
-  seedMockStorage();
+try {
+  localStorage.removeItem("mockupDataActive");
+  localStorage.removeItem("rootsegypt_mock_mode");
+  localStorage.removeItem("rootsegypt_mock_logged_user");
+  localStorage.removeItem("rootsegypt_api_url");
+} catch {
+  // ignore storage cleanup failures
 }
 
 const rootElement = document.getElementById("root");
@@ -38,7 +38,6 @@ if (rootElement) {
                   <AuthProvider>
                     <App />
                     <Toaster position="top-center" />
-                    <BackendPanel />
                   </AuthProvider>
                 </FavoritesProvider>
               </NotificationProvider>

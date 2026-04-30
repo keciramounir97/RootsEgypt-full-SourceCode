@@ -37,7 +37,6 @@ export default function Settings() {
     activityRetentionDays: 90,
     notifyAdmins: true,
     defaultLanguage: "en",
-    mockupDataActive: false,
   });
 
   const [profile, setProfile] = useState({
@@ -54,10 +53,7 @@ export default function Settings() {
         setError("");
         setSuccess("");
 
-        const localMock = localStorage.getItem("mockupDataActive") === "true";
-
         if (!isAdmin) {
-          setSettings((s) => ({ ...s, mockupDataActive: localMock }));
           return;
         }
 
@@ -74,7 +70,6 @@ export default function Settings() {
           activityRetentionDays: Number(data?.activityRetentionDays) || 90,
           notifyAdmins: !!data?.notifyAdmins,
           defaultLanguage: safeDefaultLanguage,
-          mockupDataActive: localMock,
         });
       } catch (err: any) {
         if (!mounted) return;
@@ -93,10 +88,6 @@ export default function Settings() {
       mounted = false;
     };
   }, [isAdmin, t]);
-
-  useEffect(() => {
-    localStorage.setItem("mockupDataActive", String(settings.mockupDataActive));
-  }, [settings.mockupDataActive]);
 
   useEffect(() => {
     setProfile({

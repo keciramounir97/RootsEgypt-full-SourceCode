@@ -52,13 +52,13 @@ exports.DatabaseModule = DatabaseModule = __decorate([
                 useFactory: async (configService) => {
                     const dbUrl = configService.get("DATABASE_URL");
                     const fromUrl = readConnectionFromDatabaseUrl(dbUrl);
-                    const host = pickFirstDefined(configService.get("DB_HOST"), configService.get("MYSQL_HOST"), configService.get("MYSQLHOST"), process.env.DB_HOST, process.env.MYSQL_HOST, process.env.MYSQLHOST, fromUrl.host, "rootsegypt_database-egypt");
+                    const host = pickFirstDefined(configService.get("DB_HOST"), configService.get("MYSQL_HOST"), configService.get("MYSQLHOST"), process.env.DB_HOST, process.env.MYSQL_HOST, process.env.MYSQLHOST, fromUrl.host);
                     const port = Number(pickFirstDefined(configService.get("DB_PORT"), configService.get("MYSQL_PORT"), process.env.DB_PORT, process.env.MYSQL_PORT, fromUrl.port, 3306));
-                    const user = pickFirstDefined(configService.get("DB_USER"), configService.get("MYSQL_USER"), configService.get("MYSQLUSER"), process.env.DB_USER, process.env.MYSQL_USER, process.env.MYSQLUSER, fromUrl.user, "adminEgypt");
-                    const password = pickFirstDefined(configService.get("DB_PASSWORD"), configService.get("MYSQL_PASSWORD"), configService.get("MYSQLPASSWORD"), process.env.DB_PASSWORD, process.env.MYSQL_PASSWORD, process.env.MYSQLPASSWORD, fromUrl.password, "Egypt20252026$$$");
-                    const database = pickFirstDefined(configService.get("DB_NAME"), configService.get("DB_DATABASE"), configService.get("MYSQL_DATABASE"), configService.get("MYSQLDATABASE"), process.env.DB_NAME, process.env.DB_DATABASE, process.env.MYSQL_DATABASE, process.env.MYSQLDATABASE, fromUrl.database, "rootsEgypt");
+                    const user = pickFirstDefined(configService.get("DB_USER"), configService.get("MYSQL_USER"), configService.get("MYSQLUSER"), process.env.DB_USER, process.env.MYSQL_USER, process.env.MYSQLUSER, fromUrl.user);
+                    const password = pickFirstDefined(configService.get("DB_PASSWORD"), configService.get("MYSQL_PASSWORD"), configService.get("MYSQLPASSWORD"), process.env.DB_PASSWORD, process.env.MYSQL_PASSWORD, process.env.MYSQLPASSWORD, fromUrl.password);
+                    const database = pickFirstDefined(configService.get("DB_NAME"), configService.get("DB_DATABASE"), configService.get("MYSQL_DATABASE"), configService.get("MYSQLDATABASE"), process.env.DB_NAME, process.env.DB_DATABASE, process.env.MYSQL_DATABASE, process.env.MYSQLDATABASE, fromUrl.database);
                     if (!host || !user || !database) {
-                        console.warn("⚠️ Incomplete DB env detected, using fallback defaults for EasyPanel startup.");
+                        throw new Error("Database configuration is incomplete. Set DATABASE_URL or DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME.");
                     }
                     console.log(`🟡 DB CONFIG host=${host} port=${port} database=${database} user=${user}`);
                     const knexConfig = {

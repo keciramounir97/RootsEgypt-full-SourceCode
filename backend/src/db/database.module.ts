@@ -59,8 +59,6 @@ function pickFirstDefined(
           process.env.MYSQL_HOST,
           process.env.MYSQLHOST,
           fromUrl.host,
-          // Last-resort defaults for this deployment stack.
-          "rootsegypt_database-egypt",
         );
         const port = Number(
           pickFirstDefined(
@@ -80,7 +78,6 @@ function pickFirstDefined(
           process.env.MYSQL_USER,
           process.env.MYSQLUSER,
           fromUrl.user,
-          "adminEgypt",
         );
         const password = pickFirstDefined(
           configService.get<string>("DB_PASSWORD"),
@@ -90,7 +87,6 @@ function pickFirstDefined(
           process.env.MYSQL_PASSWORD,
           process.env.MYSQLPASSWORD,
           fromUrl.password,
-          "Egypt20252026$$$",
         );
         const database = pickFirstDefined(
           configService.get<string>("DB_NAME"),
@@ -102,12 +98,11 @@ function pickFirstDefined(
           process.env.MYSQL_DATABASE,
           process.env.MYSQLDATABASE,
           fromUrl.database,
-          "rootsEgypt",
         );
 
         if (!host || !user || !database) {
-          console.warn(
-            "⚠️ Incomplete DB env detected, using fallback defaults for EasyPanel startup.",
+          throw new Error(
+            "Database configuration is incomplete. Set DATABASE_URL or DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME.",
           );
         }
 

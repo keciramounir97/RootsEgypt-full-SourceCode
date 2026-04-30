@@ -35,18 +35,11 @@ const MOCK_MODE_KEY = "rootsegypt_mock_mode";
 const MOCK_USER_KEY = "rootsegypt_mock_logged_user";
 
 export function isMockMode(): boolean {
-  const stored = localStorage.getItem(MOCK_MODE_KEY);
-  if (stored === "false") return false;
-  return true; // default ON
+  return false;
 }
 
 export function setMockMode(enabled: boolean): void {
   localStorage.setItem(MOCK_MODE_KEY, String(enabled));
-  if (!enabled) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem(MOCK_USER_KEY);
-  }
 }
 
 function getLoggedUser() {

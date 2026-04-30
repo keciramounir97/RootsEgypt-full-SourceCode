@@ -15,18 +15,9 @@ import * as bcrypt from "bcryptjs";
 
 /** Production CORS origins: RootsEgypt .org domains + EasyPanel + dev localhost */
 const ALLOWED_CORS_ORIGINS = [
-  // Frontend production (port 80)
   "https://rootsegypt.org",
   "https://www.rootsegypt.org",
-  "http://rootsegypt.org",
-  "http://www.rootsegypt.org",
-  // Backend production
   "https://api.rootsegypt.org",
-  "https://backend.rootsegypt.org",
-  // EasyPanel auto-assigned host
-  "https://frontend-rootsegypt.easypanel.host",
-  "https://backend-rootsegypt.easypanel.host",
-  // Dev (frontend :80, :5173, backend :5000)
   "http://localhost:80",
   "http://127.0.0.1:80",
   "http://localhost:5173",
@@ -56,10 +47,6 @@ function isAllowedCorsOrigin(
   try {
     const hostname = new URL(normalizedOrigin).hostname;
     if (hostname === "rootsegypt.org" || hostname.endsWith(".rootsegypt.org")) {
-      return normalizedOrigin;
-    }
-    // EasyPanel internal hosts
-    if (hostname.endsWith(".easypanel.host")) {
       return normalizedOrigin;
     }
   } catch {

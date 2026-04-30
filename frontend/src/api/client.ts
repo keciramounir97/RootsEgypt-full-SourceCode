@@ -7,12 +7,6 @@ import { isMockMode, mockAdapter } from "../lib/mockApi";
  * ===============================
  */
 const getApiRoot = (): string => {
-  // Custom URL set by the user via BackendPanel
-  const customUrl = localStorage.getItem("rootsegypt_api_url");
-  if (customUrl && customUrl.trim()) {
-    return customUrl.trim().replace(/\/+$/, "");
-  }
-
   if (import.meta.env.DEV) {
     if (
       typeof window !== "undefined" &&

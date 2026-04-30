@@ -220,29 +220,6 @@ export default function Home() {
       try {
         setTreesLoading(true);
         setTreesError("");
-        const isMock = localStorage.getItem("mockupDataActive") === "true";
-        if (isMock) {
-          const mockTitleKeys = [
-            "mock_featured_tree_1_title",
-            "mock_featured_tree_2_title",
-            "mock_featured_tree_3_title",
-          ] as const;
-          const mockTrees: FeaturedTree[] = Array.from({ length: 3 }).map(
-            (_, i) => ({
-              id: `mock-tree-${i}`,
-              title: t(mockTitleKeys[i]),
-              description: t("mock_featured_tree_desc"),
-              owner_name: "kameladmin",
-              isPublic: true,
-              hasGedcom: i % 2 === 0,
-              archiveSource: "Dar al-Wathaeq",
-              documentCode: `EGY-${2000 + i}`,
-              createdAt: new Date().toISOString(),
-            }),
-          );
-          if (mounted) setFeaturedTrees(mockTrees);
-          return;
-        }
         const { data } = await api.get("/trees");
         if (mounted && Array.isArray(data)) {
           const apiRootVal = getApiRoot();
@@ -427,7 +404,7 @@ export default function Home() {
           className="absolute inset-0 -top-[10%] -bottom-[10%]"
         >
           <img
-            src="/assets/hero-bg.jpeg"
+            src="/assets/roots-hero.jpg"
             alt=""
             className="w-full h-full object-cover"
           />
@@ -482,7 +459,7 @@ export default function Home() {
           >
             <EyeOfHorus size={18} color={EGYPT_COLORS.gold} />
             <span className="text-sm font-medium text-[#d4a843]">
-              {t("home_badge", "Preserving 5,000 Years of Heritage")}
+              {t("home_badge", "Preserving the Memory of Roots Egypt")}
             </span>
           </motion.div>
 
@@ -505,7 +482,7 @@ export default function Home() {
           >
             {t(
               "home_hero_subtitle",
-              "Journey through millennia of Nile Valley civilization, pharaonic lineage, and family heritage. Preserve the stories that shaped your family — from ancient papyrus records to modern civil archives.",
+              "Discover the stories, photographs, records, and family connections that define Roots Egypt. Explore a modern archive dedicated to Egyptian heritage, memory, and belonging.",
             )}
           </motion.p>
 

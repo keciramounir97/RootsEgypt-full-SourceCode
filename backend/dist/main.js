@@ -14,12 +14,7 @@ const bcrypt = require("bcryptjs");
 const ALLOWED_CORS_ORIGINS = [
     "https://rootsegypt.org",
     "https://www.rootsegypt.org",
-    "http://rootsegypt.org",
-    "http://www.rootsegypt.org",
     "https://api.rootsegypt.org",
-    "https://backend.rootsegypt.org",
-    "https://frontend-rootsegypt.easypanel.host",
-    "https://backend-rootsegypt.easypanel.host",
     "http://localhost:80",
     "http://127.0.0.1:80",
     "http://localhost:5173",
@@ -40,9 +35,6 @@ function isAllowedCorsOrigin(origin, corsOrigins) {
     try {
         const hostname = new URL(normalizedOrigin).hostname;
         if (hostname === "rootsegypt.org" || hostname.endsWith(".rootsegypt.org")) {
-            return normalizedOrigin;
-        }
-        if (hostname.endsWith(".easypanel.host")) {
             return normalizedOrigin;
         }
     }

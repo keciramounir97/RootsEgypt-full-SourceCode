@@ -21,7 +21,7 @@ export default function AdminLayout() {
       {/* Egyptian photo background */}
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <img
-          src="/assets/egypt-bg.jpeg"
+          src="/assets/roots-page-bg.jpg"
           alt=""
           className="w-full h-full object-cover"
         />

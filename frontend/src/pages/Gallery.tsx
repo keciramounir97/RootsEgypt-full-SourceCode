@@ -24,6 +24,7 @@ import { useTranslation } from "../context/TranslationContext";
 import { useFavorites } from "../context/FavoritesContext";
 import RootsPageShell from "../components/RootsPageShell";
 import ScrollReveal from "../components/motion/ScrollReveal";
+import { curatedGalleryItems } from "../content/curatedGallery";
 import {
   StaggerContainer,
   StaggerItem,
@@ -580,8 +581,22 @@ export default function GalleryPage() {
             : Array.isArray(galleryData)
               ? galleryData
               : [];
+        const curated = curatedGalleryItems.map((item) => ({
+          ...item,
+          imagePath: item.imagePath,
+        }));
+        const merged = [...curated, ...raw].reduce<any[]>((acc, item) => {
+          const nextPath = String(item.image_path ?? item.imagePath ?? "");
+          const duplicate = acc.some(
+            (existing) =>
+              String(existing.id) === String(item.id) ||
+              String(existing.image_path ?? existing.imagePath ?? "") === nextPath
+          );
+          if (!duplicate) acc.push(item);
+          return acc;
+        }, []);
         setGallery(
-          raw.map((item: any) => ({
+          merged.map((item: any) => ({
             ...item,
             imagePath: item.image_path ?? item.imagePath,
           }))
@@ -768,12 +783,12 @@ export default function GalleryPage() {
             {t("gallery", "Gallery")}
           </p>
           <h1 className="text-5xl font-bold">
-            {t("gallery_title", "Egyptian Image Gallery")}
+            {t("gallery_title", "Roots Egypt Photo Gallery")}
           </h1>
           <p className="max-w-4xl mx-auto text-lg opacity-90">
             {t(
               "gallery_intro_images_only",
-              "Archival photographs and heritage images from Egypt and the Nile Valley \u2014 museums, families, and field documentation for research and storytelling."
+              "Explore the Roots Egypt photo collection, a curated mix of heritage portraits, archival visuals, and cultural imagery shaped for family-history storytelling."
             )}
           </p>
         </div>
