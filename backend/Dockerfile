@@ -1,32 +1,32 @@
 # Backend Dockerfile (NestJS + Knex + MySQL)
-# EasyPanel settings:
-# - Build context: repository root
+# EasyPanel settings for this service:
+# - Build context: backend
 # - Dockerfile path: backend/Dockerfile
 # - Runtime secrets: host-injected env vars only
 
 FROM node:20-alpine AS builder
-WORKDIR /app/backend
+WORKDIR /app
 
-COPY backend/package.json backend/package-lock.json ./
+COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY backend/tsconfig.json backend/knexfile.js backend/server.js backend/db-config.js ./
-COPY backend/src ./src
+COPY tsconfig.json knexfile.js server.js db-config.js ./
+COPY src ./src
 
 RUN npm run build
 
 FROM node:20-alpine
-WORKDIR /app/backend
+WORKDIR /app
 
-COPY backend/package.json backend/package-lock.json ./
+COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-COPY --from=builder /app/backend/dist ./dist
-COPY --from=builder /app/backend/knexfile.js ./knexfile.js
-COPY --from=builder /app/backend/server.js ./server.js
-COPY --from=builder /app/backend/db-config.js ./db-config.js
-COPY --from=builder /app/backend/src/db/migrations ./src/db/migrations
-COPY --from=builder /app/backend/src/db/seeds ./src/db/seeds
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/knexfile.js ./knexfile.js
+COPY --from=builder /app/server.js ./server.js
+COPY --from=builder /app/db-config.js ./db-config.js
+COPY --from=builder /app/src/db/migrations ./src/db/migrations
+COPY --from=builder /app/src/db/seeds ./src/db/seeds
 
 RUN mkdir -p uploads private_uploads
 

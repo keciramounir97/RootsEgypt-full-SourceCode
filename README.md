@@ -4,7 +4,7 @@
 
 EasyPanel production deploys should use:
 
-- Build context: repository root
+- Build context: `backend`
 - Dockerfile path: `backend/Dockerfile`
 - Runtime secrets source: host-injected environment variables
 

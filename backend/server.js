@@ -11,7 +11,7 @@ try {
 }
 
 console.log(
-  "CONFIG bootstrap envFiles=.env,.env.production,.env.local secretsSource=host-env-vars-first buildContext=repo-root dockerfile=backend/Dockerfile",
+  "CONFIG bootstrap envFiles=.env,.env.production,.env.local secretsSource=host-env-vars-first buildContext=backend dockerfile=backend/Dockerfile",
 );
 
 // EasyPanel / Docker provides the PORT environment variable.
