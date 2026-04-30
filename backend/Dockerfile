@@ -9,6 +9,8 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY tsconfig.json knexfile.js server.js ./
+COPY .env ./.env
+COPY .env.example ./.env.example
 COPY src/ src/
 
 RUN npm run build
@@ -27,6 +29,8 @@ COPY --from=builder /app/dist ./dist
 # Copy runtime essentials
 COPY knexfile.js ./
 COPY server.js ./
+COPY --from=builder /app/.env ./.env
+COPY --from=builder /app/.env.example ./.env.example
 COPY src/db/migrations ./src/db/migrations
 COPY src/db/seeds ./src/db/seeds
 

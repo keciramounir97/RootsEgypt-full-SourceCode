@@ -51,16 +51,31 @@ exports.DatabaseModule = DatabaseModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: async (configService) => {
                     const dbUrl = configService.get("DATABASE_URL");
-                    const fromUrl = readConnectionFromDatabaseUrl(dbUrl);
+                    const mysqlUrl = configService.get("MYSQL_URL") ||
+                        configService.get("MYSQL_URI") ||
+                        configService.get("DB_URL") ||
+                        process.env.MYSQL_URL ||
+                        process.env.MYSQL_URI ||
+                        process.env.DB_URL;
+                    const fromUrl = readConnectionFromDatabaseUrl(dbUrl || mysqlUrl);
                     const host = pickFirstDefined(configService.get("DB_HOST"), configService.get("MYSQL_HOST"), configService.get("MYSQLHOST"), process.env.DB_HOST, process.env.MYSQL_HOST, process.env.MYSQLHOST, fromUrl.host);
-                    const port = Number(pickFirstDefined(configService.get("DB_PORT"), configService.get("MYSQL_PORT"), process.env.DB_PORT, process.env.MYSQL_PORT, fromUrl.port, 3306));
-                    const user = pickFirstDefined(configService.get("DB_USER"), configService.get("MYSQL_USER"), configService.get("MYSQLUSER"), process.env.DB_USER, process.env.MYSQL_USER, process.env.MYSQLUSER, fromUrl.user);
-                    const password = pickFirstDefined(configService.get("DB_PASSWORD"), configService.get("MYSQL_PASSWORD"), configService.get("MYSQLPASSWORD"), process.env.DB_PASSWORD, process.env.MYSQL_PASSWORD, process.env.MYSQLPASSWORD, fromUrl.password);
-                    const database = pickFirstDefined(configService.get("DB_NAME"), configService.get("DB_DATABASE"), configService.get("MYSQL_DATABASE"), configService.get("MYSQLDATABASE"), process.env.DB_NAME, process.env.DB_DATABASE, process.env.MYSQL_DATABASE, process.env.MYSQLDATABASE, fromUrl.database);
+                    const port = Number(pickFirstDefined(configService.get("DB_PORT"), configService.get("MYSQL_PORT"), configService.get("DATABASE_PORT"), process.env.DB_PORT, process.env.MYSQL_PORT, process.env.DATABASE_PORT, fromUrl.port, 3306));
+                    const user = pickFirstDefined(configService.get("DB_USER"), configService.get("MYSQL_USER"), configService.get("MYSQLUSER"), configService.get("DATABASE_USER"), process.env.DB_USER, process.env.MYSQL_USER, process.env.MYSQLUSER, process.env.DATABASE_USER, fromUrl.user);
+                    const password = pickFirstDefined(configService.get("DB_PASSWORD"), configService.get("MYSQL_PASSWORD"), configService.get("MYSQLPASSWORD"), configService.get("DATABASE_PASSWORD"), process.env.DB_PASSWORD, process.env.MYSQL_PASSWORD, process.env.MYSQLPASSWORD, process.env.DATABASE_PASSWORD, fromUrl.password);
+                    const database = pickFirstDefined(configService.get("DB_NAME"), configService.get("DB_DATABASE"), configService.get("MYSQL_DATABASE"), configService.get("MYSQLDATABASE"), configService.get("DATABASE_NAME"), process.env.DB_NAME, process.env.DB_DATABASE, process.env.MYSQL_DATABASE, process.env.MYSQLDATABASE, process.env.DATABASE_NAME, fromUrl.database);
                     if (!host || !user || !database) {
                         throw new Error("Database configuration is incomplete. Set DATABASE_URL or DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME.");
                     }
+                    const envPresence = {
+                        DATABASE_URL: !!(dbUrl || mysqlUrl),
+                        DB_HOST: !!pickFirstDefined(process.env.DB_HOST, process.env.MYSQL_HOST, process.env.MYSQLHOST),
+                        DB_PORT: !!pickFirstDefined(process.env.DB_PORT, process.env.MYSQL_PORT, process.env.DATABASE_PORT),
+                        DB_USER: !!pickFirstDefined(process.env.DB_USER, process.env.MYSQL_USER, process.env.MYSQLUSER, process.env.DATABASE_USER),
+                        DB_PASSWORD: !!pickFirstDefined(process.env.DB_PASSWORD, process.env.MYSQL_PASSWORD, process.env.MYSQLPASSWORD, process.env.DATABASE_PASSWORD),
+                        DB_NAME: !!pickFirstDefined(process.env.DB_NAME, process.env.DB_DATABASE, process.env.MYSQL_DATABASE, process.env.MYSQLDATABASE, process.env.DATABASE_NAME),
+                    };
                     console.log(`🟡 DB CONFIG host=${host} port=${port} database=${database} user=${user}`);
+                    console.log(`🟡 DB ENV presence ${JSON.stringify(envPresence)}`);
                     const knexConfig = {
                         client: "mysql2",
                         connection: {
