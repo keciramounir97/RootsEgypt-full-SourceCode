@@ -6,6 +6,7 @@
 
 FROM node:20-alpine AS builder
 WORKDIR /app
+ENV NODE_ENV=production
 
 # Install curl for healthchecks (not present in vanilla alpine)
 RUN apk add --no-cache curl
@@ -14,12 +15,15 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY tsconfig.json knexfile.js server.js db-config.js env-bootstrap.js ./
+COPY .env.production ./.env.production
+COPY scripts ./scripts
 COPY src ./src
 
 RUN npm run build
 
 FROM node:20-alpine
 WORKDIR /app
+ENV NODE_ENV=production
 
 # Install curl for healthchecks (not present in vanilla alpine)
 RUN apk add --no-cache curl
@@ -32,14 +36,15 @@ COPY --from=builder /app/knexfile.js ./knexfile.js
 COPY --from=builder /app/server.js ./server.js
 COPY --from=builder /app/db-config.js ./db-config.js
 COPY --from=builder /app/env-bootstrap.js ./env-bootstrap.js
+COPY --from=builder /app/.env.production ./.env.production
+COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/src/db/migrations ./src/db/migrations
 COPY --from=builder /app/src/db/seeds ./src/db/seeds
-RUN if [ -f .env.production ]; then cp .env.production ./.env.production; fi
 
 RUN mkdir -p uploads private_uploads
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD curl -fsS http://localhost:5000/api/health || exit 1
+HEALTHCHECK --interval=20s --timeout=5s --start-period=60s --retries=5 \
+  CMD curl -fsS http://localhost:5000/api/health/live || exit 1
 
 EXPOSE 5000
 

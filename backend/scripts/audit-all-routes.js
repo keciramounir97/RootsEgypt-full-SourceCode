@@ -16,22 +16,37 @@ if (typeof fetch === "undefined") {
   process.exit(1);
 }
 
-const BASE = (process.env.BASE || "https://api.rootsegypt.org/api").replace(
+const BASE = (process.env.BASE || "http://localhost:5000/api").replace(
   /\/$/,
   "",
 );
-const SERVER = (process.env.SERVER || "https://api.rootsegypt.org").replace(
+const SERVER = (process.env.SERVER || "http://localhost:5000").replace(
   /\/$/,
   "",
 );
 const ADMIN_EMAIL = process.env.AUDIT_EMAIL || "karimadmin@rootsegypt.org";
 const ADMIN_PASSWORD = process.env.AUDIT_PASSWORD || "admin2025$";
+const REMOTE_AUDIT_ALLOWED =
+  String(process.env.AUDIT_ALLOW_REMOTE || "").toLowerCase() === "true";
 
 // Minimal 1×1 transparent PNG for image upload tests
 const MIN_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
   "base64",
 );
+
+function assertSafeTarget() {
+  const isRemoteServer = !/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(
+    SERVER,
+  );
+
+  if (isRemoteServer && !REMOTE_AUDIT_ALLOWED) {
+    console.error(
+      "ERROR: Remote audit target blocked by default. Set AUDIT_ALLOW_REMOTE=true to run against a non-local API.",
+    );
+    process.exit(1);
+  }
+}
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
@@ -120,6 +135,7 @@ async function check(label, fn, { accept403 = false } = {}) {
 // ─── main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
+  assertSafeTarget();
   console.log("\n" + "═".repeat(65));
   console.log("  RootsEgypt — API Route Audit");
   console.log("  Target: " + BASE);
