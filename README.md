@@ -6,7 +6,7 @@ EasyPanel production deploys should use:
 
 - Build context: `backend`
 - Dockerfile path: `backend/Dockerfile`
-- Runtime config precedence: host-injected environment variables, then `backend/.env.production`
+- Runtime config precedence: host-injected environment variables, then `backend/.env`
 
 Recommended DB contract:
 
@@ -28,4 +28,4 @@ Compatibility aliases are also accepted by the backend runtime and Knex entrypoi
 - `MYSQL_*`
 - `DATABASE_*`
 
-Committed `.env` files are for local development. Production fallback values live in `backend/.env.production`.
+The backend uses a single on-disk env file: `backend/.env`.

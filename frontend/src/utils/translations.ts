@@ -1,3 +1,5 @@
+import { englishGeneratedTranslations } from "./englishGeneratedTranslations";
+
 export const DEFAULT_LOCALE = "en";
 
 export const SUPPORTED_LOCALES = ["en", "fr", "ar", "es"] as const;
@@ -4091,9 +4093,12 @@ const normalizeTranslationText = (value: string): string => {
 const humanizeTranslationKey = (key: string): string =>
   key
     .replace(/[_-]+/g, " ")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
     .replace(/\s+/g, " ")
     .trim()
     .replace(/\b\w/g, (char) => char.toUpperCase());
+
+Object.assign(translations.en, englishGeneratedTranslations);
 
 export const tForLocale = (locale: string, key: string, fallback?: string): string => {
   const dict = translations[locale] || translations[DEFAULT_LOCALE];

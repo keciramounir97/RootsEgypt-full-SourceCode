@@ -2,7 +2,7 @@
 # EasyPanel settings for this service:
 # - Build context: backend
 # - Dockerfile path: backend/Dockerfile
-# - Runtime secrets precedence: host env vars, then .env.production fallback
+# - Runtime secrets precedence: host env vars, then .env fallback
 
 FROM node:20-alpine AS builder
 WORKDIR /app
@@ -15,7 +15,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY tsconfig.json knexfile.js server.js db-config.js env-bootstrap.js ./
-COPY .env.production ./.env.production
+COPY .env ./.env
 COPY scripts ./scripts
 COPY src ./src
 
@@ -36,7 +36,7 @@ COPY --from=builder /app/knexfile.js ./knexfile.js
 COPY --from=builder /app/server.js ./server.js
 COPY --from=builder /app/db-config.js ./db-config.js
 COPY --from=builder /app/env-bootstrap.js ./env-bootstrap.js
-COPY --from=builder /app/.env.production ./.env.production
+COPY --from=builder /app/.env ./.env
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/src/db/migrations ./src/db/migrations
 COPY --from=builder /app/src/db/seeds ./src/db/seeds
@@ -44,7 +44,7 @@ COPY --from=builder /app/src/db/seeds ./src/db/seeds
 RUN mkdir -p uploads private_uploads
 
 HEALTHCHECK --interval=20s --timeout=5s --start-period=60s --retries=5 \
-  CMD curl -fsS http://localhost:5000/api/health/live || exit 1
+  CMD curl -fsS http://localhost:5000/health/live || exit 1
 
 EXPOSE 5000
 

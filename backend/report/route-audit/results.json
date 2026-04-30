@@ -1,0 +1,1360 @@
+{
+  "metadata": {
+    "base": "https://api.rootsegypt.org/api",
+    "server": "https://api.rootsegypt.org",
+    "generatedAt": "2026-04-30T21:46:13.339Z",
+    "total": 92,
+    "passed": 9,
+    "failed": 83,
+    "avgMs": 146
+  },
+  "results": [
+    {
+      "group": "health",
+      "method": "GET",
+      "path": "/health/live",
+      "label": "GET /health/live",
+      "status": 404,
+      "expectedStatuses": [
+        200
+      ],
+      "ms": 471,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/health/live"
+    },
+    {
+      "group": "health",
+      "method": "GET",
+      "path": "/health",
+      "label": "GET /health",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        503
+      ],
+      "ms": 119,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/health"
+    },
+    {
+      "group": "health",
+      "method": "GET",
+      "path": "/db-health",
+      "label": "GET /db-health",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        503
+      ],
+      "ms": 150,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/db-health"
+    },
+    {
+      "group": "health",
+      "method": "GET",
+      "path": "/health/db-diag",
+      "label": "GET /health/db-diag",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        403
+      ],
+      "ms": 117,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/health/db-diag"
+    },
+    {
+      "group": "stats",
+      "method": "GET",
+      "path": "/admin/stats",
+      "label": "GET /admin/stats",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 151,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/stats"
+    },
+    {
+      "group": "search",
+      "method": "GET",
+      "path": "/search?q=roots",
+      "label": "GET /search?q=roots",
+      "status": 404,
+      "expectedStatuses": [
+        200
+      ],
+      "ms": 117,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/search?q=roots"
+    },
+    {
+      "group": "search",
+      "method": "GET",
+      "path": "/search/suggest?q=roots",
+      "label": "GET /search/suggest?q=roots",
+      "status": 404,
+      "expectedStatuses": [
+        200
+      ],
+      "ms": 141,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/search/suggest?q=roots"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/trees",
+      "label": "GET /trees",
+      "status": 404,
+      "expectedStatuses": [
+        200
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/trees"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/trees/1",
+      "label": "GET /trees/1",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        404
+      ],
+      "ms": 143,
+      "ok": true,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/trees/1"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/trees/1/gedcom",
+      "label": "GET /trees/1/gedcom",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        404
+      ],
+      "ms": 117,
+      "ok": true,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/trees/1/gedcom"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/trees/1/people",
+      "label": "GET /trees/1/people",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        404
+      ],
+      "ms": 140,
+      "ok": true,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/trees/1/people"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/people/1",
+      "label": "GET /people/1",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        404
+      ],
+      "ms": 120,
+      "ok": true,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/people/1"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/books",
+      "label": "GET /books",
+      "status": 404,
+      "expectedStatuses": [
+        200
+      ],
+      "ms": 147,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/books"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/books/1",
+      "label": "GET /books/1",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        404
+      ],
+      "ms": 121,
+      "ok": true,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/books/1"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/books/1/download",
+      "label": "GET /books/1/download",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        404
+      ],
+      "ms": 156,
+      "ok": true,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/books/1/download"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/gallery",
+      "label": "GET /gallery",
+      "status": 404,
+      "expectedStatuses": [
+        200
+      ],
+      "ms": 120,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/gallery"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/gallery/1",
+      "label": "GET /gallery/1",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        404
+      ],
+      "ms": 139,
+      "ok": true,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/gallery/1"
+    },
+    {
+      "group": "auth",
+      "method": "POST",
+      "path": "/auth/login",
+      "label": "POST /auth/login",
+      "status": 404,
+      "expectedStatuses": [
+        200
+      ],
+      "ms": 123,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/auth/login"
+    },
+    {
+      "group": "auth",
+      "method": "POST",
+      "path": "/auth/login",
+      "label": "POST /auth/login",
+      "status": 404,
+      "expectedStatuses": [
+        400,
+        401
+      ],
+      "ms": 144,
+      "ok": false,
+      "note": "Intentional bad password check",
+      "url": "https://api.rootsegypt.org/api/auth/login"
+    },
+    {
+      "group": "auth",
+      "method": "POST",
+      "path": "/auth/signup",
+      "label": "POST /auth/signup",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        201,
+        409
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/auth/signup"
+    },
+    {
+      "group": "auth",
+      "method": "POST",
+      "path": "/auth/refresh",
+      "label": "POST /auth/refresh",
+      "status": 404,
+      "expectedStatuses": [
+        400,
+        401
+      ],
+      "ms": 141,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/auth/refresh"
+    },
+    {
+      "group": "auth",
+      "method": "POST",
+      "path": "/auth/reset",
+      "label": "POST /auth/reset",
+      "status": 404,
+      "expectedStatuses": [
+        200
+      ],
+      "ms": 122,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/auth/reset"
+    },
+    {
+      "group": "auth",
+      "method": "POST",
+      "path": "/auth/reset/token",
+      "label": "POST /auth/reset/token",
+      "status": 404,
+      "expectedStatuses": [
+        400,
+        404
+      ],
+      "ms": 153,
+      "ok": true,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/auth/reset/token"
+    },
+    {
+      "group": "auth",
+      "method": "POST",
+      "path": "/auth/reset/verify",
+      "label": "POST /auth/reset/verify",
+      "status": 404,
+      "expectedStatuses": [
+        400,
+        404
+      ],
+      "ms": 120,
+      "ok": true,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/auth/reset/verify"
+    },
+    {
+      "group": "auth",
+      "method": "GET",
+      "path": "/auth/me",
+      "label": "GET /auth/me",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 147,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/auth/me"
+    },
+    {
+      "group": "auth",
+      "method": "PATCH",
+      "path": "/auth/me",
+      "label": "PATCH /auth/me",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "{\"message\":\"Route PATCH:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/auth/me"
+    },
+    {
+      "group": "auth",
+      "method": "POST",
+      "path": "/auth/logout",
+      "label": "POST /auth/logout",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 137,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/auth/logout"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/trees",
+      "label": "GET /my/trees",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 117,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/my/trees"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/trees/1",
+      "label": "GET /my/trees/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 157,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/my/trees/1"
+    },
+    {
+      "group": "user",
+      "method": "POST",
+      "path": "/my/trees",
+      "label": "POST /my/trees",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 117,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/trees"
+    },
+    {
+      "group": "user",
+      "method": "PUT",
+      "path": "/my/trees/1",
+      "label": "PUT /my/trees/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 145,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/trees/1"
+    },
+    {
+      "group": "user",
+      "method": "POST",
+      "path": "/my/trees/1/save",
+      "label": "POST /my/trees/1/save",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 119,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/trees/1/save"
+    },
+    {
+      "group": "user",
+      "method": "DELETE",
+      "path": "/my/trees/1",
+      "label": "DELETE /my/trees/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 144,
+      "ok": false,
+      "note": "{\"message\":\"Route DELETE:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/trees/1"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/trees/1/gedcom",
+      "label": "GET /my/trees/1/gedcom",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 121,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/my/trees/1/gedcom"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/trees/1/people",
+      "label": "GET /my/trees/1/people",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 150,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/my/trees/1/people"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/people/1",
+      "label": "GET /my/people/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/my/people/1"
+    },
+    {
+      "group": "user",
+      "method": "POST",
+      "path": "/my/trees/1/people",
+      "label": "POST /my/trees/1/people",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 153,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/trees/1/people"
+    },
+    {
+      "group": "user",
+      "method": "PUT",
+      "path": "/my/trees/1/people/1",
+      "label": "PUT /my/trees/1/people/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 120,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/trees/1/people/1"
+    },
+    {
+      "group": "user",
+      "method": "DELETE",
+      "path": "/my/trees/1/people/1",
+      "label": "DELETE /my/trees/1/people/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 163,
+      "ok": false,
+      "note": "{\"message\":\"Route DELETE:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/trees/1/people/1"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/books",
+      "label": "GET /my/books",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 120,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/my/books"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/books/1",
+      "label": "GET /my/books/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 166,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/my/books/1"
+    },
+    {
+      "group": "user",
+      "method": "POST",
+      "path": "/my/books",
+      "label": "POST /my/books",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 117,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/books"
+    },
+    {
+      "group": "user",
+      "method": "PUT",
+      "path": "/my/books/1",
+      "label": "PUT /my/books/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 171,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/books/1"
+    },
+    {
+      "group": "user",
+      "method": "DELETE",
+      "path": "/my/books/1",
+      "label": "DELETE /my/books/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 116,
+      "ok": false,
+      "note": "{\"message\":\"Route DELETE:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/books/1"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/books/1/download",
+      "label": "GET /my/books/1/download",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 177,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/my/books/1/download"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/gallery",
+      "label": "GET /my/gallery",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/my/gallery"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/gallery/1",
+      "label": "GET /my/gallery/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 178,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/my/gallery/1"
+    },
+    {
+      "group": "user",
+      "method": "POST",
+      "path": "/my/gallery",
+      "label": "POST /my/gallery",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 227,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/gallery"
+    },
+    {
+      "group": "user",
+      "method": "POST",
+      "path": "/my/gallery/1/save",
+      "label": "POST /my/gallery/1/save",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 185,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/gallery/1/save"
+    },
+    {
+      "group": "user",
+      "method": "PUT",
+      "path": "/my/gallery/1",
+      "label": "PUT /my/gallery/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/gallery/1"
+    },
+    {
+      "group": "user",
+      "method": "DELETE",
+      "path": "/my/gallery/1",
+      "label": "DELETE /my/gallery/1",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 177,
+      "ok": false,
+      "note": "{\"message\":\"Route DELETE:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/my/gallery/1"
+    },
+    {
+      "group": "user",
+      "method": "POST",
+      "path": "/user/requests/password-reset",
+      "label": "POST /user/requests/password-reset",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 117,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/user/requests/password-reset"
+    },
+    {
+      "group": "user",
+      "method": "POST",
+      "path": "/user/requests/account-deletion",
+      "label": "POST /user/requests/account-deletion",
+      "status": 404,
+      "expectedStatuses": [
+        401
+      ],
+      "ms": 168,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/user/requests/account-deletion"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/users",
+      "label": "GET /admin/users",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/users"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/users/1",
+      "label": "GET /admin/users/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 164,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/users/1"
+    },
+    {
+      "group": "admin",
+      "method": "POST",
+      "path": "/admin/users",
+      "label": "POST /admin/users",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 116,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/users"
+    },
+    {
+      "group": "admin",
+      "method": "PATCH",
+      "path": "/admin/users/1",
+      "label": "PATCH /admin/users/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 165,
+      "ok": false,
+      "note": "{\"message\":\"Route PATCH:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/users/1"
+    },
+    {
+      "group": "admin",
+      "method": "DELETE",
+      "path": "/admin/users/1",
+      "label": "DELETE /admin/users/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 129,
+      "ok": false,
+      "note": "{\"message\":\"Route DELETE:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/users/1"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/admins",
+      "label": "GET /admin/admins",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 168,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/admins"
+    },
+    {
+      "group": "admin",
+      "method": "POST",
+      "path": "/admin/admins",
+      "label": "POST /admin/admins",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 117,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/admins"
+    },
+    {
+      "group": "admin",
+      "method": "PATCH",
+      "path": "/admin/admins/1",
+      "label": "PATCH /admin/admins/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 161,
+      "ok": false,
+      "note": "{\"message\":\"Route PATCH:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/admins/1"
+    },
+    {
+      "group": "admin",
+      "method": "DELETE",
+      "path": "/admin/admins/1",
+      "label": "DELETE /admin/admins/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "{\"message\":\"Route DELETE:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/admins/1"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/trees",
+      "label": "GET /admin/trees",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 174,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/trees"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/trees/1",
+      "label": "GET /admin/trees/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 128,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/trees/1"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/trees/1/gedcom",
+      "label": "GET /admin/trees/1/gedcom",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 184,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/trees/1/gedcom"
+    },
+    {
+      "group": "admin",
+      "method": "POST",
+      "path": "/admin/trees",
+      "label": "POST /admin/trees",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 116,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/trees"
+    },
+    {
+      "group": "admin",
+      "method": "POST",
+      "path": "/admin/trees/1/save",
+      "label": "POST /admin/trees/1/save",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 186,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/trees/1/save"
+    },
+    {
+      "group": "admin",
+      "method": "PUT",
+      "path": "/admin/trees/1",
+      "label": "PUT /admin/trees/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 116,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/trees/1"
+    },
+    {
+      "group": "admin",
+      "method": "DELETE",
+      "path": "/admin/trees/1",
+      "label": "DELETE /admin/trees/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 183,
+      "ok": false,
+      "note": "{\"message\":\"Route DELETE:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/trees/1"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/books",
+      "label": "GET /admin/books",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 129,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/books"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/books/1",
+      "label": "GET /admin/books/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 175,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/books/1"
+    },
+    {
+      "group": "admin",
+      "method": "POST",
+      "path": "/admin/books",
+      "label": "POST /admin/books",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/books"
+    },
+    {
+      "group": "admin",
+      "method": "PUT",
+      "path": "/admin/books/1",
+      "label": "PUT /admin/books/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 167,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/books/1"
+    },
+    {
+      "group": "admin",
+      "method": "DELETE",
+      "path": "/admin/books/1",
+      "label": "DELETE /admin/books/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 123,
+      "ok": false,
+      "note": "{\"message\":\"Route DELETE:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/books/1"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/gallery",
+      "label": "GET /admin/gallery",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 172,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/gallery"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/gallery/1",
+      "label": "GET /admin/gallery/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 139,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/gallery/1"
+    },
+    {
+      "group": "admin",
+      "method": "POST",
+      "path": "/admin/gallery",
+      "label": "POST /admin/gallery",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 178,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/gallery"
+    },
+    {
+      "group": "admin",
+      "method": "POST",
+      "path": "/admin/gallery/1/save",
+      "label": "POST /admin/gallery/1/save",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 132,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/gallery/1/save"
+    },
+    {
+      "group": "admin",
+      "method": "PUT",
+      "path": "/admin/gallery/1",
+      "label": "PUT /admin/gallery/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 171,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/gallery/1"
+    },
+    {
+      "group": "admin",
+      "method": "DELETE",
+      "path": "/admin/gallery/1",
+      "label": "DELETE /admin/gallery/1",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 125,
+      "ok": false,
+      "note": "{\"message\":\"Route DELETE:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/gallery/1"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/activity",
+      "label": "GET /activity",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 174,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/activity"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/contact/messages",
+      "label": "GET /admin/contact/messages",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/contact/messages"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/newsletter/subscribers",
+      "label": "GET /admin/newsletter/subscribers",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 176,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/newsletter/subscribers"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/approvals/stats",
+      "label": "GET /admin/approvals/stats",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 131,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/approvals/stats"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/approvals/password-reset",
+      "label": "GET /admin/approvals/password-reset",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 184,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/approvals/password-reset"
+    },
+    {
+      "group": "admin",
+      "method": "PUT",
+      "path": "/admin/approvals/password-reset/1/approve",
+      "label": "PUT /admin/approvals/password-reset/1/approve",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 120,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/approvals/password-reset/1/approve"
+    },
+    {
+      "group": "admin",
+      "method": "PUT",
+      "path": "/admin/approvals/password-reset/1/reject",
+      "label": "PUT /admin/approvals/password-reset/1/reject",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 161,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/approvals/password-reset/1/reject"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/approvals/account-deletion",
+      "label": "GET /admin/approvals/account-deletion",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 118,
+      "ok": false,
+      "note": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n        <meta name=\"robo",
+      "url": "https://api.rootsegypt.org/api/admin/approvals/account-deletion"
+    },
+    {
+      "group": "admin",
+      "method": "PUT",
+      "path": "/admin/approvals/account-deletion/1/approve",
+      "label": "PUT /admin/approvals/account-deletion/1/approve",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 170,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/approvals/account-deletion/1/approve"
+    },
+    {
+      "group": "admin",
+      "method": "PUT",
+      "path": "/admin/approvals/account-deletion/1/reject",
+      "label": "PUT /admin/approvals/account-deletion/1/reject",
+      "status": 404,
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "ms": 117,
+      "ok": false,
+      "note": "{\"message\":\"Route PUT:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/admin/approvals/account-deletion/1/reject"
+    },
+    {
+      "group": "public-write",
+      "method": "POST",
+      "path": "/newsletter/subscribe",
+      "label": "POST /newsletter/subscribe",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        201,
+        409,
+        400
+      ],
+      "ms": 167,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/newsletter/subscribe"
+    },
+    {
+      "group": "public-write",
+      "method": "POST",
+      "path": "/contact",
+      "label": "POST /contact",
+      "status": 404,
+      "expectedStatuses": [
+        200,
+        201,
+        400
+      ],
+      "ms": 117,
+      "ok": false,
+      "note": "{\"message\":\"Route POST:/api/errors/not-found not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+      "url": "https://api.rootsegypt.org/api/contact"
+    }
+  ]
+}

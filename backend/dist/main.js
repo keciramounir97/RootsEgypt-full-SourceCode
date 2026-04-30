@@ -388,15 +388,33 @@ async function bootstrap() {
                 return res.type("application/json").json({
                     app: "RootsEgypt API",
                     status: "ok",
-                    health: "/api/health",
-                    live: "/api/health/live",
-                    message: "Use the frontend at your site root; API routes are under /api",
+                    health: "/health",
+                    live: "/health/live",
+                    message: "Use the frontend at your site root; API routes are available with or without the /api prefix.",
                 });
             }
             next();
         });
+        app.use((req, res, next) => {
+            if (req.method === "GET" && req.path === "/health/live") {
+                return res.type("application/json").json({
+                    status: "alive",
+                    timestamp: new Date().toISOString(),
+                    uptime: process.uptime(),
+                    version: process.env.npm_package_version || "1.0.0",
+                    source: "root-alias",
+                });
+            }
+            next();
+        });
+        app.use((req, _res, next) => {
+            if (req.url === "/api" || req.url.startsWith("/api/")) {
+                const rewritten = req.url.replace(/^\/api(?=\/|$)/, "") || "/";
+                req.url = rewritten;
+            }
+            next();
+        });
         app.use(compression());
-        app.setGlobalPrefix("api");
         app.use((req, _res, next) => {
             req.id = req.headers["x-request-id"] || (0, crypto_1.randomUUID)();
             next();
@@ -484,8 +502,8 @@ async function bootstrap() {
             standardHeaders: true,
             legacyHeaders: false,
         });
-        app.use("/api/auth/login", authLimiter);
-        app.use("/api/auth/signup", authLimiter);
+        app.use("/auth/login", authLimiter);
+        app.use("/auth/signup", authLimiter);
         const helmetOptions = {
             contentSecurityPolicy: false,
             crossOriginEmbedderPolicy: false,

@@ -6,8 +6,4 @@
 backend/uploads
 backend/private_uploads
 backend/.env
-backend/.env.production
-backend/.env.local
 frontend/.env
-frontend/.env.production
-frontend/.env.local

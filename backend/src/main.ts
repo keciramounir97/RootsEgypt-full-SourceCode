@@ -487,20 +487,42 @@ async function bootstrap() {
         return res.type("application/json").json({
           app: "RootsEgypt API",
           status: "ok",
-          health: "/api/health",
-          live: "/api/health/live",
+          health: "/health",
+          live: "/health/live",
           message:
-            "Use the frontend at your site root; API routes are under /api",
+            "Use the frontend at your site root; API routes are available with or without the /api prefix.",
         });
+      }
+      next();
+    });
+
+    // Lightweight health aliases keep reverse proxies and container probes
+    // stable even when a prefix rewrite is misconfigured.
+    app.use((req: any, res: any, next: () => void) => {
+      if (req.method === "GET" && req.path === "/health/live") {
+        return res.type("application/json").json({
+          status: "alive",
+          timestamp: new Date().toISOString(),
+          uptime: process.uptime(),
+          version: process.env.npm_package_version || "1.0.0",
+          source: "root-alias",
+        });
+      }
+      next();
+    });
+
+    // Accept both /api/* and root-level routes so EasyPanel and reverse
+    // proxies keep working even if they preserve or strip the /api prefix.
+    app.use((req: Request, _res: Response, next: NextFunction) => {
+      if (req.url === "/api" || req.url.startsWith("/api/")) {
+        const rewritten = req.url.replace(/^\/api(?=\/|$)/, "") || "/";
+        req.url = rewritten;
       }
       next();
     });
 
     // Compression (production-ready)
     app.use(compression());
-
-    // API Prefix (use 'api' for cPanel/proxy compatibility; /api/auth/login, etc.)
-    app.setGlobalPrefix("api");
 
     // Request ID for tracing
     app.use((req: Request, _res: Response, next: NextFunction) => {
@@ -627,8 +649,8 @@ async function bootstrap() {
       standardHeaders: true,
       legacyHeaders: false,
     });
-    app.use("/api/auth/login", authLimiter);
-    app.use("/api/auth/signup", authLimiter);
+    app.use("/auth/login", authLimiter);
+    app.use("/auth/signup", authLimiter);
 
     // Security: Helmet + explicit headers (Pragma, X-Frame-Options, etc.)
     const helmetOptions: Parameters<typeof helmet.default>[0] = {

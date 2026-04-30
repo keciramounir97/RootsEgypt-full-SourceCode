@@ -1,0 +1,1443 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roots Egypt Route Audit</title>
+  <style>
+    :root {
+      --bg: #f7f2e8;
+      --panel: rgba(255,255,255,0.92);
+      --ink: #122033;
+      --muted: #637083;
+      --line: #d8c7b0;
+      --brand: #0c4a6e;
+      --accent: #c98c2f;
+      --ok: #0f766e;
+      --ok-bg: rgba(15,118,110,0.12);
+      --fail: #b42318;
+      --fail-bg: rgba(180,35,24,0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Manrope, Arial, sans-serif;
+      background:
+        linear-gradient(180deg, rgba(247,242,232,0.96), rgba(247,242,232,0.96)),
+        radial-gradient(circle at top left, rgba(12,74,110,0.18), transparent 35%);
+      color: var(--ink);
+    }
+    .wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+    .hero {
+      background: linear-gradient(135deg, rgba(12,74,110,0.97), rgba(18,32,51,0.96));
+      color: white;
+      border-radius: 28px;
+      padding: 28px 28px 22px;
+      box-shadow: 0 24px 70px rgba(18,32,51,0.18);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      font-size: 12px;
+      color: rgba(255,255,255,0.72);
+      margin: 0 0 10px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.05;
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .meta-card, .summary-card {
+      background: var(--panel);
+      border: 1px solid rgba(216,199,176,0.72);
+      border-radius: 22px;
+      padding: 18px 18px 16px;
+      backdrop-filter: blur(10px);
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .summary-card strong, .meta-card strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 6px;
+    }
+    .summary-card span, .meta-card span {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.03em;
+    }
+    .table-shell {
+      background: var(--panel);
+      border: 1px solid rgba(216,199,176,0.72);
+      border-radius: 26px;
+      padding: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 55px rgba(18,32,51,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(216,199,176,0.72);
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(12,74,110,0.04);
+    }
+    tr:last-child td { border-bottom: none; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 12.5px;
+      color: var(--brand);
+      white-space: nowrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .badge.ok {
+      color: var(--ok);
+      background: var(--ok-bg);
+    }
+    .badge.fail {
+      color: var(--fail);
+      background: var(--fail-bg);
+    }
+    .ok-text { color: var(--ok); font-weight: 700; }
+    .fail-text { color: var(--fail); font-weight: 700; }
+    .footnote {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+    @media (max-width: 860px) {
+      .wrap { padding: 18px 14px 42px; }
+      .hero, .table-shell { border-radius: 20px; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <p class="eyebrow">Roots Egypt Deployment Audit</p>
+      <h1>Route status report</h1>
+      <p>This report captures backend route health as observed by the audit script, including expected statuses, response timing, and a green-check verdict per route.</p>
+      <div class="meta">
+        <div class="meta-card">
+          <span>Target base URL</span>
+          <strong>https://api.rootsegypt.org/api</strong>
+        </div>
+        <div class="meta-card">
+          <span>Server origin</span>
+          <strong>https://api.rootsegypt.org</strong>
+        </div>
+        <div class="meta-card">
+          <span>Generated</span>
+          <strong>2026-04-30T21:46:13.339Z</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="summary">
+      <div class="summary-card">
+        <span>Total checks</span>
+        <strong>92</strong>
+      </div>
+      <div class="summary-card">
+        <span>Passed</span>
+        <strong class="ok-text">9</strong>
+      </div>
+      <div class="summary-card">
+        <span>Failed</span>
+        <strong class="fail-text">83</strong>
+      </div>
+      <div class="summary-card">
+        <span>Average response time</span>
+        <strong>146 ms</strong>
+      </div>
+    </section>
+
+    <section class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Method</th>
+            <th>Path</th>
+            <th>Status</th>
+            <th>Expected</th>
+            <th>Timing</th>
+            <th>Verdict</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>health</td>
+          <td><code>GET</code></td>
+          <td><code>/health/live</code></td>
+          <td class="fail-text">404</td>
+          <td>200</td>
+          <td>471 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>health</td>
+          <td><code>GET</code></td>
+          <td><code>/health</code></td>
+          <td class="fail-text">404</td>
+          <td>200, 503</td>
+          <td>119 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>health</td>
+          <td><code>GET</code></td>
+          <td><code>/db-health</code></td>
+          <td class="fail-text">404</td>
+          <td>200, 503</td>
+          <td>150 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>health</td>
+          <td><code>GET</code></td>
+          <td><code>/health/db-diag</code></td>
+          <td class="fail-text">404</td>
+          <td>200, 403</td>
+          <td>117 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>stats</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/stats</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>151 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>search</td>
+          <td><code>GET</code></td>
+          <td><code>/search?q=roots</code></td>
+          <td class="fail-text">404</td>
+          <td>200</td>
+          <td>117 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>search</td>
+          <td><code>GET</code></td>
+          <td><code>/search/suggest?q=roots</code></td>
+          <td class="fail-text">404</td>
+          <td>200</td>
+          <td>141 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/trees</code></td>
+          <td class="fail-text">404</td>
+          <td>200</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/trees/1</code></td>
+          <td class="ok-text">404</td>
+          <td>200, 404</td>
+          <td>143 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/trees/1/gedcom</code></td>
+          <td class="ok-text">404</td>
+          <td>200, 404</td>
+          <td>117 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/trees/1/people</code></td>
+          <td class="ok-text">404</td>
+          <td>200, 404</td>
+          <td>140 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/people/1</code></td>
+          <td class="ok-text">404</td>
+          <td>200, 404</td>
+          <td>120 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/books</code></td>
+          <td class="fail-text">404</td>
+          <td>200</td>
+          <td>147 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/books/1</code></td>
+          <td class="ok-text">404</td>
+          <td>200, 404</td>
+          <td>121 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/books/1/download</code></td>
+          <td class="ok-text">404</td>
+          <td>200, 404</td>
+          <td>156 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/gallery</code></td>
+          <td class="fail-text">404</td>
+          <td>200</td>
+          <td>120 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/gallery/1</code></td>
+          <td class="ok-text">404</td>
+          <td>200, 404</td>
+          <td>139 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>POST</code></td>
+          <td><code>/auth/login</code></td>
+          <td class="fail-text">404</td>
+          <td>200</td>
+          <td>123 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>POST</code></td>
+          <td><code>/auth/login</code></td>
+          <td class="fail-text">404</td>
+          <td>400, 401</td>
+          <td>144 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>Intentional bad password check</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>POST</code></td>
+          <td><code>/auth/signup</code></td>
+          <td class="fail-text">404</td>
+          <td>200, 201, 409</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>POST</code></td>
+          <td><code>/auth/refresh</code></td>
+          <td class="fail-text">404</td>
+          <td>400, 401</td>
+          <td>141 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>POST</code></td>
+          <td><code>/auth/reset</code></td>
+          <td class="fail-text">404</td>
+          <td>200</td>
+          <td>122 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>POST</code></td>
+          <td><code>/auth/reset/token</code></td>
+          <td class="ok-text">404</td>
+          <td>400, 404</td>
+          <td>153 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>POST</code></td>
+          <td><code>/auth/reset/verify</code></td>
+          <td class="ok-text">404</td>
+          <td>400, 404</td>
+          <td>120 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>GET</code></td>
+          <td><code>/auth/me</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>147 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>PATCH</code></td>
+          <td><code>/auth/me</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PATCH:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>POST</code></td>
+          <td><code>/auth/logout</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>137 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/trees</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>117 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/trees/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>157 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>POST</code></td>
+          <td><code>/my/trees</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>117 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>PUT</code></td>
+          <td><code>/my/trees/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>145 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>POST</code></td>
+          <td><code>/my/trees/1/save</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>119 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>DELETE</code></td>
+          <td><code>/my/trees/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>144 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route DELETE:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/trees/1/gedcom</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>121 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/trees/1/people</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>150 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/people/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>POST</code></td>
+          <td><code>/my/trees/1/people</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>153 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>PUT</code></td>
+          <td><code>/my/trees/1/people/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>120 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>DELETE</code></td>
+          <td><code>/my/trees/1/people/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>163 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route DELETE:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/books</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>120 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/books/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>166 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>POST</code></td>
+          <td><code>/my/books</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>117 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>PUT</code></td>
+          <td><code>/my/books/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>171 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>DELETE</code></td>
+          <td><code>/my/books/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>116 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route DELETE:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/books/1/download</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>177 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/gallery</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/gallery/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>178 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>POST</code></td>
+          <td><code>/my/gallery</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>227 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>POST</code></td>
+          <td><code>/my/gallery/1/save</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>185 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>PUT</code></td>
+          <td><code>/my/gallery/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>DELETE</code></td>
+          <td><code>/my/gallery/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>177 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route DELETE:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>POST</code></td>
+          <td><code>/user/requests/password-reset</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>117 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>POST</code></td>
+          <td><code>/user/requests/account-deletion</code></td>
+          <td class="fail-text">404</td>
+          <td>401</td>
+          <td>168 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/users</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/users/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>164 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>POST</code></td>
+          <td><code>/admin/users</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>116 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>PATCH</code></td>
+          <td><code>/admin/users/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>165 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PATCH:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>DELETE</code></td>
+          <td><code>/admin/users/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>129 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route DELETE:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/admins</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>168 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>POST</code></td>
+          <td><code>/admin/admins</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>117 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>PATCH</code></td>
+          <td><code>/admin/admins/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>161 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PATCH:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>DELETE</code></td>
+          <td><code>/admin/admins/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route DELETE:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/trees</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>174 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/trees/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>128 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/trees/1/gedcom</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>184 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>POST</code></td>
+          <td><code>/admin/trees</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>116 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>POST</code></td>
+          <td><code>/admin/trees/1/save</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>186 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>PUT</code></td>
+          <td><code>/admin/trees/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>116 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>DELETE</code></td>
+          <td><code>/admin/trees/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>183 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route DELETE:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/books</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>129 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/books/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>175 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>POST</code></td>
+          <td><code>/admin/books</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>PUT</code></td>
+          <td><code>/admin/books/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>167 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>DELETE</code></td>
+          <td><code>/admin/books/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>123 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route DELETE:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/gallery</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>172 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/gallery/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>139 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>POST</code></td>
+          <td><code>/admin/gallery</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>178 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>POST</code></td>
+          <td><code>/admin/gallery/1/save</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>132 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>PUT</code></td>
+          <td><code>/admin/gallery/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>171 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>DELETE</code></td>
+          <td><code>/admin/gallery/1</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>125 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route DELETE:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/activity</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>174 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/contact/messages</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/newsletter/subscribers</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>176 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/approvals/stats</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>131 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/approvals/password-reset</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>184 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>PUT</code></td>
+          <td><code>/admin/approvals/password-reset/1/approve</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>120 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>PUT</code></td>
+          <td><code>/admin/approvals/password-reset/1/reject</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>161 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/approvals/account-deletion</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>118 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;meta name=&quot;robo</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>PUT</code></td>
+          <td><code>/admin/approvals/account-deletion/1/approve</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>170 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>PUT</code></td>
+          <td><code>/admin/approvals/account-deletion/1/reject</code></td>
+          <td class="fail-text">404</td>
+          <td>401, 403</td>
+          <td>117 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route PUT:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>public-write</td>
+          <td><code>POST</code></td>
+          <td><code>/newsletter/subscribe</code></td>
+          <td class="fail-text">404</td>
+          <td>200, 201, 409, 400</td>
+          <td>167 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      
+        <tr>
+          <td>public-write</td>
+          <td><code>POST</code></td>
+          <td><code>/contact</code></td>
+          <td class="fail-text">404</td>
+          <td>200, 201, 400</td>
+          <td>117 ms</td>
+          <td><span class="badge fail">Needs fix</span></td>
+          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+        </tr>
+      </tbody>
+      </table>
+      <p class="footnote">Green checks mean the route returned one of the expected statuses for that test scenario. Protected routes may pass with <code>401</code> or <code>403</code> when the audit intentionally verifies guard behavior without a valid token.</p>
+    </section>
+  </div>
+</body>
+</html>

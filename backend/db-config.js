@@ -3,7 +3,7 @@
 const { getEnvBootstrapMeta, getEnvSource } = require("./env-bootstrap");
 
 const DB_ENV_HELP =
-  "Production resolves DB config in this order: host env vars, then .env.production, then local development files. Set DATABASE_URL (recommended) or DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME. Compatibility aliases also work: MYSQL_URL, MYSQL_URI, DB_URL, MYSQL_*, DATABASE_*.";
+  "Production resolves DB config in this order: host env vars, then .env. Set DATABASE_URL (recommended) or DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME. Compatibility aliases also work: MYSQL_URL, MYSQL_URI, DB_URL, MYSQL_*, DATABASE_*.";
 
 function pickFirstDefined(...values) {
   for (const value of values) {
@@ -84,12 +84,6 @@ function summarizeResolutionSource(fieldSources) {
     : Object.values(fieldSources).filter(Boolean);
   if (values.includes("host-env")) {
     return "host-env";
-  }
-  if (values.includes(".env.production")) {
-    return ".env.production";
-  }
-  if (values.includes(".env.local")) {
-    return ".env.local";
   }
   if (values.includes(".env")) {
     return ".env";

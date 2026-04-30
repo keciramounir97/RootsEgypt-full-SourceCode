@@ -11,18 +11,7 @@ function hasMeaningfulValue(value) {
 }
 
 function resolveCandidateFiles(cwd, env) {
-  const prodPath = path.join(cwd, ".env.production");
-  const devPath = path.join(cwd, ".env");
-  const explicitProduction =
-    String(env.NODE_ENV || "").trim().toLowerCase() === "production";
-  const productionFallbackOnly =
-    !fs.existsSync(devPath) && fs.existsSync(prodPath);
-
-  if (explicitProduction || productionFallbackOnly) {
-    return [".env.production"];
-  }
-
-  return [".env", ".env.local", ".env.production"];
+  return [".env"];
 }
 
 function bootstrapEnv(options = {}) {

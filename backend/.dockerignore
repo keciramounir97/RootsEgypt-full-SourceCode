@@ -1,9 +1,8 @@
 node_modules
 dist
 *.zip
-.env
 .env.*
-!.env.production
+!.env
 uploads/*
 private_uploads/*
 *.log

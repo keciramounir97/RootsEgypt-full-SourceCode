@@ -26,7 +26,7 @@ function buildGalleryItem(
     archiveSource: "Roots Egypt Photo Collection",
     location: "Egypt",
     year: "2026",
-    imagePath: `roots-egypt-gallery-${sequence}.jpeg`,
+    imagePath: `/assets/gallery/roots-egypt-gallery-${sequence}.jpeg`,
     createdAt,
   };
 }
