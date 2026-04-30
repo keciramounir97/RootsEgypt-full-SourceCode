@@ -5,20 +5,48 @@ const path = require("path");
 const dotenv = require("dotenv");
 
 const BOOTSTRAP_KEY = "__ROOTS_ENV_BOOTSTRAP__";
+const APP_ROOT = __dirname;
 
 function hasMeaningfulValue(value) {
   return value !== undefined && value !== null && String(value).trim() !== "";
 }
 
+function normalizeCandidate(candidate, cwd) {
+  if (typeof candidate === "string") {
+    const fullPath = path.isAbsolute(candidate)
+      ? candidate
+      : path.resolve(cwd, candidate);
+    return {
+      label: candidate,
+      fullPath,
+    };
+  }
+
+  return {
+    label: candidate.label || candidate.fullPath || ".env",
+    fullPath: path.isAbsolute(candidate.fullPath)
+      ? candidate.fullPath
+      : path.resolve(cwd, candidate.fullPath || ".env"),
+  };
+}
+
 function resolveCandidateFiles(cwd, env) {
-  return [".env"];
+  const candidates = [
+    { label: ".env", fullPath: path.resolve(cwd, ".env") },
+    { label: "app-root:.env", fullPath: path.resolve(APP_ROOT, ".env") },
+  ];
+
+  const seen = new Set();
+  return candidates.filter((candidate) => {
+    if (seen.has(candidate.fullPath)) {
+      return false;
+    }
+    seen.add(candidate.fullPath);
+    return true;
+  });
 }
 
 function bootstrapEnv(options = {}) {
-  if (global[BOOTSTRAP_KEY]) {
-    return global[BOOTSTRAP_KEY];
-  }
-
   const cwd = options.cwd || process.cwd();
   const env = options.env || process.env;
   const sourceByKey = {};
@@ -29,30 +57,35 @@ function bootstrapEnv(options = {}) {
     }
   });
 
-  const candidateFiles = options.files || resolveCandidateFiles(cwd, env);
+  const candidateSpecs = (options.files || resolveCandidateFiles(cwd, env)).map(
+    (candidate) => normalizeCandidate(candidate, cwd),
+  );
   const loadedFiles = [];
+  const loadedPaths = [];
 
-  for (const file of candidateFiles) {
-    const fullPath = path.join(cwd, file);
+  for (const candidate of candidateSpecs) {
+    const { label, fullPath } = candidate;
     if (!fs.existsSync(fullPath)) {
       continue;
     }
 
     const parsed = dotenv.parse(fs.readFileSync(fullPath));
-    loadedFiles.push(file);
+    loadedFiles.push(label);
+    loadedPaths.push(fullPath);
 
     for (const [key, value] of Object.entries(parsed)) {
       if (!hasMeaningfulValue(env[key])) {
         env[key] = value;
-        sourceByKey[key] = file;
+        sourceByKey[key] = label;
       }
     }
   }
 
   const metadata = {
     cwd,
-    candidateFiles,
+    candidateFiles: candidateSpecs.map((candidate) => candidate.label),
     loadedFiles,
+    loadedPaths,
     sourceByKey,
   };
 
@@ -65,6 +98,7 @@ function getEnvBootstrapMeta() {
     cwd: process.cwd(),
     candidateFiles: [],
     loadedFiles: [],
+    loadedPaths: [],
     sourceByKey: {},
   };
 }

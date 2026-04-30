@@ -27,7 +27,7 @@ function getKnexConfig() {
 function logBootstrap(resolved) {
   const envMeta = getEnvBootstrapMeta();
   console.log(
-    `EASYPANEL bootstrap tried=${envMeta.candidateFiles.join(",")} loaded=${envMeta.loadedFiles.join(",") || "none"} resolutionSource=${resolved.resolutionSource}`,
+    `EASYPANEL bootstrap tried=${envMeta.candidateFiles.join(",")} loaded=${envMeta.loadedFiles.join(",") || "none"} loadedPaths=${envMeta.loadedPaths.join(",") || "none"} resolutionSource=${resolved.resolutionSource}`,
   );
   console.log(`EASYPANEL env presence ${JSON.stringify(resolved.envPresence)}`);
   console.log(
