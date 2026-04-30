@@ -11,7 +11,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node server.js",
     "start:easypanel": "node scripts/start-easypanel.js",
-    "migrate:latest": "knex migrate:latest --knexfile knexfile.js",
+    "migrate:latest": "node scripts/migrate-latest.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",

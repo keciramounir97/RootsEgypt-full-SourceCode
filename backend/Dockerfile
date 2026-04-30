@@ -18,6 +18,7 @@ COPY tsconfig.json knexfile.js server.js db-config.js env-bootstrap.js ./
 COPY .env ./.env
 COPY scripts ./scripts
 COPY src ./src
+RUN test -f ./.env
 
 RUN npm run build
 
@@ -40,6 +41,7 @@ COPY --from=builder /app/.env ./.env
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/src/db/migrations ./src/db/migrations
 COPY --from=builder /app/src/db/seeds ./src/db/seeds
+RUN test -f ./.env
 
 RUN mkdir -p uploads private_uploads
 
