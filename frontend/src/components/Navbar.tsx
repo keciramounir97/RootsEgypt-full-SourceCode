@@ -228,7 +228,7 @@ export default function Navbar() {
   const secondaryNav = [
     {
       to: "/sourcesandarchives",
-      label: t("sources_and_archives", "Sources & Archives"),
+      label: t("sources_and_archives", "Archives"),
       icon: Archive,
     },
     { to: "/periods", label: t("periods", "Periods"), icon: Clock },
@@ -299,12 +299,7 @@ export default function Navbar() {
               {t("home", "Home")}
             </NavLink>
 
-            <div
-              className="navbar-dropdown"
-              ref={resourceRef}
-              onMouseEnter={() => setResourceMenuOpen(true)}
-              onMouseLeave={() => setResourceMenuOpen(false)}
-            >
+            <div className="navbar-dropdown" ref={resourceRef}>
               <button
                 type="button"
                 className={`navbar-dropdown-trigger${resourceActive ? " active" : ""}`}

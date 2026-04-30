@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -716,10 +717,12 @@ p {
   border: 1px solid rgba(12, 74, 110, 0.2);
   border-radius: 20px;
   color: #f1f5f9;
-  background: linear-gradient(155deg,
-      rgba(8, 51, 81, 0.97) 0%,
-      rgba(12, 74, 110, 0.94) 45%,
-      rgba(15, 23, 41, 0.98) 100%),
+  background:
+    url("/assets/roots-hero.jpg") center/cover no-repeat,
+    linear-gradient(155deg,
+      rgba(8, 51, 81, 0.92) 0%,
+      rgba(12, 74, 110, 0.88) 45%,
+      rgba(15, 23, 41, 0.94) 100%),
     linear-gradient(180deg,
       rgba(212, 168, 75, 0.08) 0%,
       transparent 42%);
@@ -742,6 +745,28 @@ p {
       transparent 45%);
   opacity: 0.7;
   pointer-events: none;
+}
+
+/* Egyptian backdrop behind page content sections */
+.roots-shell--decorated::before,
+.heritage-page-root::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: url("/assets/egypt-bg.jpeg") center/cover fixed no-repeat;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.dark .roots-shell--decorated::before,
+.dark .heritage-page-root::before {
+  opacity: 0.08;
+}
+
+/* Ensure spacing between adjacent section containers */
+.roots-section + .roots-section {
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
 }
 
 @media (min-width: 640px) {
@@ -1477,7 +1502,8 @@ html.light .admin-surface-header {
 .navbar-logo-main {
   font-family: "Cinzel", serif;
   font-size: clamp(1rem, 2vw, 1.4rem);
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   color: var(--primary-brown);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1557,7 +1583,8 @@ html.light .admin-surface-header {
 .navbar-link {
   font-family: "Cinzel", serif;
   font-size: clamp(0.7rem, 1vw, 0.85rem);
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   color: var(--primary-brown);
   text-decoration: none;
   text-transform: uppercase;

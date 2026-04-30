@@ -130,9 +130,10 @@ function GalleryCard({
         gallery-masonry-card group relative cursor-pointer
         rounded-2xl overflow-hidden break-inside-avoid mb-5
         transition-all duration-500 ease-out
-        ${isDark
-          ? "shadow-[0_2px_20px_rgba(13,148,136,0.08)] hover:shadow-[0_8px_40px_rgba(13,148,136,0.18)] border border-white/[0.06] hover:border-teal/30"
-          : "shadow-[0_2px_16px_rgba(12,74,110,0.08)] hover:shadow-[0_12px_48px_rgba(12,74,110,0.16)]"
+        ${
+          isDark
+            ? "shadow-[0_2px_20px_rgba(13,148,136,0.08)] hover:shadow-[0_8px_40px_rgba(13,148,136,0.18)] border border-white/[0.06] hover:border-teal/30"
+            : "shadow-[0_2px_16px_rgba(12,74,110,0.08)] hover:shadow-[0_12px_48px_rgba(12,74,110,0.16)]"
         }
       `}
       onClick={onOpen}
@@ -151,12 +152,24 @@ function GalleryCard({
               src={imageSrc}
               alt={item.title || "Gallery image"}
               className={`
-                w-full h-auto block transition-all duration-700 ease-out
-                group-hover:scale-[1.05]
+                w-full h-full object-cover transition-transform duration-700
+                group-hover:scale-105
                 ${loaded ? "opacity-100" : "opacity-0"}
               `}
               loading="lazy"
               onLoad={() => setLoaded(true)}
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.style.display = "none";
+                const parent = target.parentElement;
+                if (parent && !parent.querySelector(".gallery-fallback")) {
+                  const fallback = document.createElement("div");
+                  fallback.className =
+                    "gallery-fallback absolute inset-0 flex items-center justify-center bg-[#0c4a6e]/10 text-[#0c4a6e]/60";
+                  fallback.innerHTML = `<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect width='18' height='18' x='3' y='3' rx='2' ry='2'/><circle cx='9' cy='9' r='2'/><path d='m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21'/></svg>`;
+                  parent.appendChild(fallback);
+                }
+              }}
             />
           </>
         ) : (
@@ -187,9 +200,10 @@ function GalleryCard({
             transform translate-y-1 group-hover:translate-y-0
             transition-all duration-300
             backdrop-blur-md
-            ${isFav
-              ? "bg-teal/80 text-white"
-              : "bg-black/30 hover:bg-black/50 text-white/90"
+            ${
+              isFav
+                ? "bg-teal/80 text-white"
+                : "bg-black/30 hover:bg-black/50 text-white/90"
             }
           `}
           aria-label={t("add_to_favorites", "Save to favorites")}
@@ -242,9 +256,7 @@ function GalleryCard({
           <h3 className="text-white font-bold text-sm leading-snug line-clamp-2 drop-shadow-md">
             {item.title || t("untitled", "Untitled")}
           </h3>
-          {date && (
-            <p className="text-white/60 text-[11px] mt-1">{date}</p>
-          )}
+          {date && <p className="text-white/60 text-[11px] mt-1">{date}</p>}
         </div>
       </div>
     </motion.div>

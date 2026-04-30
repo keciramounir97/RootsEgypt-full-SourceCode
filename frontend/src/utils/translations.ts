@@ -23,7 +23,6 @@ export const localeLabel = (locale: string): string => {
 };
 
 const translations: Record<string, Record<string, string>> = {
-
   en: {
     home: "Home",
     library: "Library",
@@ -47,7 +46,8 @@ const translations: Record<string, Record<string, string>> = {
     search_button: "Search",
     page_not_found: "404 • Page Not Found",
     lost_in_archives: "Lost in the Archives",
-    error_404_description: "The page you're looking for doesn't exist or has been moved. Return home to continue exploring your Egypt heritage.",
+    error_404_description:
+      "The page you're looking for doesn't exist or has been moved. Return home to continue exploring your Egypt heritage.",
     loading: "Loading...",
     no_results: "No suggestions",
     trees: "Family Trees",
@@ -95,7 +95,8 @@ const translations: Record<string, Record<string, string>> = {
     home_archives_tag_british: "British Colonial Census Records",
     home_archives_tag_civil: "Civil Registry Office Records",
     tree_card_default_desc: "Explore this public Egyptian family lineage.",
-    featured_trees_error: "Could not load featured trees. Please try again later.",
+    featured_trees_error:
+      "Could not load featured trees. Please try again later.",
     mock_featured_tree_1_title: "El-Masry & Sa'id — Cairo & the Delta",
     mock_featured_tree_2_title: "Nubian Branches — Aswan & Upper Egypt",
     mock_featured_tree_3_title: "Coastal Merchants — Alexandria & Rosetta",
@@ -113,26 +114,36 @@ const translations: Record<string, Record<string, string>> = {
     home_how_label: "How It Works",
     home_how_title: "Your Heritage Journey in Three Steps",
     home_how_step1_title: "Research & Discover",
-    home_how_step1_desc: "Search through Ottoman court records, Coptic church registers, civil archives, and regional tribal documents to uncover your family's paper trail across Egypt.",
+    home_how_step1_desc:
+      "Search through Ottoman court records, Coptic church registers, civil archives, and regional tribal documents to uncover your family's paper trail across Egypt.",
     home_how_step2_title: "Build Your Tree",
-    home_how_step2_desc: "Connect parents, grandparents, and distant ancestors. Upload GEDCOM files, attach documents, and visualize your lineage interactively with our heritage-focused tree builder.",
+    home_how_step2_desc:
+      "Connect parents, grandparents, and distant ancestors. Upload GEDCOM files, attach documents, and visualize your lineage interactively with our heritage-focused tree builder.",
     home_how_step3_title: "Preserve & Share",
-    home_how_step3_desc: "Record oral histories, digitize old photographs, and share your family's story with relatives in Egypt and the diaspora. Keep your heritage alive for future generations.",
+    home_how_step3_desc:
+      "Record oral histories, digitize old photographs, and share your family's story with relatives in Egypt and the diaspora. Keep your heritage alive for future generations.",
     home_explore_label: "Explore the Platform",
     home_explore_title: "Everything You Need to Trace Your Roots",
-    home_explore_desc: "From family trees to audio recordings of elders' stories — a complete toolkit for Egyptian genealogy and cultural preservation.",
+    home_explore_desc:
+      "From family trees to audio recordings of elders' stories — a complete toolkit for Egyptian genealogy and cultural preservation.",
     home_card_trees_title: "Family Trees",
-    home_card_trees_desc: "Interactive multi-generational trees with GEDCOM import/export. Supports Arabic, Coptic, and Ottoman naming.",
+    home_card_trees_desc:
+      "Interactive multi-generational trees with GEDCOM import/export. Supports Arabic, Coptic, and Ottoman naming.",
     home_card_gallery_title: "Photo Gallery",
-    home_card_gallery_desc: "Browse archival photographs, family portraits, historical documents, and maps in a Pinterest-style masonry layout.",
+    home_card_gallery_desc:
+      "Browse archival photographs, family portraits, historical documents, and maps in a Pinterest-style masonry layout.",
     home_card_library_title: "Library & Documents",
-    home_card_library_desc: "Digitized books, manuscripts, civil registers, nasab texts, and court documents spanning centuries.",
+    home_card_library_desc:
+      "Digitized books, manuscripts, civil registers, nasab texts, and court documents spanning centuries.",
     home_card_audio_title: "Oral Histories",
-    home_card_audio_desc: "Record and listen to interviews, poetry recitations, and family stories. Spotify-inspired audio player with playlists.",
+    home_card_audio_desc:
+      "Record and listen to interviews, poetry recitations, and family stories. Spotify-inspired audio player with playlists.",
     home_card_articles_title: "Articles & Stories",
-    home_card_articles_desc: "Share research findings, publish family narratives, and engage with the community through likes, comments, and discussions.",
+    home_card_articles_desc:
+      "Share research findings, publish family narratives, and engage with the community through likes, comments, and discussions.",
     home_card_archives_title: "Sources & Archives",
-    home_card_archives_desc: "Navigate Egypt's major archival institutions: Dar al-Wathaeq, Sharia courts, Awqaf registries, colonial census, and more.",
+    home_card_archives_desc:
+      "Navigate Egypt's major archival institutions: Dar al-Wathaeq, Sharia courts, Awqaf registries, colonial census, and more.",
     home_featured_label: "Featured",
     home_timeline_label: "Through the Ages",
     home_timeline_title: "Records Spanning Egypt's Rich History",
@@ -181,27 +192,36 @@ const translations: Record<string, Record<string, string>> = {
     map_city_cairo: "Cairo",
     map_city_cairo_desc: "Capital; home to Dar al-Wathaeq National Archives.",
     map_city_alexandria: "Alexandria",
-    map_city_alexandria_desc: "Historic port; Bibliotheca Alexandrina and colonial-era records.",
+    map_city_alexandria_desc:
+      "Historic port; Bibliotheca Alexandrina and colonial-era records.",
     map_city_luxor: "Luxor",
-    map_city_luxor_desc: "Ancient Thebes; Valley of the Kings and temple inscriptions.",
+    map_city_luxor_desc:
+      "Ancient Thebes; Valley of the Kings and temple inscriptions.",
     map_city_aswan: "Aswan",
-    map_city_aswan_desc: "Gateway to Nubia; ancient and modern administrative records.",
+    map_city_aswan_desc:
+      "Gateway to Nubia; ancient and modern administrative records.",
     map_city_giza: "Giza",
     map_city_giza_desc: "Pyramids plateau; museums and survey documentation.",
     map_city_mansoura: "Mansoura",
-    map_city_mansoura_desc: "Major Delta city; civil registries and regional archives.",
+    map_city_mansoura_desc:
+      "Major Delta city; civil registries and regional archives.",
     map_city_tanta: "Tanta",
-    map_city_tanta_desc: "Delta cultural center; religious and municipal records.",
+    map_city_tanta_desc:
+      "Delta cultural center; religious and municipal records.",
     map_city_asyut: "Asyut",
-    map_city_asyut_desc: "Upper Egypt hub; Coptic and Islamic heritage sources.",
+    map_city_asyut_desc:
+      "Upper Egypt hub; Coptic and Islamic heritage sources.",
     map_city_port_said: "Port Said",
-    map_city_port_said_desc: "Suez Canal city; British and Egyptian administrative files.",
+    map_city_port_said_desc:
+      "Suez Canal city; British and Egyptian administrative files.",
     map_city_faiyum: "Faiyum",
     map_city_faiyum_desc: "Fayoum oasis; Ptolemaic portraits and land records.",
     map_city_minya: "Minya",
-    map_city_minya_desc: "Upper Egypt; Coptic monasteries and civil documentation.",
+    map_city_minya_desc:
+      "Upper Egypt; Coptic monasteries and civil documentation.",
     map_city_sohag: "Sohag",
-    map_city_sohag_desc: "White and Red Monasteries; regional tribal and church records.",
+    map_city_sohag_desc:
+      "White and Red Monasteries; regional tribal and church records.",
     join_our_community: "Join Our Community",
     join_community_desc:
       "Share research finds on Egyptian records, ask for help with Arabic or Ottoman script, and connect with cousins in Egypt and across the diaspora.",
@@ -540,62 +560,76 @@ const translations: Record<string, Record<string, string>> = {
       "Administrative reports and cartography trace movement between oases, coasts, and hinterlands.",
     // Expanded Egyptian periods
     periods_pharaonic_title: "Pharaonic & Ancient Era (3100 BC - 332 BC)",
-    periods_pharaonic_desc: "Ancient Egypt's dynastic records, temple inscriptions, and papyrus documents preserve some of the earliest genealogical information in human history.",
+    periods_pharaonic_desc:
+      "Ancient Egypt's dynastic records, temple inscriptions, and papyrus documents preserve some of the earliest genealogical information in human history.",
     periods_pharaonic_b1: "Royal cartouches and king lists",
     periods_pharaonic_b2: "Temple and tomb genealogical inscriptions",
     periods_pharaonic_b3: "Papyrus family records and census documents",
     periods_pharaonic_b4: "Priestly lineage records",
     periods_ptolemaic_title: "Ptolemaic & Roman Period (332 BC - 641 AD)",
-    periods_ptolemaic_desc: "Greek and Roman administrative systems introduced census records and tax documents that preserved family information.",
+    periods_ptolemaic_desc:
+      "Greek and Roman administrative systems introduced census records and tax documents that preserved family information.",
     periods_ptolemaic_b1: "Ptolemaic census and tax rolls",
     periods_ptolemaic_b2: "Roman civil administration records",
     periods_ptolemaic_b3: "Coptic church birth and baptism records",
     periods_ptolemaic_b4: "Land ownership and inheritance documents",
     periods_early_islamic_title: "Early Islamic Period (641 - 969)",
-    periods_early_islamic_desc: "The Rashidun, Umayyad, and Abbasid caliphates introduced Islamic legal frameworks to Egypt, establishing Sharia courts and early waqf institutions.",
+    periods_early_islamic_desc:
+      "The Rashidun, Umayyad, and Abbasid caliphates introduced Islamic legal frameworks to Egypt, establishing Sharia courts and early waqf institutions.",
     periods_early_islamic_b1: "Rashidun-era conversion and land grant records",
     periods_early_islamic_b2: "Umayyad tax registers and administrative papyri",
-    periods_early_islamic_b3: "Early Sharia court marriage and inheritance records",
+    periods_early_islamic_b3:
+      "Early Sharia court marriage and inheritance records",
     periods_early_islamic_b4: "Abbasid scholarly lineage documentation",
     periods_fatimid_title: "Fatimid & Ayyubid Era (969 - 1250)",
-    periods_fatimid_desc: "The Fatimid caliphate founded Cairo and established Al-Azhar, while Saladin's Ayyubid dynasty brought Sunni restoration and military records.",
+    periods_fatimid_desc:
+      "The Fatimid caliphate founded Cairo and established Al-Azhar, while Saladin's Ayyubid dynasty brought Sunni restoration and military records.",
     periods_fatimid_b1: "Fatimid royal genealogies and court records",
     periods_fatimid_b2: "Al-Azhar enrollment and scholarly lineage registers",
     periods_fatimid_b3: "Ayyubid military rolls and land grants",
     periods_fatimid_b4: "Waqf endowment deeds and property chains",
     periods_mamluk_title: "Mamluk Sultanate (1250 - 1517)",
-    periods_mamluk_desc: "The Bahri and Burji Mamluk sultanates maintained detailed court records, extensive waqf systems, and military registers.",
-    periods_mamluk_b1: "Sharia court registers (marriage, divorce, inheritance)",
+    periods_mamluk_desc:
+      "The Bahri and Burji Mamluk sultanates maintained detailed court records, extensive waqf systems, and military registers.",
+    periods_mamluk_b1:
+      "Sharia court registers (marriage, divorce, inheritance)",
     periods_mamluk_b2: "Mamluk military recruitment and emancipation records",
     periods_mamluk_b3: "Extensive Awqaf endowment registries",
     periods_mamluk_b4: "Merchant guild and trade guild membership records",
     periods_british_title: "British Period (1882 - 1952)",
-    periods_british_desc: "British colonial administration introduced modern census methods, civil registration, and detailed land surveys.",
+    periods_british_desc:
+      "British colonial administration introduced modern census methods, civil registration, and detailed land surveys.",
     periods_british_b1: "British census records (1882 onward)",
     periods_british_b2: "Land surveys and irrigation maps",
     periods_british_b3: "Colonial administrative and military rolls",
     periods_british_b4: "Kingdom of Egypt (1922-1952) civil registers",
-    periods_timeline_early_islamic: "641 - 969 — Early Islamic (Rashidun · Umayyad · Abbasid)",
-    periods_timeline_early_islamic_desc: "Conversion records, administrative papyri, early Sharia courts.",
+    periods_timeline_early_islamic:
+      "641 - 969 — Early Islamic (Rashidun · Umayyad · Abbasid)",
+    periods_timeline_early_islamic_desc:
+      "Conversion records, administrative papyri, early Sharia courts.",
     periods_timeline_fatimid: "969 - 1250 — Fatimid & Ayyubid",
-    periods_timeline_fatimid_desc: "Al-Azhar registers, Fatimid court records, Ayyubid military rolls.",
+    periods_timeline_fatimid_desc:
+      "Al-Azhar registers, Fatimid court records, Ayyubid military rolls.",
     periods_timeline_mamluk: "1250 - 1517 — Mamluk Sultanate",
-    periods_timeline_mamluk_desc: "Extensive court registers, Awqaf endowments, guild records.",
+    periods_timeline_mamluk_desc:
+      "Extensive court registers, Awqaf endowments, guild records.",
     periods_timeline_ottoman_egypt: "1517 - 1882 — Ottoman Period",
-    periods_timeline_ottoman_egypt_desc: "Ottoman census, taxation registers, Khedivate-era records.",
+    periods_timeline_ottoman_egypt_desc:
+      "Ottoman census, taxation registers, Khedivate-era records.",
     periods_timeline_british: "1882 - 1952 — British Period",
-    periods_timeline_british_desc: "Colonial census, land surveys, Kingdom of Egypt registers.",
+    periods_timeline_british_desc:
+      "Colonial census, land surveys, Kingdom of Egypt registers.",
     parent_relationship: "Parent Relationship",
     parents_connected: "Parents connected",
     parent_to_child: "Parent to Child",
     descendant_relationship: "Descendant Relationship",
     parent_children: "Parent-Child",
     parent_descendant: "Parent-Descendant",
-    sources_and_archives: "Sources & Archives",
+    sources_and_archives: "Archives",
     links: "Quick Links",
     resources: "Resources",
     footer_desc: "The reference for preserving Egyptian family history.",
-    sources_archives_title: "Sources & Archives for Egypt Genealogy",
+    sources_archives_title: "Archives & Records",
     sources_archives_intro:
       "Navigate historical archives, explore primary sources, and learn how to access and validate genealogical information across Ottoman registers, colonial archives, and modern civil records.",
     archive_types: "Archive Types & Repositories",
@@ -651,39 +685,70 @@ const translations: Record<string, Record<string, string>> = {
     periods_ws_conflict: "Conflict & SADR (1976–present)",
     periods_click_to_expand:
       "Click a region of Egypt to expand and see detailed periods and research tips.",
-    periods_country_intro_dz: "From Ottoman regency through French colonization to independence—key phases for civil status and lineage research.",
-    periods_country_intro_ma: "Saadi to Alaouite sultanate, protectorate, and modern kingdom—sources span Makhzen, Habous, and civil registers.",
-    periods_country_intro_tn: "Ottoman beylik, French protectorate, and republic—civil and religious archives plus modern state records.",
-    periods_country_intro_ly: "Ottoman Tripolitania, Italian colonization, and modern state—archives in Tripoli and digital collections.",
-    periods_country_intro_mr: "Pre-colonial emirates and tribal confederations, French West Africa, and independent republic—oral and written sources.",
-    periods_country_intro_ws: "Spanish Sahara, partition, and SADR—sources in Spanish, Moroccan, and Sahrawi archives and documentation centers.",
-    periods_dz_ottoman_desc: "Beylik and Qadi court registers, waqf deeds, and tribal councils; patronymic naming (ben/bint).",
-    periods_dz_french_desc: "Surname fixation (1882), municipal civil registers, ANOM colonial archives, censuses and land surveys.",
-    periods_dz_independence_desc: "National archives (CNA), APC civil status, identity documents, and diaspora records.",
-    periods_ma_saadi_desc: "Chronicles, zawiya manuscripts, and early Makhzen documents; tribal and religious lineage records.",
-    periods_ma_alaouite_desc: "Sultanic decrees, Habous archives, Qadi registers, and urban/tribal documentation.",
-    periods_ma_protectorate_desc: "French and Spanish zone civil status, censuses, land registers, and Archives du Maroc holdings.",
-    periods_ma_independence_desc: "National civil registry, Archives du Maroc, family booklets, and migration documentation.",
-    periods_tn_ottoman_desc: "Beylical and Qadi archives, waqf registers, and sharia court records; patronymics and tribal nasab.",
-    periods_tn_protectorate_desc: "Civil status introduced, censuses, land and municipal archives; Archives Nationales de Tunisie precursors.",
-    periods_tn_independence_desc: "Archives Nationales (Thekra), civil registry, identity and family documentation.",
-    periods_ly_ottoman_desc: "Karamanli and Ottoman court records, waqf, and tribal documentation; Libyan Center for Archives holds many originals.",
-    periods_ly_italian_desc: "Colonial civil registers, censuses, and land records; some digitized in Italian and Libyan archives.",
-    periods_ly_independence_desc: "National ID and civil status; Libyan Center for Archives and Historical Studies (LCAHS) in Tripoli.",
-    periods_mr_precolonial_desc: "Oral genealogies, zawiya manuscripts, and emiral archives; tribal nasab and scholarly lineages.",
-    periods_mr_french_desc: "Colonial administrative and civil records; early censuses and identity documentation.",
-    periods_mr_independence_desc: "Archives Nationales de Mauritanie, civil registry, and national identity records.",
-    periods_ws_spanish_desc: "Spanish colonial civil and administrative records; some material in Spanish and Sahrawi archives.",
-    periods_ws_mauritanian_desc: "Short-lived partition; administrative and refugee-related documentation in Mauritania and Morocco.",
-    periods_ws_conflict_desc: "Sahrawi National Archives (Rabouni), SADR documents, and diaspora/camp records; Moroccan-administered zone civil registers.",
+    periods_country_intro_dz:
+      "From Ottoman regency through French colonization to independence—key phases for civil status and lineage research.",
+    periods_country_intro_ma:
+      "Saadi to Alaouite sultanate, protectorate, and modern kingdom—sources span Makhzen, Habous, and civil registers.",
+    periods_country_intro_tn:
+      "Ottoman beylik, French protectorate, and republic—civil and religious archives plus modern state records.",
+    periods_country_intro_ly:
+      "Ottoman Tripolitania, Italian colonization, and modern state—archives in Tripoli and digital collections.",
+    periods_country_intro_mr:
+      "Pre-colonial emirates and tribal confederations, French West Africa, and independent republic—oral and written sources.",
+    periods_country_intro_ws:
+      "Spanish Sahara, partition, and SADR—sources in Spanish, Moroccan, and Sahrawi archives and documentation centers.",
+    periods_dz_ottoman_desc:
+      "Beylik and Qadi court registers, waqf deeds, and tribal councils; patronymic naming (ben/bint).",
+    periods_dz_french_desc:
+      "Surname fixation (1882), municipal civil registers, ANOM colonial archives, censuses and land surveys.",
+    periods_dz_independence_desc:
+      "National archives (CNA), APC civil status, identity documents, and diaspora records.",
+    periods_ma_saadi_desc:
+      "Chronicles, zawiya manuscripts, and early Makhzen documents; tribal and religious lineage records.",
+    periods_ma_alaouite_desc:
+      "Sultanic decrees, Habous archives, Qadi registers, and urban/tribal documentation.",
+    periods_ma_protectorate_desc:
+      "French and Spanish zone civil status, censuses, land registers, and Archives du Maroc holdings.",
+    periods_ma_independence_desc:
+      "National civil registry, Archives du Maroc, family booklets, and migration documentation.",
+    periods_tn_ottoman_desc:
+      "Beylical and Qadi archives, waqf registers, and sharia court records; patronymics and tribal nasab.",
+    periods_tn_protectorate_desc:
+      "Civil status introduced, censuses, land and municipal archives; Archives Nationales de Tunisie precursors.",
+    periods_tn_independence_desc:
+      "Archives Nationales (Thekra), civil registry, identity and family documentation.",
+    periods_ly_ottoman_desc:
+      "Karamanli and Ottoman court records, waqf, and tribal documentation; Libyan Center for Archives holds many originals.",
+    periods_ly_italian_desc:
+      "Colonial civil registers, censuses, and land records; some digitized in Italian and Libyan archives.",
+    periods_ly_independence_desc:
+      "National ID and civil status; Libyan Center for Archives and Historical Studies (LCAHS) in Tripoli.",
+    periods_mr_precolonial_desc:
+      "Oral genealogies, zawiya manuscripts, and emiral archives; tribal nasab and scholarly lineages.",
+    periods_mr_french_desc:
+      "Colonial administrative and civil records; early censuses and identity documentation.",
+    periods_mr_independence_desc:
+      "Archives Nationales de Mauritanie, civil registry, and national identity records.",
+    periods_ws_spanish_desc:
+      "Spanish colonial civil and administrative records; some material in Spanish and Sahrawi archives.",
+    periods_ws_mauritanian_desc:
+      "Short-lived partition; administrative and refugee-related documentation in Mauritania and Morocco.",
+    periods_ws_conflict_desc:
+      "Sahrawi National Archives (Rabouni), SADR documents, and diaspora/camp records; Moroccan-administered zone civil registers.",
     official_archives_quick_jump: "Browse archives by location: ",
     visit_official_site: "Visit official site",
-    archive_desc_algeria: "Ottoman and colonial-era holdings, civil status precursors, maps, and photographs. Request access and catalog references for genealogical research.",
-    archive_desc_morocco: "Protectorate and post-independence archives, legal and administrative collections. Consultation room and catalog for researchers.",
-    archive_desc_tunisia: "Thekra database (180,000+ records), historical and civil documents, books and periodicals. Plan visits and cite references for lineage work.",
-    archive_desc_libya: "Ottoman, Italian, and modern collections; millions of documents and oral histories. Contact for access and catalog consultation in Tripoli.",
-    archive_desc_mauritania: "National archival holdings and cultural ministry resources. Inquire for civil and historical documentation and research procedures.",
-    archive_desc_western_sahara: "SADR documentation, microfilm collections, and official publications. Sahrawi embassies and Rabouni archives for genealogical and historical research.",
+    archive_desc_algeria:
+      "Ottoman and colonial-era holdings, civil status precursors, maps, and photographs. Request access and catalog references for genealogical research.",
+    archive_desc_morocco:
+      "Protectorate and post-independence archives, legal and administrative collections. Consultation room and catalog for researchers.",
+    archive_desc_tunisia:
+      "Thekra database (180,000+ records), historical and civil documents, books and periodicals. Plan visits and cite references for lineage work.",
+    archive_desc_libya:
+      "Ottoman, Italian, and modern collections; millions of documents and oral histories. Contact for access and catalog consultation in Tripoli.",
+    archive_desc_mauritania:
+      "National archival holdings and cultural ministry resources. Inquire for civil and historical documentation and research procedures.",
+    archive_desc_western_sahara:
+      "SADR documentation, microfilm collections, and official publications. Sahrawi embassies and Rabouni archives for genealogical and historical research.",
     international_archives_title: "International & Colonial Archives",
     international_archives_intro:
       "Major archives in Europe and Turkey hold essential records for Egyptian genealogy: consular files, military rolls, colonial administration, and Ottoman-era provincial material on Egypt.",
@@ -735,12 +800,14 @@ const translations: Record<string, Record<string, string>> = {
     audio_upload_heading: "Add a recording",
     audio_title_optional: "Optional title",
     audio_tap_to_upload: "Choose or record audio",
-    audio_limits_hint: "Up to 4 MB per file; stored locally in this browser for now.",
+    audio_limits_hint:
+      "Up to 4 MB per file; stored locally in this browser for now.",
     audio_your_library: "Your clips",
     audio_empty: "No audio yet — upload a file to get started.",
     audio_file_too_large: "File too large",
     audio_added_to_library: "Audio added to your library",
-    audio_device_only_hint: "Stored in this browser only until server upload is connected.",
+    audio_device_only_hint:
+      "Stored in this browser only until server upload is connected.",
     audio_remove_clip: "Remove clip",
     articles: "Articles",
     articles_title: "Community writing",
@@ -750,7 +817,8 @@ const translations: Record<string, Record<string, string>> = {
     articles_title_placeholder: "Title",
     articles_body_placeholder: "Your article…",
     articles_publish: "Publish",
-    articles_login_hint: "Sign in to publish articles. Anyone can read and comment.",
+    articles_login_hint:
+      "Sign in to publish articles. Anyone can read and comment.",
     articles_feed: "Latest articles",
     articles_empty: "No articles yet — be the first to publish.",
     articles_comments: "Comments",
@@ -773,7 +841,8 @@ const translations: Record<string, Record<string, string>> = {
     no_documents_yet: "No documents yet.",
     invalid_email: "Please provide a valid email before logging in",
     password_required: "Password is required to sign you in",
-    invalid_credentials: "Invalid credentials. Please check your email and password.",
+    invalid_credentials:
+      "Invalid credentials. Please check your email and password.",
     login_failed_no_user: "Login failed: No user data received",
     signup_failed: "Signup failed",
     phone_placeholder: "e.g. +20 100 123 4567",
@@ -828,9 +897,11 @@ const translations: Record<string, Record<string, string>> = {
     role: "Role",
     status: "Status",
     full_name_required: "Full name is required",
-    signup_desc: "Join Roots Egypt and preserve your family’s stories across Egypt and the diaspora.",
+    signup_desc:
+      "Join Roots Egypt and preserve your family’s stories across Egypt and the diaspora.",
     already_have_account: "Already have an account?",
-    contact_hero_para: "We are ready to help with Egyptian genealogical research, archive questions, and preserving your family story. Write to us and we will respond within 24 hours.",
+    contact_hero_para:
+      "We are ready to help with Egyptian genealogical research, archive questions, and preserving your family story. Write to us and we will respond within 24 hours.",
     contact_phone_primary: "+20 2 XXX XXXX",
     contact_hours_week: "Sun–Thu: 9:00–18:00 (Cairo time)",
     contact_whatsapp_line: "WhatsApp: +20 2 XXX XXXX",
@@ -851,7 +922,8 @@ const translations: Record<string, Record<string, string>> = {
     welcome_back_prefix: "Welcome back",
     research_center_title: "Genealogical Research Center",
     viewing_mode_read_only: "Viewing Mode - Read Only",
-    explore_public_tree_desc: "Explore this public family tree to discover connections.",
+    explore_public_tree_desc:
+      "Explore this public family tree to discover connections.",
     research_guides_title: "Research Guides & Tutorials",
     research_hero_kicker: "Research Center",
     research_intro:
@@ -866,21 +938,27 @@ const translations: Record<string, Record<string, string>> = {
     research_cat_lineage_desc:
       "Coptic parish registers, rural leadership records, Sa‘idi and Delta oral histories, and family manuscripts.",
     research_guide_ottoman_title: "Reading Ottoman-era documents",
-    research_guide_ottoman_desc: "Scripts, formulas, and naming patterns in Egyptian court registers.",
+    research_guide_ottoman_desc:
+      "Scripts, formulas, and naming patterns in Egyptian court registers.",
     research_guide_trace_title: "Tracing displaced branches",
-    research_guide_trace_desc: "Follow migrations within Egypt and the diaspora using several sources.",
+    research_guide_trace_desc:
+      "Follow migrations within Egypt and the diaspora using several sources.",
     research_guide_archive_title: "Using Egyptian archives",
-    research_guide_archive_desc: "Dar al-Wathaeq, governorate civil offices, and church-held registers.",
+    research_guide_archive_desc:
+      "Dar al-Wathaeq, governorate civil offices, and church-held registers.",
     research_guide_oral_title: "Oral history interviews",
-    research_guide_oral_desc: "Structured conversations with elders about names, places, and kinship.",
+    research_guide_oral_desc:
+      "Structured conversations with elders about names, places, and kinship.",
     research_timeline_heading: "Egypt — timeline for genealogists",
     research_tl_1_period: "3100 BC – 641 AD — Ancient to late antique",
     research_tl_1_detail:
       "Royal and temple inscriptions, papyri, and (where extant) late antique material for elite and clerical lines.",
     research_tl_2_period: "641 – 1517 — Islamic & Mamluk Egypt",
-    research_tl_2_detail: "Chronicles, waqf, and early Sharia documentation of families and property.",
+    research_tl_2_detail:
+      "Chronicles, waqf, and early Sharia documentation of families and property.",
     research_tl_3_period: "1517 – 1882 — Ottoman Egypt",
-    research_tl_3_detail: "Provincial courts, tax rolls, and patrilineal naming in imperial registers.",
+    research_tl_3_detail:
+      "Provincial courts, tax rolls, and patrilineal naming in imperial registers.",
     research_tl_4_period: "1882 – present — Modern Egypt",
     research_tl_4_detail:
       "Civil status, national ID, Dar al-Wathaeq, and diaspora consular documentation.",
@@ -890,7 +968,8 @@ const translations: Record<string, Record<string, string>> = {
     research_mock_tree_label: "Egypt — public tree",
     research_mock_tree_demo: "Demo listing for exploring the directory.",
     research_mock_book_1_title: "Description de l'Égypte — selected facsimiles",
-    research_mock_book_2_title: "Civil registry extracts — Cairo samples (demo)",
+    research_mock_book_2_title:
+      "Civil registry extracts — Cairo samples (demo)",
     research_mock_book_1_author: "Commission d'Égypte (corpus)",
     research_mock_book_2_author: "Cairo governorate (sample)",
     mock_entry_label: "Preview entry (sample data)",
@@ -903,10 +982,12 @@ const translations: Record<string, Record<string, string>> = {
     message_send_failed: "Failed to send message.",
     email_placeholder_example: "example@email.com",
     password_placeholder_mask: "********",
-    users_page_desc: "Registered users (name, email, phone) - passwords are never shown.",
+    users_page_desc:
+      "Registered users (name, email, phone) - passwords are never shown.",
     admin_only: "Admin only",
     add_user_hint: "Add a new user",
-    add_user_email_hint: "We will email them a password-reset code to set their password.",
+    add_user_email_hint:
+      "We will email them a password-reset code to set their password.",
     reset_email_failed: "Failed to send reset email",
     invalid_code_or_password: "Invalid code or password",
     dashboard_load_failed: "Failed to load dashboard data.",
@@ -1018,7 +1099,8 @@ const translations: Record<string, Record<string, string>> = {
     search_button: "Rechercher",
     page_not_found: "404 • Page introuvable",
     lost_in_archives: "Égaré dans les archives",
-    error_404_description: "La page demandée n'existe pas ou a été déplacée. Retournez à l'accueil pour continuer à explorer votre héritage égyptien.",
+    error_404_description:
+      "La page demandée n'existe pas ou a été déplacée. Retournez à l'accueil pour continuer à explorer votre héritage égyptien.",
     loading: "Chargement...",
     no_results: "Aucun résultat",
     trees: "Arbres Généalogiques",
@@ -1065,8 +1147,10 @@ const translations: Record<string, Record<string, string>> = {
     home_archives_tag_dar: "Archives nationales Dar al-Wathaeq",
     home_archives_tag_british: "Recensements de l’administration britannique",
     home_archives_tag_civil: "Registres des bureaux d’état civil",
-    tree_card_default_desc: "Explorez cette lignée familiale égyptienne publique.",
-    featured_trees_error: "Impossible de charger les arbres mis en avant. Réessayez plus tard.",
+    tree_card_default_desc:
+      "Explorez cette lignée familiale égyptienne publique.",
+    featured_trees_error:
+      "Impossible de charger les arbres mis en avant. Réessayez plus tard.",
     mock_featured_tree_1_title: "El-Masry & Sa'id — Le Caire et le Delta",
     mock_featured_tree_2_title: "Branches nubiennes — Assouan et Haute-Égypte",
     mock_featured_tree_3_title: "Marchands côtiers — Alexandrie et Rosette",
@@ -1086,26 +1170,36 @@ const translations: Record<string, Record<string, string>> = {
     home_how_label: "Comment ça marche",
     home_how_title: "Votre parcours patrimonial en trois étapes",
     home_how_step1_title: "Rechercher et découvrir",
-    home_how_step1_desc: "Explorez les registres des tribunaux ottomans, les registres coptes, les archives civiles et les documents tribaux pour retrouver les traces écrites de votre famille en Égypte.",
+    home_how_step1_desc:
+      "Explorez les registres des tribunaux ottomans, les registres coptes, les archives civiles et les documents tribaux pour retrouver les traces écrites de votre famille en Égypte.",
     home_how_step2_title: "Construire votre arbre",
-    home_how_step2_desc: "Reliez parents, grands-parents et ancêtres lointains. Importez des fichiers GEDCOM, joignez des documents et visualisez votre lignée avec notre constructeur dédié au patrimoine.",
+    home_how_step2_desc:
+      "Reliez parents, grands-parents et ancêtres lointains. Importez des fichiers GEDCOM, joignez des documents et visualisez votre lignée avec notre constructeur dédié au patrimoine.",
     home_how_step3_title: "Préserver et partager",
-    home_how_step3_desc: "Enregistrez les histoires orales, numérisez les photos anciennes et partagez le récit de votre famille avec vos proches en Égypte et dans la diaspora. Gardez votre héritage vivant pour les générations futures.",
+    home_how_step3_desc:
+      "Enregistrez les histoires orales, numérisez les photos anciennes et partagez le récit de votre famille avec vos proches en Égypte et dans la diaspora. Gardez votre héritage vivant pour les générations futures.",
     home_explore_label: "Explorer la plateforme",
     home_explore_title: "Tout ce qu'il faut pour retrouver vos racines",
-    home_explore_desc: "Des arbres généalogiques aux enregistrements audio des récits des aînés — une boîte à outils complète pour la généalogie égyptienne et la préservation culturelle.",
+    home_explore_desc:
+      "Des arbres généalogiques aux enregistrements audio des récits des aînés — une boîte à outils complète pour la généalogie égyptienne et la préservation culturelle.",
     home_card_trees_title: "Arbres généalogiques",
-    home_card_trees_desc: "Arbres interactifs multigénérationnels avec import/export GEDCOM. Prend en charge les noms arabes, coptes et ottomans.",
+    home_card_trees_desc:
+      "Arbres interactifs multigénérationnels avec import/export GEDCOM. Prend en charge les noms arabes, coptes et ottomans.",
     home_card_gallery_title: "Galerie photo",
-    home_card_gallery_desc: "Parcourez photos d'archives, portraits de famille, documents historiques et cartes dans une mosaïque de style Pinterest.",
+    home_card_gallery_desc:
+      "Parcourez photos d'archives, portraits de famille, documents historiques et cartes dans une mosaïque de style Pinterest.",
     home_card_library_title: "Bibliothèque et documents",
-    home_card_library_desc: "Livres numérisés, manuscrits, registres civils, textes de nasab et documents judiciaires couvrant des siècles.",
+    home_card_library_desc:
+      "Livres numérisés, manuscrits, registres civils, textes de nasab et documents judiciaires couvrant des siècles.",
     home_card_audio_title: "Histoires orales",
-    home_card_audio_desc: "Enregistrez et écoutez des entretiens, récitations de poésie et histoires familiales. Lecteur audio inspiré de Spotify avec listes de lecture.",
+    home_card_audio_desc:
+      "Enregistrez et écoutez des entretiens, récitations de poésie et histoires familiales. Lecteur audio inspiré de Spotify avec listes de lecture.",
     home_card_articles_title: "Articles et récits",
-    home_card_articles_desc: "Partagez des résultats de recherche, publiez des récits familiaux et échangez avec la communauté via likes, commentaires et discussions.",
-    home_card_archives_title: "Sources et archives",
-    home_card_archives_desc: "Naviguez dans les principales institutions archivistiques d'Égypte : Dar al-Wathaeq, tribunaux chariatiques, awqaf, recensements coloniaux et plus.",
+    home_card_articles_desc:
+      "Partagez des résultats de recherche, publiez des récits familiaux et échangez avec la communauté via likes, commentaires et discussions.",
+    home_card_archives_title: "Archives",
+    home_card_archives_desc:
+      "Naviguez dans les principales institutions archivistiques d'Égypte : Dar al-Wathaeq, tribunaux chariatiques, awqaf, recensements coloniaux et plus.",
     home_featured_label: "En vedette",
     home_timeline_label: "À travers les âges",
     home_timeline_title: "Des archives couvrant la riche histoire de l'Égypte",
@@ -1150,9 +1244,11 @@ const translations: Record<string, Record<string, string>> = {
     map_region_mediterranean: "Côte méditerranéenne",
     map_pop_8m: "~8 millions",
     map_city_cairo: "Le Caire",
-    map_city_cairo_desc: "Capitale ; siège de Dar al-Wathaeq (archives nationales).",
+    map_city_cairo_desc:
+      "Capitale ; siège de Dar al-Wathaeq (archives nationales).",
     map_city_alexandria: "Alexandrie",
-    map_city_alexandria_desc: "Port historique ; Bibliotheca Alexandrina et fonds coloniaux.",
+    map_city_alexandria_desc:
+      "Port historique ; Bibliotheca Alexandrina et fonds coloniaux.",
     map_city_luxor: "Louxor",
     map_city_luxor_desc: "Thèbes antique ; inscriptions royales et temples.",
     map_city_aswan: "Assouan",
@@ -1160,19 +1256,26 @@ const translations: Record<string, Record<string, string>> = {
     map_city_giza: "Gizeh",
     map_city_giza_desc: "Plateau des pyramides ; musées et relevés.",
     map_city_mansoura: "Mansoura",
-    map_city_mansoura_desc: "Grande ville du Delta ; état civil et archives régionales.",
+    map_city_mansoura_desc:
+      "Grande ville du Delta ; état civil et archives régionales.",
     map_city_tanta: "Tanta",
-    map_city_tanta_desc: "Centre culturel du Delta ; registres municipaux et religieux.",
+    map_city_tanta_desc:
+      "Centre culturel du Delta ; registres municipaux et religieux.",
     map_city_asyut: "Assiout",
-    map_city_asyut_desc: "Carrefour de Haute-Égypte ; patrimoine copte et islamique.",
+    map_city_asyut_desc:
+      "Carrefour de Haute-Égypte ; patrimoine copte et islamique.",
     map_city_port_said: "Port-Saïd",
-    map_city_port_said_desc: "Canal de Suez ; dossiers britanniques et égyptiens.",
+    map_city_port_said_desc:
+      "Canal de Suez ; dossiers britanniques et égyptiens.",
     map_city_faiyum: "Fayoum",
-    map_city_faiyum_desc: "Oasis du Fayoum ; portraits ptolémaïques et cadastre.",
+    map_city_faiyum_desc:
+      "Oasis du Fayoum ; portraits ptolémaïques et cadastre.",
     map_city_minya: "Minya",
-    map_city_minya_desc: "Haute-Égypte ; monastères coptes et documentation civile.",
+    map_city_minya_desc:
+      "Haute-Égypte ; monastères coptes et documentation civile.",
     map_city_sohag: "Sohag",
-    map_city_sohag_desc: "Monastères Blanc et Rouge ; registres d’église et tribaux.",
+    map_city_sohag_desc:
+      "Monastères Blanc et Rouge ; registres d’église et tribaux.",
     join_our_community: "Rejoignez Notre Communauté",
     join_community_desc:
       "Partagez vos découvertes sur les documents égyptiens, demandez de l’aide pour l’arabe ou l’ottoman, et retrouvez des cousins en Égypte et dans la diaspora.",
@@ -1297,7 +1400,7 @@ const translations: Record<string, Record<string, string>> = {
     descendant_relationship: "Relation Descendante",
     parent_children: "Parent-Enfant",
     parent_descendant: "Parent-Descendant",
-    sources_and_archives: "Sources et Archives",
+    sources_and_archives: "Archives",
     links: "Liens rapides",
     resources: "Ressources",
     footer_desc: "La référence pour préserver l’histoire familiale égyptienne.",
@@ -1468,14 +1571,16 @@ const translations: Record<string, Record<string, string>> = {
     periods_ottoman_desc:
       "Lignées patronymiques, archives de Qadi, documents waqf et autorité tribale ont défini les structures familiales.",
     periods_ottoman_b1: "Nommage patronymique : Ahmed ben Mohamed ben Ali",
-    periods_ottoman_b2: "Registres des tribunaux de Qadi pour mariage et héritage",
+    periods_ottoman_b2:
+      "Registres des tribunaux de Qadi pour mariage et héritage",
     periods_ottoman_b3: "Documentation habous et biens religieux",
     periods_ottoman_b4: "Conseils tribaux et généalogies de zaouïa",
     periods_transition_title: "Transition (1830-1882)",
     periods_transition_desc:
       "La gouvernance militaire française a introduit des expériences d'état civil parallèlement aux systèmes traditionnels.",
     periods_transition_b1: "Supervision coloniale du Bureau arabe",
-    periods_transition_b2: "Premières tentatives de recensement et d'enregistrement",
+    periods_transition_b2:
+      "Premières tentatives de recensement et d'enregistrement",
     periods_transition_b3: "Rapports ethnographiques sur la structure tribale",
     periods_transition_b4: "Archives militaires des régions contrôlées",
     periods_colonial_title: "Ère coloniale (1882-1962)",
@@ -1488,7 +1593,8 @@ const translations: Record<string, Record<string, string>> = {
     periods_independence_title: "Indépendance et au-delà (1962 à aujourd'hui)",
     periods_independence_desc:
       "Les bureaux APC municipaux maintiennent un état civil à jour avec identité nationale et journaux de migration.",
-    periods_independence_b1: "Fichiers d'enregistrement de la carte d'identité nationale",
+    periods_independence_b1:
+      "Fichiers d'enregistrement de la carte d'identité nationale",
     periods_independence_b2: "Registres APC naissance/mariage/décès",
     periods_independence_b3: "Études sur les migrations régionales",
     periods_independence_b4: "Documentation de la diaspora et réunification",
@@ -1516,53 +1622,73 @@ const translations: Record<string, Record<string, string>> = {
     periods_highlight_migration_title: "Cartes des migrations",
     periods_highlight_migration_desc:
       "Les rapports administratifs et la cartographie retracent les déplacements entre oasis, côtes et arrière-pays.",
-    periods_pharaonic_title: "Ère pharaonique et antique (3100 av. J.-C. - 332 av. J.-C.)",
-    periods_pharaonic_desc: "Les archives dynastiques, inscriptions de temples et papyrus de l'Égypte ancienne préservent les plus anciennes informations généalogiques.",
+    periods_pharaonic_title:
+      "Ère pharaonique et antique (3100 av. J.-C. - 332 av. J.-C.)",
+    periods_pharaonic_desc:
+      "Les archives dynastiques, inscriptions de temples et papyrus de l'Égypte ancienne préservent les plus anciennes informations généalogiques.",
     periods_pharaonic_b1: "Cartouches royaux et listes de rois",
     periods_pharaonic_b2: "Inscriptions généalogiques de temples et tombes",
-    periods_pharaonic_b3: "Registres familiaux sur papyrus et documents de recensement",
+    periods_pharaonic_b3:
+      "Registres familiaux sur papyrus et documents de recensement",
     periods_pharaonic_b4: "Archives des lignées sacerdotales",
-    periods_ptolemaic_title: "Période ptolémaïque et romaine (332 av. J.-C. - 641)",
-    periods_ptolemaic_desc: "Les systèmes administratifs grecs et romains ont introduit des registres de recensement et des documents fiscaux.",
+    periods_ptolemaic_title:
+      "Période ptolémaïque et romaine (332 av. J.-C. - 641)",
+    periods_ptolemaic_desc:
+      "Les systèmes administratifs grecs et romains ont introduit des registres de recensement et des documents fiscaux.",
     periods_ptolemaic_b1: "Recensements et registres fiscaux ptolémaïques",
     periods_ptolemaic_b2: "Archives de l'administration civile romaine",
     periods_ptolemaic_b3: "Registres de naissance et de baptême coptes",
     periods_ptolemaic_b4: "Documents de propriété foncière et d'héritage",
     periods_early_islamic_title: "Période islamique primitive (641 - 969)",
-    periods_early_islamic_desc: "Les califats rachidun, omeyyade et abbasside ont introduit les cadres juridiques islamiques en Égypte.",
-    periods_early_islamic_b1: "Registres de conversion et concessions foncières rashidun",
-    periods_early_islamic_b2: "Registres fiscaux omeyyades et papyrus administratifs",
+    periods_early_islamic_desc:
+      "Les califats rachidun, omeyyade et abbasside ont introduit les cadres juridiques islamiques en Égypte.",
+    periods_early_islamic_b1:
+      "Registres de conversion et concessions foncières rashidun",
+    periods_early_islamic_b2:
+      "Registres fiscaux omeyyades et papyrus administratifs",
     periods_early_islamic_b3: "Premiers registres de tribunaux charaïques",
     periods_early_islamic_b4: "Documentation des lignées savantes abbassides",
     periods_fatimid_title: "Ère fatimide et ayyoubide (969 - 1250)",
-    periods_fatimid_desc: "Le califat fatimide a fondé Le Caire et Al-Azhar, tandis que la dynastie ayyoubide de Saladin a apporté des archives militaires.",
+    periods_fatimid_desc:
+      "Le califat fatimide a fondé Le Caire et Al-Azhar, tandis que la dynastie ayyoubide de Saladin a apporté des archives militaires.",
     periods_fatimid_b1: "Généalogies royales fatimides et archives de cour",
     periods_fatimid_b2: "Registres d'inscription et de lignée d'Al-Azhar",
-    periods_fatimid_b3: "Registres militaires et concessions foncières ayyoubides",
+    periods_fatimid_b3:
+      "Registres militaires et concessions foncières ayyoubides",
     periods_fatimid_b4: "Actes de dotation waqf et chaînes de propriété",
     periods_mamluk_title: "Sultanat mamelouk (1250 - 1517)",
-    periods_mamluk_desc: "Les sultanats bahri et burji mamelouks ont maintenu des archives judiciaires détaillées et des systèmes de waqf extensifs.",
-    periods_mamluk_b1: "Registres de tribunaux charaïques (mariage, divorce, héritage)",
+    periods_mamluk_desc:
+      "Les sultanats bahri et burji mamelouks ont maintenu des archives judiciaires détaillées et des systèmes de waqf extensifs.",
+    periods_mamluk_b1:
+      "Registres de tribunaux charaïques (mariage, divorce, héritage)",
     periods_mamluk_b2: "Registres de recrutement et d'émancipation mamelouks",
     periods_mamluk_b3: "Vastes registres de dotation Awqaf",
     periods_mamluk_b4: "Registres des guildes marchandes et artisanales",
     periods_british_title: "Période britannique (1882 - 1952)",
-    periods_british_desc: "L'administration coloniale britannique a introduit des méthodes de recensement modernes et l'enregistrement civil.",
-    periods_british_b1: "Registres de recensement britanniques (à partir de 1882)",
+    periods_british_desc:
+      "L'administration coloniale britannique a introduit des méthodes de recensement modernes et l'enregistrement civil.",
+    periods_british_b1:
+      "Registres de recensement britanniques (à partir de 1882)",
     periods_british_b2: "Relevés topographiques et cartes d'irrigation",
     periods_british_b3: "Registres administratifs et militaires coloniaux",
     periods_british_b4: "Registres civils du Royaume d'Égypte (1922-1952)",
-    periods_timeline_early_islamic: "641 - 969 — Islam primitif (Rachidun · Omeyyade · Abbasside)",
-    periods_timeline_early_islamic_desc: "Registres de conversion, papyrus administratifs, premiers tribunaux charaïques.",
+    periods_timeline_early_islamic:
+      "641 - 969 — Islam primitif (Rachidun · Omeyyade · Abbasside)",
+    periods_timeline_early_islamic_desc:
+      "Registres de conversion, papyrus administratifs, premiers tribunaux charaïques.",
     periods_timeline_fatimid: "969 - 1250 — Fatimide et Ayyoubide",
-    periods_timeline_fatimid_desc: "Registres d'Al-Azhar, archives de cour fatimides, registres militaires ayyoubides.",
+    periods_timeline_fatimid_desc:
+      "Registres d'Al-Azhar, archives de cour fatimides, registres militaires ayyoubides.",
     periods_timeline_mamluk: "1250 - 1517 — Sultanat mamelouk",
-    periods_timeline_mamluk_desc: "Registres de cour extensifs, dotations Awqaf, registres de guildes.",
+    periods_timeline_mamluk_desc:
+      "Registres de cour extensifs, dotations Awqaf, registres de guildes.",
     periods_timeline_ottoman_egypt: "1517 - 1882 — Période ottomane",
-    periods_timeline_ottoman_egypt_desc: "Recensement ottoman, registres fiscaux, archives du khédivat.",
+    periods_timeline_ottoman_egypt_desc:
+      "Recensement ottoman, registres fiscaux, archives du khédivat.",
     periods_timeline_british: "1882 - 1952 — Période britannique",
-    periods_timeline_british_desc: "Recensement colonial, relevés topographiques, registres du Royaume d'Égypte.",
-    sources_archives_title: "Sources et archives pour la généalogie en Égypte",
+    periods_timeline_british_desc:
+      "Recensement colonial, relevés topographiques, registres du Royaume d'Égypte.",
+    sources_archives_title: "Archives et documents",
     sources_archives_intro:
       "Parcourez les archives historiques, explorez les sources primaires et apprenez à accéder et valider les informations généalogiques dans les registres ottomans, les archives coloniales et les registres civils modernes.",
     archive_types: "Types d'archives et dépôts",
@@ -1591,7 +1717,8 @@ const translations: Record<string, Record<string, string>> = {
     official_archive_algeria: "Centre National des Archives (CNA)",
     official_archive_morocco: "Archives du Maroc",
     official_archive_tunisia: "Archives Nationales de Tunisie",
-    official_archive_libya: "Centre libyen des archives et des études historiques",
+    official_archive_libya:
+      "Centre libyen des archives et des études historiques",
     official_archive_mauritania: "Archives Nationales de Mauritanie",
     official_archive_western_sahara: "Archives nationales sahraouies",
     periods_by_country_title: "Périodes régionales en Égypte",
@@ -1618,39 +1745,70 @@ const translations: Record<string, Record<string, string>> = {
     periods_ws_conflict: "Conflit et RASD (1976 à aujourd'hui)",
     periods_click_to_expand:
       "Cliquez sur une région d’Égypte pour afficher les périodes détaillées et les pistes de recherche.",
-    periods_country_intro_dz: "De la régence ottomane à la colonisation française puis à l'indépendance—phases clés pour l'état civil et la recherche lignagère.",
-    periods_country_intro_ma: "Des Saadiens au sultanat alaouite, au protectorat et au royaume moderne—sources Makhzen, Habous et registres civils.",
-    periods_country_intro_tn: "Beylik ottoman, protectorat français et république—archives civiles et religieuses et fonds d'État modernes.",
-    periods_country_intro_ly: "Tripolitaine ottomane, colonisation italienne et État moderne—archives à Tripoli et fonds numériques.",
-    periods_country_intro_mr: "Émirates et confédérations tribales précoloniaux, Afrique occidentale française et république indépendante—sources orales et écrites.",
-    periods_country_intro_ws: "Sahara espagnol, partition et RASD—sources dans les archives espagnoles, marocaines et sahraouies.",
-    periods_dz_ottoman_desc: "Registres du Beylik et des tribunaux de Qadi, actes waqf et conseils tribaux ; nommage patronymique (ben/bint).",
-    periods_dz_french_desc: "Fixation des noms (1882), registres civils municipaux, archives coloniales ANOM, recensements et levés.",
-    periods_dz_independence_desc: "Archives nationales (CNA), état civil APC, documents d'identité et dossiers de la diaspora.",
-    periods_ma_saadi_desc: "Chroniques, manuscrits de zaouïas et premiers documents Makhzen ; généalogies tribales et religieuses.",
-    periods_ma_alaouite_desc: "Dahirs, archives habous, registres de Qadi et documentation urbaine et tribale.",
-    periods_ma_protectorate_desc: "État civil des zones française et espagnole, recensements, cadastre et fonds des Archives du Maroc.",
-    periods_ma_independence_desc: "Registre civil national, Archives du Maroc, livrets de famille et documentation migratoire.",
-    periods_tn_ottoman_desc: "Archives beylicales et de Qadi, registres waqf et tribunaux charaïques ; patronymes et nasab tribal.",
-    periods_tn_protectorate_desc: "Introduction de l'état civil, recensements, archives foncières et municipales ; prédécesseurs des Archives nationales de Tunisie.",
-    periods_tn_independence_desc: "Archives nationales (Thekra), état civil, identité et documentation familiale.",
-    periods_ly_ottoman_desc: "Archives karamanlies et ottomanes, waqf et documentation tribale ; le Centre libyen en conserve de nombreux originaux.",
-    periods_ly_italian_desc: "Registres civils coloniaux, recensements et cadastre ; une partie numérisée dans les archives italiennes et libyennes.",
-    periods_ly_independence_desc: "Carte d'identité nationale et état civil ; Centre libyen des archives et des études historiques (LCAHS) à Tripoli.",
-    periods_mr_precolonial_desc: "Généalogies orales, manuscrits de zaouïa et archives émiralès ; nasab tribal et lignées savantes.",
-    periods_mr_french_desc: "Fonds administratifs et civils coloniaux ; premiers recensements et pièces d'identité.",
-    periods_mr_independence_desc: "Archives nationales de Mauritanie, état civil et documents d'identité nationaux.",
-    periods_ws_spanish_desc: "Fonds civils et administratifs coloniaux espagnols ; documents en Espagne et dans les archives sahraouies.",
-    periods_ws_mauritanian_desc: "Partition de courte durée ; documentation administrative et relative aux réfugiés en Mauritanie et au Maroc.",
-    periods_ws_conflict_desc: "Archives nationales sahraouies (Rabouni), documents RASD et dossiers diaspora/camps ; registres civils de la zone sous administration marocaine.",
+    periods_country_intro_dz:
+      "De la régence ottomane à la colonisation française puis à l'indépendance—phases clés pour l'état civil et la recherche lignagère.",
+    periods_country_intro_ma:
+      "Des Saadiens au sultanat alaouite, au protectorat et au royaume moderne—sources Makhzen, Habous et registres civils.",
+    periods_country_intro_tn:
+      "Beylik ottoman, protectorat français et république—archives civiles et religieuses et fonds d'État modernes.",
+    periods_country_intro_ly:
+      "Tripolitaine ottomane, colonisation italienne et État moderne—archives à Tripoli et fonds numériques.",
+    periods_country_intro_mr:
+      "Émirates et confédérations tribales précoloniaux, Afrique occidentale française et république indépendante—sources orales et écrites.",
+    periods_country_intro_ws:
+      "Sahara espagnol, partition et RASD—sources dans les archives espagnoles, marocaines et sahraouies.",
+    periods_dz_ottoman_desc:
+      "Registres du Beylik et des tribunaux de Qadi, actes waqf et conseils tribaux ; nommage patronymique (ben/bint).",
+    periods_dz_french_desc:
+      "Fixation des noms (1882), registres civils municipaux, archives coloniales ANOM, recensements et levés.",
+    periods_dz_independence_desc:
+      "Archives nationales (CNA), état civil APC, documents d'identité et dossiers de la diaspora.",
+    periods_ma_saadi_desc:
+      "Chroniques, manuscrits de zaouïas et premiers documents Makhzen ; généalogies tribales et religieuses.",
+    periods_ma_alaouite_desc:
+      "Dahirs, archives habous, registres de Qadi et documentation urbaine et tribale.",
+    periods_ma_protectorate_desc:
+      "État civil des zones française et espagnole, recensements, cadastre et fonds des Archives du Maroc.",
+    periods_ma_independence_desc:
+      "Registre civil national, Archives du Maroc, livrets de famille et documentation migratoire.",
+    periods_tn_ottoman_desc:
+      "Archives beylicales et de Qadi, registres waqf et tribunaux charaïques ; patronymes et nasab tribal.",
+    periods_tn_protectorate_desc:
+      "Introduction de l'état civil, recensements, archives foncières et municipales ; prédécesseurs des Archives nationales de Tunisie.",
+    periods_tn_independence_desc:
+      "Archives nationales (Thekra), état civil, identité et documentation familiale.",
+    periods_ly_ottoman_desc:
+      "Archives karamanlies et ottomanes, waqf et documentation tribale ; le Centre libyen en conserve de nombreux originaux.",
+    periods_ly_italian_desc:
+      "Registres civils coloniaux, recensements et cadastre ; une partie numérisée dans les archives italiennes et libyennes.",
+    periods_ly_independence_desc:
+      "Carte d'identité nationale et état civil ; Centre libyen des archives et des études historiques (LCAHS) à Tripoli.",
+    periods_mr_precolonial_desc:
+      "Généalogies orales, manuscrits de zaouïa et archives émiralès ; nasab tribal et lignées savantes.",
+    periods_mr_french_desc:
+      "Fonds administratifs et civils coloniaux ; premiers recensements et pièces d'identité.",
+    periods_mr_independence_desc:
+      "Archives nationales de Mauritanie, état civil et documents d'identité nationaux.",
+    periods_ws_spanish_desc:
+      "Fonds civils et administratifs coloniaux espagnols ; documents en Espagne et dans les archives sahraouies.",
+    periods_ws_mauritanian_desc:
+      "Partition de courte durée ; documentation administrative et relative aux réfugiés en Mauritanie et au Maroc.",
+    periods_ws_conflict_desc:
+      "Archives nationales sahraouies (Rabouni), documents RASD et dossiers diaspora/camps ; registres civils de la zone sous administration marocaine.",
     official_archives_quick_jump: "Parcourir les archives par lieu : ",
     visit_official_site: "Visiter le site officiel",
-    archive_desc_algeria: "Fonds ottomans et coloniaux, précurseurs de l'état civil, cartes et photographies. Demander l'accès et les cotes pour la recherche généalogique.",
-    archive_desc_morocco: "Archives du protectorat et de l'après-indépendance, fonds juridiques et administratifs. Salle de consultation et catalogue pour les chercheurs.",
-    archive_desc_tunisia: "Base Thekra (180 000+ notices), documents historiques et civils, livres et périodiques. Prévoir les visites et citer les références pour le travail lignager.",
-    archive_desc_libya: "Fonds ottomans, italiens et modernes ; millions de documents et histoires orales. Contacter pour l'accès et la consultation du catalogue à Tripoli.",
-    archive_desc_mauritania: "Fonds des Archives nationales et du ministère de la Culture. Se renseigner pour la documentation civile et historique et les procédures de recherche.",
-    archive_desc_western_sahara: "Documentation RASD, collections de microfilms et publications officielles. Ambassades sahraouies et archives de Rabouni pour la recherche généalogique et historique.",
+    archive_desc_algeria:
+      "Fonds ottomans et coloniaux, précurseurs de l'état civil, cartes et photographies. Demander l'accès et les cotes pour la recherche généalogique.",
+    archive_desc_morocco:
+      "Archives du protectorat et de l'après-indépendance, fonds juridiques et administratifs. Salle de consultation et catalogue pour les chercheurs.",
+    archive_desc_tunisia:
+      "Base Thekra (180 000+ notices), documents historiques et civils, livres et périodiques. Prévoir les visites et citer les références pour le travail lignager.",
+    archive_desc_libya:
+      "Fonds ottomans, italiens et modernes ; millions de documents et histoires orales. Contacter pour l'accès et la consultation du catalogue à Tripoli.",
+    archive_desc_mauritania:
+      "Fonds des Archives nationales et du ministère de la Culture. Se renseigner pour la documentation civile et historique et les procédures de recherche.",
+    archive_desc_western_sahara:
+      "Documentation RASD, collections de microfilms et publications officielles. Ambassades sahraouies et archives de Rabouni pour la recherche généalogique et historique.",
     international_archives_title: "Archives internationales et coloniales",
     international_archives_intro:
       "Les archives en Europe et en Turquie conservent des sources essentielles sur l'Égypte : consulats, administration coloniale, militaires et fonds ottomans concernant les provinces égyptiennes.",
@@ -1663,7 +1821,8 @@ const translations: Record<string, Record<string, string>> = {
     archive_france_name: "Archives nationales (France)",
     archive_france_desc:
       "Archives nationales à Paris et Pierrefitte : fonds ministériels et territoriaux, état civil et documents de l'époque coloniale. Salle de lecture virtuelle avec des millions d'images numérisées ; utiles pour la généalogie métropolitaine et coloniale.",
-    archive_spain_name: "Archivo General de la Administración / PARES (Espagne)",
+    archive_spain_name:
+      "Archivo General de la Administración / PARES (Espagne)",
     archive_spain_desc:
       "Administration coloniale espagnole : Alta Comisaría en Marruecos, Maroc et Colonies, Sahara occidental. Catalogues et documents numérisés via PARES ; AGA à Alcalá de Henares. Indispensable pour le Maroc espagnol et la généalogie saharienne.",
     archive_italy_name: "Archivio Centrale dello Stato (Italie)",
@@ -1702,12 +1861,14 @@ const translations: Record<string, Record<string, string>> = {
     audio_upload_heading: "Ajouter un enregistrement",
     audio_title_optional: "Titre (facultatif)",
     audio_tap_to_upload: "Choisir ou enregistrer un audio",
-    audio_limits_hint: "Jusqu’à 4 Mo par fichier ; stocké localement dans ce navigateur pour l’instant.",
+    audio_limits_hint:
+      "Jusqu’à 4 Mo par fichier ; stocké localement dans ce navigateur pour l’instant.",
     audio_your_library: "Vos extraits",
     audio_empty: "Pas encore d’audio — importez un fichier pour commencer.",
     audio_file_too_large: "Fichier trop volumineux",
     audio_added_to_library: "Audio ajouté à votre bibliothèque",
-    audio_device_only_hint: "Stocké dans ce navigateur jusqu’à branchement serveur.",
+    audio_device_only_hint:
+      "Stocké dans ce navigateur jusqu’à branchement serveur.",
     audio_remove_clip: "Retirer le clip",
     articles: "Articles",
     articles_title: "Textes de la communauté",
@@ -1717,7 +1878,8 @@ const translations: Record<string, Record<string, string>> = {
     articles_title_placeholder: "Titre",
     articles_body_placeholder: "Votre article…",
     articles_publish: "Publier",
-    articles_login_hint: "Connectez-vous pour publier. Tout le monde peut lire et commenter.",
+    articles_login_hint:
+      "Connectez-vous pour publier. Tout le monde peut lire et commenter.",
     articles_feed: "Derniers articles",
     articles_empty: "Pas encore d’articles — publiez le premier.",
     articles_comments: "Commentaires",
@@ -1738,7 +1900,8 @@ const translations: Record<string, Record<string, string>> = {
     search_library_books_docs: "Rechercher livres et documents…",
     latest_document: "Dernier document",
     no_documents_yet: "Pas encore de documents.",
-    invalid_email: "Veuillez fournir une adresse e-mail valide avant de vous connecter",
+    invalid_email:
+      "Veuillez fournir une adresse e-mail valide avant de vous connecter",
     password_required: "Un mot de passe est requis pour vous connecter",
     welcome_back: "Bon retour",
     login_with_email_password:
@@ -1756,8 +1919,10 @@ const translations: Record<string, Record<string, string>> = {
     code_required: "Le code de vérification est requis",
     code_placeholder: "Code à 6 chiffres",
     verify_and_reset: "Vérifier et réinitialiser",
-    reset_step1_desc: "Entrez votre e-mail pour recevoir un code de vérification.",
-    reset_step2_desc: "Utilisez le code et définissez un nouveau mot de passe sécurisé.",
+    reset_step1_desc:
+      "Entrez votre e-mail pour recevoir un code de vérification.",
+    reset_step2_desc:
+      "Utilisez le code et définissez un nouveau mot de passe sécurisé.",
     new_password: "Nouveau mot de passe",
     verification_code: "Code de vérification",
     activity_desc: "Suivez ce qui se passe sur votre plateforme.",
@@ -1790,9 +1955,11 @@ const translations: Record<string, Record<string, string>> = {
     role: "Rôle",
     status: "Statut",
     full_name_required: "Le nom complet est requis",
-    signup_desc: "Rejoignez Roots Egypt et préservez les histoires de votre famille en Égypte et dans la diaspora.",
+    signup_desc:
+      "Rejoignez Roots Egypt et préservez les histoires de votre famille en Égypte et dans la diaspora.",
     already_have_account: "Vous avez déjà un compte ?",
-    contact_hero_para: "Nous sommes prêts à vous aider dans vos recherches généalogiques, vos demandes d'archives et la préservation de votre histoire. Écrivez-nous et notre équipe vous répondra sous 24 heures.",
+    contact_hero_para:
+      "Nous sommes prêts à vous aider dans vos recherches généalogiques, vos demandes d'archives et la préservation de votre histoire. Écrivez-nous et notre équipe vous répondra sous 24 heures.",
     contact_phone_primary: "+20 2 XXX XXXX",
     contact_hours_week: "dim.–jeu. : 9h00–18h00 (heure du Caire)",
     contact_whatsapp_line: "WhatsApp : +20 2 XXX XXXX",
@@ -1813,7 +1980,8 @@ const translations: Record<string, Record<string, string>> = {
     welcome_back_prefix: "Bienvenue",
     research_center_title: "Centre de recherche généalogique",
     viewing_mode_read_only: "Mode consultation - Lecture seule",
-    explore_public_tree_desc: "Explorez cet arbre familial public pour découvrir les connexions.",
+    explore_public_tree_desc:
+      "Explorez cet arbre familial public pour découvrir les connexions.",
     research_guides_title: "Guides et tutoriels de recherche",
     research_hero_kicker: "Centre de recherche",
     research_intro:
@@ -1828,31 +1996,40 @@ const translations: Record<string, Record<string, string>> = {
     research_cat_lineage_desc:
       "Registres paroissiaux coptes, archives rurales, histoires orales en Sa‘id et au Delta, manuscrits familiaux.",
     research_guide_ottoman_title: "Lire les documents d’époque ottomane",
-    research_guide_ottoman_desc: "Écritures, formules et patronymes dans les registres égyptiens.",
+    research_guide_ottoman_desc:
+      "Écritures, formules et patronymes dans les registres égyptiens.",
     research_guide_trace_title: "Retrouver des branches éloignées",
-    research_guide_trace_desc: "Suivre les migrations en Égypte et dans la diaspora avec plusieurs sources.",
+    research_guide_trace_desc:
+      "Suivre les migrations en Égypte et dans la diaspora avec plusieurs sources.",
     research_guide_archive_title: "Utiliser les archives égyptiennes",
-    research_guide_archive_desc: "Dar al-Wathaeq, bureaux d’état civil, registres détenus par les Églises.",
+    research_guide_archive_desc:
+      "Dar al-Wathaeq, bureaux d’état civil, registres détenus par les Églises.",
     research_guide_oral_title: "Entretiens d’histoire orale",
-    research_guide_oral_desc: "Entretiens structurés avec les aînés sur noms, lieux et parenté.",
+    research_guide_oral_desc:
+      "Entretiens structurés avec les aînés sur noms, lieux et parenté.",
     research_timeline_heading: "Égypte — chronologie pour généalogistes",
     research_tl_1_period: "3100 av. J.-C. – 641 — Antiquité à fin antique",
     research_tl_1_detail:
       "Inscriptions royales et temple, papyrus, sources copies tardives lorsqu’elles existent.",
     research_tl_2_period: "641 – 1517 — Égypte islamique et mamlouke",
-    research_tl_2_detail: "Chroniques, waqf et premières traces chariatiques sur les familles et les biens.",
+    research_tl_2_detail:
+      "Chroniques, waqf et premières traces chariatiques sur les familles et les biens.",
     research_tl_3_period: "1517 – 1882 — Égypte ottomane",
-    research_tl_3_detail: "Cours provinciales, rôles fiscaux et patronymes dans les registres impériaux.",
+    research_tl_3_detail:
+      "Cours provinciales, rôles fiscaux et patronymes dans les registres impériaux.",
     research_tl_4_period: "1882 – aujourd’hui — Égypte moderne",
     research_tl_4_detail:
       "État civil, carte nationale, Dar al-Wathaeq et documents consulaires de la diaspora.",
     tree_label: "Arbre",
     no_description_provided: "Aucune description fournie.",
-    research_empty_category: "Aucun résultat dans cette catégorie pour votre recherche.",
+    research_empty_category:
+      "Aucun résultat dans cette catégorie pour votre recherche.",
     research_mock_tree_label: "Égypte — arbre public",
-    research_mock_tree_demo: "Entrée de démonstration pour parcourir l’annuaire.",
+    research_mock_tree_demo:
+      "Entrée de démonstration pour parcourir l’annuaire.",
     research_mock_book_1_title: "Description de l’Égypte — fac-similés choisis",
-    research_mock_book_2_title: "Extraits d’état civil — échantillons du Caire (démo)",
+    research_mock_book_2_title:
+      "Extraits d’état civil — échantillons du Caire (démo)",
     research_mock_book_1_author: "Commission d’Égypte (corpus)",
     research_mock_book_2_author: "Gouvernorat du Caire (échantillon)",
     mock_entry_label: "Aperçu (données d’exemple)",
@@ -1865,13 +2042,16 @@ const translations: Record<string, Record<string, string>> = {
     message_send_failed: "Échec de l'envoi du message.",
     email_placeholder_example: "exemple@email.com",
     password_placeholder_mask: "********",
-    users_page_desc: "Utilisateurs enregistrés (nom, e-mail, téléphone) - les mots de passe ne sont jamais affichés.",
+    users_page_desc:
+      "Utilisateurs enregistrés (nom, e-mail, téléphone) - les mots de passe ne sont jamais affichés.",
     admin_only: "Admin uniquement",
     add_user_hint: "Ajouter un utilisateur",
-    add_user_email_hint: "Nous leur enverrons un code de réinitialisation par e-mail pour définir leur mot de passe.",
+    add_user_email_hint:
+      "Nous leur enverrons un code de réinitialisation par e-mail pour définir leur mot de passe.",
     reset_email_failed: "Échec de l'envoi de l'e-mail de réinitialisation",
     invalid_code_or_password: "Code ou mot de passe invalide",
-    dashboard_load_failed: "Échec du chargement des données du tableau de bord.",
+    dashboard_load_failed:
+      "Échec du chargement des données du tableau de bord.",
     check_api_endpoints: "Vérifiez vos points de terminaison API et réessayez.",
     activity_load_failed: "Échec du chargement de l'activité",
     suggestions_load_failed: "Échec du chargement des suggestions",
@@ -1903,7 +2083,8 @@ const translations: Record<string, Record<string, string>> = {
     gedcom_imported: "GEDCOM importé.",
     import_gedcom_failed: "Échec de l'import GEDCOM",
     name_required: "Le nom est requis",
-    parents_conflict: "Le père et la mère ne peuvent pas être la même personne.",
+    parents_conflict:
+      "Le père et la mère ne peuvent pas être la même personne.",
     person_not_found: "Personne non trouvée.",
     gedcom_build_failed: "Échec de la construction du GEDCOM",
     zoom_in: "Zoom avant",
@@ -1911,7 +2092,8 @@ const translations: Record<string, Record<string, string>> = {
     center: "Centrer",
     import_gedcom: "Importer GEDCOM",
     export_gedcom: "Exporter GEDCOM",
-    invalid_gedcomx_type: "Type de fichier non pris en charge. Utilisez .gedx, .xml ou .json.",
+    invalid_gedcomx_type:
+      "Type de fichier non pris en charge. Utilisez .gedx, .xml ou .json.",
     gedcomx_invalid_json: "JSON GEDCOM X invalide.",
     gedcomx_imported: "GEDCOM X importé.",
     import_gedcomx_failed: "Échec de l'import GEDCOM X.",
@@ -1980,7 +2162,8 @@ const translations: Record<string, Record<string, string>> = {
     search_button: "بحث",
     page_not_found: "404 • الصفحة غير موجودة",
     lost_in_archives: "ضائع في الأرشيف",
-    error_404_description: "الصفحة التي تبحث عنها غير موجودة أو نُقلت. ارجع للرئيسية لمتابعة استكشاف تراثك المصري.",
+    error_404_description:
+      "الصفحة التي تبحث عنها غير موجودة أو نُقلت. ارجع للرئيسية لمتابعة استكشاف تراثك المصري.",
     loading: "جار التحميل...",
     no_results: "لا توجد نتائج",
     trees: "أشجار العائلة",
@@ -2048,26 +2231,36 @@ const translations: Record<string, Record<string, string>> = {
     home_how_label: "كيف تعمل المنصة",
     home_how_title: "رحلتك التراثية في ثلاث خطوات",
     home_how_step1_title: "ابحث واكتشف",
-    home_how_step1_desc: "استكشف سجلات المحاكم العثمانية والسجلات القبطية والأرشيف المدني والوثائق القبلية للعثور على الأثر الوثائقي لعائلتك في مصر.",
+    home_how_step1_desc:
+      "استكشف سجلات المحاكم العثمانية والسجلات القبطية والأرشيف المدني والوثائق القبلية للعثور على الأثر الوثائقي لعائلتك في مصر.",
     home_how_step2_title: "ابنِ شجرتك",
-    home_how_step2_desc: "اربط الآباء والأجداد والأسلاف البعيدين. استورد ملفات GEDCOM وأرفق الوثائق وتصوّر نسبك تفاعلياً بمنشئ الشجرة المخصص للتراث.",
+    home_how_step2_desc:
+      "اربط الآباء والأجداد والأسلاف البعيدين. استورد ملفات GEDCOM وأرفق الوثائق وتصوّر نسبك تفاعلياً بمنشئ الشجرة المخصص للتراث.",
     home_how_step3_title: "احفظ وشارك",
-    home_how_step3_desc: "سجّل الروايات الشفهية ورقمن الصور القديمة وشارك قصة عائلتك مع أقاربك في مصر والشتات. أبقِ تراثك حياً للأجيال القادمة.",
+    home_how_step3_desc:
+      "سجّل الروايات الشفهية ورقمن الصور القديمة وشارك قصة عائلتك مع أقاربك في مصر والشتات. أبقِ تراثك حياً للأجيال القادمة.",
     home_explore_label: "استكشف المنصة",
     home_explore_title: "كل ما تحتاجه لتتبع جذورك",
-    home_explore_desc: "من أشجار العائلة إلى التسجيلات الصوتية لحكايات الأجداد — مجموعة أدوات متكاملة للأنساب المصرية وحفظ الثقافة.",
+    home_explore_desc:
+      "من أشجار العائلة إلى التسجيلات الصوتية لحكايات الأجداد — مجموعة أدوات متكاملة للأنساب المصرية وحفظ الثقافة.",
     home_card_trees_title: "أشجار العائلة",
-    home_card_trees_desc: "أشجار تفاعلية متعددة الأجيال مع استيراد/تصدير GEDCOM. يدعم الأسماء العربية والقبطية والعثمانية.",
+    home_card_trees_desc:
+      "أشجار تفاعلية متعددة الأجيال مع استيراد/تصدير GEDCOM. يدعم الأسماء العربية والقبطية والعثمانية.",
     home_card_gallery_title: "معرض الصور",
-    home_card_gallery_desc: "تصفّح صور الأرشيف والبورتريهات العائلية والوثائق التاريخية والخرائط في تخطيط فسيفسائي على طراز Pinterest.",
+    home_card_gallery_desc:
+      "تصفّح صور الأرشيف والبورتريهات العائلية والوثائق التاريخية والخرائط في تخطيط فسيفسائي على طراز Pinterest.",
     home_card_library_title: "المكتبة والوثائق",
-    home_card_library_desc: "كتب رقمية ومخطوطات وسجلات مدنية ونصوص نسب ووثائق محاكم تمتد عبر قرون.",
+    home_card_library_desc:
+      "كتب رقمية ومخطوطات وسجلات مدنية ونصوص نسب ووثائق محاكم تمتد عبر قرون.",
     home_card_audio_title: "الروايات الشفهية",
-    home_card_audio_desc: "سجّل واستمع إلى مقابلات وإلقاء شعري وقصص عائلية. مشغّل صوتي بأسلوب Spotify مع قوائم تشغيل.",
+    home_card_audio_desc:
+      "سجّل واستمع إلى مقابلات وإلقاء شعري وقصص عائلية. مشغّل صوتي بأسلوب Spotify مع قوائم تشغيل.",
     home_card_articles_title: "المقالات والقصص",
-    home_card_articles_desc: "شارك نتائج البحث وانشر روايات عائلية وتفاعل مع المجتمع عبر الإعجابات والتعليقات والنقاشات.",
-    home_card_archives_title: "المصادر والأرشيف",
-    home_card_archives_desc: "تنقّل في أهم مؤسسات الأرشيف في مصر: دار الوثائق والمحاكم الشرعية والأوقاف وسجلات التعداد البريطاني وأكثر.",
+    home_card_articles_desc:
+      "شارك نتائج البحث وانشر روايات عائلية وتفاعل مع المجتمع عبر الإعجابات والتعليقات والنقاشات.",
+    home_card_archives_title: "الأرشيف",
+    home_card_archives_desc:
+      "تنقّل في أهم مؤسسات الأرشيف في مصر: دار الوثائق والمحاكم الشرعية والأوقاف وسجلات التعداد البريطاني وأكثر.",
     home_featured_label: "مميّز",
     home_timeline_label: "عبر العصور",
     home_timeline_title: "سجلات تمتد عبر تاريخ مصر الغني",
@@ -2114,7 +2307,8 @@ const translations: Record<string, Record<string, string>> = {
     map_city_cairo: "القاهرة",
     map_city_cairo_desc: "العاصمة؛ مقر دار الوثائق القومية.",
     map_city_alexandria: "الإسكندرية",
-    map_city_alexandria_desc: "ميناء تاريخي؛ مكتبة الإسكندرية وسجلات العصر الحديث.",
+    map_city_alexandria_desc:
+      "ميناء تاريخي؛ مكتبة الإسكندرية وسجلات العصر الحديث.",
     map_city_luxor: "الأقصر",
     map_city_luxor_desc: "طيبة القديمة؛ وادي الملوك والنقوش المعبدية.",
     map_city_aswan: "أسوان",
@@ -2246,8 +2440,7 @@ const translations: Record<string, Record<string, string>> = {
     my_books: "كتبي",
     admin_panel: "لوحة إدارة روتس مصر",
     admin_brand_subtitle: "إدارة مصر",
-    admin_tip:
-      "استخدم هذه اللوحة لإدارة المجموعات والأشجار ومحتوى المعرض.",
+    admin_tip: "استخدم هذه اللوحة لإدارة المجموعات والأشجار ومحتوى المعرض.",
     preferences: "التفضيلات",
     close: "إغلاق",
     dark_mode: "الوضع الداكن",
@@ -2258,7 +2451,7 @@ const translations: Record<string, Record<string, string>> = {
     descendant_relationship: "علاقة النسل",
     parent_children: "والد-طفل",
     parent_descendant: "والد-نسل",
-    sources_and_archives: "المصادر والأرشيف",
+    sources_and_archives: "الأرشيف",
     links: "روابط سريعة",
     resources: "الموارد",
     footer_desc: "منصة مرجعية للحفاظ على تاريخ العائلة المصرية.",
@@ -2410,8 +2603,7 @@ const translations: Record<string, Record<string, string>> = {
     access_protection_desc:
       "احترم قوانين الخصوصية لسجلات الأحوال المدنية الحديثة وتجنب نشر بيانات شخصية حساسة.",
     reliability_cross_title: "مقارنة المصادر",
-    reliability_cross_desc:
-      "تحقق من نفس النسب عبر سجلات وشهادات شفوية متعددة.",
+    reliability_cross_desc: "تحقق من نفس النسب عبر سجلات وشهادات شفوية متعددة.",
     reliability_gaps_title: "تحديد الثغرات",
     reliability_gaps_desc:
       "حدد السنوات المفقودة وتباينات الأسماء والأسماء العائلية غير المتسقة.",
@@ -2458,8 +2650,7 @@ const translations: Record<string, Record<string, string>> = {
     periods_timeline_transition_desc:
       "الحكم العسكري، أول بيانات التعداد، إصلاحات على الطراز البلقاني.",
     periods_timeline_colonial: "1882-1962 - العصر الاستعماري",
-    periods_timeline_colonial_desc:
-      "ألقاب دائمة، سجلات مدنية، أرشيف ANOM.",
+    periods_timeline_colonial_desc: "ألقاب دائمة، سجلات مدنية، أرشيف ANOM.",
     periods_timeline_independence: "1962-الآن - الاستقلال",
     periods_timeline_independence_desc:
       "سجلات الأحوال المدنية، تتبع الهجرة، أرشيف رقمي.",
@@ -2476,52 +2667,64 @@ const translations: Record<string, Record<string, string>> = {
     periods_highlight_migration_desc:
       "التقارير الإدارية والخرائط تتتبع الحركة بين الواحات والسواحل والداخل.",
     periods_pharaonic_title: "العصر الفرعوني والقديم (3100 ق.م - 332 ق.م)",
-    periods_pharaonic_desc: "السجلات الأسرية والنقوش المعبدية والوثائق البردية في مصر القديمة تحفظ أقدم المعلومات الأنسابية في التاريخ البشري.",
+    periods_pharaonic_desc:
+      "السجلات الأسرية والنقوش المعبدية والوثائق البردية في مصر القديمة تحفظ أقدم المعلومات الأنسابية في التاريخ البشري.",
     periods_pharaonic_b1: "الخراطيش الملكية وقوائم الملوك",
     periods_pharaonic_b2: "النقوش الأنسابية في المعابد والمقابر",
     periods_pharaonic_b3: "السجلات العائلية على البردي ووثائق التعداد",
     periods_pharaonic_b4: "سجلات سلالات الكهنة",
     periods_ptolemaic_title: "العصر البطلمي والروماني (332 ق.م - 641 م)",
-    periods_ptolemaic_desc: "أدخلت الأنظمة الإدارية اليونانية والرومانية سجلات التعداد والوثائق الضريبية التي حفظت معلومات العائلات.",
+    periods_ptolemaic_desc:
+      "أدخلت الأنظمة الإدارية اليونانية والرومانية سجلات التعداد والوثائق الضريبية التي حفظت معلومات العائلات.",
     periods_ptolemaic_b1: "تعدادات وسجلات ضريبية بطلمية",
     periods_ptolemaic_b2: "سجلات الإدارة المدنية الرومانية",
     periods_ptolemaic_b3: "سجلات الولادة والتعميد القبطية",
     periods_ptolemaic_b4: "وثائق ملكية الأراضي والميراث",
     periods_early_islamic_title: "العصر الإسلامي المبكر (641 - 969)",
-    periods_early_islamic_desc: "أدخلت الخلافات الراشدة والأموية والعباسية الأطر القانونية الإسلامية في مصر، وأسست محاكم الشريعة ومؤسسات الأوقاف المبكرة.",
-    periods_early_islamic_b1: "سجلات التحول الديني ومنح الأراضي في عهد الراشدين",
+    periods_early_islamic_desc:
+      "أدخلت الخلافات الراشدة والأموية والعباسية الأطر القانونية الإسلامية في مصر، وأسست محاكم الشريعة ومؤسسات الأوقاف المبكرة.",
+    periods_early_islamic_b1:
+      "سجلات التحول الديني ومنح الأراضي في عهد الراشدين",
     periods_early_islamic_b2: "السجلات الضريبية الأموية والبرديات الإدارية",
     periods_early_islamic_b3: "أوائل سجلات محاكم الشريعة للزواج والميراث",
     periods_early_islamic_b4: "توثيق السلالات العلمية العباسية",
     periods_fatimid_title: "العصر الفاطمي والأيوبي (969 - 1250)",
-    periods_fatimid_desc: "أسست الخلافة الفاطمية القاهرة والأزهر، بينما جلبت سلالة صلاح الدين الأيوبية السجلات العسكرية.",
+    periods_fatimid_desc:
+      "أسست الخلافة الفاطمية القاهرة والأزهر، بينما جلبت سلالة صلاح الدين الأيوبية السجلات العسكرية.",
     periods_fatimid_b1: "الأنساب الملكية الفاطمية وسجلات البلاط",
     periods_fatimid_b2: "سجلات القيد والسلالات في الأزهر",
     periods_fatimid_b3: "السجلات العسكرية ومنح الأراضي الأيوبية",
     periods_fatimid_b4: "صكوك الوقف وسلاسل الملكية",
     periods_mamluk_title: "سلطنة المماليك (1250 - 1517)",
-    periods_mamluk_desc: "حافظت سلطنتا المماليك البحرية والبرجية على سجلات محاكم مفصلة وأنظمة أوقاف واسعة.",
+    periods_mamluk_desc:
+      "حافظت سلطنتا المماليك البحرية والبرجية على سجلات محاكم مفصلة وأنظمة أوقاف واسعة.",
     periods_mamluk_b1: "سجلات محاكم الشريعة (زواج، طلاق، ميراث)",
     periods_mamluk_b2: "سجلات تجنيد وعتق المماليك",
     periods_mamluk_b3: "سجلات أوقاف واسعة النطاق",
     periods_mamluk_b4: "سجلات نقابات التجار والحرفيين",
     periods_british_title: "الفترة البريطانية (1882 - 1952)",
-    periods_british_desc: "أدخلت الإدارة الاستعمارية البريطانية أساليب التعداد الحديثة والتسجيل المدني.",
+    periods_british_desc:
+      "أدخلت الإدارة الاستعمارية البريطانية أساليب التعداد الحديثة والتسجيل المدني.",
     periods_british_b1: "سجلات التعداد البريطانية (من 1882)",
     periods_british_b2: "المسوحات الأرضية وخرائط الري",
     periods_british_b3: "السجلات الإدارية والعسكرية الاستعمارية",
     periods_british_b4: "السجلات المدنية لمملكة مصر (1922-1952)",
-    periods_timeline_early_islamic: "641 - 969 — الإسلام المبكر (الراشدون · الأمويون · العباسيون)",
-    periods_timeline_early_islamic_desc: "سجلات التحول الديني، البرديات الإدارية، أوائل محاكم الشريعة.",
+    periods_timeline_early_islamic:
+      "641 - 969 — الإسلام المبكر (الراشدون · الأمويون · العباسيون)",
+    periods_timeline_early_islamic_desc:
+      "سجلات التحول الديني، البرديات الإدارية، أوائل محاكم الشريعة.",
     periods_timeline_fatimid: "969 - 1250 — الفاطميون والأيوبيون",
-    periods_timeline_fatimid_desc: "سجلات الأزهر، أرشيف البلاط الفاطمي، السجلات العسكرية الأيوبية.",
+    periods_timeline_fatimid_desc:
+      "سجلات الأزهر، أرشيف البلاط الفاطمي، السجلات العسكرية الأيوبية.",
     periods_timeline_mamluk: "1250 - 1517 — سلطنة المماليك",
     periods_timeline_mamluk_desc: "سجلات محاكم واسعة، أوقاف، سجلات نقابات.",
     periods_timeline_ottoman_egypt: "1517 - 1882 — الفترة العثمانية",
-    periods_timeline_ottoman_egypt_desc: "التعداد العثماني، السجلات الضريبية، سجلات عصر الخديوية.",
+    periods_timeline_ottoman_egypt_desc:
+      "التعداد العثماني، السجلات الضريبية، سجلات عصر الخديوية.",
     periods_timeline_british: "1882 - 1952 — الفترة البريطانية",
-    periods_timeline_british_desc: "التعداد الاستعماري، المسوحات الأرضية، سجلات مملكة مصر.",
-    sources_archives_title: "المصادر والأرشيف للأنساب المصرية",
+    periods_timeline_british_desc:
+      "التعداد الاستعماري، المسوحات الأرضية، سجلات مملكة مصر.",
+    sources_archives_title: "الأرشيف والسجلات",
     sources_archives_intro:
       "تصفح الأرشيف التاريخي، استكشف المصادر الأولية وتعلّم كيفية الوصول والتحقق من المعلومات الأنسابية في سجلات مصر العثمانية والأرشيف الاستعماري والأحوال المدنية الحديثة.",
     archive_types: "أنواع الأرشيف والمستودعات",
@@ -2577,39 +2780,70 @@ const translations: Record<string, Record<string, string>> = {
     periods_ws_conflict: "النزاع والجمهورية الصحراوية (1976–الآن)",
     periods_click_to_expand:
       "انقر على منطقة في مصر لتوسيعها وعرض الفترات التفصيلية ونصائح البحث.",
-    periods_country_intro_dz: "من الوصاية العثمانية إلى الاستعمار الفرنسي ثم الاستقلال—مراحل رئيسية لسجلات الأحوال المدنية وبحث النسب.",
-    periods_country_intro_ma: "من السعديين إلى السلطنة العلوية والاحتلال ثم المملكة الحديثة—مصادر من المخزن والحبس والسجلات المدنية.",
-    periods_country_intro_tn: "البايلك العثماني والاحتلال الفرنسي والجمهورية—أرشيفات مدنية ودينية وسجلات دولة حديثة.",
-    periods_country_intro_ly: "طرابلس العثمانية والاستعمار الإيطالي والدولة الحديثة—أرشيفات في طرابلس ومجموعات رقمية.",
-    periods_country_intro_mr: "إمارات واتحادات قبلية ما قبل الاستعمار وأفريقيا الغربية الفرنسية والجمهورية المستقلة—مصادر شفوية ومكتوبة.",
-    periods_country_intro_ws: "الصحراء الإسبانية والتقسيم والجمهورية الصحراوية—مصادر في أرشيفات إسبانيا والمغرب والصحراويين.",
-    periods_dz_ottoman_desc: "سجلات البايلك ومحاكم القضاة وعهد الوقف والمجالس القبلية؛ التسمية العائلية (بن/بنت).",
-    periods_dz_french_desc: "تثبيت الألقاب (1882)، السجلات المدنية البلدية، أرشيف ANOM الاستعماري، التعدادات والمسوحات.",
-    periods_dz_independence_desc: "الأرشيف الوطني (CNA)، سجلات الأحوال المدنية، وثائق الهوية وسجلات الشتات.",
-    periods_ma_saadi_desc: "التواريخ ومخطوطات الزوايا وأوائل وثائق المخزن؛ سجلات النسب القبلية والدينية.",
-    periods_ma_alaouite_desc: "الظهائر السلطانية وأرشيف الحبس وسجلات القضاة والوثائق الحضرية والقبلية.",
-    periods_ma_protectorate_desc: "سجلات الأحوال المدنية للمنطقتين الفرنسية والإسبانية، التعدادات، السجل العقاري ومقتنيات أرشيف المغرب.",
-    periods_ma_independence_desc: "السجل المدني الوطني، أرشيف المغرب، دفاتر العائلة ووثائق الهجرة.",
-    periods_tn_ottoman_desc: "أرشيف البايلك والقضاة وسجلات الوقف ومحاكم الشرع؛ الأسماء العائلية والنسب القبلي.",
-    periods_tn_protectorate_desc: "إدخال سجلات الأحوال المدنية، التعدادات، أرشيف الأراضي والبلديات؛ نواة الأرشيف الوطني التونسي.",
-    periods_tn_independence_desc: "الأرشيف الوطني (ذكرى)، السجل المدني ووثائق الهوية والعائلة.",
-    periods_ly_ottoman_desc: "سجلات Karamanli والعثمانية والوقف والوثائق القبلية؛ المركز الليبي يحتفظ بالكثير من الأصول.",
-    periods_ly_italian_desc: "السجلات المدنية الاستعمارية والتعدادات والأراضي؛ جزء منها رقمي في الأرشيفات الإيطالية والليبية.",
-    periods_ly_independence_desc: "الهوية الوطنية وسجلات الأحوال المدنية؛ المركز الليبي للمحفوظات والدراسات التاريخية في طرابلس.",
-    periods_mr_precolonial_desc: "أنساب شفوية ومخطوطات زوايا وأرشيف إماراتي؛ النسب القبلي وسلالات العلماء.",
-    periods_mr_french_desc: "السجلات الإدارية والمدنية الاستعمارية؛ التعدادات الأولى ووثائق الهوية.",
-    periods_mr_independence_desc: "الأرشيف الوطني الموريتاني والسجل المدني ووثائق الهوية الوطنية.",
-    periods_ws_spanish_desc: "السجلات المدنية والإدارية الاستعمارية الإسبانية؛ مواد في الأرشيفات الإسبانية والصحراوية.",
-    periods_ws_mauritanian_desc: "تقسيم قصير الأمد؛ وثائق إدارية ولاجئين في موريتانيا والمغرب.",
-    periods_ws_conflict_desc: "الأرشيف الوطني الصحراوي (ربوني)، وثائق الجمهورية الصحراوية وسجلات الشتات/المخيمات؛ سجلات المنطقة الخاضعة للإدارة المغربية.",
+    periods_country_intro_dz:
+      "من الوصاية العثمانية إلى الاستعمار الفرنسي ثم الاستقلال—مراحل رئيسية لسجلات الأحوال المدنية وبحث النسب.",
+    periods_country_intro_ma:
+      "من السعديين إلى السلطنة العلوية والاحتلال ثم المملكة الحديثة—مصادر من المخزن والحبس والسجلات المدنية.",
+    periods_country_intro_tn:
+      "البايلك العثماني والاحتلال الفرنسي والجمهورية—أرشيفات مدنية ودينية وسجلات دولة حديثة.",
+    periods_country_intro_ly:
+      "طرابلس العثمانية والاستعمار الإيطالي والدولة الحديثة—أرشيفات في طرابلس ومجموعات رقمية.",
+    periods_country_intro_mr:
+      "إمارات واتحادات قبلية ما قبل الاستعمار وأفريقيا الغربية الفرنسية والجمهورية المستقلة—مصادر شفوية ومكتوبة.",
+    periods_country_intro_ws:
+      "الصحراء الإسبانية والتقسيم والجمهورية الصحراوية—مصادر في أرشيفات إسبانيا والمغرب والصحراويين.",
+    periods_dz_ottoman_desc:
+      "سجلات البايلك ومحاكم القضاة وعهد الوقف والمجالس القبلية؛ التسمية العائلية (بن/بنت).",
+    periods_dz_french_desc:
+      "تثبيت الألقاب (1882)، السجلات المدنية البلدية، أرشيف ANOM الاستعماري، التعدادات والمسوحات.",
+    periods_dz_independence_desc:
+      "الأرشيف الوطني (CNA)، سجلات الأحوال المدنية، وثائق الهوية وسجلات الشتات.",
+    periods_ma_saadi_desc:
+      "التواريخ ومخطوطات الزوايا وأوائل وثائق المخزن؛ سجلات النسب القبلية والدينية.",
+    periods_ma_alaouite_desc:
+      "الظهائر السلطانية وأرشيف الحبس وسجلات القضاة والوثائق الحضرية والقبلية.",
+    periods_ma_protectorate_desc:
+      "سجلات الأحوال المدنية للمنطقتين الفرنسية والإسبانية، التعدادات، السجل العقاري ومقتنيات أرشيف المغرب.",
+    periods_ma_independence_desc:
+      "السجل المدني الوطني، أرشيف المغرب، دفاتر العائلة ووثائق الهجرة.",
+    periods_tn_ottoman_desc:
+      "أرشيف البايلك والقضاة وسجلات الوقف ومحاكم الشرع؛ الأسماء العائلية والنسب القبلي.",
+    periods_tn_protectorate_desc:
+      "إدخال سجلات الأحوال المدنية، التعدادات، أرشيف الأراضي والبلديات؛ نواة الأرشيف الوطني التونسي.",
+    periods_tn_independence_desc:
+      "الأرشيف الوطني (ذكرى)، السجل المدني ووثائق الهوية والعائلة.",
+    periods_ly_ottoman_desc:
+      "سجلات Karamanli والعثمانية والوقف والوثائق القبلية؛ المركز الليبي يحتفظ بالكثير من الأصول.",
+    periods_ly_italian_desc:
+      "السجلات المدنية الاستعمارية والتعدادات والأراضي؛ جزء منها رقمي في الأرشيفات الإيطالية والليبية.",
+    periods_ly_independence_desc:
+      "الهوية الوطنية وسجلات الأحوال المدنية؛ المركز الليبي للمحفوظات والدراسات التاريخية في طرابلس.",
+    periods_mr_precolonial_desc:
+      "أنساب شفوية ومخطوطات زوايا وأرشيف إماراتي؛ النسب القبلي وسلالات العلماء.",
+    periods_mr_french_desc:
+      "السجلات الإدارية والمدنية الاستعمارية؛ التعدادات الأولى ووثائق الهوية.",
+    periods_mr_independence_desc:
+      "الأرشيف الوطني الموريتاني والسجل المدني ووثائق الهوية الوطنية.",
+    periods_ws_spanish_desc:
+      "السجلات المدنية والإدارية الاستعمارية الإسبانية؛ مواد في الأرشيفات الإسبانية والصحراوية.",
+    periods_ws_mauritanian_desc:
+      "تقسيم قصير الأمد؛ وثائق إدارية ولاجئين في موريتانيا والمغرب.",
+    periods_ws_conflict_desc:
+      "الأرشيف الوطني الصحراوي (ربوني)، وثائق الجمهورية الصحراوية وسجلات الشتات/المخيمات؛ سجلات المنطقة الخاضعة للإدارة المغربية.",
     official_archives_quick_jump: "تصفح الأرشيف حسب الموقع: ",
     visit_official_site: "زيارة الموقع الرسمي",
-    archive_desc_algeria: "مقتنيات عثمانية واستعمارية ونواة سجلات مدنية وخرائط وصور. اطلب الوصول ومراجع الفهارس للبحث الأنسابي.",
-    archive_desc_morocco: "أرشيف الحماية وما بعد الاستقلال والمجموعات القانونية والإدارية. غرفة استشارة وفهرس للباحثين.",
-    archive_desc_tunisia: "قاعدة ذكرى (180 ألف+ سجل)، وثائق تاريخية ومدنية وكتب ودوريات. خطط للزيارات واستشهد بالمراجع للعمل الأنسابي.",
-    archive_desc_libya: "مجموعات عثمانية وإيطالية وحديثة؛ ملايين الوثائق والتاريخ الشفوي. اتصل للوصول واستشارة الفهرس في طرابلس.",
-    archive_desc_mauritania: "مقتنيات الأرشيف الوطني ووزارة الثقافة. استفسر عن الوثائق المدنية والتاريخية وإجراءات البحث.",
-    archive_desc_western_sahara: "وثائق الجمهورية الصحراوية ومجموعات ميكروفيلم ومنشورات رسمية. سفارات صحراوية وأرشيف ربوني للبحث الأنسابي والتاريخي.",
+    archive_desc_algeria:
+      "مقتنيات عثمانية واستعمارية ونواة سجلات مدنية وخرائط وصور. اطلب الوصول ومراجع الفهارس للبحث الأنسابي.",
+    archive_desc_morocco:
+      "أرشيف الحماية وما بعد الاستقلال والمجموعات القانونية والإدارية. غرفة استشارة وفهرس للباحثين.",
+    archive_desc_tunisia:
+      "قاعدة ذكرى (180 ألف+ سجل)، وثائق تاريخية ومدنية وكتب ودوريات. خطط للزيارات واستشهد بالمراجع للعمل الأنسابي.",
+    archive_desc_libya:
+      "مجموعات عثمانية وإيطالية وحديثة؛ ملايين الوثائق والتاريخ الشفوي. اتصل للوصول واستشارة الفهرس في طرابلس.",
+    archive_desc_mauritania:
+      "مقتنيات الأرشيف الوطني ووزارة الثقافة. استفسر عن الوثائق المدنية والتاريخية وإجراءات البحث.",
+    archive_desc_western_sahara:
+      "وثائق الجمهورية الصحراوية ومجموعات ميكروفيلم ومنشورات رسمية. سفارات صحراوية وأرشيف ربوني للبحث الأنسابي والتاريخي.",
     international_archives_title: "أرشيفات دولية واستعمارية",
     international_archives_intro:
       "تحتفظ أرشيفات أوروبا وتركيا بسجلات مهمة عن مصر: القنصليات، الإدارة الاستعمارية، العسكرية، والمستندات العثمانية المتعلقة بالولايات المصرية.",
@@ -2661,7 +2895,8 @@ const translations: Record<string, Record<string, string>> = {
     audio_upload_heading: "إضافة تسجيل",
     audio_title_optional: "عنوان (اختياري)",
     audio_tap_to_upload: "اختر أو سجّل صوتًا",
-    audio_limits_hint: "حتى 4 ميجابايت لكل ملف؛ يُخزَّن محليًا في هذا المتصفح حاليًا.",
+    audio_limits_hint:
+      "حتى 4 ميجابايت لكل ملف؛ يُخزَّن محليًا في هذا المتصفح حاليًا.",
     audio_your_library: "مقاطعك",
     audio_empty: "لا تسجيلات بعد — ارفع ملفًا للبدء.",
     audio_file_too_large: "الملف كبير جدًا",
@@ -2700,7 +2935,8 @@ const translations: Record<string, Record<string, string>> = {
     invalid_email: "يرجى تقديم بريد إلكتروني صالح قبل تسجيل الدخول",
     password_required: "كلمة المرور مطلوبة لتسجيل الدخول",
     welcome_back: "مرحباً بعودتك",
-    login_with_email_password: "سجّل الدخول بأمان واستمر في أرشيف Roots Egypt الخاص بك.",
+    login_with_email_password:
+      "سجّل الدخول بأمان واستمر في أرشيف Roots Egypt الخاص بك.",
     password: "كلمة المرور",
     please_wait: "يرجى الانتظار...",
     forgot_password: "نسيت كلمة المرور؟",
@@ -2750,7 +2986,8 @@ const translations: Record<string, Record<string, string>> = {
     full_name_required: "الاسم الكامل مطلوب",
     signup_desc: "انضم إلى Roots Egypt واحفظ قصص عائلتك في مصر والشتات.",
     already_have_account: "لديك حساب بالفعل؟",
-    contact_hero_para: "نحن جاهزون لمساعدتك في الأنساب المصرية واستعلامات الأرشيف والحفاظ على قصة عائلتك. راسلنا وسنرد خلال 24 ساعة.",
+    contact_hero_para:
+      "نحن جاهزون لمساعدتك في الأنساب المصرية واستعلامات الأرشيف والحفاظ على قصة عائلتك. راسلنا وسنرد خلال 24 ساعة.",
     contact_phone_primary: "+20 2 XXX XXXX",
     contact_hours_week: "الأحد–الخميس: 9:00–18:00 (توقيت القاهرة)",
     contact_whatsapp_line: "واتساب: +20 2 XXX XXXX",
@@ -2788,11 +3025,14 @@ const translations: Record<string, Record<string, string>> = {
     research_guide_ottoman_title: "قراءة وثائق العهد العثماني",
     research_guide_ottoman_desc: "الخط والصيغ والأسماء في السجلات المصرية.",
     research_guide_trace_title: "تتبع الفروع المفقودة",
-    research_guide_trace_desc: "إعادة بناء الهجرة داخل مصر وفي الشتات بعدة مصادر.",
+    research_guide_trace_desc:
+      "إعادة بناء الهجرة داخل مصر وفي الشتات بعدة مصادر.",
     research_guide_archive_title: "استخدام الأرشيف المصري",
-    research_guide_archive_desc: "دار الوثائق القومية ومكاتب الأحوال المدنية وسجلات الكنائس.",
+    research_guide_archive_desc:
+      "دار الوثائق القومية ومكاتب الأحوال المدنية وسجلات الكنائس.",
     research_guide_oral_title: "مقابلات التاريخ الشفهي",
-    research_guide_oral_desc: "حوارات منظمة مع كبار السن عن الأسماء والأماكن والقرابة.",
+    research_guide_oral_desc:
+      "حوارات منظمة مع كبار السن عن الأسماء والأماكن والقرابة.",
     research_timeline_heading: "مصر — جدول زمني للباحثين عن الأنساب",
     research_tl_1_period: "3100 ق.م – 641 م — القديمة إلى المتأخرة",
     research_tl_1_detail:
@@ -2823,7 +3063,8 @@ const translations: Record<string, Record<string, string>> = {
     message_send_failed: "فشل إرسال الرسالة.",
     email_placeholder_example: "example@email.com",
     password_placeholder_mask: "********",
-    users_page_desc: "المستخدمون المسجلون (الاسم، البريد، الهاتف) - كلمات المرور لا تُعرض أبداً.",
+    users_page_desc:
+      "المستخدمون المسجلون (الاسم، البريد، الهاتف) - كلمات المرور لا تُعرض أبداً.",
     admin_only: "المسؤول فقط",
     add_user_hint: "إضافة مستخدم جديد",
     add_user_email_hint: "سنرسل لهم رمز إعادة تعيين كلمة المرور عبر البريد.",
@@ -2939,7 +3180,8 @@ const translations: Record<string, Record<string, string>> = {
     search_button: "Buscar",
     page_not_found: "404 • Página no encontrada",
     lost_in_archives: "Perdido en el archivo",
-    error_404_description: "La página que buscas no existe o ha sido movida. Vuelve al inicio para seguir explorando tu herencia egipcia.",
+    error_404_description:
+      "La página que buscas no existe o ha sido movida. Vuelve al inicio para seguir explorando tu herencia egipcia.",
     loading: "Cargando...",
     no_results: "Sin resultados",
     trees: "Árboles Genealógicos",
@@ -2973,7 +3215,8 @@ const translations: Record<string, Record<string, string>> = {
     home_library_intro:
       "Una biblioteca curada de libros, manuscritos, registros genealógicos, documentos de tribunales otomanos, registros coptos, documentos tribales y archivos regionales de Egipto.",
     home_library_tag_manuscripts: "Manuscritos y registros familiares",
-    home_library_tag_civil: "Registros civiles de nacimiento/matrimonio/defunción",
+    home_library_tag_civil:
+      "Registros civiles de nacimiento/matrimonio/defunción",
     home_library_tag_nasab: "Libros genealógicos tribales (nasab)",
     home_library_tag_ottoman: "Registros otomanos y de sharia",
     home_library_tag_coptic: "Registros de la Iglesia copta",
@@ -2987,7 +3230,8 @@ const translations: Record<string, Record<string, string>> = {
     home_archives_tag_british: "Censos del periodo colonial británico",
     home_archives_tag_civil: "Registros de oficinas del estado civil",
     tree_card_default_desc: "Explora este linaje familiar egipcio público.",
-    featured_trees_error: "No se pudieron cargar los árboles destacados. Inténtalo más tarde.",
+    featured_trees_error:
+      "No se pudieron cargar los árboles destacados. Inténtalo más tarde.",
     mock_featured_tree_1_title: "El-Masry y Sa'id — El Cairo y el Delta",
     mock_featured_tree_2_title: "Ramas nubias — Asuán y Alto Egipto",
     mock_featured_tree_3_title: "Comerciantes costeros — Alejandría y Rosetta",
@@ -3017,7 +3261,8 @@ const translations: Record<string, Record<string, string>> = {
     map_city_cairo: "El Cairo",
     map_city_cairo_desc: "Capital; sede de Dar al-Wathaeq (archivo nacional).",
     map_city_alexandria: "Alejandría",
-    map_city_alexandria_desc: "Puerto histórico; Bibliotheca Alexandrina y fondos coloniales.",
+    map_city_alexandria_desc:
+      "Puerto histórico; Bibliotheca Alexandrina y fondos coloniales.",
     map_city_luxor: "Luxor",
     map_city_luxor_desc: "Tebas antigua; Valle de los Reyes e inscripciones.",
     map_city_aswan: "Asuán",
@@ -3025,19 +3270,24 @@ const translations: Record<string, Record<string, string>> = {
     map_city_giza: "Giza",
     map_city_giza_desc: "Meseta de las pirámides; museos y levantamientos.",
     map_city_mansoura: "Mansura",
-    map_city_mansoura_desc: "Gran ciudad del Delta; registro civil y archivos regionales.",
+    map_city_mansoura_desc:
+      "Gran ciudad del Delta; registro civil y archivos regionales.",
     map_city_tanta: "Tanta",
-    map_city_tanta_desc: "Centro cultural del Delta; registros municipales y religiosos.",
+    map_city_tanta_desc:
+      "Centro cultural del Delta; registros municipales y religiosos.",
     map_city_asyut: "Asiut",
     map_city_asyut_desc: "Nudo de Alto Egipto; patrimonio coptó e islámico.",
     map_city_port_said: "Port Said",
-    map_city_port_said_desc: "Ciudad del canal de Suez; fondos británicos y egipcios.",
+    map_city_port_said_desc:
+      "Ciudad del canal de Suez; fondos británicos y egipcios.",
     map_city_faiyum: "Faiyum",
     map_city_faiyum_desc: "Oasis de Fayum; retratos ptolemaicos y catastro.",
     map_city_minya: "Minia",
-    map_city_minya_desc: "Alto Egipto; monasterios coptos y documentación civil.",
+    map_city_minya_desc:
+      "Alto Egipto; monasterios coptos y documentación civil.",
     map_city_sohag: "Sohag",
-    map_city_sohag_desc: "Monasterios Blanco y Rojo; registros eclesiásticos y locales.",
+    map_city_sohag_desc:
+      "Monasterios Blanco y Rojo; registros eclesiásticos y locales.",
     join_our_community: "Únete a Nuestra Comunidad",
     join_community_desc:
       "Comparte hallazgos sobre registros egipcios, pide ayuda con árabe u otomano y conecta con primos en Egipto y la diáspora.",
@@ -3162,7 +3412,8 @@ const translations: Record<string, Record<string, string>> = {
       "Libros, árboles y fotografía de archivo centrados en Egipto — del Delta al Alto Egipto, registros coptos e islámicos y fondos de la diáspora.",
     library_load_failed: "No se pudo cargar la biblioteca. Inténtalo de nuevo.",
     library_section_books_failed: "No se pudieron cargar los libros.",
-    library_section_trees_failed: "No se pudieron cargar los árboles familiares.",
+    library_section_trees_failed:
+      "No se pudieron cargar los árboles familiares.",
     library_section_gallery_failed: "No se pudo cargar la galería.",
     library_search: "Buscar en la biblioteca",
     search_library: "Buscar libros, árboles, imágenes...",
@@ -3179,8 +3430,7 @@ const translations: Record<string, Record<string, string>> = {
     uncategorized: "Sin categoría",
     newsletter: "Boletín",
     newsletter_prompt: "Deja tu correo y nos pondremos en contacto.",
-    footer_desc:
-      "La referencia para preservar la historia familiar egipcia.",
+    footer_desc: "La referencia para preservar la historia familiar egipcia.",
     subscribe: "Suscribirse",
     subscribing: "Suscribiendo...",
     newsletter_email_required: "El correo es obligatorio.",
@@ -3208,7 +3458,8 @@ const translations: Record<string, Record<string, string>> = {
     person_added: "Persona añadida.",
     person_updated: "Persona actualizada.",
     person_deleted: "Persona eliminada.",
-    confirm_delete_tree: "¿Eliminar este árbol? Esta acción no se puede deshacer.",
+    confirm_delete_tree:
+      "¿Eliminar este árbol? Esta acción no se puede deshacer.",
     books_loaded: "Libros cargados.",
     book_uploaded: "Libro subido.",
     book_deleted: "Libro eliminado.",
@@ -3324,7 +3575,8 @@ const translations: Record<string, Record<string, string>> = {
     periods_ottoman_desc:
       "Linajes patronímicos, archivos de Qadi, documentos waqf y autoridad tribal definieron estructuras familiares.",
     periods_ottoman_b1: "Patronímico: Ahmed ben Mohamed ben Ali",
-    periods_ottoman_b2: "Registros de tribunales de Qadi para matrimonio y herencia",
+    periods_ottoman_b2:
+      "Registros de tribunales de Qadi para matrimonio y herencia",
     periods_ottoman_b3: "Documentación habús y bienes religiosos",
     periods_ottoman_b4: "Consejos tribales y genealogías de zawiya",
     periods_transition_title: "Transición (1830-1882)",
@@ -3338,7 +3590,8 @@ const translations: Record<string, Record<string, string>> = {
     periods_colonial_desc:
       "Apellidos fijos y la arquitectura civil moderna crearon registros sistemáticos conservados en ANOM.",
     periods_colonial_b1: "Ley de fijación de apellidos (1882)",
-    periods_colonial_b2: "Registros municipales de nacimiento/matrimonio/defunción",
+    periods_colonial_b2:
+      "Registros municipales de nacimiento/matrimonio/defunción",
     periods_colonial_b3: "Expedientes coloniales digitalizados ANOM",
     periods_colonial_b4: "Levantamientos y catastro civil",
     periods_independence_title: "Independencia y después (1962-actualidad)",
@@ -3372,7 +3625,7 @@ const translations: Record<string, Record<string, string>> = {
     periods_highlight_migration_title: "Mapas de migración",
     periods_highlight_migration_desc:
       "Informes administrativos y cartografía rastrean el movimiento entre oasis, costas e interior.",
-    sources_archives_title: "Fuentes y archivos para la genealogía en Egipto",
+    sources_archives_title: "Archivos y Registros",
     sources_archives_intro:
       "Navega archivos históricos, explora fuentes primarias y aprende a acceder y validar datos en registros otomanos egipcios, archivos coloniales y registro civil actual.",
     archive_types: "Tipos de archivo y depósitos",
@@ -3428,39 +3681,70 @@ const translations: Record<string, Record<string, string>> = {
     periods_ws_conflict: "Conflicto y RASD (1976–actualidad)",
     periods_click_to_expand:
       "Haz clic en una región de Egipto para ver los períodos detallados y consejos de investigación.",
-    periods_country_intro_dz: "De la regencia otomana a la colonización francesa y la independencia—fases clave para el estado civil y la investigación genealógica.",
-    periods_country_intro_ma: "De los Saadí al sultanato alauita, protectorado y reino moderno—fuentes del Makhzen, Habús y registros civiles.",
-    periods_country_intro_tn: "Beylicato otomano, protectorado francés y república—archivos civiles y religiosos y fondos estatales modernos.",
-    periods_country_intro_ly: "Tripolitania otomana, colonización italiana y Estado moderno—archivos en Trípoli y fondos digitales.",
-    periods_country_intro_mr: "Emiratos y confederaciones tribales precoloniales, África Occidental Francesa y república independiente—fuentes orales y escritas.",
-    periods_country_intro_ws: "Sáhara español, partición y RASD—fuentes en archivos españoles, marroquíes y saharauis.",
-    periods_dz_ottoman_desc: "Registros del Beylik y tribunales de Qadi, escrituras waqf y consejos tribales; patronímicos (ben/bint).",
-    periods_dz_french_desc: "Fijación de apellidos (1882), registros civiles municipales, archivos coloniales ANOM, censos y levantamientos.",
-    periods_dz_independence_desc: "Archivo nacional (CNA), estado civil APC, documentos de identidad y fondos de diáspora.",
-    periods_ma_saadi_desc: "Crónicas, manuscritos de zawiya y primeros fondos Makhzen; linajes tribales y religiosos.",
-    periods_ma_alaouite_desc: "Decretos sultanales, archivos habús, registros de Qadi y documentación urbana y tribal.",
-    periods_ma_protectorate_desc: "Estado civil de las zonas francesa y española, censos, catastro y fondos de Archives du Maroc.",
-    periods_ma_independence_desc: "Registro civil nacional, Archives du Maroc, libros de familia y documentación migratoria.",
-    periods_tn_ottoman_desc: "Archivos beylicales y de Qadi, registros waqf y tribunales sharia; patronímicos y nasab tribal.",
-    periods_tn_protectorate_desc: "Introducción del estado civil, censos, archivos de tierras y municipales; predecesores del Archivo Nacional de Túnez.",
-    periods_tn_independence_desc: "Archivos Nacionales (Thekra), registro civil, identidad y documentación familiar.",
-    periods_ly_ottoman_desc: "Registros karamanlí y otomanos, waqf y documentación tribal; el Centro Libio conserva muchos originales.",
-    periods_ly_italian_desc: "Registros civiles coloniales, censos y catastro; parte digitalizada en archivos italianos y libios.",
-    periods_ly_independence_desc: "DNI nacional y estado civil; Centro Libio de Archivos y Estudios Históricos (LCAHS) en Trípoli.",
-    periods_mr_precolonial_desc: "Genealogías orales, manuscritos de zawiya y archivos emirales; nasab tribal y linajes eruditos.",
-    periods_mr_french_desc: "Fondos administrativos y civiles coloniales; primeros censos y documentación de identidad.",
-    periods_mr_independence_desc: "Archivos Nacionales de Mauritania, registro civil y documentos de identidad nacional.",
-    periods_ws_spanish_desc: "Registros civiles y administrativos coloniales españoles; fondos en archivos españoles y saharauis.",
-    periods_ws_mauritanian_desc: "Partición de corta duración; documentación administrativa y de refugiados en Mauritania y Marruecos.",
-    periods_ws_conflict_desc: "Archivo Nacional Saharaui (Rabouni), documentos RASD y fondos de diáspora/campos; registros civiles de la zona bajo administración marroquí.",
+    periods_country_intro_dz:
+      "De la regencia otomana a la colonización francesa y la independencia—fases clave para el estado civil y la investigación genealógica.",
+    periods_country_intro_ma:
+      "De los Saadí al sultanato alauita, protectorado y reino moderno—fuentes del Makhzen, Habús y registros civiles.",
+    periods_country_intro_tn:
+      "Beylicato otomano, protectorado francés y república—archivos civiles y religiosos y fondos estatales modernos.",
+    periods_country_intro_ly:
+      "Tripolitania otomana, colonización italiana y Estado moderno—archivos en Trípoli y fondos digitales.",
+    periods_country_intro_mr:
+      "Emiratos y confederaciones tribales precoloniales, África Occidental Francesa y república independiente—fuentes orales y escritas.",
+    periods_country_intro_ws:
+      "Sáhara español, partición y RASD—fuentes en archivos españoles, marroquíes y saharauis.",
+    periods_dz_ottoman_desc:
+      "Registros del Beylik y tribunales de Qadi, escrituras waqf y consejos tribales; patronímicos (ben/bint).",
+    periods_dz_french_desc:
+      "Fijación de apellidos (1882), registros civiles municipales, archivos coloniales ANOM, censos y levantamientos.",
+    periods_dz_independence_desc:
+      "Archivo nacional (CNA), estado civil APC, documentos de identidad y fondos de diáspora.",
+    periods_ma_saadi_desc:
+      "Crónicas, manuscritos de zawiya y primeros fondos Makhzen; linajes tribales y religiosos.",
+    periods_ma_alaouite_desc:
+      "Decretos sultanales, archivos habús, registros de Qadi y documentación urbana y tribal.",
+    periods_ma_protectorate_desc:
+      "Estado civil de las zonas francesa y española, censos, catastro y fondos de Archives du Maroc.",
+    periods_ma_independence_desc:
+      "Registro civil nacional, Archives du Maroc, libros de familia y documentación migratoria.",
+    periods_tn_ottoman_desc:
+      "Archivos beylicales y de Qadi, registros waqf y tribunales sharia; patronímicos y nasab tribal.",
+    periods_tn_protectorate_desc:
+      "Introducción del estado civil, censos, archivos de tierras y municipales; predecesores del Archivo Nacional de Túnez.",
+    periods_tn_independence_desc:
+      "Archivos Nacionales (Thekra), registro civil, identidad y documentación familiar.",
+    periods_ly_ottoman_desc:
+      "Registros karamanlí y otomanos, waqf y documentación tribal; el Centro Libio conserva muchos originales.",
+    periods_ly_italian_desc:
+      "Registros civiles coloniales, censos y catastro; parte digitalizada en archivos italianos y libios.",
+    periods_ly_independence_desc:
+      "DNI nacional y estado civil; Centro Libio de Archivos y Estudios Históricos (LCAHS) en Trípoli.",
+    periods_mr_precolonial_desc:
+      "Genealogías orales, manuscritos de zawiya y archivos emirales; nasab tribal y linajes eruditos.",
+    periods_mr_french_desc:
+      "Fondos administrativos y civiles coloniales; primeros censos y documentación de identidad.",
+    periods_mr_independence_desc:
+      "Archivos Nacionales de Mauritania, registro civil y documentos de identidad nacional.",
+    periods_ws_spanish_desc:
+      "Registros civiles y administrativos coloniales españoles; fondos en archivos españoles y saharauis.",
+    periods_ws_mauritanian_desc:
+      "Partición de corta duración; documentación administrativa y de refugiados en Mauritania y Marruecos.",
+    periods_ws_conflict_desc:
+      "Archivo Nacional Saharaui (Rabouni), documentos RASD y fondos de diáspora/campos; registros civiles de la zona bajo administración marroquí.",
     official_archives_quick_jump: "Explorar archivos por ubicación: ",
     visit_official_site: "Visitar sitio oficial",
-    archive_desc_algeria: "Fondos otomanos y coloniales, precursores del estado civil, mapas y fotos. Solicita acceso y referencias de catálogo para investigación genealógica.",
-    archive_desc_morocco: "Archivos del protectorado y posindependencia, fondos jurídicos y administrativos. Sala de consulta y catálogo para investigadores.",
-    archive_desc_tunisia: "Base Thekra (180.000+ registros), documentos históricos y civiles, libros y publicaciones. Planifica visitas y cita referencias para trabajo genealógico.",
-    archive_desc_libya: "Fondos otomanos, italianos y modernos; millones de documentos e historias orales. Contacta para acceso y consulta de catálogo en Trípoli.",
-    archive_desc_mauritania: "Fondos del Archivo Nacional y del ministerio de Cultura. Consulta documentación civil e histórica y procedimientos de investigación.",
-    archive_desc_western_sahara: "Documentación RASD, colecciones de microfilmes y publicaciones oficiales. Embajadas saharauis y archivo de Rabouni para investigación genealógica e histórica.",
+    archive_desc_algeria:
+      "Fondos otomanos y coloniales, precursores del estado civil, mapas y fotos. Solicita acceso y referencias de catálogo para investigación genealógica.",
+    archive_desc_morocco:
+      "Archivos del protectorado y posindependencia, fondos jurídicos y administrativos. Sala de consulta y catálogo para investigadores.",
+    archive_desc_tunisia:
+      "Base Thekra (180.000+ registros), documentos históricos y civiles, libros y publicaciones. Planifica visitas y cita referencias para trabajo genealógico.",
+    archive_desc_libya:
+      "Fondos otomanos, italianos y modernos; millones de documentos e historias orales. Contacta para acceso y consulta de catálogo en Trípoli.",
+    archive_desc_mauritania:
+      "Fondos del Archivo Nacional y del ministerio de Cultura. Consulta documentación civil e histórica y procedimientos de investigación.",
+    archive_desc_western_sahara:
+      "Documentación RASD, colecciones de microfilmes y publicaciones oficiales. Embajadas saharauis y archivo de Rabouni para investigación genealógica e histórica.",
     international_archives_title: "Archivos internacionales y coloniales",
     international_archives_intro:
       "Archivos en Europa y Turquía conservan fondos esenciales sobre Egipto: consulados, administración colonial, militares y documentación otomana relativa a las provincias egipcias.",
@@ -3512,12 +3796,14 @@ const translations: Record<string, Record<string, string>> = {
     audio_upload_heading: "Añadir una grabación",
     audio_title_optional: "Título (opcional)",
     audio_tap_to_upload: "Elegir o grabar audio",
-    audio_limits_hint: "Hasta 4 MB por archivo; guardado localmente en este navegador por ahora.",
+    audio_limits_hint:
+      "Hasta 4 MB por archivo; guardado localmente en este navegador por ahora.",
     audio_your_library: "Tus clips",
     audio_empty: "Aún no hay audio — sube un archivo para empezar.",
     audio_file_too_large: "Archivo demasiado grande",
     audio_added_to_library: "Audio añadido a tu biblioteca",
-    audio_device_only_hint: "Guardado en este navegador hasta conectar el servidor.",
+    audio_device_only_hint:
+      "Guardado en este navegador hasta conectar el servidor.",
     audio_remove_clip: "Quitar clip",
     articles: "Artículos",
     articles_title: "Textos de la comunidad",
@@ -3527,7 +3813,8 @@ const translations: Record<string, Record<string, string>> = {
     articles_title_placeholder: "Título",
     articles_body_placeholder: "Tu artículo…",
     articles_publish: "Publicar",
-    articles_login_hint: "Inicia sesión para publicar. Todos pueden leer y comentar.",
+    articles_login_hint:
+      "Inicia sesión para publicar. Todos pueden leer y comentar.",
     articles_feed: "Últimos artículos",
     articles_empty: "Aún no hay artículos — publica el primero.",
     articles_comments: "Comentarios",
@@ -3566,7 +3853,8 @@ const translations: Record<string, Record<string, string>> = {
     code_required: "El código de verificación es obligatorio",
     code_placeholder: "Código de 6 dígitos",
     verify_and_reset: "Verificar y restablecer",
-    reset_step1_desc: "Introduce tu correo para recibir un código de verificación.",
+    reset_step1_desc:
+      "Introduce tu correo para recibir un código de verificación.",
     reset_step2_desc: "Usa el código y establece una nueva contraseña segura.",
     new_password: "Nueva contraseña",
     verification_code: "Código de verificación",
@@ -3600,9 +3888,11 @@ const translations: Record<string, Record<string, string>> = {
     role: "Rol",
     status: "Estado",
     full_name_required: "El nombre completo es obligatorio",
-    signup_desc: "Únete a Roots Egypt y preserva las historias de tu familia en Egipto y la diáspora.",
+    signup_desc:
+      "Únete a Roots Egypt y preserva las historias de tu familia en Egipto y la diáspora.",
     already_have_account: "¿Ya tienes una cuenta?",
-    contact_hero_para: "Estamos listos para ayudarte con la genealogía egipcia, consultas de archivos y preservación de tu historia familiar. Escríbenos y responderemos en 24 horas.",
+    contact_hero_para:
+      "Estamos listos para ayudarte con la genealogía egipcia, consultas de archivos y preservación de tu historia familiar. Escríbenos y responderemos en 24 horas.",
     contact_phone_primary: "+20 2 XXX XXXX",
     contact_hours_week: "dom.–jue.: 9:00–18:00 (hora de El Cairo)",
     contact_whatsapp_line: "WhatsApp: +20 2 XXX XXXX",
@@ -3623,7 +3913,8 @@ const translations: Record<string, Record<string, string>> = {
     welcome_back_prefix: "Bienvenido de nuevo",
     research_center_title: "Centro de investigación genealógica",
     viewing_mode_read_only: "Modo visualización - Solo lectura",
-    explore_public_tree_desc: "Explora este árbol familiar público para descubrir conexiones.",
+    explore_public_tree_desc:
+      "Explora este árbol familiar público para descubrir conexiones.",
     research_guides_title: "Guías y tutoriales de investigación",
     research_hero_kicker: "Centro de investigación",
     research_intro:
@@ -3638,13 +3929,17 @@ const translations: Record<string, Record<string, string>> = {
     research_cat_lineage_desc:
       "Registros parroquiales coptos, historia oral en Sa‘id y Delta, manuscritos familiares.",
     research_guide_ottoman_title: "Leer documentos de época otomana",
-    research_guide_ottoman_desc: "Escrituras, fórmulas y nombres en registros egipcios.",
+    research_guide_ottoman_desc:
+      "Escrituras, fórmulas y nombres en registros egipcios.",
     research_guide_trace_title: "Rastrear ramas perdidas",
-    research_guide_trace_desc: "Migraciones dentro de Egipto y la diáspora con varias fuentes.",
+    research_guide_trace_desc:
+      "Migraciones dentro de Egipto y la diáspora con varias fuentes.",
     research_guide_archive_title: "Usar archivos egipcios",
-    research_guide_archive_desc: "Dar al-Wathaeq, oficinas civiles y registros eclesiásticos.",
+    research_guide_archive_desc:
+      "Dar al-Wathaeq, oficinas civiles y registros eclesiásticos.",
     research_guide_oral_title: "Entrevistas de historia oral",
-    research_guide_oral_desc: "Conversaciones estructuradas con mayores sobre nombres, lugares y parentesco.",
+    research_guide_oral_desc:
+      "Conversaciones estructuradas con mayores sobre nombres, lugares y parentesco.",
     research_timeline_heading: "Egipto — cronología para genealogistas",
     research_tl_1_period: "3100 a. C. – 641 — Antigüedad a tardía antigüedad",
     research_tl_1_detail:
@@ -3652,17 +3947,22 @@ const translations: Record<string, Record<string, string>> = {
     research_tl_2_period: "641 – 1517 — Egipto islámico y mameluco",
     research_tl_2_detail: "Crónicas, waqf y documentación judicial temprana.",
     research_tl_3_period: "1517 – 1882 — Egipto otomano",
-    research_tl_3_detail: "Tribunales provinciales, tributos y nombres en registros imperiales.",
+    research_tl_3_detail:
+      "Tribunales provinciales, tributos y nombres en registros imperiales.",
     research_tl_4_period: "1882 – actualidad — Egipto moderno",
     research_tl_4_detail:
       "Registro civil, DNI, Dar al-Wathaeq y documentación consular de la diáspora.",
     tree_label: "Árbol",
     no_description_provided: "No se proporcionó descripción.",
-    research_empty_category: "No hay resultados en esta categoría para tu búsqueda.",
+    research_empty_category:
+      "No hay resultados en esta categoría para tu búsqueda.",
     research_mock_tree_label: "Egipto — árbol público",
-    research_mock_tree_demo: "Entrada de demostración para explorar el directorio.",
-    research_mock_book_1_title: "Description de l'Égypte — facsímiles seleccionados",
-    research_mock_book_2_title: "Extractos del registro civil — muestras de El Cairo (demo)",
+    research_mock_tree_demo:
+      "Entrada de demostración para explorar el directorio.",
+    research_mock_book_1_title:
+      "Description de l'Égypte — facsímiles seleccionados",
+    research_mock_book_2_title:
+      "Extractos del registro civil — muestras de El Cairo (demo)",
     research_mock_book_1_author: "Comisión de Egipto (corpus)",
     research_mock_book_2_author: "Gobernación de El Cairo (muestra)",
     mock_entry_label: "Vista previa (datos de ejemplo)",
@@ -3675,14 +3975,17 @@ const translations: Record<string, Record<string, string>> = {
     message_send_failed: "Error al enviar el mensaje.",
     email_placeholder_example: "ejemplo@email.com",
     password_placeholder_mask: "********",
-    users_page_desc: "Usuarios registrados (nombre, correo, teléfono) - las contraseñas nunca se muestran.",
+    users_page_desc:
+      "Usuarios registrados (nombre, correo, teléfono) - las contraseñas nunca se muestran.",
     admin_only: "Solo administrador",
     add_user_hint: "Añadir un nuevo usuario",
-    add_user_email_hint: "Les enviaremos un código por correo para restablecer la contraseña.",
+    add_user_email_hint:
+      "Les enviaremos un código por correo para restablecer la contraseña.",
     reset_email_failed: "Error al enviar el correo de restablecimiento",
     invalid_code_or_password: "Código o contraseña no válidos",
     dashboard_load_failed: "Error al cargar los datos del panel.",
-    check_api_endpoints: "Comprueba los endpoints de la API e inténtalo de nuevo.",
+    check_api_endpoints:
+      "Comprueba los endpoints de la API e inténtalo de nuevo.",
     activity_load_failed: "Error al cargar la actividad",
     suggestions_load_failed: "Error al cargar las sugerencias",
     toggle_theme: "Cambiar tema",
@@ -3721,7 +4024,8 @@ const translations: Record<string, Record<string, string>> = {
     center: "Centrar",
     import_gedcom: "Importar GEDCOM",
     export_gedcom: "Exportar GEDCOM",
-    invalid_gedcomx_type: "Tipo de archivo no admitido. Use .gedx, .xml o .json.",
+    invalid_gedcomx_type:
+      "Tipo de archivo no admitido. Use .gedx, .xml o .json.",
     gedcomx_invalid_json: "JSON GEDCOM X no válido.",
     gedcomx_imported: "GEDCOM X importado.",
     import_gedcomx_failed: "Error al importar GEDCOM X.",

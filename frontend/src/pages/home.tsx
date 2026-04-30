@@ -663,7 +663,7 @@ export default function Home() {
                   accent: isDark
                     ? "border-[#d4a843]/20 hover:border-[#d4a843]/50"
                     : "border-[#d4a843]/15 hover:border-[#d4a843]/40",
-                  title: t("home_card_archives_title", "Sources & Archives"),
+                  title: t("home_card_archives_title", "Archives"),
                   desc: t(
                     "home_card_archives_desc",
                     "Navigate Egypt's major archival institutions: Dar al-Wathaeq, Sharia courts, Awqaf registries, colonial census, and more.",

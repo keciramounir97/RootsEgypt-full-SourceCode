@@ -321,636 +321,793 @@ export default function SourcesAndArchives() {
 
   return (
     <div className="min-h-screen">
-    <RootsPageShell
-      heroClassName="surface-nile text-on-nile"
-      hero={
-        <div className="relative mx-auto max-w-5xl">
-          <div
-            className="pointer-events-none absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23d4af37\' fill-opacity=\'0.06\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-80"
-            aria-hidden
-          />
-          <div className="relative px-6 py-12 sm:py-16 text-center text-on-nile">
-            <p className="text-on-nile mb-3 text-xs font-medium uppercase tracking-[0.35em] opacity-90 sm:text-sm">
-              {t("sources_and_archives", "Sources & Archives")}
-            </p>
-            <h1 className="text-on-nile text-4xl font-bold tracking-tight drop-shadow-lg sm:text-5xl lg:text-6xl">
-              {t("sources_archives_title", "Sources & Archives for Egyptian Genealogy")}
-            </h1>
-            <p className="text-on-nile mx-auto mt-4 max-w-2xl text-base sm:text-lg opacity-95">
-              {t("sources_archives_intro", "Navigate historical archives, explore primary sources, and learn how to access and validate genealogical information across pharaonic records, Ottoman registers, and modern civil archives.")}
-            </p>
+      <RootsPageShell
+        heroClassName="surface-nile text-on-nile"
+        hero={
+          <div className="relative mx-auto max-w-5xl">
+            <div
+              className="pointer-events-none absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23d4af37\' fill-opacity=\'0.06\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-80"
+              aria-hidden
+            />
+            <div className="relative px-6 py-12 sm:py-16 text-center text-on-nile">
+              <p className="text-on-nile mb-3 text-xs font-medium uppercase tracking-[0.35em] opacity-90 sm:text-sm">
+                {t("sources_and_archives", "Archives")}
+              </p>
+              <h1 className="text-5xl font-bold">
+                {t("sources_archives_title", "Archives & Records")}
+              </h1>
+              <p className="text-on-nile mx-auto mt-4 max-w-2xl text-base sm:text-lg opacity-95">
+                {t(
+                  "sources_archives_intro",
+                  "Navigate historical archives, explore primary sources, and learn how to access and validate genealogical information across pharaonic records, Ottoman registers, and modern civil archives.",
+                )}
+              </p>
+            </div>
           </div>
-        </div>
-      }
-    >
-      {/* Sticky nav */}
-      <nav
-        className={`sticky top-0 z-30 rounded-xl border border-[var(--border-color)] px-4 py-3 shadow-lg backdrop-blur-md ${
-          isDark
-            ? "bg-[color-mix(in_srgb,var(--leather-brown)_90%,transparent)]"
-            : "bg-[color-mix(in_srgb,var(--paper-color)_94%,transparent)]"
-        }`}
+        }
       >
-        <button
-          type="button"
-          className="interactive-btn btn-neu md:hidden flex items-center gap-2 w-full py-2.5 px-3 font-medium justify-between"
-          onClick={() => setNavOpen((o) => !o)}
-          aria-expanded={navOpen}
+        {/* Sticky nav */}
+        <nav
+          className={`sticky top-0 z-30 rounded-xl border border-[var(--border-color)] px-4 py-3 shadow-lg backdrop-blur-md ${
+            isDark
+              ? "bg-[color-mix(in_srgb,var(--leather-brown)_90%,transparent)]"
+              : "bg-[color-mix(in_srgb,var(--paper-color)_94%,transparent)]"
+          }`}
         >
-          <Menu className="w-5 h-5" />
-          {t("sources_and_archives", "Sources & Archives")}
-        </button>
-        <div className={`${navOpen ? "block" : "hidden"} md:block`}>
-          <ul className="flex flex-wrap gap-x-4 gap-y-2 md:gap-6 py-2">
-            {SECTION_IDS.map((id) => (
-              <li key={id}>
-                <a
-                  href={`#${id}`}
-                  onClick={() => setNavOpen(false)}
-                  className={`text-sm font-medium transition-colors hover:text-teal ${activeSection === id ? "text-teal" : "text-[color:var(--text-color)] opacity-90"}`}
-                >
-                  {navLabels[id] || id}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
-
-      {/* ============================================================= */}
-      {/*  Quick Stats Counter Bar                                       */}
-      {/* ============================================================= */}
-      <section id="quick-stats" className="roots-section scroll-mt-28">
-        <ScrollReveal>
-          <div className="mb-6">
-            <h2 className="roots-heading !mb-4">
-              {t("quick_stats_title", "Archive Overview")}
-            </h2>
-            <p className="mt-2 text-lg text-[color:var(--text-color)] opacity-90">
-              {t("quick_stats_desc", "A snapshot of the genealogical resources cataloged in this guide.")}
-            </p>
-          </div>
-        </ScrollReveal>
-        <StaggerContainer className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          {quickStats.map((stat) => (
-            <StaggerItem key={stat.label}>
-              <motion.div
-                className="roots-card text-center py-6 px-4"
-                whileHover={{ y: -4, scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              >
-                <div
-                  className="flex items-center justify-center w-12 h-12 rounded-full mx-auto mb-3"
-                  style={{ backgroundColor: `${stat.color}22`, color: stat.color }}
-                >
-                  <stat.icon className="w-6 h-6" />
-                </div>
-                <div className="text-3xl sm:text-4xl font-bold mb-1" style={{ color: stat.color }}>
-                  <CountUp end={stat.value} duration={2.5} suffix={("suffix" in stat && stat.suffix) ? stat.suffix as string : ""} />
-                </div>
-                <p className="text-sm opacity-80 font-medium">{stat.label}</p>
-              </motion.div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </section>
-
-      {/* ============================================================= */}
-      {/*  Official Archives                                             */}
-      {/* ============================================================= */}
-      <section id="official-archives" className="roots-section scroll-mt-28">
-        <ScrollReveal>
-          <div className="mb-8">
-            <h2 className="roots-heading !mb-4">
-              {t("official_archives_title", "Official Archives of Egypt")}
-            </h2>
-            <p className="mt-2 text-lg text-[color:var(--text-color)] opacity-90">
-              {t("official_archives_intro", "Visit the official archives of Egypt for civil status, historical records, and genealogical sources. Links open in a new tab.")}
-            </p>
-            <p className="mt-2 text-sm text-[color:var(--text-color)] opacity-80">
-              {t("official_archives_quick_jump", "Browse archives by location: ")}
-              {officialArchives.map((item, idx) => (
-                <span key={item.countryKey}>
-                  <a href={`#archive-${item.countryKey}`} className="text-teal hover:text-tealDark hover:underline font-medium">
-                    {item.country}
+          <button
+            type="button"
+            className="interactive-btn btn-neu md:hidden flex items-center gap-2 w-full py-2.5 px-3 font-medium justify-between"
+            onClick={() => setNavOpen((o) => !o)}
+            aria-expanded={navOpen}
+          >
+            <Menu className="w-5 h-5" />
+            {t("sources_and_archives", "Archives")}
+          </button>
+          <div className={`${navOpen ? "block" : "hidden"} md:block`}>
+            <ul className="flex flex-wrap gap-x-4 gap-y-2 md:gap-6 py-2">
+              {SECTION_IDS.map((id) => (
+                <li key={id}>
+                  <a
+                    href={`#${id}`}
+                    onClick={() => setNavOpen(false)}
+                    className={`text-sm font-medium transition-colors hover:text-teal ${activeSection === id ? "text-teal" : "text-[color:var(--text-color)] opacity-90"}`}
+                  >
+                    {navLabels[id] || id}
                   </a>
-                  {idx < officialArchives.length - 1 ? ", " : ""}
-                </span>
+                </li>
               ))}
-            </p>
+            </ul>
           </div>
-        </ScrollReveal>
-        <StaggerContainer className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {officialArchives.map((item) => (
-            <StaggerItem key={item.countryKey}>
-              <article
-                id={`archive-${item.countryKey}`}
-                className="roots-card flex flex-col overflow-hidden transition-all duration-300 hover:border-teal h-full"
-              >
-                <div className="p-6 flex flex-col flex-1">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-teal/20 text-teal">
-                      <Globe className="w-6 h-6" />
-                    </div>
-                    <ExternalLink className="w-5 h-5 opacity-50" aria-hidden />
-                  </div>
-                  <h3 className="text-xl font-bold text-teal mb-1">{item.country}</h3>
-                  <p className="font-semibold opacity-95 mb-3">{item.name}</p>
-                  <p className="text-sm opacity-85 leading-relaxed flex-1 mb-5">{item.description}</p>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="roots-cta interactive-btn btn-neu btn-neu--gold inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm no-underline"
-                  >
-                    {t("visit_official_site", "Visit official site")}
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
-              </article>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </section>
+        </nav>
 
-      {/* ============================================================= */}
-      {/*  International Archives                                        */}
-      {/* ============================================================= */}
-      <section id="international-archives" className="roots-section roots-section-alt scroll-mt-28">
-        <ScrollReveal>
-          <div className="mb-8">
-            <h2 className="roots-heading !mb-4" style={{ borderLeftColor: "#0c4a6e" }}>
-              {t("international_archives_title", "International Archives for Egyptian Genealogy")}
-            </h2>
-            <p className="mt-2 text-lg text-[color:var(--text-color)] opacity-90">
-              {t("international_archives_intro", "Major archives of former colonial powers and the Ottoman Empire hold essential records for Egyptian genealogy.")}
-            </p>
-          </div>
-        </ScrollReveal>
-        <StaggerContainer className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {internationalArchives.map((item) => (
-            <StaggerItem key={item.key}>
-              <article
-                className="roots-card flex flex-col overflow-hidden transition-all duration-300 hover:border-[#0c4a6e] h-full"
-              >
-                <div className="p-6 flex flex-col flex-1">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#0c4a6e]/20 text-[#0c4a6e]">
-                      <Landmark className="w-6 h-6" />
-                    </div>
-                    <ExternalLink className="w-5 h-5 opacity-50" aria-hidden />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#0c4a6e] mb-3">{item.name}</h3>
-                  <p className="text-sm opacity-85 leading-relaxed flex-1 mb-5">{item.description}</p>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="roots-cta interactive-btn btn-neu btn-neu--primary inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm no-underline"
+        {/* ============================================================= */}
+        {/*  Quick Stats Counter Bar                                       */}
+        {/* ============================================================= */}
+        <section id="quick-stats" className="roots-section scroll-mt-28">
+          <ScrollReveal>
+            <div className="mb-6">
+              <h2 className="roots-heading !mb-4">
+                {t("quick_stats_title", "Archive Overview")}
+              </h2>
+              <p className="mt-2 text-lg text-[color:var(--text-color)] opacity-90">
+                {t(
+                  "quick_stats_desc",
+                  "A snapshot of the genealogical resources cataloged in this guide.",
+                )}
+              </p>
+            </div>
+          </ScrollReveal>
+          <StaggerContainer className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+            {quickStats.map((stat) => (
+              <StaggerItem key={stat.label}>
+                <motion.div
+                  className="roots-card text-center py-6 px-4"
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <div
+                    className="flex items-center justify-center w-12 h-12 rounded-full mx-auto mb-3"
+                    style={{
+                      backgroundColor: `${stat.color}22`,
+                      color: stat.color,
+                    }}
                   >
-                    {t("visit_official_site", "Visit official site")}
-                    <ChevronRight className="w-4 h-4" />
-                  </a>
-                </div>
-              </article>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </section>
+                    <stat.icon className="w-6 h-6" />
+                  </div>
+                  <div
+                    className="text-3xl sm:text-4xl font-bold mb-1"
+                    style={{ color: stat.color }}
+                  >
+                    <CountUp
+                      end={stat.value}
+                      duration={2.5}
+                      suffix={
+                        "suffix" in stat && stat.suffix
+                          ? (stat.suffix as string)
+                          : ""
+                      }
+                    />
+                  </div>
+                  <p className="text-sm opacity-80 font-medium">{stat.label}</p>
+                </motion.div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </section>
 
-      {/* ============================================================= */}
-      {/*  Jewish Genealogical Sources (NEW)                             */}
-      {/* ============================================================= */}
-      <section id="jewish-archives" className="roots-section scroll-mt-28">
-        <ScrollReveal>
-          <div className="mb-8">
-            <h2 className="roots-heading !mb-4" style={{ borderLeftColor: "#7c3aed" }}>
-              {t("jewish_archives_title", "Jewish Genealogical Sources in Egypt")}
-            </h2>
-            <p className="mt-2 text-lg text-[color:var(--text-color)] opacity-90">
-              {t("jewish_archives_intro", "Egypt's Jewish communities have left a rich documentary heritage spanning over a millennium. From the medieval Cairo Geniza to modern communal records, these sources are essential for tracing Jewish Egyptian families and their connections across the Mediterranean world.")}
+        {/* ============================================================= */}
+        {/*  Official Archives                                             */}
+        {/* ============================================================= */}
+        <section id="official-archives" className="roots-section scroll-mt-28">
+          <ScrollReveal>
+            <div className="mb-8">
+              <h2 className="roots-heading !mb-4">
+                {t("official_archives_title", "Official Archives of Egypt")}
+              </h2>
+              <p className="mt-2 text-lg text-[color:var(--text-color)] opacity-90">
+                {t(
+                  "official_archives_intro",
+                  "Visit the official archives of Egypt for civil status, historical records, and genealogical sources. Links open in a new tab.",
+                )}
+              </p>
+              <p className="mt-2 text-sm text-[color:var(--text-color)] opacity-80">
+                {t(
+                  "official_archives_quick_jump",
+                  "Browse archives by location: ",
+                )}
+                {officialArchives.map((item, idx) => (
+                  <span key={item.countryKey}>
+                    <a
+                      href={`#archive-${item.countryKey}`}
+                      className="text-teal hover:text-tealDark hover:underline font-medium"
+                    >
+                      {item.country}
+                    </a>
+                    {idx < officialArchives.length - 1 ? ", " : ""}
+                  </span>
+                ))}
+              </p>
+            </div>
+          </ScrollReveal>
+          <StaggerContainer className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {officialArchives.map((item) => (
+              <StaggerItem key={item.countryKey}>
+                <article
+                  id={`archive-${item.countryKey}`}
+                  className="roots-card flex flex-col overflow-hidden transition-all duration-300 hover:border-teal h-full"
+                >
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-teal/20 text-teal">
+                        <Globe className="w-6 h-6" />
+                      </div>
+                      <ExternalLink
+                        className="w-5 h-5 opacity-50"
+                        aria-hidden
+                      />
+                    </div>
+                    <h3 className="text-xl font-bold text-teal mb-1">
+                      {item.country}
+                    </h3>
+                    <p className="font-semibold opacity-95 mb-3">{item.name}</p>
+                    <p className="text-sm opacity-85 leading-relaxed flex-1 mb-5">
+                      {item.description}
+                    </p>
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="roots-cta interactive-btn btn-neu btn-neu--gold inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm no-underline"
+                    >
+                      {t("visit_official_site", "Visit official site")}
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
+                </article>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </section>
+
+        {/* ============================================================= */}
+        {/*  International Archives                                        */}
+        {/* ============================================================= */}
+        <section
+          id="international-archives"
+          className="roots-section roots-section-alt scroll-mt-28"
+        >
+          <ScrollReveal>
+            <div className="mb-8">
+              <h2
+                className="roots-heading !mb-4"
+                style={{ borderLeftColor: "#0c4a6e" }}
+              >
+                {t(
+                  "international_archives_title",
+                  "International Archives for Egyptian Genealogy",
+                )}
+              </h2>
+              <p className="mt-2 text-lg text-[color:var(--text-color)] opacity-90">
+                {t(
+                  "international_archives_intro",
+                  "Major archives of former colonial powers and the Ottoman Empire hold essential records for Egyptian genealogy.",
+                )}
+              </p>
+            </div>
+          </ScrollReveal>
+          <StaggerContainer className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {internationalArchives.map((item) => (
+              <StaggerItem key={item.key}>
+                <article className="roots-card flex flex-col overflow-hidden transition-all duration-300 hover:border-[#0c4a6e] h-full">
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#0c4a6e]/20 text-[#0c4a6e]">
+                        <Landmark className="w-6 h-6" />
+                      </div>
+                      <ExternalLink
+                        className="w-5 h-5 opacity-50"
+                        aria-hidden
+                      />
+                    </div>
+                    <h3 className="text-xl font-bold text-[#0c4a6e] mb-3">
+                      {item.name}
+                    </h3>
+                    <p className="text-sm opacity-85 leading-relaxed flex-1 mb-5">
+                      {item.description}
+                    </p>
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="roots-cta interactive-btn btn-neu btn-neu--primary inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm no-underline"
+                    >
+                      {t("visit_official_site", "Visit official site")}
+                      <ChevronRight className="w-4 h-4" />
+                    </a>
+                  </div>
+                </article>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </section>
+
+        {/* ============================================================= */}
+        {/*  Jewish Genealogical Sources (NEW)                             */}
+        {/* ============================================================= */}
+        <section id="jewish-archives" className="roots-section scroll-mt-28">
+          <ScrollReveal>
+            <div className="mb-8">
+              <h2
+                className="roots-heading !mb-4"
+                style={{ borderLeftColor: "#7c3aed" }}
+              >
+                {t(
+                  "jewish_archives_title",
+                  "Jewish Genealogical Sources in Egypt",
+                )}
+              </h2>
+              <p className="mt-2 text-lg text-[color:var(--text-color)] opacity-90">
+                {t(
+                  "jewish_archives_intro",
+                  "Egypt's Jewish communities have left a rich documentary heritage spanning over a millennium. From the medieval Cairo Geniza to modern communal records, these sources are essential for tracing Jewish Egyptian families and their connections across the Mediterranean world.",
+                )}
+              </p>
+              <p className="mt-2 text-sm text-[color:var(--text-color)] opacity-80">
+                {t(
+                  "jewish_archives_note",
+                  "Many original documents are now held by international libraries and research institutions. Digital access is increasingly available through collaborative projects.",
+                )}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => toggleAllJewishSources(true)}
+                  className="interactive-btn btn-neu px-3 py-2 text-xs"
+                >
+                  {t("expand_all", "Expand all")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => toggleAllJewishSources(false)}
+                  className="interactive-btn btn-neu px-3 py-2 text-xs"
+                >
+                  {t("collapse_all", "Collapse all")}
+                </button>
+              </div>
+            </div>
+          </ScrollReveal>
+          <StaggerContainer className="grid gap-8 lg:grid-cols-1">
+            {jewishSources.map((source) => {
+              const isExpanded = expandedCards.has(source.key);
+              return (
+                <StaggerItem key={source.key}>
+                  <motion.article
+                    className="roots-card overflow-hidden transition-all duration-300"
+                    style={{
+                      borderLeftWidth: "4px",
+                      borderLeftColor: source.accent,
+                    }}
+                    whileHover={{ y: -2 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  >
+                    <button
+                      type="button"
+                      className="w-full text-left p-6 cursor-pointer"
+                      onClick={() => toggleCard(source.key)}
+                      aria-expanded={isExpanded}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div
+                          className="flex items-center justify-center w-14 h-14 rounded-full shrink-0"
+                          style={{
+                            backgroundColor: `${source.accent}18`,
+                            color: source.accent,
+                          }}
+                        >
+                          <source.icon className="w-7 h-7" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-3">
+                            <h3
+                              className="text-2xl font-bold"
+                              style={{ color: source.accent }}
+                            >
+                              {source.title}
+                            </h3>
+                            <motion.div
+                              animate={{ rotate: isExpanded ? 180 : 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="shrink-0"
+                            >
+                              <ChevronDown className="w-5 h-5 opacity-60" />
+                            </motion.div>
+                          </div>
+                          <p className="opacity-90 mt-2 line-clamp-2">
+                            {source.description}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{
+                            duration: 0.35,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-6 pb-6 pt-0">
+                            <p className="opacity-90 mb-4">
+                              {source.description}
+                            </p>
+                            <ul className="list-disc pl-6 space-y-1.5 opacity-90 text-sm mb-5">
+                              {source.bullets.map((bullet, idx) => (
+                                <li key={idx}>{bullet}</li>
+                              ))}
+                            </ul>
+                            {source.links.length > 0 && (
+                              <div className="border-t border-[var(--border-color)] pt-4">
+                                <p className="text-sm font-semibold mb-2 opacity-80">
+                                  {t(
+                                    "jewish_resources_label",
+                                    "Key Resources:",
+                                  )}
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                  {source.links.map((link, idx) => (
+                                    <a
+                                      key={idx}
+                                      href={link.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors"
+                                      style={{
+                                        backgroundColor: `${source.accent}15`,
+                                        color: source.accent,
+                                      }}
+                                    >
+                                      <ExternalLink className="w-3.5 h-3.5" />
+                                      {link.label}
+                                    </a>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.article>
+                </StaggerItem>
+              );
+            })}
+          </StaggerContainer>
+        </section>
+
+        {/* ============================================================= */}
+        {/*  Archive Types with Search & Filter                            */}
+        {/* ============================================================= */}
+        <section id="archive-types" className="roots-section scroll-mt-28">
+          <ScrollReveal>
+            <div className="mb-8">
+              <h2 className="roots-heading !mb-4">
+                {t("archive_types", "Archive Types & Repositories")}
+              </h2>
+              <p className="mt-2 text-lg text-[color:var(--text-color)] opacity-90">
+                {t(
+                  "archive_types_desc",
+                  "Comprehensive overview of historical and modern archives preserving Egyptian genealogy.",
+                )}
+              </p>
+            </div>
+          </ScrollReveal>
+
+          {/* Search & Filter Bar */}
+          <div className="mb-6 space-y-4">
+            {/* Search input */}
+            <div className="relative max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t(
+                  "search_archives_placeholder",
+                  "Search archives...",
+                )}
+                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border-color)] text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-teal/40 ${
+                  isDark
+                    ? "bg-[var(--neu-surface)] text-[var(--text-color)]"
+                    : "bg-white text-[var(--text-color)]"
+                }`}
+              />
+            </div>
+
+            {/* Filter pills */}
+            <div className="flex flex-wrap items-center gap-2">
+              <Filter className="w-4 h-4 opacity-60 mr-1" />
+              {filterOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setActiveFilter(opt.value)}
+                  className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border ${
+                    activeFilter === opt.value
+                      ? "text-white shadow-md"
+                      : `border-[var(--border-color)] opacity-75 hover:opacity-100 ${
+                          isDark
+                            ? "text-[var(--text-color)]"
+                            : "text-[var(--text-color)]"
+                        }`
+                  }`}
+                  style={
+                    activeFilter === opt.value
+                      ? { backgroundColor: opt.color, borderColor: opt.color }
+                      : undefined
+                  }
+                >
+                  {opt.label}
+                </button>
+              ))}
+              {(searchQuery || activeFilter !== "all") && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setActiveFilter("all");
+                  }}
+                  className="ml-2 text-xs opacity-60 hover:opacity-100 underline transition-opacity"
+                >
+                  {t("clear_filters", "Clear filters")}
+                </button>
+              )}
+            </div>
+
+            {/* Results count */}
+            <p className="text-sm opacity-70 flex items-center gap-1.5">
+              <Hash className="w-3.5 h-3.5" />
+              {t("showing_results", "Showing")} {filteredArchiveItems.length}{" "}
+              {t("of_total", "of")} {archiveItems.length}{" "}
+              {t("archives_label", "archives")}
             </p>
-            <p className="mt-2 text-sm text-[color:var(--text-color)] opacity-80">
-              {t("jewish_archives_note", "Many original documents are now held by international libraries and research institutions. Digital access is increasingly available through collaborative projects.")}
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={() => toggleAllJewishSources(true)}
+                onClick={() => toggleAllArchiveCards(true)}
                 className="interactive-btn btn-neu px-3 py-2 text-xs"
+                disabled={filteredArchiveItems.length === 0}
               >
                 {t("expand_all", "Expand all")}
               </button>
               <button
                 type="button"
-                onClick={() => toggleAllJewishSources(false)}
+                onClick={() => toggleAllArchiveCards(false)}
                 className="interactive-btn btn-neu px-3 py-2 text-xs"
+                disabled={filteredArchiveItems.length === 0}
               >
                 {t("collapse_all", "Collapse all")}
               </button>
             </div>
           </div>
-        </ScrollReveal>
-        <StaggerContainer className="grid gap-8 lg:grid-cols-1">
-          {jewishSources.map((source) => {
-            const isExpanded = expandedCards.has(source.key);
-            return (
-              <StaggerItem key={source.key}>
-                <motion.article
-                  className="roots-card overflow-hidden transition-all duration-300"
-                  style={{ borderLeftWidth: "4px", borderLeftColor: source.accent }}
-                  whileHover={{ y: -2 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                >
-                  <button
-                    type="button"
-                    className="w-full text-left p-6 cursor-pointer"
-                    onClick={() => toggleCard(source.key)}
+
+          {/* Archive cards grid with expand/collapse */}
+          <AnimatePresence mode="popLayout">
+            <motion.div layout className="grid gap-6 lg:grid-cols-2">
+              {filteredArchiveItems.map((item) => {
+                const cardKey = `archive-${item.title}`;
+                const isExpanded = expandedCards.has(cardKey);
+                return (
+                  <motion.div
+                    key={item.title}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3 }}
+                    className="roots-card transition-all duration-300 hover:border-terracotta/50 cursor-pointer"
+                    onClick={() => toggleCard(cardKey)}
+                    role="button"
+                    tabIndex={0}
                     aria-expanded={isExpanded}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleCard(cardKey);
+                      }
+                    }}
                   >
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-center gap-4 mb-4">
                       <div
-                        className="flex items-center justify-center w-14 h-14 rounded-full shrink-0"
-                        style={{ backgroundColor: `${source.accent}18`, color: source.accent }}
+                        className="flex items-center justify-center w-12 h-12 rounded-full shrink-0"
+                        style={{
+                          backgroundColor: `${item.accent}22`,
+                          color: item.accent,
+                        }}
                       >
-                        <source.icon className="w-7 h-7" />
+                        <item.icon className="w-6 h-6" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-3">
-                          <h3 className="text-2xl font-bold" style={{ color: source.accent }}>
-                            {source.title}
-                          </h3>
-                          <motion.div
-                            animate={{ rotate: isExpanded ? 180 : 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="shrink-0"
-                          >
-                            <ChevronDown className="w-5 h-5 opacity-60" />
-                          </motion.div>
-                        </div>
-                        <p className="opacity-90 mt-2 line-clamp-2">{source.description}</p>
+                        <h3 className="text-2xl font-bold">{item.title}</h3>
                       </div>
-                    </div>
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {isExpanded && (
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                        className="overflow-hidden"
+                        animate={{ rotate: isExpanded ? 180 : 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="shrink-0"
                       >
-                        <div className="px-6 pb-6 pt-0">
-                          <p className="opacity-90 mb-4">{source.description}</p>
-                          <ul className="list-disc pl-6 space-y-1.5 opacity-90 text-sm mb-5">
-                            {source.bullets.map((bullet, idx) => (
+                        <ChevronDown className="w-5 h-5 opacity-50" />
+                      </motion.div>
+                    </div>
+                    <p
+                      className={`opacity-90 mb-4 ${isExpanded ? "" : "line-clamp-2"}`}
+                    >
+                      {item.description}
+                    </p>
+                    <AnimatePresence initial={false}>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{
+                            duration: 0.3,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                          className="overflow-hidden"
+                        >
+                          <ul className="list-disc pl-6 space-y-1 opacity-90 text-sm">
+                            {item.bullets.map((bullet, idx) => (
                               <li key={idx}>{bullet}</li>
                             ))}
                           </ul>
-                          {source.links.length > 0 && (
-                            <div className="border-t border-[var(--border-color)] pt-4">
-                              <p className="text-sm font-semibold mb-2 opacity-80">
-                                {t("jewish_resources_label", "Key Resources:")}
-                              </p>
-                              <div className="flex flex-wrap gap-2">
-                                {source.links.map((link, idx) => (
-                                  <a
-                                    key={idx}
-                                    href={link.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors"
-                                    style={{
-                                      backgroundColor: `${source.accent}15`,
-                                      color: source.accent,
-                                    }}
-                                  >
-                                    <ExternalLink className="w-3.5 h-3.5" />
-                                    {link.label}
-                                  </a>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.article>
-              </StaggerItem>
-            );
-          })}
-        </StaggerContainer>
-      </section>
+                          <div className="mt-3 flex items-center gap-1.5">
+                            <Star
+                              className="w-3.5 h-3.5"
+                              style={{ color: item.accent }}
+                            />
+                            <span className="text-xs font-medium opacity-70">
+                              {item.filterTag.charAt(0).toUpperCase() +
+                                item.filterTag.slice(1)}{" "}
+                              {t("archive_category_label", "archive")}
+                            </span>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          </AnimatePresence>
 
-      {/* ============================================================= */}
-      {/*  Archive Types with Search & Filter                            */}
-      {/* ============================================================= */}
-      <section id="archive-types" className="roots-section scroll-mt-28">
-        <ScrollReveal>
-          <div className="mb-8">
-            <h2 className="roots-heading !mb-4">
-              {t("archive_types", "Archive Types & Repositories")}
-            </h2>
-            <p className="mt-2 text-lg text-[color:var(--text-color)] opacity-90">
-              {t("archive_types_desc", "Comprehensive overview of historical and modern archives preserving Egyptian genealogy.")}
-            </p>
-          </div>
-        </ScrollReveal>
-
-        {/* Search & Filter Bar */}
-        <div className="mb-6 space-y-4">
-          {/* Search input */}
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t("search_archives_placeholder", "Search archives...")}
-              className={`w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border-color)] text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-teal/40 ${
-                isDark
-                  ? "bg-[var(--neu-surface)] text-[var(--text-color)]"
-                  : "bg-white text-[var(--text-color)]"
-              }`}
-            />
-          </div>
-
-          {/* Filter pills */}
-          <div className="flex flex-wrap items-center gap-2">
-            <Filter className="w-4 h-4 opacity-60 mr-1" />
-            {filterOptions.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => setActiveFilter(opt.value)}
-                className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border ${
-                  activeFilter === opt.value
-                    ? "text-white shadow-md"
-                    : `border-[var(--border-color)] opacity-75 hover:opacity-100 ${
-                        isDark ? "text-[var(--text-color)]" : "text-[var(--text-color)]"
-                      }`
-                }`}
-                style={
-                  activeFilter === opt.value
-                    ? { backgroundColor: opt.color, borderColor: opt.color }
-                    : undefined
-                }
-              >
-                {opt.label}
-              </button>
-            ))}
-            {(searchQuery || activeFilter !== "all") && (
-              <button
-                type="button"
-                onClick={() => { setSearchQuery(""); setActiveFilter("all"); }}
-                className="ml-2 text-xs opacity-60 hover:opacity-100 underline transition-opacity"
-              >
-                {t("clear_filters", "Clear filters")}
-              </button>
-            )}
-          </div>
-
-          {/* Results count */}
-          <p className="text-sm opacity-70 flex items-center gap-1.5">
-            <Hash className="w-3.5 h-3.5" />
-            {t("showing_results", "Showing")} {filteredArchiveItems.length} {t("of_total", "of")} {archiveItems.length} {t("archives_label", "archives")}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => toggleAllArchiveCards(true)}
-              className="interactive-btn btn-neu px-3 py-2 text-xs"
-              disabled={filteredArchiveItems.length === 0}
+          {/* No results */}
+          {filteredArchiveItems.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-12 opacity-70"
             >
-              {t("expand_all", "Expand all")}
-            </button>
-            <button
-              type="button"
-              onClick={() => toggleAllArchiveCards(false)}
-              className="interactive-btn btn-neu px-3 py-2 text-xs"
-              disabled={filteredArchiveItems.length === 0}
-            >
-              {t("collapse_all", "Collapse all")}
-            </button>
-          </div>
+              <Search className="w-12 h-12 mx-auto mb-3 opacity-40" />
+              <p className="text-lg font-medium">
+                {t("no_archives_found", "No archives match your search")}
+              </p>
+              <p className="text-sm mt-1">
+                {t(
+                  "try_different_search",
+                  "Try a different search term or clear your filters.",
+                )}
+              </p>
+            </motion.div>
+          )}
+        </section>
+
+        {/* ============================================================= */}
+        {/*  Primary & Secondary in two columns                            */}
+        {/* ============================================================= */}
+        <div className="grid gap-8 lg:grid-cols-2">
+          <section id="primary-sources" className="roots-section scroll-mt-28">
+            <ScrollReveal>
+              <h2 className="roots-heading !mb-4">
+                {t("primary_sources", "Primary Sources")}
+              </h2>
+              <p className="mb-6 text-lg text-[color:var(--text-color)] opacity-90">
+                {t(
+                  "primary_sources_desc",
+                  "Direct evidence from original documents and testimonies that form the foundation of genealogical research.",
+                )}
+              </p>
+            </ScrollReveal>
+            <StaggerContainer className="space-y-4">
+              {primarySources.map((item) => (
+                <StaggerItem key={item.title}>
+                  <div className="roots-card transition-all hover:shadow-lg">
+                    <div className="flex items-start gap-4">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-teal/20 text-teal shrink-0">
+                        <item.icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold mb-1">{item.title}</h3>
+                        <p className="text-sm opacity-90">{item.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </section>
+          <section
+            id="secondary-sources"
+            className="roots-section scroll-mt-28"
+          >
+            <ScrollReveal>
+              <h2 className="roots-heading !mb-4">
+                {t("secondary_sources", "Secondary Sources")}
+              </h2>
+              <p className="mb-6 text-lg text-[color:var(--text-color)] opacity-90">
+                {t(
+                  "secondary_sources_desc",
+                  "Academic research and digital collections that provide context and additional verification.",
+                )}
+              </p>
+            </ScrollReveal>
+            <StaggerContainer className="space-y-4">
+              {secondarySources.map((item) => (
+                <StaggerItem key={item.title}>
+                  <div className="roots-card transition-all hover:shadow-lg">
+                    <div className="flex items-start gap-4">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#0c4a6e]/20 text-[#0c4a6e] shrink-0">
+                        <item.icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold mb-1">{item.title}</h3>
+                        <p className="text-sm opacity-90">{item.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </section>
         </div>
 
-        {/* Archive cards grid with expand/collapse */}
-        <AnimatePresence mode="popLayout">
-          <motion.div layout className="grid gap-6 lg:grid-cols-2">
-            {filteredArchiveItems.map((item) => {
-              const cardKey = `archive-${item.title}`;
-              const isExpanded = expandedCards.has(cardKey);
-              return (
-                <motion.div
-                  key={item.title}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                  className="roots-card transition-all duration-300 hover:border-terracotta/50 cursor-pointer"
-                  onClick={() => toggleCard(cardKey)}
-                  role="button"
-                  tabIndex={0}
-                  aria-expanded={isExpanded}
-                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleCard(cardKey); } }}
-                >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-full shrink-0" style={{ backgroundColor: `${item.accent}22`, color: item.accent }}>
-                      <item.icon className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-2xl font-bold">{item.title}</h3>
-                    </div>
-                    <motion.div
-                      animate={{ rotate: isExpanded ? 180 : 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="shrink-0"
-                    >
-                      <ChevronDown className="w-5 h-5 opacity-50" />
-                    </motion.div>
-                  </div>
-                  <p className={`opacity-90 mb-4 ${isExpanded ? "" : "line-clamp-2"}`}>{item.description}</p>
-                  <AnimatePresence initial={false}>
-                    {isExpanded && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        className="overflow-hidden"
-                      >
-                        <ul className="list-disc pl-6 space-y-1 opacity-90 text-sm">
-                          {item.bullets.map((bullet, idx) => (
-                            <li key={idx}>{bullet}</li>
-                          ))}
-                        </ul>
-                        <div className="mt-3 flex items-center gap-1.5">
-                          <Star className="w-3.5 h-3.5" style={{ color: item.accent }} />
-                          <span className="text-xs font-medium opacity-70">{item.filterTag.charAt(0).toUpperCase() + item.filterTag.slice(1)} {t("archive_category_label", "archive")}</span>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* No results */}
-        {filteredArchiveItems.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12 opacity-70"
-          >
-            <Search className="w-12 h-12 mx-auto mb-3 opacity-40" />
-            <p className="text-lg font-medium">{t("no_archives_found", "No archives match your search")}</p>
-            <p className="text-sm mt-1">{t("try_different_search", "Try a different search term or clear your filters.")}</p>
-          </motion.div>
-        )}
-      </section>
-
-      {/* ============================================================= */}
-      {/*  Primary & Secondary in two columns                            */}
-      {/* ============================================================= */}
-      <div className="grid gap-8 lg:grid-cols-2">
-        <section id="primary-sources" className="roots-section scroll-mt-28">
+        {/* ============================================================= */}
+        {/*  Access Guidelines                                             */}
+        {/* ============================================================= */}
+        <section
+          id="access-guidelines"
+          className="roots-section roots-section-alt scroll-mt-28"
+        >
           <ScrollReveal>
             <h2 className="roots-heading !mb-4">
-              {t("primary_sources", "Primary Sources")}
+              {t("access_guidelines", "Access Guidelines")}
             </h2>
-            <p className="mb-6 text-lg text-[color:var(--text-color)] opacity-90">
-              {t("primary_sources_desc", "Direct evidence from original documents and testimonies that form the foundation of genealogical research.")}
+            <p className="mb-8 text-lg text-[color:var(--text-color)] opacity-90">
+              {t(
+                "access_guidelines_desc",
+                "Essential information for accessing archives and protecting personal data in genealogical research.",
+              )}
             </p>
           </ScrollReveal>
-          <StaggerContainer className="space-y-4">
-            {primarySources.map((item) => (
+          <StaggerContainer className="grid gap-6 md:grid-cols-3">
+            {accessGuides.map((item) => (
               <StaggerItem key={item.title}>
-                <div className="roots-card transition-all hover:shadow-lg">
-                  <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-teal/20 text-teal shrink-0">
-                      <item.icon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold mb-1">{item.title}</h3>
-                      <p className="text-sm opacity-90">{item.description}</p>
-                    </div>
-                  </div>
+                <div className="roots-card">
+                  <item.icon className="w-10 h-10 text-terracotta mb-4" />
+                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                  <p className="text-sm opacity-90">{item.description}</p>
                 </div>
               </StaggerItem>
             ))}
           </StaggerContainer>
         </section>
-        <section id="secondary-sources" className="roots-section scroll-mt-28">
+
+        {/* ============================================================= */}
+        {/*  Reliability                                                   */}
+        {/* ============================================================= */}
+        <section id="reliability" className="roots-section scroll-mt-28">
           <ScrollReveal>
             <h2 className="roots-heading !mb-4">
-              {t("secondary_sources", "Secondary Sources")}
+              {t("reliability_checks", "Reliability & Validation")}
             </h2>
-            <p className="mb-6 text-lg text-[color:var(--text-color)] opacity-90">
-              {t("secondary_sources_desc", "Academic research and digital collections that provide context and additional verification.")}
+            <p className="mb-8 text-lg text-[color:var(--text-color)] opacity-90">
+              {t(
+                "reliability_checks_desc",
+                "Best practices for validating genealogical information and ensuring research accuracy.",
+              )}
             </p>
           </ScrollReveal>
-          <StaggerContainer className="space-y-4">
-            {secondarySources.map((item) => (
+          <StaggerContainer className="grid gap-6 md:grid-cols-3">
+            {reliabilityChecks.map((item) => (
               <StaggerItem key={item.title}>
-                <div className="roots-card transition-all hover:shadow-lg">
-                  <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#0c4a6e]/20 text-[#0c4a6e] shrink-0">
-                      <item.icon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold mb-1">{item.title}</h3>
-                      <p className="text-sm opacity-90">{item.description}</p>
-                    </div>
-                  </div>
+                <div className="roots-card">
+                  <item.icon className="w-10 h-10 text-[#0c4a6e] mb-4" />
+                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                  <p className="text-sm opacity-90">{item.description}</p>
                 </div>
               </StaggerItem>
             ))}
           </StaggerContainer>
         </section>
-      </div>
 
-      {/* ============================================================= */}
-      {/*  Access Guidelines                                             */}
-      {/* ============================================================= */}
-      <section id="access-guidelines" className="roots-section roots-section-alt scroll-mt-28">
-        <ScrollReveal>
-          <h2 className="roots-heading !mb-4">
-            {t("access_guidelines", "Access Guidelines")}
-          </h2>
-          <p className="mb-8 text-lg text-[color:var(--text-color)] opacity-90">
-            {t("access_guidelines_desc", "Essential information for accessing archives and protecting personal data in genealogical research.")}
-          </p>
-        </ScrollReveal>
-        <StaggerContainer className="grid gap-6 md:grid-cols-3">
-          {accessGuides.map((item) => (
-            <StaggerItem key={item.title}>
-              <div className="roots-card">
-                <item.icon className="w-10 h-10 text-terracotta mb-4" />
-                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                <p className="text-sm opacity-90">{item.description}</p>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </section>
-
-      {/* ============================================================= */}
-      {/*  Reliability                                                   */}
-      {/* ============================================================= */}
-      <section id="reliability" className="roots-section scroll-mt-28">
-        <ScrollReveal>
-          <h2 className="roots-heading !mb-4">
-            {t("reliability_checks", "Reliability & Validation")}
-          </h2>
-          <p className="mb-8 text-lg text-[color:var(--text-color)] opacity-90">
-            {t("reliability_checks_desc", "Best practices for validating genealogical information and ensuring research accuracy.")}
-          </p>
-        </ScrollReveal>
-        <StaggerContainer className="grid gap-6 md:grid-cols-3">
-          {reliabilityChecks.map((item) => (
-            <StaggerItem key={item.title}>
-              <div className="roots-card">
-                <item.icon className="w-10 h-10 text-[#0c4a6e] mb-4" />
-                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                <p className="text-sm opacity-90">{item.description}</p>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </section>
-
-      {/* ============================================================= */}
-      {/*  How to Access                                                 */}
-      {/* ============================================================= */}
-      <section id="how-to-access" className="roots-section roots-section-alt scroll-mt-28">
-        <ScrollReveal>
-          <h2 className="roots-heading !mb-4">
-            {t("archives_access", "How to Access Archives")}
-          </h2>
-          <p className="mb-8 text-lg text-[color:var(--text-color)] opacity-90">
-            {t("archives_access_desc", "Step-by-step guide to planning your archive visit and documenting sources effectively.")}
-          </p>
-        </ScrollReveal>
-        <StaggerContainer className="grid gap-6 md:grid-cols-3">
-          {accessSteps.map((step, idx) => (
-            <StaggerItem key={step.title}>
-              <div className="roots-card flex flex-col">
-                <span className="text-2xl font-bold text-teal/80 mb-2">0{idx + 1}</span>
-                <step.icon className="w-10 h-10 text-teal mb-3" />
-                <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                <p className="text-sm opacity-90 mt-auto">{step.description}</p>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </section>
-    </RootsPageShell>
+        {/* ============================================================= */}
+        {/*  How to Access                                                 */}
+        {/* ============================================================= */}
+        <section
+          id="how-to-access"
+          className="roots-section roots-section-alt scroll-mt-28"
+        >
+          <ScrollReveal>
+            <h2 className="roots-heading !mb-4">
+              {t("archives_access", "How to Access Archives")}
+            </h2>
+            <p className="mb-8 text-lg text-[color:var(--text-color)] opacity-90">
+              {t(
+                "archives_access_desc",
+                "Step-by-step guide to planning your archive visit and documenting sources effectively.",
+              )}
+            </p>
+          </ScrollReveal>
+          <StaggerContainer className="grid gap-6 md:grid-cols-3">
+            {accessSteps.map((step, idx) => (
+              <StaggerItem key={step.title}>
+                <div className="roots-card flex flex-col">
+                  <span className="text-2xl font-bold text-teal/80 mb-2">
+                    0{idx + 1}
+                  </span>
+                  <step.icon className="w-10 h-10 text-teal mb-3" />
+                  <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+                  <p className="text-sm opacity-90 mt-auto">
+                    {step.description}
+                  </p>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </section>
+      </RootsPageShell>
     </div>
   );
 }
