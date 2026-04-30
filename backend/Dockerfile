@@ -2,7 +2,7 @@
 # EasyPanel settings for this service:
 # - Build context: backend
 # - Dockerfile path: backend/Dockerfile
-# - Runtime secrets precedence: host env vars, then .env fallback
+# - Runtime secrets precedence: host env vars, then .env.production fallback
 
 FROM node:20-alpine AS builder
 WORKDIR /app
@@ -15,10 +15,10 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY tsconfig.json knexfile.js server.js db-config.js env-bootstrap.js ./
-COPY .env ./.env
+COPY .env.production ./.env.production
 COPY scripts ./scripts
 COPY src ./src
-RUN test -f ./.env
+RUN test -f ./.env.production
 
 RUN npm run build
 
@@ -37,11 +37,11 @@ COPY --from=builder /app/knexfile.js ./knexfile.js
 COPY --from=builder /app/server.js ./server.js
 COPY --from=builder /app/db-config.js ./db-config.js
 COPY --from=builder /app/env-bootstrap.js ./env-bootstrap.js
-COPY --from=builder /app/.env ./.env
+COPY --from=builder /app/.env.production ./.env.production
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/src/db/migrations ./src/db/migrations
 COPY --from=builder /app/src/db/seeds ./src/db/seeds
-RUN test -f ./.env
+RUN test -f ./.env.production
 
 RUN mkdir -p uploads private_uploads
 

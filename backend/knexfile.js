@@ -5,12 +5,23 @@ bootstrapEnv();
 
 const resolved = resolveDbConfig(undefined, process.env);
 if (resolved.missingFields.length > 0) {
-  throw new Error(buildDbConfigErrorMessage(resolved.missingFields));
+  console.error(
+    `KNEX DB DEBUG ${JSON.stringify({
+      NODE_ENV: resolved.envPresence.nodeEnv,
+      DATABASE_URL: resolved.envPresence.hasDatabaseUrl,
+      DB_HOST: resolved.envPresence.hasDbHost,
+      DB_USER: resolved.envPresence.hasDbUser,
+      DB_NAME: resolved.envPresence.hasDbName,
+    })}`,
+  );
+  throw new Error(
+    buildDbConfigErrorMessage(resolved.missingFields, resolved.missingVariableNames),
+  );
 }
 
 module.exports = {
-  client: "mysql2",
-  connection: resolved.connection,
+  client: resolved.client,
+  connection: resolved.knexConnection,
   pool: {
     min: 0,
     max: 10,

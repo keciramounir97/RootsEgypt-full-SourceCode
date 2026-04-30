@@ -3,6 +3,7 @@ dist
 *.zip
 .env.*
 !.env
+!.env.production
 uploads/*
 private_uploads/*
 *.log

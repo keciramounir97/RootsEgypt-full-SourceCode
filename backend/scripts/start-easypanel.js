@@ -29,7 +29,15 @@ function logBootstrap(resolved) {
   console.log(
     `EASYPANEL bootstrap tried=${envMeta.candidateFiles.join(",")} loaded=${envMeta.loadedFiles.join(",") || "none"} loadedPaths=${envMeta.loadedPaths.join(",") || "none"} resolutionSource=${resolved.resolutionSource}`,
   );
-  console.log(`EASYPANEL env presence ${JSON.stringify(resolved.envPresence)}`);
+  console.log(
+    `EASYPANEL env presence ${JSON.stringify({
+      NODE_ENV: resolved.envPresence.nodeEnv,
+      DATABASE_URL: resolved.envPresence.hasDatabaseUrl,
+      DB_HOST: resolved.envPresence.hasDbHost,
+      DB_USER: resolved.envPresence.hasDbUser,
+      DB_NAME: resolved.envPresence.hasDbName,
+    })}`,
+  );
   console.log(
     `EASYPANEL db target host=${resolved.connection.host} port=${resolved.connection.port} database=${resolved.connection.database} user=${resolved.connection.user}`,
   );
@@ -37,7 +45,10 @@ function logBootstrap(resolved) {
 
 function validateResolvedConfig(resolved) {
   if (resolved.missingFields.length > 0) {
-    const errorMessage = buildDbConfigErrorMessage(resolved.missingFields);
+    const errorMessage = buildDbConfigErrorMessage(
+      resolved.missingFields,
+      resolved.missingVariableNames,
+    );
     console.error(`EASYPANEL db config error: ${errorMessage}`);
     throw new Error(errorMessage);
   }

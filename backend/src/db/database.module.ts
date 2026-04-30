@@ -21,10 +21,21 @@ const { DB_ENV_HELP, buildDbConfigErrorMessage, resolveDbConfig } = require("../
         console.log(
           `INFO DB CONFIG bootstrap tried=${resolved.bootstrapFilesTried.join(",")} loaded=${resolved.bootstrapFilesLoaded.join(",") || "none"} resolutionSource=${resolved.resolutionSource} help="${DB_ENV_HELP}"`,
         );
-        console.log(`INFO DB ENV presence ${JSON.stringify(resolved.envPresence)}`);
+        console.log(
+          `INFO DB ENV presence ${JSON.stringify({
+            NODE_ENV: resolved.envPresence.nodeEnv,
+            DATABASE_URL: resolved.envPresence.hasDatabaseUrl,
+            DB_HOST: resolved.envPresence.hasDbHost,
+            DB_USER: resolved.envPresence.hasDbUser,
+            DB_NAME: resolved.envPresence.hasDbName,
+          })}`,
+        );
 
         if (resolved.missingFields.length > 0) {
-          const errorMessage = buildDbConfigErrorMessage(resolved.missingFields);
+          const errorMessage = buildDbConfigErrorMessage(
+            resolved.missingFields,
+            resolved.missingVariableNames,
+          );
           console.error(`ERROR DB CONFIG ${errorMessage}`);
           throw new Error(errorMessage);
         }

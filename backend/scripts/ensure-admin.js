@@ -11,7 +11,9 @@ bootstrapEnv();
 
 const resolved = resolveDbConfig(undefined, process.env);
 if (resolved.missingFields.length > 0) {
-  throw new Error(buildDbConfigErrorMessage(resolved.missingFields));
+  throw new Error(
+    buildDbConfigErrorMessage(resolved.missingFields, resolved.missingVariableNames),
+  );
 }
 
 const knex = require("knex")({

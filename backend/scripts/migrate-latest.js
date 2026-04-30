@@ -19,7 +19,15 @@ function mainLog(resolved) {
   console.log(
     `MIGRATE bootstrap tried=${envMeta.candidateFiles.join(",")} loaded=${envMeta.loadedFiles.join(",") || "none"} loadedPaths=${envMeta.loadedPaths.join(",") || "none"} resolutionSource=${resolved.resolutionSource}`,
   );
-  console.log(`MIGRATE env presence ${JSON.stringify(resolved.envPresence)}`);
+  console.log(
+    `MIGRATE env presence ${JSON.stringify({
+      NODE_ENV: resolved.envPresence.nodeEnv,
+      DATABASE_URL: resolved.envPresence.hasDatabaseUrl,
+      DB_HOST: resolved.envPresence.hasDbHost,
+      DB_USER: resolved.envPresence.hasDbUser,
+      DB_NAME: resolved.envPresence.hasDbName,
+    })}`,
+  );
   console.log(
     `MIGRATE db target host=${resolved.connection.host} port=${resolved.connection.port} database=${resolved.connection.database} user=${resolved.connection.user}`,
   );
@@ -33,7 +41,9 @@ async function main() {
   mainLog(resolved);
 
   if (resolved.missingFields.length > 0) {
-    throw new Error(buildDbConfigErrorMessage(resolved.missingFields));
+    throw new Error(
+      buildDbConfigErrorMessage(resolved.missingFields, resolved.missingVariableNames),
+    );
   }
 
   const knexConfig = require(path.join(APP_ROOT, "knexfile.js"));

@@ -31,10 +31,22 @@ function normalizeCandidate(candidate, cwd) {
 }
 
 function resolveCandidateFiles(cwd, env) {
-  const candidates = [
-    { label: ".env", fullPath: path.resolve(cwd, ".env") },
-    { label: "app-root:.env", fullPath: path.resolve(APP_ROOT, ".env") },
-  ];
+  const isProduction = String(env.NODE_ENV || "").toLowerCase() === "production";
+  const candidates = isProduction
+    ? [
+        {
+          label: ".env.production",
+          fullPath: path.resolve(cwd, ".env.production"),
+        },
+        {
+          label: "app-root:.env.production",
+          fullPath: path.resolve(APP_ROOT, ".env.production"),
+        },
+      ]
+    : [
+        { label: ".env", fullPath: path.resolve(cwd, ".env") },
+        { label: "app-root:.env", fullPath: path.resolve(APP_ROOT, ".env") },
+      ];
 
   const seen = new Set();
   return candidates.filter((candidate) => {
