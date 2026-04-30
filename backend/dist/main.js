@@ -384,12 +384,13 @@ async function bootstrap() {
         const uploadsPath = path.join(process.cwd(), "uploads");
         app.use("/uploads", require("express").static(uploadsPath));
         app.use((req, res, next) => {
-            if (req.method === "GET" && (req.path === "/" || req.path === "")) {
+            if (req.method === "GET" &&
+                (req.path === "/" || req.path === "" || req.path === "/api")) {
                 return res.type("application/json").json({
                     app: "RootsEgypt API",
                     status: "ok",
-                    health: "/health",
-                    live: "/health/live",
+                    health: "/api/health",
+                    live: "/api/health/live",
                     message: "Use the frontend at your site root; API routes are available with or without the /api prefix.",
                 });
             }
@@ -408,13 +409,21 @@ async function bootstrap() {
             next();
         });
         app.use((req, _res, next) => {
-            if (req.url === "/api" || req.url.startsWith("/api/")) {
-                const rewritten = req.url.replace(/^\/api(?=\/|$)/, "") || "/";
-                req.url = rewritten;
+            const requestUrl = req.url || "/";
+            const isPrefixed = requestUrl === "/api" || requestUrl.startsWith("/api/");
+            const isRootInfo = requestUrl === "/";
+            const isHealthAlias = requestUrl === "/health/live" ||
+                requestUrl === "/health" ||
+                requestUrl === "/db-health" ||
+                requestUrl === "/health/db-diag";
+            const isUploadRequest = requestUrl === "/uploads" || requestUrl.startsWith("/uploads/");
+            if (!isPrefixed && !isRootInfo && !isHealthAlias && !isUploadRequest) {
+                req.url = `/api${requestUrl.startsWith("/") ? requestUrl : `/${requestUrl}`}`;
             }
             next();
         });
         app.use(compression());
+        app.setGlobalPrefix("api");
         app.use((req, _res, next) => {
             req.id = req.headers["x-request-id"] || (0, crypto_1.randomUUID)();
             next();
@@ -502,8 +511,8 @@ async function bootstrap() {
             standardHeaders: true,
             legacyHeaders: false,
         });
-        app.use("/auth/login", authLimiter);
-        app.use("/auth/signup", authLimiter);
+        app.use("/api/auth/login", authLimiter);
+        app.use("/api/auth/signup", authLimiter);
         const helmetOptions = {
             contentSecurityPolicy: false,
             crossOriginEmbedderPolicy: false,

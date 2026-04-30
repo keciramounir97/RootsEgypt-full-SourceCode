@@ -483,12 +483,15 @@ async function bootstrap() {
 
     // Root route: avoid 404 when hitting API base URL (e.g. https://api.example.com/)
     app.use((req: any, res: any, next: () => void) => {
-      if (req.method === "GET" && (req.path === "/" || req.path === "")) {
+      if (
+        req.method === "GET" &&
+        (req.path === "/" || req.path === "" || req.path === "/api")
+      ) {
         return res.type("application/json").json({
           app: "RootsEgypt API",
           status: "ok",
-          health: "/health",
-          live: "/health/live",
+          health: "/api/health",
+          live: "/api/health/live",
           message:
             "Use the frontend at your site root; API routes are available with or without the /api prefix.",
         });
@@ -511,18 +514,31 @@ async function bootstrap() {
       next();
     });
 
-    // Accept both /api/* and root-level routes so EasyPanel and reverse
-    // proxies keep working even if they preserve or strip the /api prefix.
+    // Accept both root-level and /api-prefixed routes. Canonical Nest routes
+    // remain under /api, but root-level requests are upgraded automatically.
     app.use((req: Request, _res: Response, next: NextFunction) => {
-      if (req.url === "/api" || req.url.startsWith("/api/")) {
-        const rewritten = req.url.replace(/^\/api(?=\/|$)/, "") || "/";
-        req.url = rewritten;
+      const requestUrl = req.url || "/";
+      const isPrefixed = requestUrl === "/api" || requestUrl.startsWith("/api/");
+      const isRootInfo = requestUrl === "/";
+      const isHealthAlias =
+        requestUrl === "/health/live" ||
+        requestUrl === "/health" ||
+        requestUrl === "/db-health" ||
+        requestUrl === "/health/db-diag";
+      const isUploadRequest =
+        requestUrl === "/uploads" || requestUrl.startsWith("/uploads/");
+
+      if (!isPrefixed && !isRootInfo && !isHealthAlias && !isUploadRequest) {
+        req.url = `/api${requestUrl.startsWith("/") ? requestUrl : `/${requestUrl}`}`;
       }
       next();
     });
 
     // Compression (production-ready)
     app.use(compression());
+
+    // Canonical API prefix.
+    app.setGlobalPrefix("api");
 
     // Request ID for tracing
     app.use((req: Request, _res: Response, next: NextFunction) => {
@@ -649,8 +665,8 @@ async function bootstrap() {
       standardHeaders: true,
       legacyHeaders: false,
     });
-    app.use("/auth/login", authLimiter);
-    app.use("/auth/signup", authLimiter);
+    app.use("/api/auth/login", authLimiter);
+    app.use("/api/auth/signup", authLimiter);
 
     // Security: Helmet + explicit headers (Pragma, X-Frame-Options, etc.)
     const helmetOptions: Parameters<typeof helmet.default>[0] = {
