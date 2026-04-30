@@ -68,6 +68,18 @@ function getForwardedOriginalPath(req) {
     }
     return null;
 }
+function apiInfoPayload() {
+    return {
+        app: "RootsEgypt API",
+        ok: true,
+        status: "ok",
+        health: "/api/health",
+        live: "/api/health/live",
+        db: "/api/db-health",
+        routes: "/api/routes",
+        message: "API routes are available under /api. If this appears for /api/errors/not-found, check reverse proxy path forwarding.",
+    };
+}
 async function ensureCriticalSchema(knex) {
     try {
         if (await knex.schema.hasTable("users")) {
@@ -386,13 +398,7 @@ async function bootstrap() {
         app.use((req, res, next) => {
             if (req.method === "GET" &&
                 (req.path === "/" || req.path === "" || req.path === "/api")) {
-                return res.type("application/json").json({
-                    app: "RootsEgypt API",
-                    status: "ok",
-                    health: "/api/health",
-                    live: "/api/health/live",
-                    message: "Use the frontend at your site root; API routes are available with or without the /api prefix.",
-                });
+                return res.type("application/json").json(apiInfoPayload());
             }
             next();
         });
@@ -557,9 +563,17 @@ async function bootstrap() {
         app.useGlobalInterceptors(new TransformInterceptor());
         app.useGlobalFilters(new AllExceptionsFilter());
         const knex = app.get("KnexConnection");
-        await knex.raw("SELECT 1");
-        console.log("🟢 MySQL successfully connected");
-        await ensureSchemaReady(knex);
+        let dbReady = false;
+        try {
+            await knex.raw("SELECT 1");
+            dbReady = true;
+            console.log("MySQL successfully connected");
+            await ensureSchemaReady(knex);
+        }
+        catch (err) {
+            console.error(`DB startup readiness failed: ${(err === null || err === void 0 ? void 0 : err.message) || (err === null || err === void 0 ? void 0 : err.code) || err}`);
+            console.warn("Server will listen with DB readiness marked disconnected. Set DB_STRICT_STARTUP=true to fail fast.");
+        }
         const port = process.env.PORT || 5000;
         await app.listen(port, "0.0.0.0");
         console.log("🟢 SERVER READY");
@@ -567,6 +581,10 @@ async function bootstrap() {
         console.log("============================================");
         console.log("  ✅  BACKEND DEPLOYMENT SUCCESSFUL  ✅  ");
         console.log("============================================");
+        if (!dbReady) {
+            console.log("  WARN Database readiness is disconnected");
+            console.log("============================================");
+        }
         const modules = [
             "Auth (login, signup, forgot-password, reset-password)",
             "Users",

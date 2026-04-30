@@ -84,6 +84,20 @@ function getForwardedOriginalPath(req: any): string | null {
   return null;
 }
 
+function apiInfoPayload() {
+  return {
+    app: "RootsEgypt API",
+    ok: true,
+    status: "ok",
+    health: "/api/health",
+    live: "/api/health/live",
+    db: "/api/db-health",
+    routes: "/api/routes",
+    message:
+      "API routes are available under /api. If this appears for /api/errors/not-found, check reverse proxy path forwarding.",
+  };
+}
+
 async function ensureCriticalSchema(knex: Knex) {
   // Belt-and-suspenders: add missing columns / tables that must exist for the
   // app to function, regardless of whether formal migrations ran.
@@ -487,14 +501,7 @@ async function bootstrap() {
         req.method === "GET" &&
         (req.path === "/" || req.path === "" || req.path === "/api")
       ) {
-        return res.type("application/json").json({
-          app: "RootsEgypt API",
-          status: "ok",
-          health: "/api/health",
-          live: "/api/health/live",
-          message:
-            "Use the frontend at your site root; API routes are available with or without the /api prefix.",
-        });
+        return res.type("application/json").json(apiInfoPayload());
       }
       next();
     });
@@ -733,11 +740,24 @@ async function bootstrap() {
     app.useGlobalInterceptors(new TransformInterceptor());
     app.useGlobalFilters(new AllExceptionsFilter());
 
-    // Ensure DB and required schema are ready before serving traffic.
+    // Ensure DB and required schema are ready when the database is reachable.
+    // The API still starts so root/live endpoints can report useful status
+    // instead of leaving reverse proxies with a hard 502/404.
     const knex = app.get<Knex>("KnexConnection");
-    await knex.raw("SELECT 1");
-    console.log("🟢 MySQL successfully connected");
-    await ensureSchemaReady(knex);
+    let dbReady = false;
+    try {
+      await knex.raw("SELECT 1");
+      dbReady = true;
+      console.log("MySQL successfully connected");
+      await ensureSchemaReady(knex);
+    } catch (err: any) {
+      console.error(
+        `DB startup readiness failed: ${err?.message || err?.code || err}`,
+      );
+      console.warn(
+        "Server will listen with DB readiness marked disconnected. Set DB_STRICT_STARTUP=true to fail fast.",
+      );
+    }
 
     // Passenger / cPanel Port
     const port = process.env.PORT || 5000;
@@ -748,6 +768,10 @@ async function bootstrap() {
     console.log("============================================");
     console.log("  ✅  BACKEND DEPLOYMENT SUCCESSFUL  ✅  ");
     console.log("============================================");
+    if (!dbReady) {
+      console.log("  WARN Database readiness is disconnected");
+      console.log("============================================");
+    }
 
     // Deployment verification logs for key modules/routes
     const modules = [

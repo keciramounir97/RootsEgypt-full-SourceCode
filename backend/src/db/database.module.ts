@@ -73,21 +73,31 @@ const { DB_ENV_HELP, buildDbConfigErrorMessage, resolveDbConfig } = require("../
           debug: configService.get<string>("NODE_ENV") === "development",
         };
 
+        const knex = Knex.default(knexConfig);
+        Model.knex(knex);
+
         try {
-          const knex = Knex.default(knexConfig);
-          Model.knex(knex);
           await knex.raw("SELECT 1");
           console.log("INFO DB HANDSHAKE OK");
-          return knex;
         } catch (err: any) {
           const msg =
             err?.sqlMessage ||
             err?.message ||
             err?.code ||
             JSON.stringify(err || {});
+          const strictStartup =
+            String(process.env.DB_STRICT_STARTUP || "false").toLowerCase() ===
+            "true";
           console.error(`ERROR DB HANDSHAKE FAILED: ${msg}`);
-          throw err;
+          if (strictStartup) {
+            throw err;
+          }
+          console.warn(
+            "WARN DB_STRICT_STARTUP is false; API startup will continue and readiness endpoints will report DB state.",
+          );
         }
+
+        return knex;
       },
     },
   ],

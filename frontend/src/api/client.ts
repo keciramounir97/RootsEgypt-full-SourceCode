@@ -8,7 +8,7 @@ import axios, { InternalAxiosRequestConfig } from "axios";
 const getApiRoot = (): string => {
   const configured = String(import.meta.env.VITE_API_URL || "").trim();
   if (configured) {
-    return configured.replace(/\/+$/, "");
+    return configured.replace(/\/+$/, "").replace(/\/api$/, "");
   }
 
   if (import.meta.env.DEV) {
@@ -26,7 +26,7 @@ const getApiRoot = (): string => {
 };
 
 const API_ROOT = getApiRoot();
-const NORMALIZED_API_ROOT = API_ROOT.replace(/\/+$/, "");
+const NORMALIZED_API_ROOT = API_ROOT.replace(/\/+$/, "").replace(/\/api$/, "");
 
 /**
  * ===============================

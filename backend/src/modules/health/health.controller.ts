@@ -1,16 +1,80 @@
 import {
+  All,
   Controller,
   Get,
-  ServiceUnavailableException,
   ForbiddenException,
+  HttpCode,
+  Options,
+  Req,
 } from "@nestjs/common";
 import { Inject } from "@nestjs/common";
 import { Knex } from "knex";
 import { User } from "../../models/User";
+import { Request } from "express";
 
 @Controller()
 export class HealthController {
   constructor(@Inject("KnexConnection") private readonly knex: Knex) {}
+
+  private apiInfo() {
+    return {
+      app: "RootsEgypt API",
+      ok: true,
+      status: "ok",
+      health: "/api/health",
+      live: "/api/health/live",
+      db: "/api/db-health",
+      routes: "/api/routes",
+      message:
+        "API routes are available under /api. If this appears for /api/errors/not-found, check reverse proxy path forwarding.",
+    };
+  }
+
+  @Get()
+  root() {
+    return this.apiInfo();
+  }
+
+  @Get("routes")
+  routes() {
+    return {
+      ok: true,
+      routes: {
+        health: ["/api", "/api/health", "/api/health/live", "/health/live"],
+        auth: [
+          "/api/auth/login",
+          "/api/auth/signup",
+          "/api/auth/me",
+          "/api/auth/refresh",
+          "/api/auth/logout",
+          "/api/auth/reset",
+          "/api/auth/reset/verify",
+          "/api/auth/reset/token",
+        ],
+        public: [
+          "/api/trees",
+          "/api/books",
+          "/api/gallery",
+          "/api/search",
+          "/api/search/suggest",
+          "/api/contact",
+          "/api/newsletter/subscribe",
+        ],
+        user: ["/api/my/trees", "/api/my/books", "/api/my/gallery"],
+        admin: [
+          "/api/admin/users",
+          "/api/admin/admins",
+          "/api/admin/trees",
+          "/api/admin/books",
+          "/api/admin/gallery",
+          "/api/admin/stats",
+          "/api/admin/contact/messages",
+          "/api/admin/newsletter/subscribers",
+          "/api/admin/approvals/stats",
+        ],
+      },
+    };
+  }
 
   @Get("health/live")
   live() {
@@ -37,14 +101,14 @@ export class HealthController {
         version: process.env.npm_package_version || "1.0.0",
       };
     } catch (error: any) {
-      throw new ServiceUnavailableException({
+      return {
         ok: false,
         status: "not_ready",
         timestamp: new Date().toISOString(),
         database: "disconnected",
         error: error?.message || "database unavailable",
         uptime: process.uptime(),
-      });
+      };
     }
   }
 
@@ -58,13 +122,33 @@ export class HealthController {
         timestamp: new Date().toISOString(),
       };
     } catch (error: any) {
-      throw new ServiceUnavailableException({
+      return {
         ok: false,
         database: "disconnected",
         error: error?.message || "database unavailable",
         timestamp: new Date().toISOString(),
-      });
+      };
     }
+  }
+
+  @Options("errors/not-found")
+  @HttpCode(204)
+  proxyFallbackPreflight() {
+    return undefined;
+  }
+
+  @All("errors/not-found")
+  @HttpCode(200)
+  proxyFallback(@Req() req: Request) {
+    return {
+      ...this.apiInfo(),
+      ok: false,
+      status: "proxy_rewrite_not_found",
+      method: req.method,
+      path: req.originalUrl || req.url,
+      message:
+        "The backend received /api/errors/not-found. Configure the reverse proxy to forward the original API path, or pass X-Original-Uri/X-Rewrite-Url/X-Forwarded-Uri so the backend can restore it.",
+    };
   }
 
   @Get("health/db-diag")

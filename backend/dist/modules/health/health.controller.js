@@ -21,6 +21,60 @@ let HealthController = class HealthController {
     constructor(knex) {
         this.knex = knex;
     }
+    apiInfo() {
+        return {
+            app: "RootsEgypt API",
+            ok: true,
+            status: "ok",
+            health: "/api/health",
+            live: "/api/health/live",
+            db: "/api/db-health",
+            routes: "/api/routes",
+            message: "API routes are available under /api. If this appears for /api/errors/not-found, check reverse proxy path forwarding.",
+        };
+    }
+    root() {
+        return this.apiInfo();
+    }
+    routes() {
+        return {
+            ok: true,
+            routes: {
+                health: ["/api", "/api/health", "/api/health/live", "/health/live"],
+                auth: [
+                    "/api/auth/login",
+                    "/api/auth/signup",
+                    "/api/auth/me",
+                    "/api/auth/refresh",
+                    "/api/auth/logout",
+                    "/api/auth/reset",
+                    "/api/auth/reset/verify",
+                    "/api/auth/reset/token",
+                ],
+                public: [
+                    "/api/trees",
+                    "/api/books",
+                    "/api/gallery",
+                    "/api/search",
+                    "/api/search/suggest",
+                    "/api/contact",
+                    "/api/newsletter/subscribe",
+                ],
+                user: ["/api/my/trees", "/api/my/books", "/api/my/gallery"],
+                admin: [
+                    "/api/admin/users",
+                    "/api/admin/admins",
+                    "/api/admin/trees",
+                    "/api/admin/books",
+                    "/api/admin/gallery",
+                    "/api/admin/stats",
+                    "/api/admin/contact/messages",
+                    "/api/admin/newsletter/subscribers",
+                    "/api/admin/approvals/stats",
+                ],
+            },
+        };
+    }
     live() {
         return {
             status: "alive",
@@ -42,14 +96,14 @@ let HealthController = class HealthController {
             };
         }
         catch (error) {
-            throw new common_1.ServiceUnavailableException({
+            return {
                 ok: false,
                 status: "not_ready",
                 timestamp: new Date().toISOString(),
                 database: "disconnected",
                 error: (error === null || error === void 0 ? void 0 : error.message) || "database unavailable",
                 uptime: process.uptime(),
-            });
+            };
         }
     }
     async dbHealth() {
@@ -62,13 +116,19 @@ let HealthController = class HealthController {
             };
         }
         catch (error) {
-            throw new common_1.ServiceUnavailableException({
+            return {
                 ok: false,
                 database: "disconnected",
                 error: (error === null || error === void 0 ? void 0 : error.message) || "database unavailable",
                 timestamp: new Date().toISOString(),
-            });
+            };
         }
+    }
+    proxyFallbackPreflight() {
+        return undefined;
+    }
+    proxyFallback(req) {
+        return Object.assign(Object.assign({}, this.apiInfo()), { ok: false, status: "proxy_rewrite_not_found", method: req.method, path: req.originalUrl || req.url, message: "The backend received /api/errors/not-found. Configure the reverse proxy to forward the original API path, or pass X-Original-Uri/X-Rewrite-Url/X-Forwarded-Uri so the backend can restore it." });
     }
     async dbDiag() {
         var _a;
@@ -111,6 +171,18 @@ let HealthController = class HealthController {
 };
 exports.HealthController = HealthController;
 __decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], HealthController.prototype, "root", null);
+__decorate([
+    (0, common_1.Get)("routes"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], HealthController.prototype, "routes", null);
+__decorate([
     (0, common_1.Get)("health/live"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -128,6 +200,21 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], HealthController.prototype, "dbHealth", null);
+__decorate([
+    (0, common_1.Options)("errors/not-found"),
+    (0, common_1.HttpCode)(204),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], HealthController.prototype, "proxyFallbackPreflight", null);
+__decorate([
+    (0, common_1.All)("errors/not-found"),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], HealthController.prototype, "proxyFallback", null);
 __decorate([
     (0, common_1.Get)("health/db-diag"),
     __metadata("design:type", Function),
