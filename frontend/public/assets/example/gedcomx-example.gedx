@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gedx:Gedcomx xmlns:gedx="http://gedcomx.org/v1/">
+  <gedx:person id="p1">
+    <gedx:names>
+      <gedx:name>
+        <gedx:nameForm>
+          <gedx:fullText>Ahmed Benali</gedx:fullText>
+          <gedx:parts>
+            <gedx:part type="http://gedcomx.org/Given">Ahmed</gedx:part>
+            <gedx:part type="http://gedcomx.org/Surname">Benali</gedx:part>
+          </gedx:parts>
+        </gedx:nameForm>
+      </gedx:name>
+    </gedx:names>
+    <gedx:gender type="http://gedcomx.org/Male"/>
+    <gedx:facts>
+      <gedx:fact type="http://gedcomx.org/Birth">
+        <gedx:date original="1950"/>
+        <gedx:place original="Fes, Morocco"/>
+      </gedx:fact>
+    </gedx:facts>
+  </gedx:person>
+  <gedx:person id="p2">
+    <gedx:names>
+      <gedx:name>
+        <gedx:nameForm>
+          <gedx:fullText>Fatima Zohra</gedx:fullText>
+        </gedx:nameForm>
+      </gedx:name>
+    </gedx:names>
+    <gedx:gender type="http://gedcomx.org/Female"/>
+    <gedx:facts>
+      <gedx:fact type="http://gedcomx.org/Birth">
+        <gedx:date original="1955"/>
+        <gedx:place original="Marrakech, Morocco"/>
+      </gedx:fact>
+    </gedx:facts>
+  </gedx:person>
+  <gedx:person id="p3">
+    <gedx:names>
+      <gedx:name>
+        <gedx:nameForm>
+          <gedx:fullText>Samir Benali</gedx:fullText>
+          <gedx:parts>
+            <gedx:part type="http://gedcomx.org/Given">Samir</gedx:part>
+            <gedx:part type="http://gedcomx.org/Surname">Benali</gedx:part>
+          </gedx:parts>
+        </gedx:nameForm>
+      </gedx:name>
+    </gedx:names>
+    <gedx:gender type="http://gedcomx.org/Male"/>
+    <gedx:facts>
+      <gedx:fact type="http://gedcomx.org/Birth">
+        <gedx:date original="1980"/>
+        <gedx:place original="Casablanca, Morocco"/>
+      </gedx:fact>
+    </gedx:facts>
+  </gedx:person>
+  <gedx:relationship type="http://gedcomx.org/Couple">
+    <gedx:person1 resource="#p1"/>
+    <gedx:person2 resource="#p2"/>
+  </gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/ParentChild">
+    <gedx:person1 resource="#p1"/>
+    <gedx:person2 resource="#p3"/>
+  </gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/ParentChild">
+    <gedx:person1 resource="#p2"/>
+    <gedx:person2 resource="#p3"/>
+  </gedx:relationship>
+</gedx:Gedcomx>

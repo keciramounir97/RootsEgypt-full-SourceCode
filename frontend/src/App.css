@@ -1,0 +1,157 @@
+/*
+ * Optional legacy heritage-header / mobile menu styles.
+ * Primary site styles: index.css. Footer & .heritage-btn: index.css (teal / terracotta).
+ */
+
+.heritage-header {
+  background: var(--leather-brown);
+  border-bottom: 3px solid #0d9488;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.heritage-header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.heritage-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: "Cinzel", serif;
+  color: #5eead4;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 1.25rem;
+}
+
+.heritage-logo span {
+  color: var(--dark-beige);
+  letter-spacing: 0.35em;
+  font-size: 0.7rem;
+}
+
+.heritage-nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.heritage-nav a {
+  font-family: "Cinzel", serif;
+  letter-spacing: 0.5px;
+  color: var(--dark-beige);
+  font-size: 1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color var(--transition);
+  position: relative;
+}
+
+.heritage-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  background: linear-gradient(90deg, #0d9488, #c45c3e);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--transition);
+}
+
+.heritage-nav a:hover,
+.heritage-nav a.active {
+  color: #fff;
+}
+
+.heritage-nav a:hover::after,
+.heritage-nav a.active::after {
+  transform: scaleX(1);
+}
+
+.heritage-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.heritage-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #5eead4;
+  font-size: 1.5rem;
+}
+
+.heritage-mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.heritage-mobile-menu-inner {
+  width: 280px;
+  background: var(--leather-brown);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.heritage-mobile-menu-inner nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.heritage-mobile-menu-inner nav a {
+  font-family: "Cinzel", serif;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: #7dd3c0;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+@media (max-width: 1024px) {
+  .heritage-nav {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .heritage-nav {
+    display: none;
+  }
+
+  .heritage-mobile-toggle {
+    display: inline-block;
+  }
+
+  .heritage-action-group {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .heritage-header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,11 @@
+node_modules
+dist
+*.zip
+.env
+.env.*
+uploads/*
+private_uploads/*
+*.log
+auditfinal
+test-db.js
+passenger.js

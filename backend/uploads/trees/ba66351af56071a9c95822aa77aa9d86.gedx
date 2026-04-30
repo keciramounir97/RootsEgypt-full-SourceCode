@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gedx:Gedcomx xmlns:gedx="http://gedcomx.org/v1/">
+  <gedx:person id="m1">
+    <gedx:names>
+      <gedx:name>
+        <gedx:nameForm>
+          <gedx:fullText>Ould Mohamed Abdallahi</gedx:fullText>
+          <gedx:parts>
+            <gedx:part type="http://gedcomx.org/Given">Ould Mohamed</gedx:part>
+            <gedx:part type="http://gedcomx.org/Surname">Abdallahi</gedx:part>
+          </gedx:parts>
+        </gedx:nameForm>
+      </gedx:name>
+    </gedx:names>
+    <gedx:gender type="http://gedcomx.org/Male"/>
+    <gedx:facts>
+      <gedx:fact type="http://gedcomx.org/Birth">
+        <gedx:date original="1948"/>
+        <gedx:place original="Nouakchott, Mauritania"/>
+      </gedx:fact>
+    </gedx:facts>
+  </gedx:person>
+  <gedx:person id="m2">
+    <gedx:names>
+      <gedx:name>
+        <gedx:nameForm>
+          <gedx:fullText>Fatimetou</gedx:fullText>
+          <gedx:parts>
+            <gedx:part type="http://gedcomx.org/Given">Fatimetou</gedx:part>
+          </gedx:parts>
+        </gedx:nameForm>
+      </gedx:name>
+    </gedx:names>
+    <gedx:gender type="http://gedcomx.org/Female"/>
+    <gedx:facts>
+      <gedx:fact type="http://gedcomx.org/Birth">
+        <gedx:date original="1952"/>
+      </gedx:fact>
+    </gedx:facts>
+  </gedx:person>
+  <gedx:person id="m3">
+    <gedx:names>
+      <gedx:name>
+        <gedx:nameForm>
+          <gedx:fullText>Sidi Mohamed</gedx:fullText>
+          <gedx:parts>
+            <gedx:part type="http://gedcomx.org/Given">Sidi</gedx:part>
+            <gedx:part type="http://gedcomx.org/Surname">Mohamed</gedx:part>
+          </gedx:parts>
+        </gedx:nameForm>
+      </gedx:name>
+    </gedx:names>
+    <gedx:gender type="http://gedcomx.org/Male"/>
+    <gedx:facts>
+      <gedx:fact type="http://gedcomx.org/Birth">
+        <gedx:date original="1978"/>
+      </gedx:fact>
+    </gedx:facts>
+  </gedx:person>
+  <gedx:relationship type="http://gedcomx.org/Couple">
+    <gedx:person1 resource="#m1"/>
+    <gedx:person2 resource="#m2"/>
+  </gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/ParentChild">
+    <gedx:person1 resource="#m1"/>
+    <gedx:person2 resource="#m3"/>
+  </gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/ParentChild">
+    <gedx:person1 resource="#m2"/>
+    <gedx:person2 resource="#m3"/>
+  </gedx:relationship>
+</gedx:Gedcomx>

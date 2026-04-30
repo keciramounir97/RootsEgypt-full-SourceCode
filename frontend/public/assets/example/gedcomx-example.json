@@ -1,0 +1,93 @@
+{
+  "persons": [
+    {
+      "id": "p1",
+      "names": [
+        {
+          "nameForms": [
+            {
+              "fullText": "Ahmed Benali",
+              "parts": [
+                { "type": "http://gedcomx.org/Given", "value": "Ahmed" },
+                { "type": "http://gedcomx.org/Surname", "value": "Benali" }
+              ]
+            }
+          ]
+        }
+      ],
+      "gender": { "type": "http://gedcomx.org/Male" },
+      "facts": [
+        {
+          "type": "http://gedcomx.org/Birth",
+          "date": { "original": "1950" },
+          "place": { "original": "Fes, Morocco" }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "names": [
+        {
+          "nameForms": [
+            {
+              "fullText": "Fatima Zohra",
+              "parts": [
+                { "type": "http://gedcomx.org/Given", "value": "Fatima Zohra" },
+                { "type": "http://gedcomx.org/Surname", "value": "" }
+              ]
+            }
+          ]
+        }
+      ],
+      "gender": { "type": "http://gedcomx.org/Female" },
+      "facts": [
+        {
+          "type": "http://gedcomx.org/Birth",
+          "date": { "original": "1955" },
+          "place": { "original": "Marrakech, Morocco" }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "names": [
+        {
+          "nameForms": [
+            {
+              "fullText": "Samir Benali",
+              "parts": [
+                { "type": "http://gedcomx.org/Given", "value": "Samir" },
+                { "type": "http://gedcomx.org/Surname", "value": "Benali" }
+              ]
+            }
+          ]
+        }
+      ],
+      "gender": { "type": "http://gedcomx.org/Male" },
+      "facts": [
+        {
+          "type": "http://gedcomx.org/Birth",
+          "date": { "original": "1980" },
+          "place": { "original": "Casablanca, Morocco" }
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "http://gedcomx.org/Couple",
+      "person1": { "resource": "#p1" },
+      "person2": { "resource": "#p2" }
+    },
+    {
+      "type": "http://gedcomx.org/ParentChild",
+      "person1": { "resource": "#p1" },
+      "person2": { "resource": "#p3" }
+    },
+    {
+      "type": "http://gedcomx.org/ParentChild",
+      "person1": { "resource": "#p2" },
+      "person2": { "resource": "#p3" }
+    }
+  ]
+}

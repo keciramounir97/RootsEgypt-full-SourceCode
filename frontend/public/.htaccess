@@ -1,0 +1,25 @@
+# Security headers (production-grade, cPanel)
+<IfModule mod_headers.c>
+  Header set Pragma "no-cache"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  Header set Cache-Control "no-cache, no-store, must-revalidate"
+  Header set Expires "0"
+</IfModule>
+
+RewriteEngine On
+
+# API requests: do NOT rewrite (proxy to backend or subdomain handles /api)
+RewriteCond %{REQUEST_URI} ^/api/ [NC]
+RewriteRule ^ - [L]
+
+# Allow existing files/folders
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# SPA fallback to index.html
+RewriteRule ^ index.html [L]
