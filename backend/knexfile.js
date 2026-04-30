@@ -1,13 +1,68 @@
 require("dotenv").config();
 
+const readConnectionFromDatabaseUrl = (databaseUrl) => {
+  if (!databaseUrl) return {};
+  try {
+    const parsed = new URL(databaseUrl);
+    return {
+      host: parsed.hostname,
+      port: Number(parsed.port || 3306),
+      user: decodeURIComponent(parsed.username || ""),
+      password: decodeURIComponent(parsed.password || ""),
+      database: (parsed.pathname || "").replace(/^\//, ""),
+    };
+  } catch {
+    return {};
+  }
+};
+
+const pickFirstDefined = (...values) => {
+  for (const value of values) {
+    if (value === undefined || value === null) continue;
+    const normalized = String(value).trim();
+    if (normalized) return normalized;
+  }
+  return undefined;
+};
+
+const fromUrl = readConnectionFromDatabaseUrl(process.env.DATABASE_URL);
+
 module.exports = {
   client: "mysql2",
   connection: {
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT) || 3306,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: pickFirstDefined(
+      process.env.DB_HOST,
+      process.env.MYSQL_HOST,
+      process.env.MYSQLHOST,
+      fromUrl.host,
+    ),
+    port: Number(
+      pickFirstDefined(
+        process.env.DB_PORT,
+        process.env.MYSQL_PORT,
+        fromUrl.port,
+        3306,
+      ),
+    ),
+    user: pickFirstDefined(
+      process.env.DB_USER,
+      process.env.MYSQL_USER,
+      process.env.MYSQLUSER,
+      fromUrl.user,
+    ),
+    password: pickFirstDefined(
+      process.env.DB_PASSWORD,
+      process.env.MYSQL_PASSWORD,
+      process.env.MYSQLPASSWORD,
+      fromUrl.password,
+    ),
+    database: pickFirstDefined(
+      process.env.DB_NAME,
+      process.env.DB_DATABASE,
+      process.env.MYSQL_DATABASE,
+      process.env.MYSQLDATABASE,
+      fromUrl.database,
+    ),
     charset: "utf8mb4",
   },
   pool: {
