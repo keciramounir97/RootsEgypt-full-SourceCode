@@ -41,20 +41,11 @@ export declare class HealthController {
         color: string;
         timestamp: string;
         database: string;
+        databaseError: string;
+        dbHealth: string;
         uptime: number;
         memory: NodeJS.MemoryUsage;
         version: string;
-        error?: undefined;
-    } | {
-        ok: boolean;
-        status: string;
-        color: string;
-        timestamp: string;
-        database: string;
-        error: any;
-        uptime: number;
-        memory: NodeJS.MemoryUsage;
-        version?: undefined;
     }>;
     dbHealth(): Promise<{
         ok: boolean;

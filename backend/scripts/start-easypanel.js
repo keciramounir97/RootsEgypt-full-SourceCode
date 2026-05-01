@@ -15,6 +15,9 @@ const createKnex = knexLib.default || knexLib;
 const APP_ROOT = path.resolve(__dirname, "..");
 const MAX_RETRIES = Number(process.env.EASYPANEL_DB_RETRIES || 10);
 const RETRY_DELAY_MS = Number(process.env.EASYPANEL_DB_RETRY_DELAY_MS || 5000);
+const REQUIRE_DB_ON_START =
+  String(process.env.EASYPANEL_REQUIRE_DB_ON_START || "").toLowerCase() ===
+  "true";
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -132,7 +135,18 @@ async function main() {
     return;
   }
 
-  await runMigrationsWithRetry();
+  try {
+    await runMigrationsWithRetry();
+  } catch (error) {
+    const message =
+      error?.sqlMessage || error?.message || error?.code || String(error);
+    if (REQUIRE_DB_ON_START) {
+      throw error;
+    }
+    console.warn(
+      `EASYPANEL migrations unavailable; starting API anyway so health/live and CORS stay reachable: ${message}`,
+    );
+  }
   startServer();
 }
 

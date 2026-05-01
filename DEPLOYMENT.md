@@ -26,7 +26,7 @@ Both must exit with code 0 before deploying.
 | **Dockerfile Path** | `backend/Dockerfile` |
 | **Exposed Port** | `5000` |
 | **Healthcheck** | `curl -fsS http://localhost:5000/api/health \|\| exit 1` |
-| **Start Command** | `npm run start:easypanel` (from Dockerfile) |
+| **Start Command** | leave empty to use Dockerfile `CMD`, or use `npm run start:easypanel` when you want startup migrations |
 
 **Required Environment Variables:**
 
@@ -34,8 +34,9 @@ Both must exit with code 0 before deploying.
 NODE_ENV=production
 PORT=5000
 
-# Database (use EasyPanel auto-generated values or your own)
+# Database (recommended: use EasyPanel auto-generated Internal Connection URL)
 DATABASE_URL=mysql://adminegypt:admin2025$@rootsegypt_database-egyptroots:3306/rootsegypt
+
 # OR individual vars:
 DB_HOST=rootsegypt_database-egyptroots
 DB_PORT=3306

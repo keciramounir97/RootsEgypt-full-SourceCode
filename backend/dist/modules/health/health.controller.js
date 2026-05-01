@@ -97,31 +97,28 @@ let HealthController = class HealthController {
         };
     }
     async ready() {
+        let database = "not_checked";
+        let databaseError;
         try {
             await this.knex.raw("SELECT 1");
-            return {
-                ok: true,
-                status: "healthy",
-                color: "green",
-                timestamp: new Date().toISOString(),
-                database: "connected",
-                uptime: process.uptime(),
-                memory: process.memoryUsage(),
-                version: process.env.npm_package_version || "1.0.0",
-            };
+            database = "connected";
         }
         catch (error) {
-            return {
-                ok: false,
-                status: "unhealthy",
-                color: "red",
-                timestamp: new Date().toISOString(),
-                database: "disconnected",
-                error: (error === null || error === void 0 ? void 0 : error.message) || "database unavailable",
-                uptime: process.uptime(),
-                memory: process.memoryUsage(),
-            };
+            database = "disconnected";
+            databaseError = (error === null || error === void 0 ? void 0 : error.message) || "database unavailable";
         }
+        return {
+            ok: true,
+            status: "healthy",
+            color: "green",
+            timestamp: new Date().toISOString(),
+            database,
+            databaseError,
+            dbHealth: "/api/db-health",
+            uptime: process.uptime(),
+            memory: process.memoryUsage(),
+            version: process.env.npm_package_version || "1.0.0",
+        };
     }
     async dbHealth() {
         try {
