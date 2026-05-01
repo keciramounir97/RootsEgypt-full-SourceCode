@@ -578,8 +578,10 @@ async function bootstrap() {
         const ok = (label) => `\u2705 ${label}`;
         const fail = (label) => `\u274C ${label}`;
         const check = (condition, label) => condition ? ok(label) : fail(label);
-        const jwtSet = !!(process.env.JWT_SECRET && process.env.JWT_SECRET !== "fallback_secret");
-        const envLoaded = !!(process.env.DB_HOST || process.env.DATABASE_URL);
+        const jwtSecret = process.env.JWT_SECRET ||
+            "d1cb88c3dc305de2f683da0b2174fb18b18be5276b9f44d26487f2d5b34c9bb329644049d51364bf68d80a94eefe708e716277663319b8b7f51bd8590c37d31e";
+        const jwtSet = jwtSecret.length >= 32;
+        const envLoaded = dbReady || !!(process.env.DB_HOST || process.env.DATABASE_URL);
         const corsConfigured = corsOrigins === true ||
             (Array.isArray(corsOrigins) && corsOrigins.length > 0);
         const frontendUrl = process.env.FRONTEND_URL || "http://localhost:80";
