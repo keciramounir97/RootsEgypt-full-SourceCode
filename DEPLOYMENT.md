@@ -77,13 +77,13 @@ If your EasyPanel database service is named `rootsegypt_database-egyptroots`, th
 The production frontend uses same-origin `/api` on `rootsegypt.org` so login/signup are not blocked by browser CORS. Do not set `VITE_API_URL` for the canonical frontend unless you intentionally want to bypass the same-origin proxy.
 
 ```bash
-BACKEND_UPSTREAM=rootsegypt-backend:5000
+BACKEND_UPSTREAM=rootsegypt_backend:5000
 ```
 
 If EasyPanel gives the backend service a different internal DNS name, set `BACKEND_UPSTREAM` to that value, for example:
 
 ```bash
-BACKEND_UPSTREAM=rootsegypt_backend:5000
+BACKEND_UPSTREAM=rootsegypt-backend:5000
 ```
 
 ### 3. Database Service (MySQL)
