@@ -77,14 +77,14 @@
   <div class="wrap">
     <section class="hero">
       <h1>Roots Egypt route audit</h1>
-      <p>Target: https://api.rootsegypt.org/api</p>
-      <p>Generated: 2026-04-30T22:05:22.480Z</p>
+      <p>Target: http://127.0.0.1:5000/api</p>
+      <p>Generated: 2026-05-01T00:05:44.369Z</p>
     </section>
     <section class="summary">
       <div class="card"><strong>39</strong><div>Total checks</div></div>
-      <div class="card"><strong class="ok-text">4</strong><div>Passed</div></div>
-      <div class="card"><strong class="fail-text">35</strong><div>Failed</div></div>
-      <div class="card"><strong>151 ms</strong><div>Average timing</div></div>
+      <div class="card"><strong class="ok-text">39</strong><div>Passed</div></div>
+      <div class="card"><strong class="fail-text">0</strong><div>Failed</div></div>
+      <div class="card"><strong>307 ms</strong><div>Average timing</div></div>
     </section>
     <section class="table-shell">
       <table>
@@ -105,66 +105,66 @@
           <td>health</td>
           <td><code>GET</code></td>
           <td><code>/health/live</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">200</td>
           <td>200</td>
-          <td>417 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>7 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;status&quot;:&quot;alive&quot;,&quot;timestamp&quot;:&quot;2026-05-01T00:05:32.394Z&quot;,&quot;uptime&quot;:5.9838677,&quot;version&quot;:&quot;1.0.0&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:0</td>
         </tr>
       
         <tr>
           <td>health</td>
           <td><code>GET</code></td>
           <td><code>/health</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">200</td>
           <td>200, 503</td>
-          <td>215 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>849 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;ok&quot;:false,&quot;status&quot;:&quot;not_ready&quot;,&quot;timestamp&quot;:&quot;2026-05-01T00:05:33.240Z&quot;,&quot;database&quot;:&quot;disconnected&quot;,&quot;error&quot;:&quot;getaddrinfo ENOTFOUND rootse</td>
         </tr>
       
         <tr>
           <td>health</td>
           <td><code>GET</code></td>
           <td><code>/db-health</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">200</td>
           <td>200, 503</td>
-          <td>127 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>842 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;ok&quot;:false,&quot;database&quot;:&quot;disconnected&quot;,&quot;error&quot;:&quot;getaddrinfo ENOTFOUND rootsegypt_database-egyptroots&quot;,&quot;timestamp&quot;:&quot;2026-05-01T00:05:34.0</td>
         </tr>
       
         <tr>
           <td>search</td>
           <td><code>GET</code></td>
           <td><code>/search?q=roots</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">200</td>
           <td>200</td>
-          <td>207 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>859 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;books&quot;:[],&quot;trees&quot;:[],&quot;people&quot;:[]},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:34.942Z&quot;}</td>
         </tr>
       
         <tr>
           <td>search</td>
           <td><code>GET</code></td>
           <td><code>/search/suggest?q=roots</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">200</td>
           <td>200</td>
-          <td>116 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>848 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;trees&quot;:[],&quot;people&quot;:[]},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:35.793Z&quot;}</td>
         </tr>
       
         <tr>
           <td>public</td>
           <td><code>GET</code></td>
           <td><code>/trees</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">200</td>
           <td>200</td>
-          <td>239 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>862 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[],&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:36.653Z&quot;}</td>
         </tr>
       
         <tr>
@@ -193,11 +193,11 @@
           <td>public</td>
           <td><code>GET</code></td>
           <td><code>/books</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">200</td>
           <td>200</td>
-          <td>136 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>859 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[],&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:37.513Z&quot;}</td>
         </tr>
       
         <tr>
@@ -215,11 +215,11 @@
           <td>public</td>
           <td><code>GET</code></td>
           <td><code>/gallery</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">200</td>
           <td>200</td>
-          <td>193 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>860 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[],&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:38.373Z&quot;}</td>
         </tr>
       
         <tr>
@@ -237,297 +237,297 @@
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/login</code></td>
-          <td class="fail-text">404</td>
-          <td>200</td>
-          <td>126 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td class="ok-text">503</td>
+          <td>200, 503</td>
+          <td>853 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:503,&quot;message&quot;:&quot;Internal server error&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Internal server error&quot;},&quot;timestamp&quot;:&quot;2026-05-01T00:05:39.228Z&quot;,&quot;path&quot;:&quot;/api/auth/login&quot;,&quot;request</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/login</code></td>
-          <td class="fail-text">404</td>
-          <td>400, 401</td>
-          <td>194 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td class="ok-text">503</td>
+          <td>400, 401, 503</td>
+          <td>837 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:503,&quot;message&quot;:&quot;Internal server error&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Internal server error&quot;},&quot;timestamp&quot;:&quot;2026-05-01T00:05:40.063Z&quot;,&quot;path&quot;:&quot;/api/auth/login&quot;,&quot;request</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/signup</code></td>
-          <td class="fail-text">404</td>
-          <td>200, 201, 409</td>
-          <td>121 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td class="ok-text">503</td>
+          <td>200, 201, 409, 503</td>
+          <td>862 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:503,&quot;message&quot;:&quot;Internal server error&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Internal server error&quot;},&quot;timestamp&quot;:&quot;2026-05-01T00:05:40.927Z&quot;,&quot;path&quot;:&quot;/api/auth/signup&quot;,&quot;reques</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/refresh</code></td>
-          <td class="fail-text">404</td>
-          <td>400, 401</td>
-          <td>191 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td class="ok-text">503</td>
+          <td>400, 401, 503</td>
+          <td>852 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:503,&quot;message&quot;:&quot;Internal server error&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Internal server error&quot;},&quot;timestamp&quot;:&quot;2026-05-01T00:05:41.780Z&quot;,&quot;path&quot;:&quot;/api/auth/refresh&quot;,&quot;reque</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/reset</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">200</td>
           <td>200</td>
-          <td>144 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td>842 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;If the email exists, a reset link will be sent.&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.621Z&quot;}</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/reset/token</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">400</td>
           <td>400, 401</td>
-          <td>182 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:400,&quot;message&quot;:&quot;Email, token, and new password are required&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Email, token, and new password are required&quot;,&quot;error&quot;:&quot;Bad Request&quot;,&quot;status</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/reset/verify</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">400</td>
           <td>400, 401</td>
-          <td>118 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td>3 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:400,&quot;message&quot;:&quot;Password must be at least 6 characters&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:[&quot;Password must be at least 6 characters&quot;,&quot;New password is required&quot;,&quot;newPasswor</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>GET</code></td>
           <td><code>/auth/me</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401</td>
-          <td>184 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.628Z&quot;,&quot;path&quot;:&quot;/api/auth/me&quot;,&quot;requestId&quot;:</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>PATCH</code></td>
           <td><code>/auth/me</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401</td>
-          <td>115 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route PATCH:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.630Z&quot;,&quot;path&quot;:&quot;/api/auth/me&quot;,&quot;requestId&quot;:</td>
         </tr>
       
         <tr>
           <td>user</td>
           <td><code>GET</code></td>
           <td><code>/my/trees</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401</td>
-          <td>184 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>1 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.632Z&quot;,&quot;path&quot;:&quot;/api/my/trees&quot;,&quot;requestId&quot;</td>
         </tr>
       
         <tr>
           <td>user</td>
           <td><code>GET</code></td>
           <td><code>/my/books</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401</td>
-          <td>144 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.634Z&quot;,&quot;path&quot;:&quot;/api/my/books&quot;,&quot;requestId&quot;</td>
         </tr>
       
         <tr>
           <td>user</td>
           <td><code>GET</code></td>
           <td><code>/my/gallery</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401</td>
-          <td>177 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.636Z&quot;,&quot;path&quot;:&quot;/api/my/gallery&quot;,&quot;requestI</td>
         </tr>
       
         <tr>
           <td>user</td>
           <td><code>POST</code></td>
           <td><code>/user/requests/password-reset</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401</td>
-          <td>116 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td>3 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.639Z&quot;,&quot;path&quot;:&quot;/api/user/requests/passwor</td>
         </tr>
       
         <tr>
           <td>user</td>
           <td><code>POST</code></td>
           <td><code>/user/requests/account-deletion</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401</td>
-          <td>175 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td>3 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.641Z&quot;,&quot;path&quot;:&quot;/api/user/requests/account</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/users</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>121 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>1 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.643Z&quot;,&quot;path&quot;:&quot;/api/admin/users&quot;,&quot;request</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/admins</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>201 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.645Z&quot;,&quot;path&quot;:&quot;/api/admin/admins&quot;,&quot;reques</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/trees</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>121 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>1 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.646Z&quot;,&quot;path&quot;:&quot;/api/admin/trees&quot;,&quot;request</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/books</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>197 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>1 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.647Z&quot;,&quot;path&quot;:&quot;/api/admin/books&quot;,&quot;request</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/gallery</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>116 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>3 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.649Z&quot;,&quot;path&quot;:&quot;/api/admin/gallery&quot;,&quot;reque</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/activity</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>193 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>1 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.651Z&quot;,&quot;path&quot;:&quot;/api/activity&quot;,&quot;requestId&quot;</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/contact/messages</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>114 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.653Z&quot;,&quot;path&quot;:&quot;/api/admin/contact/message</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/newsletter/subscribers</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>188 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.654Z&quot;,&quot;path&quot;:&quot;/api/admin/newsletter/subs</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/approvals/stats</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>116 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.657Z&quot;,&quot;path&quot;:&quot;/api/admin/approvals/stats</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/approvals/password-reset</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>213 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>1 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.658Z&quot;,&quot;path&quot;:&quot;/api/admin/approvals/passw</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/approvals/account-deletion</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">401</td>
           <td>401, 403</td>
-          <td>157 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;utf-8&quot; /&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt; &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofoll</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.660Z&quot;,&quot;path&quot;:&quot;/api/admin/approvals/accou</td>
         </tr>
       
         <tr>
           <td>public-write</td>
           <td><code>POST</code></td>
           <td><code>/newsletter/subscribe</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">201</td>
           <td>200, 201, 409, 400</td>
-          <td>216 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td>850 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:201,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;Subscribed. Confirmation email may be delayed.&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:43.509Z&quot;}</td>
         </tr>
       
         <tr>
           <td>public-write</td>
           <td><code>POST</code></td>
           <td><code>/contact</code></td>
-          <td class="fail-text">404</td>
+          <td class="ok-text">201</td>
           <td>200, 201, 400</td>
-          <td>121 ms</td>
-          <td><span class="badge fail">Needs fix</span></td>
-          <td>{&quot;message&quot;:&quot;Route POST:/api/errors/not-found not found&quot;,&quot;error&quot;:&quot;Not Found&quot;,&quot;statusCode&quot;:404}</td>
+          <td>858 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:201,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;Message received. Email delivery is temporarily unavailable.&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:44.368Z&quot;}</td>
         </tr>
       </tbody>
       </table>

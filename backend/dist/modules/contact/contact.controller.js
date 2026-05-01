@@ -29,11 +29,16 @@ let ContactController = class ContactController {
     }
     async sendContact(body) {
         const { name, email, message } = body;
-        await this.contactDataService.saveContactMessage({
-            name: String(name || '').trim(),
-            email: String(email || '').trim().toLowerCase(),
-            message: String(message || '').trim(),
-        });
+        try {
+            await this.contactDataService.saveContactMessage({
+                name: String(name || '').trim(),
+                email: String(email || '').trim().toLowerCase(),
+                message: String(message || '').trim(),
+            });
+        }
+        catch (err) {
+            console.error('Contact form persistence error:', (err === null || err === void 0 ? void 0 : err.message) || err);
+        }
         const from = this.configService.get('EMAIL_FROM') || this.configService.get('SMTP_USER');
         const to = this.configService.get('SMTP_USER');
         if (!from || !to) {

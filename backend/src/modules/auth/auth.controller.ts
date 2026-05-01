@@ -11,6 +11,7 @@ import {
   Patch,
   Logger,
   InternalServerErrorException,
+  ServiceUnavailableException,
 } from "@nestjs/common";
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -29,6 +30,27 @@ export class AuthController {
     private usersService: UsersService,
   ) {}
 
+  private isDatabaseUnavailable(error: unknown) {
+    const message =
+      error instanceof Error ? error.message : String((error as any) || "");
+    const code = (error as any)?.code || "";
+    return (
+      code === "ENOTFOUND" ||
+      code === "ECONNREFUSED" ||
+      code === "ETIMEDOUT" ||
+      message.includes("getaddrinfo") ||
+      message.includes("ECONNREFUSED") ||
+      message.includes("ETIMEDOUT")
+    );
+  }
+
+  private serviceUnavailable() {
+    return new ServiceUnavailableException({
+      message: "Database is temporarily unavailable",
+      database: "disconnected",
+    });
+  }
+
   @Post("login")
   @HttpCode(200)
   async login(@Body() loginDto: LoginDto) {
@@ -41,6 +63,7 @@ export class AuthController {
       return await this.authService.login(user);
     } catch (err) {
       if (err instanceof UnauthorizedException) throw err;
+      if (this.isDatabaseUnavailable(err)) throw this.serviceUnavailable();
       this.logger.error(
         `login error: ${err instanceof Error ? err.message : String(err)}`,
         err instanceof Error ? err.stack : undefined,
@@ -57,6 +80,7 @@ export class AuthController {
       return await this.authService.signup(signupDto);
     } catch (err) {
       if ((err as any)?.status) throw err;
+      if (this.isDatabaseUnavailable(err)) throw this.serviceUnavailable();
       this.logger.error(
         `signup error: ${err instanceof Error ? err.message : String(err)}`,
         err instanceof Error ? err.stack : undefined,
@@ -70,7 +94,13 @@ export class AuthController {
   @Post("refresh")
   @HttpCode(200)
   async refresh(@Body() body: { refreshToken?: string }) {
-    return this.authService.refreshToken(body?.refreshToken);
+    try {
+      return await this.authService.refreshToken(body?.refreshToken);
+    } catch (err) {
+      if ((err as any)?.status) throw err;
+      if (this.isDatabaseUnavailable(err)) throw this.serviceUnavailable();
+      throw err;
+    }
   }
 
   @Post("reset/verify")

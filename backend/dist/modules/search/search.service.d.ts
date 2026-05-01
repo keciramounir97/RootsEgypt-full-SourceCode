@@ -3,6 +3,7 @@ import { Book } from '../../models/Book';
 import { User } from '../../models/User';
 export declare class SearchService {
     private readonly knex;
+    private readonly logger;
     constructor(knex: Knex);
     search(query: string, user?: User): Promise<{
         books: Book[];

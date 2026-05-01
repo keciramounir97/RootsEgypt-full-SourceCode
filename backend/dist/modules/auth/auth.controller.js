@@ -28,6 +28,22 @@ let AuthController = AuthController_1 = class AuthController {
         this.usersService = usersService;
         this.logger = new common_1.Logger(AuthController_1.name);
     }
+    isDatabaseUnavailable(error) {
+        const message = error instanceof Error ? error.message : String(error || "");
+        const code = (error === null || error === void 0 ? void 0 : error.code) || "";
+        return (code === "ENOTFOUND" ||
+            code === "ECONNREFUSED" ||
+            code === "ETIMEDOUT" ||
+            message.includes("getaddrinfo") ||
+            message.includes("ECONNREFUSED") ||
+            message.includes("ETIMEDOUT"));
+    }
+    serviceUnavailable() {
+        return new common_1.ServiceUnavailableException({
+            message: "Database is temporarily unavailable",
+            database: "disconnected",
+        });
+    }
     async login(loginDto) {
         try {
             const user = await this.authService.validateUser(loginDto.email, loginDto.password);
@@ -38,6 +54,8 @@ let AuthController = AuthController_1 = class AuthController {
         catch (err) {
             if (err instanceof common_1.UnauthorizedException)
                 throw err;
+            if (this.isDatabaseUnavailable(err))
+                throw this.serviceUnavailable();
             this.logger.error(`login error: ${err instanceof Error ? err.message : String(err)}`, err instanceof Error ? err.stack : undefined);
             throw new common_1.InternalServerErrorException(err instanceof Error ? err.message : "Login failed");
         }
@@ -49,12 +67,23 @@ let AuthController = AuthController_1 = class AuthController {
         catch (err) {
             if (err === null || err === void 0 ? void 0 : err.status)
                 throw err;
+            if (this.isDatabaseUnavailable(err))
+                throw this.serviceUnavailable();
             this.logger.error(`signup error: ${err instanceof Error ? err.message : String(err)}`, err instanceof Error ? err.stack : undefined);
             throw new common_1.InternalServerErrorException(err instanceof Error ? err.message : "Signup failed");
         }
     }
     async refresh(body) {
-        return this.authService.refreshToken(body === null || body === void 0 ? void 0 : body.refreshToken);
+        try {
+            return await this.authService.refreshToken(body === null || body === void 0 ? void 0 : body.refreshToken);
+        }
+        catch (err) {
+            if (err === null || err === void 0 ? void 0 : err.status)
+                throw err;
+            if (this.isDatabaseUnavailable(err))
+                throw this.serviceUnavailable();
+            throw err;
+        }
     }
     async verifyReset(dto) {
         return this.authService.verifyReset(dto.email, dto.code, dto.newPassword);

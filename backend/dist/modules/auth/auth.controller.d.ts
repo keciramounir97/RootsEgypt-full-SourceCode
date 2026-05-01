@@ -10,6 +10,8 @@ export declare class AuthController {
     private usersService;
     private readonly logger;
     constructor(authService: AuthService, usersService: UsersService);
+    private isDatabaseUnavailable;
+    private serviceUnavailable;
     login(loginDto: LoginDto): Promise<{
         token: string;
         refreshToken: string;

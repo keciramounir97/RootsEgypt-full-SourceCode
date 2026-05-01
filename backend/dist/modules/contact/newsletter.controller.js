@@ -36,14 +36,24 @@ let NewsletterController = class NewsletterController {
         if (!email) {
             throw new common_1.BadRequestException("Email is required");
         }
-        await this.contactDataService.upsertNewsletterSubscriber(email);
+        try {
+            await this.contactDataService.upsertNewsletterSubscriber(email);
+        }
+        catch (err) {
+            console.error("Newsletter persistence error:", (err === null || err === void 0 ? void 0 : err.message) || err);
+        }
         const from = this.configService.get("EMAIL_FROM") ||
             this.configService.get("SMTP_USER");
         if (!from) {
             return { message: "Subscribed. Confirmation email may be delayed." };
         }
         try {
-            await this.activityService.log(null, "notifications", `New newsletter subscriber: ${email}`);
+            try {
+                await this.activityService.log(null, "notifications", `New newsletter subscriber: ${email}`);
+            }
+            catch (err) {
+                console.error("Newsletter activity log error:", (err === null || err === void 0 ? void 0 : err.message) || err);
+            }
             await this.mailerService.sendMail({
                 from: from,
                 to: email,

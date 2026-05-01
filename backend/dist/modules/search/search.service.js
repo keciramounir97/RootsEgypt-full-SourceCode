@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var SearchService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SearchService = void 0;
 const common_1 = require("@nestjs/common");
@@ -18,9 +19,10 @@ const knex_1 = require("knex");
 const Book_1 = require("../../models/Book");
 const Tree_1 = require("../../models/Tree");
 const Person_1 = require("../../models/Person");
-let SearchService = class SearchService {
+let SearchService = SearchService_1 = class SearchService {
     constructor(knex) {
         this.knex = knex;
+        this.logger = new common_1.Logger(SearchService_1.name);
     }
     async search(query, user) {
         var _a, _b, _c;
@@ -33,82 +35,88 @@ let SearchService = class SearchService {
                 roleId === 3 ||
                 user.roleName === "admin" ||
                 user.roleName === "super_admin");
-        const books = await Book_1.Book.query(this.knex)
-            .where("is_public", true)
-            .andWhere((builder) => {
-            builder
-                .where("title", "like", `${q}%`)
-                .orWhere("author", "like", `${q}%`)
-                .orWhere("category", "like", `${q}%`)
-                .orWhere("description", "like", `%${q}%`);
-        })
-            .orderBy("title", "asc")
-            .limit(20);
-        const treeQuery = Tree_1.Tree.query(this.knex).where((builder) => {
-            builder
-                .where("title", "like", `${q}%`)
-                .orWhere("title", "like", `%${q}%`)
-                .orWhere("description", "like", `${q}%`)
-                .orWhere("description", "like", `%${q}%`);
-        });
-        if (!canSeeAllTrees) {
-            if (user) {
-                treeQuery.andWhere((builder) => {
-                    builder.where("is_public", true).orWhere("user_id", user.id);
-                });
+        try {
+            const books = await Book_1.Book.query(this.knex)
+                .where("is_public", true)
+                .andWhere((builder) => {
+                builder
+                    .where("title", "like", `${q}%`)
+                    .orWhere("author", "like", `${q}%`)
+                    .orWhere("category", "like", `${q}%`)
+                    .orWhere("description", "like", `%${q}%`);
+            })
+                .orderBy("title", "asc")
+                .limit(20);
+            const treeQuery = Tree_1.Tree.query(this.knex).where((builder) => {
+                builder
+                    .where("title", "like", `${q}%`)
+                    .orWhere("title", "like", `%${q}%`)
+                    .orWhere("description", "like", `${q}%`)
+                    .orWhere("description", "like", `%${q}%`);
+            });
+            if (!canSeeAllTrees) {
+                if (user) {
+                    treeQuery.andWhere((builder) => {
+                        builder.where("is_public", true).orWhere("user_id", user.id);
+                    });
+                }
+                else {
+                    treeQuery.where("is_public", true);
+                }
             }
-            else {
-                treeQuery.where("is_public", true);
+            const trees = await treeQuery
+                .orderBy("title", "asc")
+                .limit(20)
+                .withGraphFetched("owner")
+                .modifyGraph("owner", (builder) => builder.select("id", "full_name"));
+            const peopleQuery = Person_1.Person.query(this.knex)
+                .joinRelated("tree")
+                .where("name", "like", `%${q}%`);
+            if (!canSeeAllTrees) {
+                if (user) {
+                    peopleQuery.where((builder) => {
+                        builder
+                            .where("tree.is_public", true)
+                            .orWhere("tree.user_id", user.id);
+                    });
+                }
+                else {
+                    peopleQuery.where("tree.is_public", true);
+                }
             }
+            const people = await peopleQuery
+                .orderBy("name", "asc")
+                .limit(30)
+                .withGraphFetched("tree.owner")
+                .modifyGraph("tree.owner", (builder) => builder.select("id", "full_name"));
+            return {
+                books,
+                trees: trees.map((t) => {
+                    var _a;
+                    return (Object.assign(Object.assign({}, t), { owner_name: (_a = t.owner) === null || _a === void 0 ? void 0 : _a.full_name }));
+                }),
+                people: people.map((p) => {
+                    var _a, _b, _c, _d, _e, _f;
+                    return ({
+                        id: p.id,
+                        name: p.name,
+                        tree_id: (_a = p.tree) === null || _a === void 0 ? void 0 : _a.id,
+                        tree_title: (_b = p.tree) === null || _b === void 0 ? void 0 : _b.title,
+                        tree_description: (_c = p.tree) === null || _c === void 0 ? void 0 : _c.description,
+                        tree_is_public: !!((_d = p.tree) === null || _d === void 0 ? void 0 : _d.is_public),
+                        owner_name: (_f = (_e = p.tree) === null || _e === void 0 ? void 0 : _e.owner) === null || _f === void 0 ? void 0 : _f.full_name,
+                    });
+                }),
+            };
         }
-        const trees = await treeQuery
-            .orderBy("title", "asc")
-            .limit(20)
-            .withGraphFetched("owner")
-            .modifyGraph("owner", (builder) => builder.select("id", "full_name"));
-        const peopleQuery = Person_1.Person.query(this.knex)
-            .joinRelated("tree")
-            .where("name", "like", `%${q}%`);
-        if (!canSeeAllTrees) {
-            if (user) {
-                peopleQuery.where((builder) => {
-                    builder
-                        .where("tree.is_public", true)
-                        .orWhere("tree.user_id", user.id);
-                });
-            }
-            else {
-                peopleQuery.where("tree.is_public", true);
-            }
+        catch (error) {
+            this.logger.warn(`Search unavailable, returning empty result set: ${(error === null || error === void 0 ? void 0 : error.message) || error}`);
+            return { books: [], trees: [], people: [] };
         }
-        const people = await peopleQuery
-            .orderBy("name", "asc")
-            .limit(30)
-            .withGraphFetched("tree.owner")
-            .modifyGraph("tree.owner", (builder) => builder.select("id", "full_name"));
-        return {
-            books,
-            trees: trees.map((t) => {
-                var _a;
-                return (Object.assign(Object.assign({}, t), { owner_name: (_a = t.owner) === null || _a === void 0 ? void 0 : _a.full_name }));
-            }),
-            people: people.map((p) => {
-                var _a, _b, _c, _d, _e, _f;
-                return ({
-                    id: p.id,
-                    name: p.name,
-                    tree_id: (_a = p.tree) === null || _a === void 0 ? void 0 : _a.id,
-                    tree_title: (_b = p.tree) === null || _b === void 0 ? void 0 : _b.title,
-                    tree_description: (_c = p.tree) === null || _c === void 0 ? void 0 : _c.description,
-                    tree_is_public: !!((_d = p.tree) === null || _d === void 0 ? void 0 : _d.is_public),
-                    owner_name: (_f = (_e = p.tree) === null || _e === void 0 ? void 0 : _e.owner) === null || _f === void 0 ? void 0 : _f.full_name,
-                });
-            }),
-        };
     }
 };
 exports.SearchService = SearchService;
-exports.SearchService = SearchService = __decorate([
+exports.SearchService = SearchService = SearchService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)("KnexConnection")),
     __metadata("design:paramtypes", [Function])

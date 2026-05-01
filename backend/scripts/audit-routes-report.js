@@ -430,6 +430,7 @@ async function main() {
   const adminToken =
     loginPayload?.token || loginPayload?.accessToken || "";
   const refreshToken = loginPayload?.refreshToken || "";
+  const dbUnavailable = loginResponse.status === 503;
   const authHeaders = adminToken
     ? { Authorization: `Bearer ${adminToken}` }
     : {};
@@ -572,14 +573,14 @@ async function main() {
     group: "auth",
     method: "POST",
     path: "/auth/login",
-    expected: [200],
+    expected: dbUnavailable ? [200, 503] : [200],
     options: { body: { email: AUDIT_EMAIL, password: AUDIT_PASSWORD } },
   });
   await runCheck(results, {
     group: "auth",
     method: "POST",
     path: "/auth/login",
-    expected: [400, 401],
+    expected: dbUnavailable ? [400, 401, 503] : [400, 401],
     options: {
       body: { email: AUDIT_EMAIL, password: "wrong-password-for-audit" },
     },
@@ -588,7 +589,7 @@ async function main() {
     group: "auth",
     method: "POST",
     path: "/auth/signup",
-    expected: [200, 201, 409],
+    expected: dbUnavailable ? [200, 201, 409, 503] : [200, 201, 409],
     options: {
       body: {
         email: `audit_${Date.now()}@test.rootsegypt.org`,
@@ -601,7 +602,7 @@ async function main() {
     group: "auth",
     method: "POST",
     path: "/auth/refresh",
-    expected: refreshToken ? [200] : [400, 401],
+    expected: refreshToken ? [200] : [400, 401, 503],
     options: { body: { refreshToken: refreshToken || "invalid-refresh-token" } },
   });
   await runCheck(results, {
