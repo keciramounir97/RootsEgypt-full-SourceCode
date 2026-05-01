@@ -95,8 +95,14 @@ exports.DatabaseModule = DatabaseModule = __decorate([
                     try {
                         const knex = Knex.default(knexConfig);
                         objection_1.Model.knex(knex);
-                        await knex.raw("SELECT 1");
-                        console.log("🟢 DB HANDSHAKE OK");
+                        knex.raw("SELECT 1").catch((err) => {
+                            const msg = (err === null || err === void 0 ? void 0 : err.sqlMessage) ||
+                                (err === null || err === void 0 ? void 0 : err.message) ||
+                                (err === null || err === void 0 ? void 0 : err.code) ||
+                                JSON.stringify(err || {});
+                            console.error(`DB HANDSHAKE FAILED: ${msg}`);
+                        });
+                        console.log("DB HANDSHAKE STARTED");
                         return knex;
                     }
                     catch (err) {
@@ -104,8 +110,10 @@ exports.DatabaseModule = DatabaseModule = __decorate([
                             (err === null || err === void 0 ? void 0 : err.message) ||
                             (err === null || err === void 0 ? void 0 : err.code) ||
                             JSON.stringify(err || {});
-                        console.error(`🔴 DB HANDSHAKE FAILED: ${msg}`);
-                        throw err;
+                        console.error(`DB CONFIG INIT FAILED: ${msg}`);
+                        const knex = Knex.default(knexConfig);
+                        objection_1.Model.knex(knex);
+                        return knex;
                     }
                 },
             },

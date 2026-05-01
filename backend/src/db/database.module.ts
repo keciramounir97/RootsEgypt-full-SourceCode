@@ -149,8 +149,15 @@ function pickFirstDefined(
         try {
           const knex = Knex.default(knexConfig);
           Model.knex(knex);
-          await knex.raw("SELECT 1");
-          console.log("🟢 DB HANDSHAKE OK");
+          knex.raw("SELECT 1").catch((err: any) => {
+            const msg =
+              err?.sqlMessage ||
+              err?.message ||
+              err?.code ||
+              JSON.stringify(err || {});
+            console.error(`DB HANDSHAKE FAILED: ${msg}`);
+          });
+          console.log("DB HANDSHAKE STARTED");
           return knex;
         } catch (err: any) {
           const msg =
@@ -158,8 +165,10 @@ function pickFirstDefined(
             err?.message ||
             err?.code ||
             JSON.stringify(err || {});
-          console.error(`🔴 DB HANDSHAKE FAILED: ${msg}`);
-          throw err;
+          console.error(`DB CONFIG INIT FAILED: ${msg}`);
+          const knex = Knex.default(knexConfig);
+          Model.knex(knex);
+          return knex;
         }
       },
     },

@@ -465,6 +465,21 @@ async function bootstrap() {
             next();
         });
         app.use(cors(corsOptions));
+        app.use((req, res, next) => {
+            if (req.method === "GET" &&
+                (req.path === "/health" || req.path === "/health/live")) {
+                return res.type("application/json").json({
+                    ok: true,
+                    status: "healthy",
+                    color: "green",
+                    database: "not_checked",
+                    timestamp: new Date().toISOString(),
+                    uptime: process.uptime(),
+                    version: process.env.npm_package_version || "1.0.0",
+                });
+            }
+            next();
+        });
         const uploadsPath = path.join(process.cwd(), "uploads");
         app.use("/uploads", require("express").static(uploadsPath));
         app.use((req, res, next) => {

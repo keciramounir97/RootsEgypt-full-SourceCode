@@ -49,6 +49,7 @@ JWT_SECRET=<your-64-char-hex-secret>
 # CORS
 FRONTEND_URL=https://rootsegypt.org
 API_URL=https://api.rootsegypt.org
+CORS_ORIGIN=https://rootsegypt.org,https://www.rootsegypt.org,https://api.rootsegypt.org
 
 # Email (if using)
 SMTP_HOST=
@@ -72,15 +73,16 @@ If your EasyPanel database service is named `rootsegypt_database-egyptroots`, th
 | **Start Command** | `nginx -g "daemon off;"` (from Dockerfile) |
 
 **Build Arguments / Environment:**
-The frontend builds with `VITE_API_URL` baked in at build time. Set this in EasyPanel:
+The production frontend uses same-origin `/api` on `rootsegypt.org` so login/signup are not blocked by browser CORS. Do not set `VITE_API_URL` for the canonical frontend unless you intentionally want to bypass the same-origin proxy.
 
 ```bash
-VITE_API_URL=https://api.rootsegypt.org
+BACKEND_UPSTREAM=rootsegypt-backend:5000
 ```
 
-Or if using the nginx proxy (commented in `nginx.conf`):
+If EasyPanel gives the backend service a different internal DNS name, set `BACKEND_UPSTREAM` to that value, for example:
+
 ```bash
-# VITE_API_URL=/api   # when nginx proxies /api to backend
+BACKEND_UPSTREAM=rootsegypt_backend:5000
 ```
 
 ### 3. Database Service (MySQL)
@@ -105,10 +107,14 @@ EasyPanel auto-creates this. Key values from your screenshot:
    ```bash
    curl https://api.rootsegypt.org/api/health
    ```
+   Same-origin frontend proxy also returns 200:
+   ```bash
+   curl https://rootsegypt.org/api/health
+   ```
 2. [ ] Database migrations ran (backend auto-runs on startup via `start:easypanel` script)
 3. [ ] Frontend loads without console errors
 4. [ ] Login/Signup API responds correctly
-5. [ ] CORS preflight (`OPTIONS /api/auth/login`) returns 204
+5. [ ] CORS preflight (`OPTIONS /api/login`) returns 204 on `https://api.rootsegypt.org`, and same-origin `https://rootsegypt.org/api/login` works without CORS
 6. [ ] File uploads (books, gallery, trees) work within size limits
 
 ---

@@ -8,6 +8,7 @@ export declare class HealthController {
         app: string;
         ok: boolean;
         status: string;
+        color: string;
         health: string;
         live: string;
         db: string;
@@ -25,35 +26,47 @@ export declare class HealthController {
         };
     };
     live(): {
+        ok: boolean;
         status: string;
+        color: string;
+        database: string;
         timestamp: string;
         uptime: number;
+        memory: NodeJS.MemoryUsage;
         version: string;
     };
     ready(): Promise<{
         ok: boolean;
         status: string;
+        color: string;
         timestamp: string;
         database: string;
         uptime: number;
+        memory: NodeJS.MemoryUsage;
         version: string;
         error?: undefined;
     } | {
         ok: boolean;
         status: string;
+        color: string;
         timestamp: string;
         database: string;
         error: any;
         uptime: number;
+        memory: NodeJS.MemoryUsage;
         version?: undefined;
     }>;
     dbHealth(): Promise<{
         ok: boolean;
+        status: string;
+        color: string;
         database: string;
         timestamp: string;
         error?: undefined;
     } | {
         ok: boolean;
+        status: string;
+        color: string;
         database: string;
         error: any;
         timestamp: string;
@@ -66,6 +79,7 @@ export declare class HealthController {
         path: string;
         message: string;
         app: string;
+        color: string;
         health: string;
         live: string;
         db: string;

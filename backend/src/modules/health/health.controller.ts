@@ -20,7 +20,8 @@ export class HealthController {
     return {
       app: "RootsEgypt API",
       ok: true,
-      status: "ok",
+      status: "healthy",
+      color: "green",
       health: "/api/health",
       live: "/api/health/live",
       db: "/api/db-health",
@@ -87,9 +88,13 @@ export class HealthController {
   @Get("health/live")
   live() {
     return {
-      status: "alive",
+      ok: true,
+      status: "healthy",
+      color: "green",
+      database: "not_checked",
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
+      memory: process.memoryUsage(),
       version: process.env.npm_package_version || "1.0.0",
     };
   }
@@ -102,20 +107,24 @@ export class HealthController {
 
       return {
         ok: true,
-        status: "ready",
+        status: "healthy",
+        color: "green",
         timestamp: new Date().toISOString(),
         database: "connected",
         uptime: process.uptime(),
+        memory: process.memoryUsage(),
         version: process.env.npm_package_version || "1.0.0",
       };
     } catch (error: any) {
       return {
         ok: false,
-        status: "not_ready",
+        status: "unhealthy",
+        color: "red",
         timestamp: new Date().toISOString(),
         database: "disconnected",
         error: error?.message || "database unavailable",
         uptime: process.uptime(),
+        memory: process.memoryUsage(),
       };
     }
   }
@@ -126,12 +135,16 @@ export class HealthController {
       await this.knex.raw("SELECT 1");
       return {
         ok: true,
+        status: "healthy",
+        color: "green",
         database: "connected",
         timestamp: new Date().toISOString(),
       };
     } catch (error: any) {
       return {
         ok: false,
+        status: "unhealthy",
+        color: "red",
         database: "disconnected",
         error: error?.message || "database unavailable",
         timestamp: new Date().toISOString(),

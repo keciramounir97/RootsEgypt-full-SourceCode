@@ -25,7 +25,8 @@ let HealthController = class HealthController {
         return {
             app: "RootsEgypt API",
             ok: true,
-            status: "ok",
+            status: "healthy",
+            color: "green",
             health: "/api/health",
             live: "/api/health/live",
             db: "/api/db-health",
@@ -85,9 +86,13 @@ let HealthController = class HealthController {
     }
     live() {
         return {
-            status: "alive",
+            ok: true,
+            status: "healthy",
+            color: "green",
+            database: "not_checked",
             timestamp: new Date().toISOString(),
             uptime: process.uptime(),
+            memory: process.memoryUsage(),
             version: process.env.npm_package_version || "1.0.0",
         };
     }
@@ -96,21 +101,25 @@ let HealthController = class HealthController {
             await this.knex.raw("SELECT 1");
             return {
                 ok: true,
-                status: "ready",
+                status: "healthy",
+                color: "green",
                 timestamp: new Date().toISOString(),
                 database: "connected",
                 uptime: process.uptime(),
+                memory: process.memoryUsage(),
                 version: process.env.npm_package_version || "1.0.0",
             };
         }
         catch (error) {
             return {
                 ok: false,
-                status: "not_ready",
+                status: "unhealthy",
+                color: "red",
                 timestamp: new Date().toISOString(),
                 database: "disconnected",
                 error: (error === null || error === void 0 ? void 0 : error.message) || "database unavailable",
                 uptime: process.uptime(),
+                memory: process.memoryUsage(),
             };
         }
     }
@@ -119,6 +128,8 @@ let HealthController = class HealthController {
             await this.knex.raw("SELECT 1");
             return {
                 ok: true,
+                status: "healthy",
+                color: "green",
                 database: "connected",
                 timestamp: new Date().toISOString(),
             };
@@ -126,6 +137,8 @@ let HealthController = class HealthController {
         catch (error) {
             return {
                 ok: false,
+                status: "unhealthy",
+                color: "red",
                 database: "disconnected",
                 error: (error === null || error === void 0 ? void 0 : error.message) || "database unavailable",
                 timestamp: new Date().toISOString(),

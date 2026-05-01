@@ -580,6 +580,25 @@ async function bootstrap() {
     });
     app.use(cors(corsOptions));
 
+    // Root-level health aliases for EasyPanel and reverse-proxy checks.
+    app.use((req: any, res: any, next: () => void) => {
+      if (
+        req.method === "GET" &&
+        (req.path === "/health" || req.path === "/health/live")
+      ) {
+        return res.type("application/json").json({
+          ok: true,
+          status: "healthy",
+          color: "green",
+          database: "not_checked",
+          timestamp: new Date().toISOString(),
+          uptime: process.uptime(),
+          version: process.env.npm_package_version || "1.0.0",
+        });
+      }
+      next();
+    });
+
     // Static file serving for uploads (images, books, GEDCOM) - cPanel/production safe
     const uploadsPath = path.join(process.cwd(), "uploads");
     app.use("/uploads", require("express").static(uploadsPath));
