@@ -29,7 +29,6 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
-                ignoreEnvFile: true,
             }),
             database_module_1.DatabaseModule,
             activity_module_1.ActivityModule,

@@ -14,25 +14,24 @@ import { HealthModule } from './modules/health/health.module';
 import { ApprovalsModule } from './modules/approvals/approvals.module';
 
 @Module({
-    imports: [
-        ConfigModule.forRoot({
-            isGlobal: true,
-            ignoreEnvFile: true,
-        }),
-        DatabaseModule,
-        ActivityModule,
-        AuthModule,
-        UsersModule,
-        BooksModule,
-        TreesModule,
-        GalleryModule,
-        ContactModule,
-        StatsModule,
-        SearchModule,
-        HealthModule,
-        ApprovalsModule,
-    ],
-    controllers: [],
-    providers: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    DatabaseModule,
+    ActivityModule,
+    AuthModule,
+    UsersModule,
+    BooksModule,
+    TreesModule,
+    GalleryModule,
+    ContactModule,
+    StatsModule,
+    SearchModule,
+    HealthModule,
+    ApprovalsModule,
+  ],
+  controllers: [],
+  providers: [],
 })
-export class AppModule { }
+export class AppModule {}

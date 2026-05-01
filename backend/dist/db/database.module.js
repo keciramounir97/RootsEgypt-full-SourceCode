@@ -11,7 +11,33 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const objection_1 = require("objection");
 const Knex = require("knex");
-const { DB_ENV_HELP, buildDbConfigErrorMessage, resolveDbConfig } = require("../../db-config");
+function readConnectionFromDatabaseUrl(databaseUrl) {
+    if (!databaseUrl)
+        return {};
+    try {
+        const parsed = new URL(databaseUrl);
+        return {
+            host: parsed.hostname,
+            port: Number(parsed.port || 3306),
+            user: decodeURIComponent(parsed.username || ""),
+            password: decodeURIComponent(parsed.password || ""),
+            database: (parsed.pathname || "").replace(/^\//, ""),
+        };
+    }
+    catch (_a) {
+        return {};
+    }
+}
+function pickFirstDefined(...values) {
+    for (const value of values) {
+        if (value === undefined || value === null)
+            continue;
+        const normalized = String(value).trim();
+        if (normalized)
+            return normalized;
+    }
+    return undefined;
+}
 let DatabaseModule = class DatabaseModule {
 };
 exports.DatabaseModule = DatabaseModule;
@@ -24,24 +50,27 @@ exports.DatabaseModule = DatabaseModule = __decorate([
                 provide: "KnexConnection",
                 inject: [config_1.ConfigService],
                 useFactory: async (configService) => {
-                    const resolved = resolveDbConfig((key) => configService.get(key), process.env);
-                    console.log(`INFO DB CONFIG bootstrap tried=${resolved.bootstrapFilesTried.join(",")} loaded=${resolved.bootstrapFilesLoaded.join(",") || "none"} resolutionSource=${resolved.resolutionSource} help="${DB_ENV_HELP}"`);
-                    console.log(`INFO DB ENV presence ${JSON.stringify({
-                        NODE_ENV: resolved.envPresence.nodeEnv,
-                        DATABASE_URL: resolved.envPresence.hasDatabaseUrl,
-                        DB_HOST: resolved.envPresence.hasDbHost,
-                        DB_USER: resolved.envPresence.hasDbUser,
-                        DB_NAME: resolved.envPresence.hasDbName,
-                    })}`);
-                    if (resolved.missingFields.length > 0) {
-                        const errorMessage = buildDbConfigErrorMessage(resolved.missingFields, resolved.missingVariableNames);
-                        console.error(`ERROR DB CONFIG ${errorMessage}`);
-                        throw new Error(errorMessage);
+                    const dbUrl = configService.get("DATABASE_URL");
+                    const fromUrl = readConnectionFromDatabaseUrl(dbUrl);
+                    const host = pickFirstDefined(configService.get("DB_HOST"), configService.get("MYSQL_HOST"), configService.get("MYSQLHOST"), process.env.DB_HOST, process.env.MYSQL_HOST, process.env.MYSQLHOST, fromUrl.host, "rootsegypt_database-egyptroots");
+                    const port = Number(pickFirstDefined(configService.get("DB_PORT"), configService.get("MYSQL_PORT"), process.env.DB_PORT, process.env.MYSQL_PORT, fromUrl.port, 3306));
+                    const user = pickFirstDefined(configService.get("DB_USER"), configService.get("MYSQL_USER"), configService.get("MYSQLUSER"), process.env.DB_USER, process.env.MYSQL_USER, process.env.MYSQLUSER, fromUrl.user, "adminegypt");
+                    const password = pickFirstDefined(configService.get("DB_PASSWORD"), configService.get("MYSQL_PASSWORD"), configService.get("MYSQLPASSWORD"), process.env.DB_PASSWORD, process.env.MYSQL_PASSWORD, process.env.MYSQLPASSWORD, fromUrl.password, "admin2025$");
+                    const database = pickFirstDefined(configService.get("DB_NAME"), configService.get("DB_DATABASE"), configService.get("MYSQL_DATABASE"), configService.get("MYSQLDATABASE"), process.env.DB_NAME, process.env.DB_DATABASE, process.env.MYSQL_DATABASE, process.env.MYSQLDATABASE, fromUrl.database, "rootsegypt");
+                    if (!host || !user || !database) {
+                        console.warn("⚠️ Incomplete DB env detected, using fallback defaults for EasyPanel startup.");
                     }
-                    console.log(`INFO DB CONFIG resolved source=${resolved.resolutionSource} host=${resolved.connection.host} port=${resolved.connection.port} database=${resolved.connection.database} user=${resolved.connection.user}`);
+                    console.log(`🟡 DB CONFIG host=${host} port=${port} database=${database} user=${user}`);
                     const knexConfig = {
                         client: "mysql2",
-                        connection: Object.assign(Object.assign({}, resolved.connection), { typeCast(field, next) {
+                        connection: {
+                            host,
+                            port,
+                            user,
+                            password,
+                            database,
+                            charset: "utf8mb4",
+                            typeCast(field, next) {
                                 if (field.type === "LONGLONG") {
                                     const val = field.string();
                                     return val === null ? null : Number(val);
@@ -51,7 +80,8 @@ exports.DatabaseModule = DatabaseModule = __decorate([
                                     return val === null ? null : val === "1";
                                 }
                                 return next();
-                            } }),
+                            },
+                        },
                         pool: {
                             min: 0,
                             max: 5,
@@ -62,26 +92,21 @@ exports.DatabaseModule = DatabaseModule = __decorate([
                         },
                         debug: configService.get("NODE_ENV") === "development",
                     };
-                    const knex = Knex.default(knexConfig);
-                    objection_1.Model.knex(knex);
                     try {
+                        const knex = Knex.default(knexConfig);
+                        objection_1.Model.knex(knex);
                         await knex.raw("SELECT 1");
-                        console.log("INFO DB HANDSHAKE OK");
+                        console.log("🟢 DB HANDSHAKE OK");
+                        return knex;
                     }
                     catch (err) {
                         const msg = (err === null || err === void 0 ? void 0 : err.sqlMessage) ||
                             (err === null || err === void 0 ? void 0 : err.message) ||
                             (err === null || err === void 0 ? void 0 : err.code) ||
                             JSON.stringify(err || {});
-                        const strictStartup = String(process.env.DB_STRICT_STARTUP || "false").toLowerCase() ===
-                            "true";
-                        console.error(`ERROR DB HANDSHAKE FAILED: ${msg}`);
-                        if (strictStartup) {
-                            throw err;
-                        }
-                        console.warn("WARN DB_STRICT_STARTUP is false; API startup will continue and readiness endpoints will report DB state.");
+                        console.error(`🔴 DB HANDSHAKE FAILED: ${msg}`);
+                        throw err;
                     }
-                    return knex;
                 },
             },
         ],
