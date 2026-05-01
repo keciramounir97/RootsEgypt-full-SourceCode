@@ -2,11 +2,11 @@
   "metadata": {
     "base": "http://127.0.0.1:5000/api",
     "server": "http://127.0.0.1:5000",
-    "generatedAt": "2026-05-01T00:05:44.369Z",
-    "total": 39,
-    "passed": 39,
+    "generatedAt": "2026-05-01T01:05:32.029Z",
+    "total": 64,
+    "passed": 64,
     "failed": 0,
-    "avgMs": 307
+    "avgMs": 10
   },
   "results": [
     {
@@ -17,9 +17,9 @@
       "expected": [
         200
       ],
-      "ms": 7,
+      "ms": 2,
       "ok": true,
-      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"status\":\"alive\",\"timestamp\":\"2026-05-01T00:05:32.394Z\",\"uptime\":5.9838677,\"version\":\"1.0.0\"},\"meta\":null,\"timestamp\":\"2026-05-01T00:0"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"status\":\"alive\",\"timestamp\":\"2026-05-01T01:05:31.416Z\",\"uptime\":8.7992578,\"version\":\"1.0.0\"},\"meta\":null,\"timestamp\":\"2026-05-01T01:0"
     },
     {
       "group": "health",
@@ -30,9 +30,9 @@
         200,
         503
       ],
-      "ms": 849,
+      "ms": 2,
       "ok": true,
-      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"ok\":false,\"status\":\"not_ready\",\"timestamp\":\"2026-05-01T00:05:33.240Z\",\"database\":\"disconnected\",\"error\":\"getaddrinfo ENOTFOUND rootse"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"ok\":true,\"status\":\"ready\",\"timestamp\":\"2026-05-01T01:05:31.418Z\",\"database\":\"connected\",\"uptime\":8.801944,\"version\":\"1.0.0\"},\"meta\":n"
     },
     {
       "group": "health",
@@ -43,9 +43,9 @@
         200,
         503
       ],
-      "ms": 842,
+      "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"ok\":false,\"database\":\"disconnected\",\"error\":\"getaddrinfo ENOTFOUND rootsegypt_database-egyptroots\",\"timestamp\":\"2026-05-01T00:05:34.0"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"ok\":true,\"database\":\"connected\",\"timestamp\":\"2026-05-01T01:05:31.421Z\"},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.421Z\"}"
     },
     {
       "group": "search",
@@ -55,9 +55,9 @@
       "expected": [
         200
       ],
-      "ms": 859,
+      "ms": 10,
       "ok": true,
-      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"books\":[],\"trees\":[],\"people\":[]},\"meta\":null,\"timestamp\":\"2026-05-01T00:05:34.942Z\"}"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"books\":[{\"id\":3,\"title\":\"Audit Book 1777597531316\",\"author\":\"Roots Egypt Audit\",\"description\":\"Route audit book\",\"category\":null,\"fil"
     },
     {
       "group": "search",
@@ -67,9 +67,9 @@
       "expected": [
         200
       ],
-      "ms": 848,
+      "ms": 5,
       "ok": true,
-      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"trees\":[],\"people\":[]},\"meta\":null,\"timestamp\":\"2026-05-01T00:05:35.793Z\"}"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"trees\":[],\"people\":[]},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.436Z\"}"
     },
     {
       "group": "public",
@@ -79,33 +79,58 @@
       "expected": [
         200
       ],
-      "ms": 862,
+      "ms": 5,
       "ok": true,
-      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[],\"meta\":null,\"timestamp\":\"2026-05-01T00:05:36.653Z\"}"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"user_id\":1,\"title\":\"Audit Tree 1777597531257\",\"description\":\"Route audit tree\",\"gedcom_path\":null,\"archive_source\":null,\"docu"
     },
     {
       "group": "public",
       "method": "GET",
-      "path": "/trees/:id",
-      "status": "SKIP",
+      "path": "/trees/3",
+      "status": 200,
       "expected": [
-        "SKIP"
+        200
       ],
-      "ms": 0,
+      "ms": 4,
       "ok": true,
-      "note": "No public tree available for item-route audit"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"user_id\":1,\"title\":\"Audit Tree 1777597531257\",\"description\":\"Route audit tree\",\"gedcom_path\":null,\"archive_source\":null,\"docum"
     },
     {
       "group": "public",
       "method": "GET",
-      "path": "/people/:id",
-      "status": "SKIP",
+      "path": "/trees/3/people",
+      "status": 200,
       "expected": [
-        "SKIP"
+        200
       ],
-      "ms": 0,
+      "ms": 11,
       "ok": true,
-      "note": "No person record available for item-route audit"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"tree_id\":3,\"name\":\"Audit Person 1777597531282\"}],\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.455Z\"}"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/trees/3/gedcom",
+      "status": 200,
+      "expected": [
+        200,
+        404
+      ],
+      "ms": 3,
+      "ok": true,
+      "note": "GEDCOM download depends on uploaded file presence"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/people/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 4,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"name\":\"Audit Person 1777597531282\",\"tree\":{\"id\":3,\"title\":\"Audit Tree 1777597531257\"}},\"meta\":null,\"timestamp\":\"2026-05-01T01:"
     },
     {
       "group": "public",
@@ -115,21 +140,33 @@
       "expected": [
         200
       ],
-      "ms": 859,
+      "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[],\"meta\":null,\"timestamp\":\"2026-05-01T00:05:37.513Z\"}"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"title\":\"Audit Book 1777597531316\",\"author\":\"Roots Egypt Audit\",\"description\":\"Route audit book\",\"category\":null,\"file_path\":\""
     },
     {
       "group": "public",
       "method": "GET",
-      "path": "/books/:id",
-      "status": "SKIP",
+      "path": "/books/3",
+      "status": 200,
       "expected": [
-        "SKIP"
+        200
       ],
-      "ms": 0,
+      "ms": 3,
       "ok": true,
-      "note": "No public book available for item-route audit"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"title\":\"Audit Book 1777597531316\",\"author\":\"Roots Egypt Audit\",\"description\":\"Route audit book\",\"category\":null,\"file_path\":\"/"
+    },
+    {
+      "group": "public",
+      "method": "GET",
+      "path": "/books/3/download",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 12,
+      "ok": true,
+      "note": "%PDF-1.4 1 0 obj << /Type /Catalog >> endobj trailer << /Root 1 0 R >> %%EOF"
     },
     {
       "group": "public",
@@ -139,77 +176,72 @@
       "expected": [
         200
       ],
-      "ms": 860,
+      "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[],\"meta\":null,\"timestamp\":\"2026-05-01T00:05:38.373Z\"}"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"title\":\"Audit Gallery 1777597531299\",\"description\":\"Route audit gallery item\",\"image_path\":\"/uploads/gallery/gallery-20b8f3ab"
     },
     {
       "group": "public",
       "method": "GET",
-      "path": "/gallery/:id",
-      "status": "SKIP",
+      "path": "/gallery/3",
+      "status": 200,
       "expected": [
-        "SKIP"
+        200
       ],
-      "ms": 0,
+      "ms": 3,
       "ok": true,
-      "note": "No public gallery item available for item-route audit"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"title\":\"Audit Gallery 1777597531299\",\"description\":\"Route audit gallery item\",\"image_path\":\"/uploads/gallery/gallery-20b8f3ab8"
     },
     {
       "group": "auth",
       "method": "POST",
       "path": "/auth/login",
-      "status": 503,
+      "status": 200,
       "expected": [
-        200,
-        503
+        200
       ],
-      "ms": 853,
+      "ms": 77,
       "ok": true,
-      "note": "{\"statusCode\":503,\"message\":\"Internal server error\",\"data\":null,\"error\":{\"message\":\"Internal server error\"},\"timestamp\":\"2026-05-01T00:05:39.228Z\",\"path\":\"/api/auth/login\",\"request"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoia2FyaW1hZG1pbkByb290c2VneXB0Lm9yZyIsInJvbGUiOjEsImlhdCI6MTc3NzU5"
     },
     {
       "group": "auth",
       "method": "POST",
       "path": "/auth/login",
-      "status": 503,
+      "status": 401,
       "expected": [
         400,
-        401,
-        503
+        401
       ],
-      "ms": 837,
+      "ms": 74,
       "ok": true,
-      "note": "{\"statusCode\":503,\"message\":\"Internal server error\",\"data\":null,\"error\":{\"message\":\"Internal server error\"},\"timestamp\":\"2026-05-01T00:05:40.063Z\",\"path\":\"/api/auth/login\",\"request"
+      "note": "{\"statusCode\":401,\"message\":\"Invalid credentials\",\"data\":null,\"error\":{\"message\":\"Invalid credentials\",\"error\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T01:05:31.638"
     },
     {
       "group": "auth",
       "method": "POST",
       "path": "/auth/signup",
-      "status": 503,
+      "status": 201,
       "expected": [
         200,
         201,
-        409,
-        503
+        409
       ],
-      "ms": 862,
+      "ms": 80,
       "ok": true,
-      "note": "{\"statusCode\":503,\"message\":\"Internal server error\",\"data\":null,\"error\":{\"message\":\"Internal server error\"},\"timestamp\":\"2026-05-01T00:05:40.927Z\",\"path\":\"/api/auth/signup\",\"reques"
+      "note": "{\"statusCode\":201,\"message\":\"Success\",\"data\":{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksImVtYWlsIjoiYXVkaXRfMTc3NzU5NzUzMTYzOEB0ZXN0LnJvb3RzZWd5cHQub3JnIiwicm9sZSI6"
     },
     {
       "group": "auth",
       "method": "POST",
       "path": "/auth/refresh",
-      "status": 503,
+      "status": 200,
       "expected": [
-        400,
-        401,
-        503
+        200
       ],
-      "ms": 852,
+      "ms": 9,
       "ok": true,
-      "note": "{\"statusCode\":503,\"message\":\"Internal server error\",\"data\":null,\"error\":{\"message\":\"Internal server error\"},\"timestamp\":\"2026-05-01T00:05:41.780Z\",\"path\":\"/api/auth/refresh\",\"reque"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoia2FyaW1hZG1pbkByb290c2VneXB0Lm9yZyIsInJvbGUiOjEsImlhdCI6MTc3NzU5"
     },
     {
       "group": "auth",
@@ -219,9 +251,9 @@
       "expected": [
         200
       ],
-      "ms": 842,
+      "ms": 75,
       "ok": true,
-      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"message\":\"If the email exists, a reset link will be sent.\"},\"meta\":null,\"timestamp\":\"2026-05-01T00:05:42.621Z\"}"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"message\":\"If the email exists, a reset code will be sent.\"},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.802Z\"}"
     },
     {
       "group": "auth",
@@ -232,7 +264,7 @@
         400,
         401
       ],
-      "ms": 2,
+      "ms": 3,
       "ok": true,
       "note": "{\"statusCode\":400,\"message\":\"Email, token, and new password are required\",\"data\":null,\"error\":{\"message\":\"Email, token, and new password are required\",\"error\":\"Bad Request\",\"status"
     },
@@ -253,228 +285,441 @@
       "group": "auth",
       "method": "GET",
       "path": "/auth/me",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401
+        200
       ],
       "ms": 2,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.628Z\",\"path\":\"/api/auth/me\",\"requestId\":"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":1,\"fullName\":\"Audit Name\",\"phoneNumber\":null,\"email\":\"karimadmin@rootsegypt.org\",\"role_id\":1,\"roleId\":1,\"status\":\"active\",\"adminP"
     },
     {
       "group": "auth",
       "method": "PATCH",
       "path": "/auth/me",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401
+        200,
+        400
       ],
-      "ms": 2,
+      "ms": 11,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.630Z\",\"path\":\"/api/auth/me\",\"requestId\":"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":1,\"fullName\":\"Audit Name\",\"phoneNumber\":null,\"email\":\"karimadmin@rootsegypt.org\",\"role_id\":1,\"roleId\":1,\"status\":\"active\",\"adminP"
     },
     {
       "group": "user",
       "method": "GET",
       "path": "/my/trees",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401
+        200
       ],
-      "ms": 1,
+      "ms": 6,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.632Z\",\"path\":\"/api/my/trees\",\"requestId\""
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"user_id\":1,\"title\":\"Audit Tree 1777597531257\",\"description\":\"Route audit tree\",\"gedcom_path\":null,\"archive_source\":null,\"docu"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/trees/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 4,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"user_id\":1,\"title\":\"Audit Tree 1777597531257\",\"description\":\"Route audit tree\",\"gedcom_path\":null,\"archive_source\":null,\"docum"
+    },
+    {
+      "group": "user",
+      "method": "PUT",
+      "path": "/my/trees/3",
+      "status": 200,
+      "expected": [
+        200,
+        400
+      ],
+      "ms": 9,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.840Z\"}"
+    },
+    {
+      "group": "user",
+      "method": "POST",
+      "path": "/my/trees/3/save",
+      "status": 201,
+      "expected": [
+        200,
+        201,
+        400
+      ],
+      "ms": 8,
+      "ok": true,
+      "note": "{\"statusCode\":201,\"message\":\"Success\",\"data\":{\"id\":3},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.848Z\"}"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/trees/3/gedcom",
+      "status": 200,
+      "expected": [
+        200,
+        404
+      ],
+      "ms": 3,
+      "ok": true,
+      "note": "Private GEDCOM download depends on uploaded file presence"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/trees/3/people",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 4,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"tree_id\":3,\"name\":\"Audit Person 1777597531282\"}],\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.855Z\"}"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/people/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 5,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"name\":\"Audit Person 1777597531282\",\"tree\":{\"id\":3,\"title\":\"Audit Tree Saved\"}},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.86"
+    },
+    {
+      "group": "user",
+      "method": "PUT",
+      "path": "/my/trees/3/people/3",
+      "status": 200,
+      "expected": [
+        200,
+        400
+      ],
+      "ms": 8,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.868Z\"}"
     },
     {
       "group": "user",
       "method": "GET",
       "path": "/my/books",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401
+        200
       ],
-      "ms": 2,
+      "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.634Z\",\"path\":\"/api/my/books\",\"requestId\""
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"title\":\"Audit Book 1777597531316\",\"author\":\"Roots Egypt Audit\",\"description\":\"Route audit book\",\"category\":null,\"file_path\":\""
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/books/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 4,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"title\":\"Audit Book 1777597531316\",\"author\":\"Roots Egypt Audit\",\"description\":\"Route audit book\",\"category\":null,\"file_path\":\"/"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/books/3/download",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 6,
+      "ok": true,
+      "note": "%PDF-1.4 1 0 obj << /Type /Catalog >> endobj trailer << /Root 1 0 R >> %%EOF"
     },
     {
       "group": "user",
       "method": "GET",
       "path": "/my/gallery",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401
+        200
       ],
-      "ms": 2,
+      "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.636Z\",\"path\":\"/api/my/gallery\",\"requestI"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"title\":\"Audit Gallery 1777597531299\",\"description\":\"Route audit gallery item\",\"image_path\":\"/uploads/gallery/gallery-20b8f3ab"
+    },
+    {
+      "group": "user",
+      "method": "GET",
+      "path": "/my/gallery/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 4,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"title\":\"Audit Gallery 1777597531299\",\"description\":\"Route audit gallery item\",\"image_path\":\"/uploads/gallery/gallery-20b8f3ab8"
+    },
+    {
+      "group": "user",
+      "method": "POST",
+      "path": "/my/gallery/3/save",
+      "status": 201,
+      "expected": [
+        200,
+        201,
+        400
+      ],
+      "ms": 9,
+      "ok": true,
+      "note": "{\"statusCode\":201,\"message\":\"Success\",\"data\":{\"id\":3},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.899Z\"}"
     },
     {
       "group": "user",
       "method": "POST",
       "path": "/user/requests/password-reset",
-      "status": 401,
+      "status": 400,
       "expected": [
-        401
+        200,
+        201,
+        409,
+        400
       ],
-      "ms": 3,
+      "ms": 4,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.639Z\",\"path\":\"/api/user/requests/passwor"
+      "note": "{\"statusCode\":400,\"message\":\"You already have a pending password reset request\",\"data\":null,\"error\":{\"message\":\"You already have a pending password reset request\",\"error\":\"Bad Requ"
     },
     {
       "group": "user",
       "method": "POST",
       "path": "/user/requests/account-deletion",
-      "status": 401,
+      "status": 400,
       "expected": [
-        401
+        200,
+        201,
+        409,
+        400
       ],
-      "ms": 3,
+      "ms": 4,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.641Z\",\"path\":\"/api/user/requests/account"
+      "note": "{\"statusCode\":400,\"message\":\"You already have a pending account deletion request\",\"data\":null,\"error\":{\"message\":\"You already have a pending account deletion request\",\"error\":\"Bad "
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/admin/users",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401,
-        403
+        200
       ],
-      "ms": 1,
+      "ms": 10,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.643Z\",\"path\":\"/api/admin/users\",\"request"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":1,\"fullName\":\"Audit Name\",\"phoneNumber\":null,\"email\":\"karimadmin@rootsegypt.org\",\"roleId\":1,\"status\":\"active\",\"adminPrivileges\":"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/users/8",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 2,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":8,\"fullName\":\"Audit User\",\"phoneNumber\":null,\"email\":\"route_user_1777597531329@test.rootsegypt.org\",\"role_id\":2,\"roleId\":2,\"statu"
+    },
+    {
+      "group": "admin",
+      "method": "PATCH",
+      "path": "/admin/users/8",
+      "status": 200,
+      "expected": [
+        200,
+        400
+      ],
+      "ms": 8,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"message\":\"User updated\"},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.928Z\"}"
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/admin/admins",
-      "status": 401,
+      "status": 403,
       "expected": [
-        401,
+        200,
         403
       ],
-      "ms": 2,
+      "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.645Z\",\"path\":\"/api/admin/admins\",\"reques"
+      "note": "{\"statusCode\":403,\"message\":\"Forbidden resource\",\"data\":null,\"error\":{\"message\":\"Forbidden resource\",\"error\":\"Forbidden\",\"statusCode\":403},\"timestamp\":\"2026-05-01T01:05:31.931Z\",\"p"
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/admin/trees",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401,
-        403
+        200
       ],
-      "ms": 1,
+      "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.646Z\",\"path\":\"/api/admin/trees\",\"request"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"user_id\":1,\"title\":\"Audit Tree Saved\",\"description\":\"Route audit tree\",\"gedcom_path\":null,\"archive_source\":null,\"document_cod"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/trees/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 3,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"user_id\":1,\"title\":\"Audit Tree Saved\",\"description\":\"Route audit tree\",\"gedcom_path\":null,\"archive_source\":null,\"document_code"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/trees/3/gedcom",
+      "status": 200,
+      "expected": [
+        200,
+        404
+      ],
+      "ms": 4,
+      "ok": true,
+      "note": "GEDCOM download depends on uploaded file presence"
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/admin/books",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401,
-        403
+        200
       ],
-      "ms": 1,
+      "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.647Z\",\"path\":\"/api/admin/books\",\"request"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"title\":\"Audit Book 1777597531316\",\"author\":\"Roots Egypt Audit\",\"description\":\"Route audit book\",\"category\":null,\"file_path\":\""
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/books/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 4,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"title\":\"Audit Book 1777597531316\",\"author\":\"Roots Egypt Audit\",\"description\":\"Route audit book\",\"category\":null,\"file_path\":\"/"
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/admin/gallery",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401,
-        403
+        200
       ],
       "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.649Z\",\"path\":\"/api/admin/gallery\",\"reque"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":3,\"title\":\"Audit Gallery Saved\",\"description\":\"Route audit gallery item\",\"image_path\":\"/uploads/gallery/gallery-20b8f3ab8bf7b0a3"
+    },
+    {
+      "group": "admin",
+      "method": "GET",
+      "path": "/admin/gallery/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 3,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"id\":3,\"title\":\"Audit Gallery Saved\",\"description\":\"Route audit gallery item\",\"image_path\":\"/uploads/gallery/gallery-20b8f3ab8bf7b0a30"
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/activity",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401,
-        403
+        200
       ],
-      "ms": 1,
+      "ms": 6,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.651Z\",\"path\":\"/api/activity\",\"requestId\""
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":46,\"type\":\"security\",\"description\":\"User logged in: audit_1777597531638@test.rootsegypt.org\",\"user\":\"Audit Route Check\",\"date\":\""
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/admin/contact/messages",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401,
-        403
+        200
       ],
-      "ms": 2,
+      "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.653Z\",\"path\":\"/api/admin/contact/message"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":2,\"name\":\"Audit\",\"email\":\"audit@test.rootsegypt.org\",\"message\":\"Route audit message\",\"created_at\":\"2026-05-01T01:04:45.000Z\"},{\""
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/admin/newsletter/subscribers",
-      "status": 401,
+      "status": 200,
       "expected": [
-        401,
-        403
+        200
       ],
-      "ms": 2,
+      "ms": 3,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.654Z\",\"path\":\"/api/admin/newsletter/subs"
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":[{\"id\":2,\"email\":\"newsletter_1777597485327@test.rootsegypt.org\",\"created_at\":\"2026-05-01T01:04:45.000Z\"},{\"id\":1,\"email\":\"newsletter_17"
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/admin/approvals/stats",
-      "status": 401,
+      "status": 403,
       "expected": [
-        401,
+        200,
         403
       ],
       "ms": 2,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.657Z\",\"path\":\"/api/admin/approvals/stats"
+      "note": "{\"statusCode\":403,\"message\":\"Forbidden resource\",\"data\":null,\"error\":{\"message\":\"Forbidden resource\",\"error\":\"Forbidden\",\"statusCode\":403},\"timestamp\":\"2026-05-01T01:05:31.968Z\",\"p"
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/admin/approvals/password-reset",
-      "status": 401,
+      "status": 403,
       "expected": [
-        401,
+        200,
         403
       ],
-      "ms": 1,
+      "ms": 2,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.658Z\",\"path\":\"/api/admin/approvals/passw"
+      "note": "{\"statusCode\":403,\"message\":\"Forbidden resource\",\"data\":null,\"error\":{\"message\":\"Forbidden resource\",\"error\":\"Forbidden\",\"statusCode\":403},\"timestamp\":\"2026-05-01T01:05:31.970Z\",\"p"
     },
     {
       "group": "admin",
       "method": "GET",
       "path": "/admin/approvals/account-deletion",
-      "status": 401,
+      "status": 403,
       "expected": [
-        401,
+        200,
         403
       ],
       "ms": 2,
       "ok": true,
-      "note": "{\"statusCode\":401,\"message\":\"Unauthorized\",\"data\":null,\"error\":{\"message\":\"Unauthorized\",\"statusCode\":401},\"timestamp\":\"2026-05-01T00:05:42.660Z\",\"path\":\"/api/admin/approvals/accou"
+      "note": "{\"statusCode\":403,\"message\":\"Forbidden resource\",\"data\":null,\"error\":{\"message\":\"Forbidden resource\",\"error\":\"Forbidden\",\"statusCode\":403},\"timestamp\":\"2026-05-01T01:05:31.972Z\",\"p"
     },
     {
       "group": "public-write",
@@ -487,9 +732,9 @@
         409,
         400
       ],
-      "ms": 850,
+      "ms": 4,
       "ok": true,
-      "note": "{\"statusCode\":201,\"message\":\"Success\",\"data\":{\"message\":\"Subscribed. Confirmation email may be delayed.\"},\"meta\":null,\"timestamp\":\"2026-05-01T00:05:43.509Z\"}"
+      "note": "{\"statusCode\":201,\"message\":\"Success\",\"data\":{\"message\":\"Subscribed. Confirmation email may be delayed.\"},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.976Z\"}"
     },
     {
       "group": "public-write",
@@ -501,9 +746,69 @@
         201,
         400
       ],
-      "ms": 858,
+      "ms": 5,
       "ok": true,
-      "note": "{\"statusCode\":201,\"message\":\"Success\",\"data\":{\"message\":\"Message received. Email delivery is temporarily unavailable.\"},\"meta\":null,\"timestamp\":\"2026-05-01T00:05:44.368Z\"}"
+      "note": "{\"statusCode\":201,\"message\":\"Success\",\"data\":{\"message\":\"Message received. Email delivery is temporarily unavailable.\"},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:31.981Z\"}"
+    },
+    {
+      "group": "cleanup",
+      "method": "DELETE",
+      "path": "/admin/users/8",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 13,
+      "ok": true,
+      "note": "Cleanup"
+    },
+    {
+      "group": "cleanup",
+      "method": "DELETE",
+      "path": "/my/gallery/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 9,
+      "ok": true,
+      "note": "Cleanup"
+    },
+    {
+      "group": "cleanup",
+      "method": "DELETE",
+      "path": "/my/books/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 9,
+      "ok": true,
+      "note": "Cleanup"
+    },
+    {
+      "group": "cleanup",
+      "method": "DELETE",
+      "path": "/my/trees/3",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 10,
+      "ok": true,
+      "note": "Cleanup"
+    },
+    {
+      "group": "auth",
+      "method": "POST",
+      "path": "/auth/logout",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ms": 6,
+      "ok": true,
+      "note": "{\"statusCode\":200,\"message\":\"Success\",\"data\":{\"message\":\"Logged out\"},\"meta\":null,\"timestamp\":\"2026-05-01T01:05:32.028Z\"}"
     }
   ]
 }

@@ -4,7 +4,7 @@ exports.up = async function (knex) {
   // 1. Roles
   if (!(await knex.schema.hasTable("roles"))) {
     await knex.schema.createTable("roles", (table) => {
-      table.integer("id").primary();
+      table.integer("id").unsigned().primary();
       table.string("name").unique().notNullable();
       table.string("permissions");
     });

@@ -78,13 +78,13 @@
     <section class="hero">
       <h1>Roots Egypt route audit</h1>
       <p>Target: http://127.0.0.1:5000/api</p>
-      <p>Generated: 2026-05-01T00:05:44.369Z</p>
+      <p>Generated: 2026-05-01T01:05:32.029Z</p>
     </section>
     <section class="summary">
-      <div class="card"><strong>39</strong><div>Total checks</div></div>
-      <div class="card"><strong class="ok-text">39</strong><div>Passed</div></div>
+      <div class="card"><strong>64</strong><div>Total checks</div></div>
+      <div class="card"><strong class="ok-text">64</strong><div>Passed</div></div>
       <div class="card"><strong class="fail-text">0</strong><div>Failed</div></div>
-      <div class="card"><strong>307 ms</strong><div>Average timing</div></div>
+      <div class="card"><strong>10 ms</strong><div>Average timing</div></div>
     </section>
     <section class="table-shell">
       <table>
@@ -107,9 +107,9 @@
           <td><code>/health/live</code></td>
           <td class="ok-text">200</td>
           <td>200</td>
-          <td>7 ms</td>
+          <td>2 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;status&quot;:&quot;alive&quot;,&quot;timestamp&quot;:&quot;2026-05-01T00:05:32.394Z&quot;,&quot;uptime&quot;:5.9838677,&quot;version&quot;:&quot;1.0.0&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:0</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;status&quot;:&quot;alive&quot;,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.416Z&quot;,&quot;uptime&quot;:8.7992578,&quot;version&quot;:&quot;1.0.0&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:0</td>
         </tr>
       
         <tr>
@@ -118,9 +118,9 @@
           <td><code>/health</code></td>
           <td class="ok-text">200</td>
           <td>200, 503</td>
-          <td>849 ms</td>
+          <td>2 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;ok&quot;:false,&quot;status&quot;:&quot;not_ready&quot;,&quot;timestamp&quot;:&quot;2026-05-01T00:05:33.240Z&quot;,&quot;database&quot;:&quot;disconnected&quot;,&quot;error&quot;:&quot;getaddrinfo ENOTFOUND rootse</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;ok&quot;:true,&quot;status&quot;:&quot;ready&quot;,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.418Z&quot;,&quot;database&quot;:&quot;connected&quot;,&quot;uptime&quot;:8.801944,&quot;version&quot;:&quot;1.0.0&quot;},&quot;meta&quot;:n</td>
         </tr>
       
         <tr>
@@ -129,9 +129,9 @@
           <td><code>/db-health</code></td>
           <td class="ok-text">200</td>
           <td>200, 503</td>
-          <td>842 ms</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;ok&quot;:false,&quot;database&quot;:&quot;disconnected&quot;,&quot;error&quot;:&quot;getaddrinfo ENOTFOUND rootsegypt_database-egyptroots&quot;,&quot;timestamp&quot;:&quot;2026-05-01T00:05:34.0</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;ok&quot;:true,&quot;database&quot;:&quot;connected&quot;,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.421Z&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.421Z&quot;}</td>
         </tr>
       
         <tr>
@@ -140,9 +140,9 @@
           <td><code>/search?q=roots</code></td>
           <td class="ok-text">200</td>
           <td>200</td>
-          <td>859 ms</td>
+          <td>10 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;books&quot;:[],&quot;trees&quot;:[],&quot;people&quot;:[]},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:34.942Z&quot;}</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;books&quot;:[{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Book 1777597531316&quot;,&quot;author&quot;:&quot;Roots Egypt Audit&quot;,&quot;description&quot;:&quot;Route audit book&quot;,&quot;category&quot;:null,&quot;fil</td>
         </tr>
       
         <tr>
@@ -151,9 +151,9 @@
           <td><code>/search/suggest?q=roots</code></td>
           <td class="ok-text">200</td>
           <td>200</td>
-          <td>848 ms</td>
+          <td>5 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;trees&quot;:[],&quot;people&quot;:[]},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:35.793Z&quot;}</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;trees&quot;:[],&quot;people&quot;:[]},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.436Z&quot;}</td>
         </tr>
       
         <tr>
@@ -162,31 +162,53 @@
           <td><code>/trees</code></td>
           <td class="ok-text">200</td>
           <td>200</td>
-          <td>862 ms</td>
+          <td>5 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[],&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:36.653Z&quot;}</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;user_id&quot;:1,&quot;title&quot;:&quot;Audit Tree 1777597531257&quot;,&quot;description&quot;:&quot;Route audit tree&quot;,&quot;gedcom_path&quot;:null,&quot;archive_source&quot;:null,&quot;docu</td>
         </tr>
       
         <tr>
           <td>public</td>
           <td><code>GET</code></td>
-          <td><code>/trees/:id</code></td>
-          <td class="ok-text">SKIP</td>
-          <td>SKIP</td>
-          <td>0 ms</td>
+          <td><code>/trees/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>4 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>No public tree available for item-route audit</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;user_id&quot;:1,&quot;title&quot;:&quot;Audit Tree 1777597531257&quot;,&quot;description&quot;:&quot;Route audit tree&quot;,&quot;gedcom_path&quot;:null,&quot;archive_source&quot;:null,&quot;docum</td>
         </tr>
       
         <tr>
           <td>public</td>
           <td><code>GET</code></td>
-          <td><code>/people/:id</code></td>
-          <td class="ok-text">SKIP</td>
-          <td>SKIP</td>
-          <td>0 ms</td>
+          <td><code>/trees/3/people</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>11 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>No person record available for item-route audit</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;tree_id&quot;:3,&quot;name&quot;:&quot;Audit Person 1777597531282&quot;}],&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.455Z&quot;}</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/trees/3/gedcom</code></td>
+          <td class="ok-text">200</td>
+          <td>200, 404</td>
+          <td>3 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>GEDCOM download depends on uploaded file presence</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/people/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>4 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;name&quot;:&quot;Audit Person 1777597531282&quot;,&quot;tree&quot;:{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Tree 1777597531257&quot;}},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:</td>
         </tr>
       
         <tr>
@@ -195,20 +217,31 @@
           <td><code>/books</code></td>
           <td class="ok-text">200</td>
           <td>200</td>
-          <td>859 ms</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[],&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:37.513Z&quot;}</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Book 1777597531316&quot;,&quot;author&quot;:&quot;Roots Egypt Audit&quot;,&quot;description&quot;:&quot;Route audit book&quot;,&quot;category&quot;:null,&quot;file_path&quot;:&quot;</td>
         </tr>
       
         <tr>
           <td>public</td>
           <td><code>GET</code></td>
-          <td><code>/books/:id</code></td>
-          <td class="ok-text">SKIP</td>
-          <td>SKIP</td>
-          <td>0 ms</td>
+          <td><code>/books/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>No public book available for item-route audit</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Book 1777597531316&quot;,&quot;author&quot;:&quot;Roots Egypt Audit&quot;,&quot;description&quot;:&quot;Route audit book&quot;,&quot;category&quot;:null,&quot;file_path&quot;:&quot;/</td>
+        </tr>
+      
+        <tr>
+          <td>public</td>
+          <td><code>GET</code></td>
+          <td><code>/books/3/download</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>12 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>%PDF-1.4 1 0 obj &lt;&lt; /Type /Catalog &gt;&gt; endobj trailer &lt;&lt; /Root 1 0 R &gt;&gt; %%EOF</td>
         </tr>
       
         <tr>
@@ -217,64 +250,64 @@
           <td><code>/gallery</code></td>
           <td class="ok-text">200</td>
           <td>200</td>
-          <td>860 ms</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[],&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:38.373Z&quot;}</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Gallery 1777597531299&quot;,&quot;description&quot;:&quot;Route audit gallery item&quot;,&quot;image_path&quot;:&quot;/uploads/gallery/gallery-20b8f3ab</td>
         </tr>
       
         <tr>
           <td>public</td>
           <td><code>GET</code></td>
-          <td><code>/gallery/:id</code></td>
-          <td class="ok-text">SKIP</td>
-          <td>SKIP</td>
-          <td>0 ms</td>
+          <td><code>/gallery/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>No public gallery item available for item-route audit</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Gallery 1777597531299&quot;,&quot;description&quot;:&quot;Route audit gallery item&quot;,&quot;image_path&quot;:&quot;/uploads/gallery/gallery-20b8f3ab8</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/login</code></td>
-          <td class="ok-text">503</td>
-          <td>200, 503</td>
-          <td>853 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>77 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:503,&quot;message&quot;:&quot;Internal server error&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Internal server error&quot;},&quot;timestamp&quot;:&quot;2026-05-01T00:05:39.228Z&quot;,&quot;path&quot;:&quot;/api/auth/login&quot;,&quot;request</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;token&quot;:&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoia2FyaW1hZG1pbkByb290c2VneXB0Lm9yZyIsInJvbGUiOjEsImlhdCI6MTc3NzU5</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/login</code></td>
-          <td class="ok-text">503</td>
-          <td>400, 401, 503</td>
-          <td>837 ms</td>
+          <td class="ok-text">401</td>
+          <td>400, 401</td>
+          <td>74 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:503,&quot;message&quot;:&quot;Internal server error&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Internal server error&quot;},&quot;timestamp&quot;:&quot;2026-05-01T00:05:40.063Z&quot;,&quot;path&quot;:&quot;/api/auth/login&quot;,&quot;request</td>
+          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Invalid credentials&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Invalid credentials&quot;,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.638</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/signup</code></td>
-          <td class="ok-text">503</td>
-          <td>200, 201, 409, 503</td>
-          <td>862 ms</td>
+          <td class="ok-text">201</td>
+          <td>200, 201, 409</td>
+          <td>80 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:503,&quot;message&quot;:&quot;Internal server error&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Internal server error&quot;},&quot;timestamp&quot;:&quot;2026-05-01T00:05:40.927Z&quot;,&quot;path&quot;:&quot;/api/auth/signup&quot;,&quot;reques</td>
+          <td>{&quot;statusCode&quot;:201,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;token&quot;:&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksImVtYWlsIjoiYXVkaXRfMTc3NzU5NzUzMTYzOEB0ZXN0LnJvb3RzZWd5cHQub3JnIiwicm9sZSI6</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>POST</code></td>
           <td><code>/auth/refresh</code></td>
-          <td class="ok-text">503</td>
-          <td>400, 401, 503</td>
-          <td>852 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>9 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:503,&quot;message&quot;:&quot;Internal server error&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Internal server error&quot;},&quot;timestamp&quot;:&quot;2026-05-01T00:05:41.780Z&quot;,&quot;path&quot;:&quot;/api/auth/refresh&quot;,&quot;reque</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;token&quot;:&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoia2FyaW1hZG1pbkByb290c2VneXB0Lm9yZyIsInJvbGUiOjEsImlhdCI6MTc3NzU5</td>
         </tr>
       
         <tr>
@@ -283,9 +316,9 @@
           <td><code>/auth/reset</code></td>
           <td class="ok-text">200</td>
           <td>200</td>
-          <td>842 ms</td>
+          <td>75 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;If the email exists, a reset link will be sent.&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.621Z&quot;}</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;If the email exists, a reset code will be sent.&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.802Z&quot;}</td>
         </tr>
       
         <tr>
@@ -294,7 +327,7 @@
           <td><code>/auth/reset/token</code></td>
           <td class="ok-text">400</td>
           <td>400, 401</td>
-          <td>2 ms</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
           <td>{&quot;statusCode&quot;:400,&quot;message&quot;:&quot;Email, token, and new password are required&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Email, token, and new password are required&quot;,&quot;error&quot;:&quot;Bad Request&quot;,&quot;status</td>
         </tr>
@@ -314,198 +347,385 @@
           <td>auth</td>
           <td><code>GET</code></td>
           <td><code>/auth/me</code></td>
-          <td class="ok-text">401</td>
-          <td>401</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
           <td>2 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.628Z&quot;,&quot;path&quot;:&quot;/api/auth/me&quot;,&quot;requestId&quot;:</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:1,&quot;fullName&quot;:&quot;Audit Name&quot;,&quot;phoneNumber&quot;:null,&quot;email&quot;:&quot;karimadmin@rootsegypt.org&quot;,&quot;role_id&quot;:1,&quot;roleId&quot;:1,&quot;status&quot;:&quot;active&quot;,&quot;adminP</td>
         </tr>
       
         <tr>
           <td>auth</td>
           <td><code>PATCH</code></td>
           <td><code>/auth/me</code></td>
-          <td class="ok-text">401</td>
-          <td>401</td>
-          <td>2 ms</td>
+          <td class="ok-text">200</td>
+          <td>200, 400</td>
+          <td>11 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.630Z&quot;,&quot;path&quot;:&quot;/api/auth/me&quot;,&quot;requestId&quot;:</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:1,&quot;fullName&quot;:&quot;Audit Name&quot;,&quot;phoneNumber&quot;:null,&quot;email&quot;:&quot;karimadmin@rootsegypt.org&quot;,&quot;role_id&quot;:1,&quot;roleId&quot;:1,&quot;status&quot;:&quot;active&quot;,&quot;adminP</td>
         </tr>
       
         <tr>
           <td>user</td>
           <td><code>GET</code></td>
           <td><code>/my/trees</code></td>
-          <td class="ok-text">401</td>
-          <td>401</td>
-          <td>1 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>6 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.632Z&quot;,&quot;path&quot;:&quot;/api/my/trees&quot;,&quot;requestId&quot;</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;user_id&quot;:1,&quot;title&quot;:&quot;Audit Tree 1777597531257&quot;,&quot;description&quot;:&quot;Route audit tree&quot;,&quot;gedcom_path&quot;:null,&quot;archive_source&quot;:null,&quot;docu</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/trees/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>4 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;user_id&quot;:1,&quot;title&quot;:&quot;Audit Tree 1777597531257&quot;,&quot;description&quot;:&quot;Route audit tree&quot;,&quot;gedcom_path&quot;:null,&quot;archive_source&quot;:null,&quot;docum</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>PUT</code></td>
+          <td><code>/my/trees/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200, 400</td>
+          <td>9 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.840Z&quot;}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>POST</code></td>
+          <td><code>/my/trees/3/save</code></td>
+          <td class="ok-text">201</td>
+          <td>200, 201, 400</td>
+          <td>8 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:201,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.848Z&quot;}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/trees/3/gedcom</code></td>
+          <td class="ok-text">200</td>
+          <td>200, 404</td>
+          <td>3 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>Private GEDCOM download depends on uploaded file presence</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/trees/3/people</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>4 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;tree_id&quot;:3,&quot;name&quot;:&quot;Audit Person 1777597531282&quot;}],&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.855Z&quot;}</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/people/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>5 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;name&quot;:&quot;Audit Person 1777597531282&quot;,&quot;tree&quot;:{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Tree Saved&quot;}},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.86</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>PUT</code></td>
+          <td><code>/my/trees/3/people/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200, 400</td>
+          <td>8 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.868Z&quot;}</td>
         </tr>
       
         <tr>
           <td>user</td>
           <td><code>GET</code></td>
           <td><code>/my/books</code></td>
-          <td class="ok-text">401</td>
-          <td>401</td>
-          <td>2 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.634Z&quot;,&quot;path&quot;:&quot;/api/my/books&quot;,&quot;requestId&quot;</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Book 1777597531316&quot;,&quot;author&quot;:&quot;Roots Egypt Audit&quot;,&quot;description&quot;:&quot;Route audit book&quot;,&quot;category&quot;:null,&quot;file_path&quot;:&quot;</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/books/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>4 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Book 1777597531316&quot;,&quot;author&quot;:&quot;Roots Egypt Audit&quot;,&quot;description&quot;:&quot;Route audit book&quot;,&quot;category&quot;:null,&quot;file_path&quot;:&quot;/</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/books/3/download</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>6 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>%PDF-1.4 1 0 obj &lt;&lt; /Type /Catalog &gt;&gt; endobj trailer &lt;&lt; /Root 1 0 R &gt;&gt; %%EOF</td>
         </tr>
       
         <tr>
           <td>user</td>
           <td><code>GET</code></td>
           <td><code>/my/gallery</code></td>
-          <td class="ok-text">401</td>
-          <td>401</td>
-          <td>2 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.636Z&quot;,&quot;path&quot;:&quot;/api/my/gallery&quot;,&quot;requestI</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Gallery 1777597531299&quot;,&quot;description&quot;:&quot;Route audit gallery item&quot;,&quot;image_path&quot;:&quot;/uploads/gallery/gallery-20b8f3ab</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>GET</code></td>
+          <td><code>/my/gallery/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>4 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Gallery 1777597531299&quot;,&quot;description&quot;:&quot;Route audit gallery item&quot;,&quot;image_path&quot;:&quot;/uploads/gallery/gallery-20b8f3ab8</td>
+        </tr>
+      
+        <tr>
+          <td>user</td>
+          <td><code>POST</code></td>
+          <td><code>/my/gallery/3/save</code></td>
+          <td class="ok-text">201</td>
+          <td>200, 201, 400</td>
+          <td>9 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:201,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.899Z&quot;}</td>
         </tr>
       
         <tr>
           <td>user</td>
           <td><code>POST</code></td>
           <td><code>/user/requests/password-reset</code></td>
-          <td class="ok-text">401</td>
-          <td>401</td>
-          <td>3 ms</td>
+          <td class="ok-text">400</td>
+          <td>200, 201, 409, 400</td>
+          <td>4 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.639Z&quot;,&quot;path&quot;:&quot;/api/user/requests/passwor</td>
+          <td>{&quot;statusCode&quot;:400,&quot;message&quot;:&quot;You already have a pending password reset request&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;You already have a pending password reset request&quot;,&quot;error&quot;:&quot;Bad Requ</td>
         </tr>
       
         <tr>
           <td>user</td>
           <td><code>POST</code></td>
           <td><code>/user/requests/account-deletion</code></td>
-          <td class="ok-text">401</td>
-          <td>401</td>
-          <td>3 ms</td>
+          <td class="ok-text">400</td>
+          <td>200, 201, 409, 400</td>
+          <td>4 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.641Z&quot;,&quot;path&quot;:&quot;/api/user/requests/account</td>
+          <td>{&quot;statusCode&quot;:400,&quot;message&quot;:&quot;You already have a pending account deletion request&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;You already have a pending account deletion request&quot;,&quot;error&quot;:&quot;Bad </td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/users</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
-          <td>1 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>10 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.643Z&quot;,&quot;path&quot;:&quot;/api/admin/users&quot;,&quot;request</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:1,&quot;fullName&quot;:&quot;Audit Name&quot;,&quot;phoneNumber&quot;:null,&quot;email&quot;:&quot;karimadmin@rootsegypt.org&quot;,&quot;roleId&quot;:1,&quot;status&quot;:&quot;active&quot;,&quot;adminPrivileges&quot;:</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/users/8</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>2 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:8,&quot;fullName&quot;:&quot;Audit User&quot;,&quot;phoneNumber&quot;:null,&quot;email&quot;:&quot;route_user_1777597531329@test.rootsegypt.org&quot;,&quot;role_id&quot;:2,&quot;roleId&quot;:2,&quot;statu</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>PATCH</code></td>
+          <td><code>/admin/users/8</code></td>
+          <td class="ok-text">200</td>
+          <td>200, 400</td>
+          <td>8 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;User updated&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.928Z&quot;}</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/admins</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
-          <td>2 ms</td>
+          <td class="ok-text">403</td>
+          <td>200, 403</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.645Z&quot;,&quot;path&quot;:&quot;/api/admin/admins&quot;,&quot;reques</td>
+          <td>{&quot;statusCode&quot;:403,&quot;message&quot;:&quot;Forbidden resource&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Forbidden resource&quot;,&quot;error&quot;:&quot;Forbidden&quot;,&quot;statusCode&quot;:403},&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.931Z&quot;,&quot;p</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/trees</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
-          <td>1 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.646Z&quot;,&quot;path&quot;:&quot;/api/admin/trees&quot;,&quot;request</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;user_id&quot;:1,&quot;title&quot;:&quot;Audit Tree Saved&quot;,&quot;description&quot;:&quot;Route audit tree&quot;,&quot;gedcom_path&quot;:null,&quot;archive_source&quot;:null,&quot;document_cod</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/trees/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>3 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;user_id&quot;:1,&quot;title&quot;:&quot;Audit Tree Saved&quot;,&quot;description&quot;:&quot;Route audit tree&quot;,&quot;gedcom_path&quot;:null,&quot;archive_source&quot;:null,&quot;document_code</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/trees/3/gedcom</code></td>
+          <td class="ok-text">200</td>
+          <td>200, 404</td>
+          <td>4 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>GEDCOM download depends on uploaded file presence</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/books</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
-          <td>1 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.647Z&quot;,&quot;path&quot;:&quot;/api/admin/books&quot;,&quot;request</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Book 1777597531316&quot;,&quot;author&quot;:&quot;Roots Egypt Audit&quot;,&quot;description&quot;:&quot;Route audit book&quot;,&quot;category&quot;:null,&quot;file_path&quot;:&quot;</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/books/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>4 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Book 1777597531316&quot;,&quot;author&quot;:&quot;Roots Egypt Audit&quot;,&quot;description&quot;:&quot;Route audit book&quot;,&quot;category&quot;:null,&quot;file_path&quot;:&quot;/</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/gallery</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
           <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.649Z&quot;,&quot;path&quot;:&quot;/api/admin/gallery&quot;,&quot;reque</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Gallery Saved&quot;,&quot;description&quot;:&quot;Route audit gallery item&quot;,&quot;image_path&quot;:&quot;/uploads/gallery/gallery-20b8f3ab8bf7b0a3</td>
+        </tr>
+      
+        <tr>
+          <td>admin</td>
+          <td><code>GET</code></td>
+          <td><code>/admin/gallery/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>3 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;id&quot;:3,&quot;title&quot;:&quot;Audit Gallery Saved&quot;,&quot;description&quot;:&quot;Route audit gallery item&quot;,&quot;image_path&quot;:&quot;/uploads/gallery/gallery-20b8f3ab8bf7b0a30</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/activity</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
-          <td>1 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>6 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.651Z&quot;,&quot;path&quot;:&quot;/api/activity&quot;,&quot;requestId&quot;</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:46,&quot;type&quot;:&quot;security&quot;,&quot;description&quot;:&quot;User logged in: audit_1777597531638@test.rootsegypt.org&quot;,&quot;user&quot;:&quot;Audit Route Check&quot;,&quot;date&quot;:&quot;</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/contact/messages</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
-          <td>2 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.653Z&quot;,&quot;path&quot;:&quot;/api/admin/contact/message</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:2,&quot;name&quot;:&quot;Audit&quot;,&quot;email&quot;:&quot;audit@test.rootsegypt.org&quot;,&quot;message&quot;:&quot;Route audit message&quot;,&quot;created_at&quot;:&quot;2026-05-01T01:04:45.000Z&quot;},{&quot;</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/newsletter/subscribers</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
-          <td>2 ms</td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>3 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.654Z&quot;,&quot;path&quot;:&quot;/api/admin/newsletter/subs</td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:[{&quot;id&quot;:2,&quot;email&quot;:&quot;newsletter_1777597485327@test.rootsegypt.org&quot;,&quot;created_at&quot;:&quot;2026-05-01T01:04:45.000Z&quot;},{&quot;id&quot;:1,&quot;email&quot;:&quot;newsletter_17</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/approvals/stats</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
+          <td class="ok-text">403</td>
+          <td>200, 403</td>
           <td>2 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.657Z&quot;,&quot;path&quot;:&quot;/api/admin/approvals/stats</td>
+          <td>{&quot;statusCode&quot;:403,&quot;message&quot;:&quot;Forbidden resource&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Forbidden resource&quot;,&quot;error&quot;:&quot;Forbidden&quot;,&quot;statusCode&quot;:403},&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.968Z&quot;,&quot;p</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/approvals/password-reset</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
-          <td>1 ms</td>
+          <td class="ok-text">403</td>
+          <td>200, 403</td>
+          <td>2 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.658Z&quot;,&quot;path&quot;:&quot;/api/admin/approvals/passw</td>
+          <td>{&quot;statusCode&quot;:403,&quot;message&quot;:&quot;Forbidden resource&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Forbidden resource&quot;,&quot;error&quot;:&quot;Forbidden&quot;,&quot;statusCode&quot;:403},&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.970Z&quot;,&quot;p</td>
         </tr>
       
         <tr>
           <td>admin</td>
           <td><code>GET</code></td>
           <td><code>/admin/approvals/account-deletion</code></td>
-          <td class="ok-text">401</td>
-          <td>401, 403</td>
+          <td class="ok-text">403</td>
+          <td>200, 403</td>
           <td>2 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:401,&quot;message&quot;:&quot;Unauthorized&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Unauthorized&quot;,&quot;statusCode&quot;:401},&quot;timestamp&quot;:&quot;2026-05-01T00:05:42.660Z&quot;,&quot;path&quot;:&quot;/api/admin/approvals/accou</td>
+          <td>{&quot;statusCode&quot;:403,&quot;message&quot;:&quot;Forbidden resource&quot;,&quot;data&quot;:null,&quot;error&quot;:{&quot;message&quot;:&quot;Forbidden resource&quot;,&quot;error&quot;:&quot;Forbidden&quot;,&quot;statusCode&quot;:403},&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.972Z&quot;,&quot;p</td>
         </tr>
       
         <tr>
@@ -514,9 +734,9 @@
           <td><code>/newsletter/subscribe</code></td>
           <td class="ok-text">201</td>
           <td>200, 201, 409, 400</td>
-          <td>850 ms</td>
+          <td>4 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:201,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;Subscribed. Confirmation email may be delayed.&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:43.509Z&quot;}</td>
+          <td>{&quot;statusCode&quot;:201,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;Subscribed. Confirmation email may be delayed.&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.976Z&quot;}</td>
         </tr>
       
         <tr>
@@ -525,9 +745,64 @@
           <td><code>/contact</code></td>
           <td class="ok-text">201</td>
           <td>200, 201, 400</td>
-          <td>858 ms</td>
+          <td>5 ms</td>
           <td><span class="badge ok">Green check</span></td>
-          <td>{&quot;statusCode&quot;:201,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;Message received. Email delivery is temporarily unavailable.&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T00:05:44.368Z&quot;}</td>
+          <td>{&quot;statusCode&quot;:201,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;Message received. Email delivery is temporarily unavailable.&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:31.981Z&quot;}</td>
+        </tr>
+      
+        <tr>
+          <td>cleanup</td>
+          <td><code>DELETE</code></td>
+          <td><code>/admin/users/8</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>13 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>Cleanup</td>
+        </tr>
+      
+        <tr>
+          <td>cleanup</td>
+          <td><code>DELETE</code></td>
+          <td><code>/my/gallery/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>9 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>Cleanup</td>
+        </tr>
+      
+        <tr>
+          <td>cleanup</td>
+          <td><code>DELETE</code></td>
+          <td><code>/my/books/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>9 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>Cleanup</td>
+        </tr>
+      
+        <tr>
+          <td>cleanup</td>
+          <td><code>DELETE</code></td>
+          <td><code>/my/trees/3</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>10 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>Cleanup</td>
+        </tr>
+      
+        <tr>
+          <td>auth</td>
+          <td><code>POST</code></td>
+          <td><code>/auth/logout</code></td>
+          <td class="ok-text">200</td>
+          <td>200</td>
+          <td>6 ms</td>
+          <td><span class="badge ok">Green check</span></td>
+          <td>{&quot;statusCode&quot;:200,&quot;message&quot;:&quot;Success&quot;,&quot;data&quot;:{&quot;message&quot;:&quot;Logged out&quot;},&quot;meta&quot;:null,&quot;timestamp&quot;:&quot;2026-05-01T01:05:32.028Z&quot;}</td>
         </tr>
       </tbody>
       </table>

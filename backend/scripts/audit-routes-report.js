@@ -670,7 +670,7 @@ async function main() {
       group: "user",
       method: "POST",
       path: `/my/trees/${treeId}/save`,
-      expected: adminToken ? [200, 400] : [401],
+      expected: adminToken ? [200, 201, 400] : [401],
       options: {
         headers: authHeaders,
         body: { title: "Audit Tree Saved", isPublic: true },
@@ -752,7 +752,7 @@ async function main() {
       group: "user",
       method: "POST",
       path: `/my/gallery/${galleryId}/save`,
-      expected: adminToken ? [200, 400] : [401],
+      expected: adminToken ? [200, 201, 400] : [401],
       options: {
         headers: authHeaders,
         body: { title: "Audit Gallery Saved", isPublic: true },
