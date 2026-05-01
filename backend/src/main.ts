@@ -477,7 +477,7 @@ async function seedInitialData(knex: Knex) {
           role_id: seedRoleId,
           status: "active",
         });
-        console.log(`🟢 Seeded admin user: ${seedEmail}`);
+        console.log(`✅ ${prefix} → ${seedEmail} (${seedFullName}) — CREATED`);
       } else {
         const matches = await bcrypt.compare(
           seedPassword,
@@ -491,7 +491,13 @@ async function seedInitialData(knex: Knex) {
             status: "active",
             full_name: seedFullName,
           });
-          console.log(`🟡 Refreshed admin password: ${seedEmail}`);
+          console.log(
+            `✅ ${prefix} → ${seedEmail} (${seedFullName}) — PASSWORD REFRESHED`,
+          );
+        } else {
+          console.log(
+            `✅ ${prefix} → ${seedEmail} (${seedFullName}) — OK (already exists)`,
+          );
         }
       }
     }
