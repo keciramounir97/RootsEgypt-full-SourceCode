@@ -505,14 +505,68 @@ async function bootstrap() {
 
   try {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
-    // Running behind EasyPanel reverse proxy (X-Forwarded-* headers).
     app.set("trust proxy", 1);
 
-    // Static file serving for uploads (images, books, GEDCOM) - cPanel/production safe
+    // ── CORS — MUST be the very first middleware ──
+    const corsOrigins = getCorsOrigins();
+
+    // 1) Raw Express CORS handler: runs before ANYTHING else.
+    //    Guarantees every request (including OPTIONS preflight) gets headers.
+    app.use((req: any, res: any, next: () => void) => {
+      const requestOrigin = req.headers.origin as string | undefined;
+      const allowedOrigin = isAllowedCorsOrigin(requestOrigin, corsOrigins);
+
+      if (allowedOrigin) {
+        res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+        res.setHeader("Vary", "Origin");
+      }
+
+      res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+      );
+      res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id",
+      );
+      res.setHeader("Access-Control-Max-Age", "86400");
+
+      // Immediately resolve preflight — don't let it fall through to other middleware
+      if (req.method === "OPTIONS") {
+        return res.sendStatus(204);
+      }
+      next();
+    });
+
+    // 2) Also register the cors npm package for belt-and-suspenders coverage
+    app.use(
+      cors({
+        origin: true,
+        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+        allowedHeaders: [
+          "Content-Type",
+          "Authorization",
+          "X-Requested-With",
+          "Cache-Control",
+          "Pragma",
+          "Expires",
+          "If-Modified-Since",
+          "Accept",
+          "Origin",
+          "X-Request-Id",
+        ],
+        credentials: true,
+        optionsSuccessStatus: 204,
+        preflightContinue: false,
+      }),
+    );
+
+    // ── Static files ──
     const uploadsPath = path.join(process.cwd(), "uploads");
     app.use("/uploads", require("express").static(uploadsPath));
 
-    // Root route: avoid 404 when hitting API base URL (e.g. https://api.example.com/)
+    // ── Root info route ──
     app.use((req: any, res: any, next: () => void) => {
       if (
         req.method === "GET" &&
@@ -523,8 +577,7 @@ async function bootstrap() {
       next();
     });
 
-    // Lightweight health aliases keep reverse proxies and container probes
-    // stable even when a prefix rewrite is misconfigured.
+    // ── Health alias ──
     app.use((req: any, res: any, next: () => void) => {
       if (req.method === "GET" && req.path === "/health/live") {
         return res.type("application/json").json({
@@ -538,8 +591,7 @@ async function bootstrap() {
       next();
     });
 
-    // Accept both root-level and /api-prefixed routes. Canonical Nest routes
-    // remain under /api, but root-level requests are upgraded automatically.
+    // ── URL rewriting: non-/api requests → /api/* ──
     app.use((req: Request, _res: Response, next: NextFunction) => {
       const requestUrl = req.url || "/";
       const isPrefixed =
@@ -559,95 +611,15 @@ async function bootstrap() {
       next();
     });
 
-    // Compression (production-ready)
+    // Compression
     app.use(compression());
 
-    // Canonical API prefix.
+    // API prefix
     app.setGlobalPrefix("api");
 
-    // Request ID for tracing
+    // Request ID
     app.use((req: Request, _res: Response, next: NextFunction) => {
       (req as any).id = req.headers["x-request-id"] || randomUUID();
-      next();
-    });
-
-    // CORS: dev = allow all; prod = allowed origins
-    const corsOrigins = getCorsOrigins();
-
-    const corsOptions: ExpressCorsOptions = {
-      origin:
-        corsOrigins === true
-          ? true
-          : (
-              origin: string | undefined,
-              cb: (err: Error | null, allow?: boolean) => void,
-            ) => {
-              if (!origin) return cb(null, true);
-              const allowedOrigin = isAllowedCorsOrigin(origin, corsOrigins);
-              if (!allowedOrigin) {
-                console.warn(`WARN CORS denied origin: ${origin}`);
-              }
-              cb(null, !!allowedOrigin);
-            },
-      methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-      allowedHeaders: [
-        "Content-Type",
-        "Authorization",
-        "X-Requested-With",
-        "Cache-Control",
-        "Pragma",
-        "Expires",
-        "If-Modified-Since",
-        "Accept",
-        "Origin",
-        "X-Request-Id",
-      ],
-      credentials: true,
-      optionsSuccessStatus: 204,
-      preflightContinue: false,
-    };
-
-    // Express-level CORS first: catches OPTIONS before route handling.
-    app.use(cors(corsOptions));
-
-    // Recovery middleware: some reverse proxies rewrite unknown requests
-    // to /api/errors/not-found. If they preserve original URI headers,
-    // restore the original path so routing and CORS preflight still work.
-    app.use((req: Request, _res: Response, next: NextFunction) => {
-      if (req.path === "/api/errors/not-found") {
-        const originalPath = getForwardedOriginalPath(req);
-        if (originalPath && originalPath !== req.path) {
-          req.url = originalPath;
-        }
-      }
-      next();
-    });
-
-    // cPanel/proxy-safe CORS fallback to guarantee preflight headers.
-    // Some proxy stacks can swallow framework CORS responses for OPTIONS.
-    app.use((req: any, res: any, next: () => void) => {
-      const requestOrigin = req.headers.origin as string | undefined;
-      const allowedOrigin = isAllowedCorsOrigin(requestOrigin, corsOrigins);
-
-      if (allowedOrigin) {
-        res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
-        res.setHeader("Vary", "Origin");
-        res.setHeader("Access-Control-Allow-Credentials", "true");
-      }
-
-      res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-      );
-      res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id",
-      );
-      res.setHeader("Access-Control-Max-Age", "86400");
-
-      if (req.method === "OPTIONS") {
-        return res.sendStatus(204);
-      }
       next();
     });
 
@@ -674,7 +646,9 @@ async function bootstrap() {
         legacyHeaders: false,
         skip: (req) => {
           const p = req.path || "";
-          return p.includes("/health") || p.includes("/auth/");
+          return (
+            p.includes("/health") || p === "/api/login" || p === "/api/signup"
+          );
         },
       }),
     );
@@ -690,8 +664,8 @@ async function bootstrap() {
       standardHeaders: true,
       legacyHeaders: false,
     });
-    app.use("/api/auth/login", authLimiter);
-    app.use("/api/auth/signup", authLimiter);
+    app.use("/api/login", authLimiter);
+    app.use("/api/signup", authLimiter);
 
     // Security: Helmet + explicit headers (Pragma, X-Frame-Options, etc.)
     const helmetOptions: Parameters<typeof helmet.default>[0] = {
@@ -733,7 +707,7 @@ async function bootstrap() {
     });
 
     app.enableCors({
-      origin: corsOptions.origin as any,
+      origin: true,
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
       allowedHeaders:
         "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id",
@@ -840,16 +814,16 @@ async function bootstrap() {
       "║  ── Auth Routes ──────────────────────────────────────────── ║",
     );
     console.log(
-      `║  ${ok("POST /api/auth/login                          200").padEnd(58)}║`,
+      `║  ${ok("POST /api/login                               200").padEnd(58)}║`,
     );
     console.log(
-      `║  ${ok("POST /api/auth/signup                         201").padEnd(58)}║`,
+      `║  ${ok("POST /api/signup                              201").padEnd(58)}║`,
     );
     console.log(
-      `║  ${ok("POST /api/auth/forgot-password                200").padEnd(58)}║`,
+      `║  ${ok("POST /api/reset                               200").padEnd(58)}║`,
     );
     console.log(
-      `║  ${ok("POST /api/auth/reset-password                 200").padEnd(58)}║`,
+      `║  ${ok("POST /api/reset/verify                        200").padEnd(58)}║`,
     );
     console.log(
       "║                                                              ║",
@@ -886,7 +860,9 @@ async function bootstrap() {
     console.log(
       "║  ── API Modules (all loaded) ─────────────────────────────── ║",
     );
-    console.log(`║  ${ok("Auth         GET|POST /api/auth/*").padEnd(58)}║`);
+    console.log(
+      `║  ${ok("Auth         GET|POST /api/login,signup,me").padEnd(58)}║`,
+    );
     console.log(`║  ${ok("Users        GET|PUT  /api/users/*").padEnd(58)}║`);
     console.log(`║  ${ok("Books        CRUD     /api/books/*").padEnd(58)}║`);
     console.log(`║  ${ok("Trees        CRUD     /api/trees/*").padEnd(58)}║`);

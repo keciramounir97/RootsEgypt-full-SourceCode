@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const res = await api.get("/auth/me");
+      const res = await api.get("/me");
       const data = res.data.data || res.data;
       const user = normalizeUser(data);
       setUser(user);
@@ -107,8 +107,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* SIGNUP */
-  const signup = (fullName: string, phone: string | undefined, email: string, password: string) =>
-    api.post("/auth/signup", {
+  const signup = (
+    fullName: string,
+    phone: string | undefined,
+    email: string,
+    password: string,
+  ) =>
+    api.post("/signup", {
       fullName: fullName?.trim(),
       phone: phone?.trim(),
       email: normalizeEmail(email),
@@ -117,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   /* LOGIN */
   const login = async (email: string, password: string) => {
-    const res = await api.post("/auth/login", {
+    const res = await api.post("/login", {
       email: normalizeEmail(email),
       password,
     });
@@ -135,10 +140,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   /* PASSWORD RESET */
   const requestReset = (email: string) =>
-    api.post("/auth/reset", { email: normalizeEmail(email) });
+    api.post("/reset", { email: normalizeEmail(email) });
 
   const verifyReset = (email: string, code: string, newPassword: string) =>
-    api.post("/auth/reset/verify", {
+    api.post("/reset/verify", {
       email: normalizeEmail(email),
       code: String(code || "").trim(),
       newPassword,
@@ -147,7 +152,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   /* LOGOUT */
   const logout = async () => {
     try {
-      await api.post("/auth/logout");
+      await api.post("/logout");
     } catch {
       // ignore
     } finally {

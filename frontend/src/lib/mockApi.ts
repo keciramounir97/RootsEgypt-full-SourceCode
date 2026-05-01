@@ -95,14 +95,19 @@ export async function mockAdapter(
   const path = url.split("?")[0];
 
   // ── AUTH ──────────────────────────────────────────────────────────
-  if (method === "post" && path.includes("/auth/login")) {
+  if (method === "post" && path.includes("/login")) {
     let body: any = {};
     try {
-      body = typeof config.data === "string" ? JSON.parse(config.data) : config.data || {};
+      body =
+        typeof config.data === "string"
+          ? JSON.parse(config.data)
+          : config.data || {};
     } catch {
       /* */
     }
-    const email = String(body.email || "").toLowerCase().trim();
+    const email = String(body.email || "")
+      .toLowerCase()
+      .trim();
     const password = String(body.password || "");
 
     // Accept any credential — try to match known users first
@@ -116,7 +121,10 @@ export async function mockAdapter(
         id: 99,
         email,
         password,
-        fullName: email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+        fullName: email
+          .split("@")[0]
+          .replace(/[._]/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase()),
         phone: "",
         role: 2,
         roleName: "Member",
@@ -136,10 +144,13 @@ export async function mockAdapter(
     );
   }
 
-  if (method === "post" && path.includes("/auth/signup")) {
+  if (method === "post" && path.includes("/signup")) {
     let body: any = {};
     try {
-      body = typeof config.data === "string" ? JSON.parse(config.data) : config.data || {};
+      body =
+        typeof config.data === "string"
+          ? JSON.parse(config.data)
+          : config.data || {};
     } catch {
       /* */
     }
@@ -155,10 +166,19 @@ export async function mockAdapter(
     setLoggedUser(newUser);
     localStorage.setItem("token", MOCK_TOKEN);
     localStorage.setItem("refreshToken", MOCK_REFRESH_TOKEN);
-    return makeResponse({ message: "Account created successfully.", user: newUser, token: MOCK_TOKEN, refreshToken: MOCK_REFRESH_TOKEN }, config, 201);
+    return makeResponse(
+      {
+        message: "Account created successfully.",
+        user: newUser,
+        token: MOCK_TOKEN,
+        refreshToken: MOCK_REFRESH_TOKEN,
+      },
+      config,
+      201,
+    );
   }
 
-  if (method === "get" && path.includes("/auth/me")) {
+  if (method === "get" && path.includes("/me")) {
     const user = getLoggedUser();
     if (!user) {
       throw makeError("Unauthorized", 401);
@@ -166,24 +186,30 @@ export async function mockAdapter(
     return makeResponse(user, config);
   }
 
-  if (method === "post" && path.includes("/auth/logout")) {
+  if (method === "post" && path.includes("/logout")) {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem(MOCK_USER_KEY);
     return makeResponse({ message: "Logged out." }, config);
   }
 
-  if (method === "post" && path.includes("/auth/reset/verify")) {
+  if (method === "post" && path.includes("/reset/verify")) {
     return makeResponse({ message: "Password reset successfully." }, config);
   }
 
-  if (method === "post" && path.includes("/auth/reset")) {
-    return makeResponse({ message: "If this email exists, a reset code has been sent." }, config);
+  if (method === "post" && path.includes("/reset")) {
+    return makeResponse(
+      { message: "If this email exists, a reset code has been sent." },
+      config,
+    );
   }
 
-  if (method === "post" && path.includes("/auth/refresh")) {
+  if (method === "post" && path.includes("/refresh")) {
     const user = getLoggedUser();
-    return makeResponse({ token: MOCK_TOKEN, refreshToken: MOCK_REFRESH_TOKEN, user }, config);
+    return makeResponse(
+      { token: MOCK_TOKEN, refreshToken: MOCK_REFRESH_TOKEN, user },
+      config,
+    );
   }
 
   // ── TREES — GEDCOM (must be before general tree routes) ───────────

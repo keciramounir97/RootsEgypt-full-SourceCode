@@ -78,8 +78,8 @@ api.interceptors.request.use(
     const isProtected =
       path.includes("/my/") ||
       path.includes("/admin/") ||
-      path.includes("/auth/me") ||
-      path.includes("/auth/logout");
+      path.includes("/me") ||
+      path.includes("/logout");
 
     if (!token && isProtected) {
       dispatchAuthEvent("auth:missing", { url, path });
@@ -166,7 +166,7 @@ api.interceptors.response.use(
       if (refreshToken && !error.config?._retry) {
         try {
           const { data } = await axios.post(
-            `${NORMALIZED_API_ROOT}/api/auth/refresh`,
+            `${NORMALIZED_API_ROOT}/api/refresh`,
             { refreshToken },
             { headers: { "Content-Type": "application/json" } },
           );

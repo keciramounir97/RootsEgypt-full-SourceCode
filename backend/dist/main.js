@@ -408,6 +408,42 @@ async function bootstrap() {
     try {
         const app = await core_1.NestFactory.create(app_module_1.AppModule);
         app.set("trust proxy", 1);
+        const corsOrigins = getCorsOrigins();
+        app.use((req, res, next) => {
+            const requestOrigin = req.headers.origin;
+            const allowedOrigin = isAllowedCorsOrigin(requestOrigin, corsOrigins);
+            if (allowedOrigin) {
+                res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+                res.setHeader("Access-Control-Allow-Credentials", "true");
+                res.setHeader("Vary", "Origin");
+            }
+            res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
+            res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id");
+            res.setHeader("Access-Control-Max-Age", "86400");
+            if (req.method === "OPTIONS") {
+                return res.sendStatus(204);
+            }
+            next();
+        });
+        app.use(cors({
+            origin: true,
+            methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+            allowedHeaders: [
+                "Content-Type",
+                "Authorization",
+                "X-Requested-With",
+                "Cache-Control",
+                "Pragma",
+                "Expires",
+                "If-Modified-Since",
+                "Accept",
+                "Origin",
+                "X-Request-Id",
+            ],
+            credentials: true,
+            optionsSuccessStatus: 204,
+            preflightContinue: false,
+        }));
         const uploadsPath = path.join(process.cwd(), "uploads");
         app.use("/uploads", require("express").static(uploadsPath));
         app.use((req, res, next) => {
@@ -449,62 +485,6 @@ async function bootstrap() {
             req.id = req.headers["x-request-id"] || (0, crypto_1.randomUUID)();
             next();
         });
-        const corsOrigins = getCorsOrigins();
-        const corsOptions = {
-            origin: corsOrigins === true
-                ? true
-                : (origin, cb) => {
-                    if (!origin)
-                        return cb(null, true);
-                    const allowedOrigin = isAllowedCorsOrigin(origin, corsOrigins);
-                    if (!allowedOrigin) {
-                        console.warn(`WARN CORS denied origin: ${origin}`);
-                    }
-                    cb(null, !!allowedOrigin);
-                },
-            methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-            allowedHeaders: [
-                "Content-Type",
-                "Authorization",
-                "X-Requested-With",
-                "Cache-Control",
-                "Pragma",
-                "Expires",
-                "If-Modified-Since",
-                "Accept",
-                "Origin",
-                "X-Request-Id",
-            ],
-            credentials: true,
-            optionsSuccessStatus: 204,
-            preflightContinue: false,
-        };
-        app.use(cors(corsOptions));
-        app.use((req, _res, next) => {
-            if (req.path === "/api/errors/not-found") {
-                const originalPath = getForwardedOriginalPath(req);
-                if (originalPath && originalPath !== req.path) {
-                    req.url = originalPath;
-                }
-            }
-            next();
-        });
-        app.use((req, res, next) => {
-            const requestOrigin = req.headers.origin;
-            const allowedOrigin = isAllowedCorsOrigin(requestOrigin, corsOrigins);
-            if (allowedOrigin) {
-                res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
-                res.setHeader("Vary", "Origin");
-                res.setHeader("Access-Control-Allow-Credentials", "true");
-            }
-            res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
-            res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id");
-            res.setHeader("Access-Control-Max-Age", "86400");
-            if (req.method === "OPTIONS") {
-                return res.sendStatus(204);
-            }
-            next();
-        });
         const rateLimitMax = parseInt(process.env.RATE_LIMIT_MAX || "100", 10);
         const rateLimitWindow = parseInt(process.env.RATE_LIMIT_WINDOW_MS || "60000", 10);
         const authRateLimitMax = parseInt(process.env.RATE_LIMIT_AUTH_MAX || "10", 10);
@@ -519,7 +499,7 @@ async function bootstrap() {
             legacyHeaders: false,
             skip: (req) => {
                 const p = req.path || "";
-                return p.includes("/health") || p.includes("/auth/");
+                return (p.includes("/health") || p === "/api/login" || p === "/api/signup");
             },
         }));
         const authLimiter = (0, express_rate_limit_1.default)({
@@ -532,8 +512,8 @@ async function bootstrap() {
             standardHeaders: true,
             legacyHeaders: false,
         });
-        app.use("/api/auth/login", authLimiter);
-        app.use("/api/auth/signup", authLimiter);
+        app.use("/api/login", authLimiter);
+        app.use("/api/signup", authLimiter);
         const helmetOptions = {
             contentSecurityPolicy: false,
             crossOriginEmbedderPolicy: false,
@@ -562,7 +542,7 @@ async function bootstrap() {
             next();
         });
         app.enableCors({
-            origin: corsOptions.origin,
+            origin: true,
             methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
             allowedHeaders: "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id",
             credentials: true,
@@ -627,10 +607,10 @@ async function bootstrap() {
         console.log(`║  ${check(true, "Frontend expected on port 80 (nginx)").padEnd(58)}║`);
         console.log("║                                                              ║");
         console.log("║  ── Auth Routes ──────────────────────────────────────────── ║");
-        console.log(`║  ${ok("POST /api/auth/login                          200").padEnd(58)}║`);
-        console.log(`║  ${ok("POST /api/auth/signup                         201").padEnd(58)}║`);
-        console.log(`║  ${ok("POST /api/auth/forgot-password                200").padEnd(58)}║`);
-        console.log(`║  ${ok("POST /api/auth/reset-password                 200").padEnd(58)}║`);
+        console.log(`║  ${ok("POST /api/login                               200").padEnd(58)}║`);
+        console.log(`║  ${ok("POST /api/signup                              201").padEnd(58)}║`);
+        console.log(`║  ${ok("POST /api/reset                               200").padEnd(58)}║`);
+        console.log(`║  ${ok("POST /api/reset/verify                        200").padEnd(58)}║`);
         console.log("║                                                              ║");
         console.log("║  ── Configuration ────────────────────────────────────────── ║");
         console.log(`║  ${check(corsConfigured, "CORS configured (" + (Array.isArray(corsOrigins) ? corsOrigins.length + " origins" : "open") + ")").padEnd(58)}║`);
@@ -646,7 +626,7 @@ async function bootstrap() {
         console.log(`║  ${check(dbReady, "Migrations executed").padEnd(58)}║`);
         console.log("║                                                              ║");
         console.log("║  ── API Modules (all loaded) ─────────────────────────────── ║");
-        console.log(`║  ${ok("Auth         GET|POST /api/auth/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Auth         GET|POST /api/login,signup,me").padEnd(58)}║`);
         console.log(`║  ${ok("Users        GET|PUT  /api/users/*").padEnd(58)}║`);
         console.log(`║  ${ok("Books        CRUD     /api/books/*").padEnd(58)}║`);
         console.log(`║  ${ok("Trees        CRUD     /api/trees/*").padEnd(58)}║`);

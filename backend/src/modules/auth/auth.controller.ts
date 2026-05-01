@@ -22,7 +22,7 @@ import { VerifyResetDto } from './dto/verify-reset.dto';
 import { UsersService } from '../users/users.service';
 import { Request as ExpressRequest } from "express";
 
-@Controller("auth")
+@Controller()
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
   constructor(

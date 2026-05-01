@@ -127,7 +127,7 @@ export default function Settings() {
     setError("");
     setSuccess("");
     try {
-      await api.patch("/auth/me", {
+      await api.patch("/me", {
         fullName: profile.fullName.trim(),
         phone: profile.phone.trim(),
       });
