@@ -12,7 +12,6 @@ import { Knex } from "knex";
 import { CorsOptions as ExpressCorsOptions } from "cors";
 import cors = require("cors");
 import * as bcrypt from "bcryptjs";
-import { Request, Response, NextFunction } from "express";
 
 /** Production CORS origins: RootsEgypt .org domains + EasyPanel + dev localhost */
 const ALLOWED_CORS_ORIGINS = [
@@ -58,13 +57,34 @@ function isAllowedCorsOrigin(
 }
 
 function getCorsOrigins(): string[] | true {
-  const raw = process.env.CORS_ORIGIN || "";
+  if (process.env.NODE_ENV !== "production") return true;
+
+  const raw = process.env.CORS_ORIGIN || process.env.FRONTEND_URL || "";
   const list = raw
     .split(",")
     .map((o) => o.trim().replace(/\/+$/, ""))
     .filter(Boolean);
   const origins = list.length ? list : ALLOWED_CORS_ORIGINS;
   return [...new Set([...origins])];
+}
+
+const CORS_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS";
+const CORS_ALLOWED_HEADERS =
+  "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id";
+
+function setCorsHeaders(req: any, res: any, corsOrigins: string[] | true) {
+  const requestOrigin = req.headers.origin as string | undefined;
+  const allowedOrigin = isAllowedCorsOrigin(requestOrigin, corsOrigins);
+
+  if (allowedOrigin) {
+    res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  }
+
+  res.setHeader("Access-Control-Allow-Methods", CORS_METHODS);
+  res.setHeader("Access-Control-Allow-Headers", CORS_ALLOWED_HEADERS);
+  res.setHeader("Access-Control-Max-Age", "86400");
 }
 
 function getForwardedOriginalPath(req: any): string | null {
@@ -507,125 +527,99 @@ async function seedInitialData(knex: Knex) {
 }
 
 async function bootstrap() {
-  console.log("INFO server starting...");
+  console.log("🟢 SERVER STARTING...");
 
   try {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
+    // Running behind EasyPanel reverse proxy (X-Forwarded-* headers).
     app.set("trust proxy", 1);
 
-    // ── CORS — MUST be the very first middleware ──
+    // CORS is first so browser preflight never falls into rate limits,
+    // helmet, validation, or Nest route matching.
     const corsOrigins = getCorsOrigins();
+    const corsOptions: ExpressCorsOptions = {
+      origin:
+        corsOrigins === true
+          ? true
+          : (
+              origin: string | undefined,
+              cb: (err: Error | null, allow?: boolean) => void,
+            ) => {
+              if (!origin) return cb(null, true);
+              const allowedOrigin = isAllowedCorsOrigin(origin, corsOrigins);
+              if (!allowedOrigin) {
+                console.warn(`CORS denied origin: ${origin}`);
+              }
+              cb(null, !!allowedOrigin);
+            },
+      methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+      allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With",
+        "Cache-Control",
+        "Pragma",
+        "Expires",
+        "If-Modified-Since",
+        "Accept",
+        "Origin",
+        "X-Request-Id",
+      ],
+      credentials: true,
+      optionsSuccessStatus: 204,
+      preflightContinue: false,
+    };
 
-    // 1) Raw Express CORS handler: runs before ANYTHING else.
-    //    Guarantees every request (including OPTIONS preflight) gets headers.
     app.use((req: any, res: any, next: () => void) => {
-      const requestOrigin = req.headers.origin as string | undefined;
-      const allowedOrigin = isAllowedCorsOrigin(requestOrigin, corsOrigins);
+      setCorsHeaders(req, res, corsOrigins);
 
-      if (allowedOrigin) {
-        res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
-        res.setHeader("Access-Control-Allow-Credentials", "true");
-        res.setHeader("Vary", "Origin");
-      }
-
-      res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-      );
-      res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id",
-      );
-      res.setHeader("Access-Control-Max-Age", "86400");
-
-      // Immediately resolve preflight — don't let it fall through to other middleware
       if (req.method === "OPTIONS") {
         return res.sendStatus(204);
       }
       next();
     });
+    app.use(cors(corsOptions));
 
-    // 2) Also register the cors npm package for belt-and-suspenders coverage
-    app.use(
-      cors({
-        origin: true,
-        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-        allowedHeaders: [
-          "Content-Type",
-          "Authorization",
-          "X-Requested-With",
-          "Cache-Control",
-          "Pragma",
-          "Expires",
-          "If-Modified-Since",
-          "Accept",
-          "Origin",
-          "X-Request-Id",
-        ],
-        credentials: true,
-        optionsSuccessStatus: 204,
-        preflightContinue: false,
-      }),
-    );
-
-    // ── Static files ──
+    // Static file serving for uploads (images, books, GEDCOM) - cPanel/production safe
     const uploadsPath = path.join(process.cwd(), "uploads");
     app.use("/uploads", require("express").static(uploadsPath));
 
-    // ── Root info route ──
+    // Root route: avoid 404 when hitting API base URL (e.g. https://api.example.com/)
     app.use((req: any, res: any, next: () => void) => {
-      if (
-        req.method === "GET" &&
-        (req.path === "/" || req.path === "" || req.path === "/api")
-      ) {
+      if (req.method === "GET" && (req.path === "/" || req.path === "")) {
         return res.type("application/json").json(apiInfoPayload());
       }
       next();
     });
 
-    // ── Health alias ──
-    app.use((req: any, res: any, next: () => void) => {
-      if (req.method === "GET" && req.path === "/health/live") {
-        return res.type("application/json").json({
-          status: "alive",
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
-          version: process.env.npm_package_version || "1.0.0",
-          source: "root-alias",
-        });
-      }
-      next();
-    });
-
-    // ── URL rewriting: non-/api requests → /api/* ──
-    app.use((req: Request, _res: Response, next: NextFunction) => {
-      const requestUrl = req.url || "/";
-      const isPrefixed =
-        requestUrl === "/api" || requestUrl.startsWith("/api/");
-      const isRootInfo = requestUrl === "/";
-      const isHealthAlias =
-        requestUrl === "/health/live" ||
-        requestUrl === "/health" ||
-        requestUrl === "/db-health" ||
-        requestUrl === "/health/db-diag";
-      const isUploadRequest =
-        requestUrl === "/uploads" || requestUrl.startsWith("/uploads/");
-
-      if (!isPrefixed && !isRootInfo && !isHealthAlias && !isUploadRequest) {
-        req.url = `/api${requestUrl.startsWith("/") ? requestUrl : `/${requestUrl}`}`;
-      }
-      next();
-    });
-
-    // Compression
+    // Compression (production-ready)
     app.use(compression());
 
-    // API prefix
+    // API Prefix
     app.setGlobalPrefix("api");
 
-    // Request ID
-    app.use((req: Request, _res: Response, next: NextFunction) => {
-      (req as any).id = req.headers["x-request-id"] || randomUUID();
+    // Request ID for tracing
+    app.use((req: any, _res: any, next: () => void) => {
+      req.id = req.headers["x-request-id"] || randomUUID();
+      next();
+    });
+
+    // Recovery middleware: some reverse proxies rewrite unknown requests
+    // to /api/errors/not-found. If they preserve original URI headers,
+    // restore the original path so routing and CORS preflight still work.
+    app.use((req: any, _res: any, next: () => void) => {
+      if (req.path === "/api/errors/not-found") {
+        const originalPath = getForwardedOriginalPath(req);
+        if (originalPath && originalPath !== req.path) {
+          req.url = originalPath;
+        }
+      }
+      next();
+    });
+
+    // Keep CORS headers on normal responses after any proxy path recovery.
+    app.use((req: any, res: any, next: () => void) => {
+      setCorsHeaders(req, res, corsOrigins);
       next();
     });
 
@@ -653,13 +647,15 @@ async function bootstrap() {
         skip: (req) => {
           const p = req.path || "";
           return (
-            p.includes("/health") || p === "/api/login" || p === "/api/signup"
+            p.includes("/health") ||
+            p.includes("/login") ||
+            p.includes("/signup")
           );
         },
       }),
     );
 
-    // Stricter rate limit for auth routes (applied before global for /auth/*)
+    // Stricter rate limit for auth routes
     const authLimiter = rateLimit({
       windowMs: rateLimitWindow,
       max: authRateLimitMax,
@@ -672,15 +668,17 @@ async function bootstrap() {
     });
     app.use("/api/login", authLimiter);
     app.use("/api/signup", authLimiter);
+    app.use("/api/auth/login", authLimiter);
+    app.use("/api/auth/signup", authLimiter);
 
     // Security: Helmet + explicit headers (Pragma, X-Frame-Options, etc.)
     const helmetOptions: Parameters<typeof helmet.default>[0] = {
-      contentSecurityPolicy: false, // API returns JSON; CSP usually for HTML
+      contentSecurityPolicy: false,
       crossOriginEmbedderPolicy: false,
       crossOriginResourcePolicy: { policy: "cross-origin" },
     };
     app.use(helmet.default(helmetOptions));
-    app.use((_req: Request, res: Response, next: NextFunction) => {
+    app.use((_req: any, res: any, next: () => void) => {
       res.setHeader("Pragma", "no-cache");
       res.setHeader("X-Frame-Options", "DENY");
       res.setHeader("X-Content-Type-Options", "nosniff");
@@ -699,26 +697,17 @@ async function bootstrap() {
     });
 
     // Production diagnostics: log failed requests with origin and request id.
-    app.use((req: Request, res: Response, next: NextFunction) => {
+    app.use((req: any, res: any, next: () => void) => {
       res.on("finish", () => {
         if (res.statusCode >= 400) {
           const origin = req.headers.origin || "-";
-          const requestId = (req as any).id || "-";
+          const requestId = req.id || "-";
           console.warn(
             `🟠 HTTP ${res.statusCode} ${req.method} ${req.originalUrl} origin=${origin} reqId=${requestId}`,
           );
         }
       });
       next();
-    });
-
-    app.enableCors({
-      origin: true,
-      methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-      allowedHeaders:
-        "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id",
-      credentials: true,
-      preflightContinue: false,
     });
 
     // Validation
@@ -738,21 +727,21 @@ async function bootstrap() {
     app.useGlobalInterceptors(new TransformInterceptor());
     app.useGlobalFilters(new AllExceptionsFilter());
 
-    // ── DB readiness ──
+    // Ensure DB and required schema are ready before serving traffic.
     const knex = app.get<Knex>("KnexConnection");
     let dbReady = false;
     try {
       await knex.raw("SELECT 1");
       dbReady = true;
-      console.log("MySQL successfully connected");
+      console.log("🟢 MySQL successfully connected");
       await ensureSchemaReady(knex);
     } catch (err: any) {
       console.error(
-        `DB startup readiness failed: ${err?.message || err?.code || err}`,
+        `🔴 DB startup readiness failed: ${err?.message || err?.code || err}`,
       );
     }
 
-    // ── Listen ──
+    // Passenger / cPanel Port
     const port = process.env.PORT || 5000;
     await app.listen(port, "0.0.0.0");
 

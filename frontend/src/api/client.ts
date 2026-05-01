@@ -6,11 +6,7 @@ import axios, { InternalAxiosRequestConfig } from "axios";
  * ===============================
  */
 const getApiRoot = (): string => {
-  const configured = String(import.meta.env.VITE_API_URL || "").trim();
-  if (configured) {
-    return configured.replace(/\/+$/, "").replace(/\/api$/, "");
-  }
-
+  // 1. Development mode: intelligently determine backend URL
   if (import.meta.env.DEV) {
     if (
       typeof window !== "undefined" &&
@@ -22,7 +18,8 @@ const getApiRoot = (): string => {
     return "http://localhost:5000";
   }
 
-  return "https://api.rootsegypt.org";
+  // 2. Production: direct API domain, with VITE_API_URL as an override
+  return import.meta.env.VITE_API_URL || "https://api.rootsegypt.org";
 };
 
 const API_ROOT = getApiRoot();

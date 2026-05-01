@@ -113,7 +113,7 @@ let AuthController = AuthController_1 = class AuthController {
 };
 exports.AuthController = AuthController;
 __decorate([
-    (0, common_1.Post)("login"),
+    (0, common_1.Post)(["login", "auth/login"]),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -121,14 +121,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
-    (0, common_1.Post)("signup"),
+    (0, common_1.Post)(["signup", "auth/signup"]),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [signup_dto_1.SignupDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signup", null);
 __decorate([
-    (0, common_1.Post)("refresh"),
+    (0, common_1.Post)(["refresh", "auth/refresh"]),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -136,7 +136,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refresh", null);
 __decorate([
-    (0, common_1.Post)("reset/verify"),
+    (0, common_1.Post)(["reset/verify", "auth/reset/verify"]),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -144,7 +144,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyReset", null);
 __decorate([
-    (0, common_1.Post)("reset/token"),
+    (0, common_1.Post)(["reset/token", "auth/reset/token"]),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -152,7 +152,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyResetByToken", null);
 __decorate([
-    (0, common_1.Post)("reset"),
+    (0, common_1.Post)(["reset", "auth/reset"]),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -160,7 +160,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "requestReset", null);
 __decorate([
-    (0, common_1.Post)("logout"),
+    (0, common_1.Post)(["logout", "auth/logout"]),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Request)()),
@@ -169,7 +169,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 __decorate([
-    (0, common_1.Get)("me"),
+    (0, common_1.Get)(["me", "auth/me"]),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -177,7 +177,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "me", null);
 __decorate([
-    (0, common_1.Patch)("me"),
+    (0, common_1.Patch)(["me", "auth/me"]),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Request)()),

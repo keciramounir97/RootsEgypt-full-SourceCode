@@ -42,6 +42,14 @@ export class HealthController {
       routes: {
         health: ["/api", "/api/health", "/api/health/live", "/health/live"],
         auth: [
+          "/api/login",
+          "/api/signup",
+          "/api/me",
+          "/api/refresh",
+          "/api/logout",
+          "/api/reset",
+          "/api/reset/verify",
+          "/api/reset/token",
           "/api/auth/login",
           "/api/auth/signup",
           "/api/auth/me",

@@ -43,13 +43,29 @@ function isAllowedCorsOrigin(origin, corsOrigins) {
     return null;
 }
 function getCorsOrigins() {
-    const raw = process.env.CORS_ORIGIN || "";
+    if (process.env.NODE_ENV !== "production")
+        return true;
+    const raw = process.env.CORS_ORIGIN || process.env.FRONTEND_URL || "";
     const list = raw
         .split(",")
         .map((o) => o.trim().replace(/\/+$/, ""))
         .filter(Boolean);
     const origins = list.length ? list : ALLOWED_CORS_ORIGINS;
     return [...new Set([...origins])];
+}
+const CORS_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS";
+const CORS_ALLOWED_HEADERS = "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id";
+function setCorsHeaders(req, res, corsOrigins) {
+    const requestOrigin = req.headers.origin;
+    const allowedOrigin = isAllowedCorsOrigin(requestOrigin, corsOrigins);
+    if (allowedOrigin) {
+        res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+        res.setHeader("Vary", "Origin");
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+    }
+    res.setHeader("Access-Control-Allow-Methods", CORS_METHODS);
+    res.setHeader("Access-Control-Allow-Headers", CORS_ALLOWED_HEADERS);
+    res.setHeader("Access-Control-Max-Age", "86400");
 }
 function getForwardedOriginalPath(req) {
     const candidates = [
@@ -407,29 +423,23 @@ async function seedInitialData(knex) {
     }
 }
 async function bootstrap() {
-    console.log("INFO server starting...");
+    console.log("🟢 SERVER STARTING...");
     try {
         const app = await core_1.NestFactory.create(app_module_1.AppModule);
         app.set("trust proxy", 1);
         const corsOrigins = getCorsOrigins();
-        app.use((req, res, next) => {
-            const requestOrigin = req.headers.origin;
-            const allowedOrigin = isAllowedCorsOrigin(requestOrigin, corsOrigins);
-            if (allowedOrigin) {
-                res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
-                res.setHeader("Access-Control-Allow-Credentials", "true");
-                res.setHeader("Vary", "Origin");
-            }
-            res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
-            res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id");
-            res.setHeader("Access-Control-Max-Age", "86400");
-            if (req.method === "OPTIONS") {
-                return res.sendStatus(204);
-            }
-            next();
-        });
-        app.use(cors({
-            origin: true,
+        const corsOptions = {
+            origin: corsOrigins === true
+                ? true
+                : (origin, cb) => {
+                    if (!origin)
+                        return cb(null, true);
+                    const allowedOrigin = isAllowedCorsOrigin(origin, corsOrigins);
+                    if (!allowedOrigin) {
+                        console.warn(`CORS denied origin: ${origin}`);
+                    }
+                    cb(null, !!allowedOrigin);
+                },
             methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
             allowedHeaders: [
                 "Content-Type",
@@ -446,39 +456,20 @@ async function bootstrap() {
             credentials: true,
             optionsSuccessStatus: 204,
             preflightContinue: false,
-        }));
+        };
+        app.use((req, res, next) => {
+            setCorsHeaders(req, res, corsOrigins);
+            if (req.method === "OPTIONS") {
+                return res.sendStatus(204);
+            }
+            next();
+        });
+        app.use(cors(corsOptions));
         const uploadsPath = path.join(process.cwd(), "uploads");
         app.use("/uploads", require("express").static(uploadsPath));
         app.use((req, res, next) => {
-            if (req.method === "GET" &&
-                (req.path === "/" || req.path === "" || req.path === "/api")) {
+            if (req.method === "GET" && (req.path === "/" || req.path === "")) {
                 return res.type("application/json").json(apiInfoPayload());
-            }
-            next();
-        });
-        app.use((req, res, next) => {
-            if (req.method === "GET" && req.path === "/health/live") {
-                return res.type("application/json").json({
-                    status: "alive",
-                    timestamp: new Date().toISOString(),
-                    uptime: process.uptime(),
-                    version: process.env.npm_package_version || "1.0.0",
-                    source: "root-alias",
-                });
-            }
-            next();
-        });
-        app.use((req, _res, next) => {
-            const requestUrl = req.url || "/";
-            const isPrefixed = requestUrl === "/api" || requestUrl.startsWith("/api/");
-            const isRootInfo = requestUrl === "/";
-            const isHealthAlias = requestUrl === "/health/live" ||
-                requestUrl === "/health" ||
-                requestUrl === "/db-health" ||
-                requestUrl === "/health/db-diag";
-            const isUploadRequest = requestUrl === "/uploads" || requestUrl.startsWith("/uploads/");
-            if (!isPrefixed && !isRootInfo && !isHealthAlias && !isUploadRequest) {
-                req.url = `/api${requestUrl.startsWith("/") ? requestUrl : `/${requestUrl}`}`;
             }
             next();
         });
@@ -486,6 +477,19 @@ async function bootstrap() {
         app.setGlobalPrefix("api");
         app.use((req, _res, next) => {
             req.id = req.headers["x-request-id"] || (0, crypto_1.randomUUID)();
+            next();
+        });
+        app.use((req, _res, next) => {
+            if (req.path === "/api/errors/not-found") {
+                const originalPath = getForwardedOriginalPath(req);
+                if (originalPath && originalPath !== req.path) {
+                    req.url = originalPath;
+                }
+            }
+            next();
+        });
+        app.use((req, res, next) => {
+            setCorsHeaders(req, res, corsOrigins);
             next();
         });
         const rateLimitMax = parseInt(process.env.RATE_LIMIT_MAX || "100", 10);
@@ -502,7 +506,9 @@ async function bootstrap() {
             legacyHeaders: false,
             skip: (req) => {
                 const p = req.path || "";
-                return (p.includes("/health") || p === "/api/login" || p === "/api/signup");
+                return (p.includes("/health") ||
+                    p.includes("/login") ||
+                    p.includes("/signup"));
             },
         }));
         const authLimiter = (0, express_rate_limit_1.default)({
@@ -517,6 +523,8 @@ async function bootstrap() {
         });
         app.use("/api/login", authLimiter);
         app.use("/api/signup", authLimiter);
+        app.use("/api/auth/login", authLimiter);
+        app.use("/api/auth/signup", authLimiter);
         const helmetOptions = {
             contentSecurityPolicy: false,
             crossOriginEmbedderPolicy: false,
@@ -544,13 +552,6 @@ async function bootstrap() {
             });
             next();
         });
-        app.enableCors({
-            origin: true,
-            methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-            allowedHeaders: "Content-Type, Authorization, X-Requested-With, Cache-Control, Pragma, Expires, If-Modified-Since, Accept, Origin, X-Request-Id",
-            credentials: true,
-            preflightContinue: false,
-        });
         app.useGlobalPipes(new common_1.ValidationPipe({
             whitelist: true,
             transform: true,
@@ -565,11 +566,11 @@ async function bootstrap() {
         try {
             await knex.raw("SELECT 1");
             dbReady = true;
-            console.log("MySQL successfully connected");
+            console.log("🟢 MySQL successfully connected");
             await ensureSchemaReady(knex);
         }
         catch (err) {
-            console.error(`DB startup readiness failed: ${(err === null || err === void 0 ? void 0 : err.message) || (err === null || err === void 0 ? void 0 : err.code) || err}`);
+            console.error(`🔴 DB startup readiness failed: ${(err === null || err === void 0 ? void 0 : err.message) || (err === null || err === void 0 ? void 0 : err.code) || err}`);
         }
         const port = process.env.PORT || 5000;
         await app.listen(port, "0.0.0.0");

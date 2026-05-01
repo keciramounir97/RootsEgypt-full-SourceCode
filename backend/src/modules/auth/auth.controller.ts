@@ -51,7 +51,7 @@ export class AuthController {
     });
   }
 
-  @Post("login")
+  @Post(["login", "auth/login"])
   @HttpCode(200)
   async login(@Body() loginDto: LoginDto) {
     try {
@@ -74,7 +74,7 @@ export class AuthController {
     }
   }
 
-  @Post("signup")
+  @Post(["signup", "auth/signup"])
   async signup(@Body() signupDto: SignupDto) {
     try {
       return await this.authService.signup(signupDto);
@@ -91,7 +91,7 @@ export class AuthController {
     }
   }
 
-  @Post("refresh")
+  @Post(["refresh", "auth/refresh"])
   @HttpCode(200)
   async refresh(@Body() body: { refreshToken?: string }) {
     try {
@@ -103,13 +103,13 @@ export class AuthController {
     }
   }
 
-  @Post("reset/verify")
+  @Post(["reset/verify", "auth/reset/verify"])
   @HttpCode(200)
   async verifyReset(@Body() dto: VerifyResetDto) {
     return this.authService.verifyReset(dto.email, dto.code, dto.newPassword);
   }
 
-  @Post("reset/token")
+  @Post(["reset/token", "auth/reset/token"])
   @HttpCode(200)
   async verifyResetByToken(
     @Body() dto: { email: string; token: string; newPassword: string },
@@ -121,7 +121,7 @@ export class AuthController {
     );
   }
 
-  @Post("reset")
+  @Post(["reset", "auth/reset"])
   @HttpCode(200)
   async requestReset(@Body() dto: RequestResetDto) {
     try {
@@ -135,20 +135,20 @@ export class AuthController {
     }
   }
 
-  @Post("logout")
+  @Post(["logout", "auth/logout"])
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   async logout(@Request() req: ExpressRequest) {
     return this.authService.logout(req.user.id);
   }
 
-  @Get("me")
+  @Get(["me", "auth/me"])
   @UseGuards(JwtAuthGuard)
   async me(@Request() req: ExpressRequest) {
     return req.user;
   }
 
-  @Patch("me")
+  @Patch(["me", "auth/me"])
   @UseGuards(JwtAuthGuard)
   async updateMe(@Body() body: any, @Request() req: ExpressRequest) {
     await this.usersService.update(req.user.id, body, req.user.id);
