@@ -18,7 +18,17 @@ const getApiRoot = (): string => {
     return "http://localhost:5000";
   }
 
-  // 2. Production: call the backend API domain directly. The backend owns CORS.
+  // 2. Canonical production site: use same-origin /api to avoid browser CORS.
+  // nginx proxies /api to the backend service inside EasyPanel.
+  if (
+    typeof window !== "undefined" &&
+    (window.location.hostname === "rootsegypt.org" ||
+      window.location.hostname === "www.rootsegypt.org")
+  ) {
+    return window.location.origin;
+  }
+
+  // 3. Non-canonical deployments can still call the API domain directly.
   return import.meta.env.VITE_API_URL || "https://api.rootsegypt.org";
 };
 

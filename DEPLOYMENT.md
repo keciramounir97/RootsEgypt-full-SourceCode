@@ -75,11 +75,13 @@ If your EasyPanel database service is named `rootsegypt_database-egyptroots`, th
 | **Start Command** | `nginx -g "daemon off;"` (from Dockerfile) |
 
 **Build Arguments / Environment:**
-The production frontend calls the backend API domain directly, like Abraham. The backend must handle CORS for `https://rootsegypt.org` and `https://www.rootsegypt.org`.
+The canonical production frontend uses same-origin `/api` on `rootsegypt.org` so login/signup/reset do not depend on browser CORS. nginx proxies `/api` to the backend service through EasyPanel internal DNS.
 
 ```bash
-VITE_API_URL=https://api.rootsegypt.org
+BACKEND_UPSTREAM=rootsegypt_backend:5000
 ```
+
+If EasyPanel gives the backend service a different internal DNS name, set `BACKEND_UPSTREAM` to that exact `host:port` value.
 
 ### 3. Database Service (MySQL)
 
@@ -103,14 +105,14 @@ EasyPanel auto-creates this. Key values from your screenshot:
    ```bash
    curl https://api.rootsegypt.org/api/health
    ```
-   Frontend health endpoint also returns 200:
+   Same-origin frontend proxy also returns 200:
    ```bash
-   curl https://rootsegypt.org/healthz
+   curl https://rootsegypt.org/api/health
    ```
 2. [ ] Database migrations ran (backend auto-runs on startup via `start:easypanel` script)
 3. [ ] Frontend loads without console errors
 4. [ ] Login/Signup API responds correctly
-5. [ ] CORS preflight (`OPTIONS /api/login`) returns 204 on `https://api.rootsegypt.org`
+5. [ ] Same-origin login uses `https://rootsegypt.org/api/login`; CORS preflight on `https://api.rootsegypt.org` is still useful as an API-domain check but is no longer required for canonical frontend login
 6. [ ] File uploads (books, gallery, trees) work within size limits
 
 ---
