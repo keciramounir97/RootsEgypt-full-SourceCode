@@ -13,8 +13,8 @@ const {
 
 const createKnex = knexLib.default || knexLib;
 const APP_ROOT = path.resolve(__dirname, "..");
-const MAX_RETRIES = Number(process.env.EASYPANEL_DB_RETRIES || 10);
-const RETRY_DELAY_MS = Number(process.env.EASYPANEL_DB_RETRY_DELAY_MS || 5000);
+const MAX_RETRIES = Number(process.env.EASYPANEL_DB_RETRIES || 1);
+const RETRY_DELAY_MS = Number(process.env.EASYPANEL_DB_RETRY_DELAY_MS || 2000);
 const REQUIRE_DB_ON_START =
   String(process.env.EASYPANEL_REQUIRE_DB_ON_START || "").toLowerCase() ===
   "true";
@@ -52,9 +52,18 @@ function validateResolvedConfig(resolved) {
       resolved.missingFields,
       resolved.missingVariableNames,
     );
-    console.error(`EASYPANEL db config error: ${errorMessage}`);
-    throw new Error(errorMessage);
+    if (REQUIRE_DB_ON_START) {
+      console.error(`EASYPANEL db config error: ${errorMessage}`);
+      throw new Error(errorMessage);
+    }
+
+    console.warn(
+      `EASYPANEL db config warning; starting API without migration preflight because EASYPANEL_REQUIRE_DB_ON_START is false: ${errorMessage}`,
+    );
+    return false;
   }
+
+  return true;
 }
 
 async function runMigrationsWithRetry() {
@@ -128,23 +137,29 @@ async function main() {
 
   const resolved = resolveDbConfig(undefined, process.env);
   logBootstrap(resolved);
-  validateResolvedConfig(resolved);
+  const dbConfigComplete = validateResolvedConfig(resolved);
 
   if (String(process.env.EASYPANEL_VALIDATE_ONLY || "").toLowerCase() === "true") {
     console.log(`EASYPANEL validation only complete. ${DB_ENV_HELP}`);
     return;
   }
 
-  try {
-    await runMigrationsWithRetry();
-  } catch (error) {
-    const message =
-      error?.sqlMessage || error?.message || error?.code || String(error);
-    if (REQUIRE_DB_ON_START) {
-      throw error;
+  if (dbConfigComplete) {
+    try {
+      await runMigrationsWithRetry();
+    } catch (error) {
+      const message =
+        error?.sqlMessage || error?.message || error?.code || String(error);
+      if (REQUIRE_DB_ON_START) {
+        throw error;
+      }
+      console.warn(
+        `EASYPANEL migrations unavailable; starting API anyway so health/live and CORS stay reachable: ${message}`,
+      );
     }
+  } else {
     console.warn(
-      `EASYPANEL migrations unavailable; starting API anyway so health/live and CORS stay reachable: ${message}`,
+      "EASYPANEL skipping migrations because database configuration is incomplete.",
     );
   }
   startServer();

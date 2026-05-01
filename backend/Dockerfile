@@ -32,4 +32,4 @@ RUN mkdir -p uploads private_uploads
 
 EXPOSE 5000
 
-CMD ["node", "server.js"]
+CMD ["node", "scripts/start-easypanel.js"]
