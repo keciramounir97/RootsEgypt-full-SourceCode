@@ -33,6 +33,9 @@ Both must exit with code 0 before deploying.
 ```bash
 NODE_ENV=production
 PORT=5000
+EASYPANEL_REQUIRE_DB_ON_START=false
+EASYPANEL_DB_RETRIES=1
+DB_STARTUP_READY_TIMEOUT_MS=3000
 
 # Database (recommended: use EasyPanel auto-generated Internal Connection URL)
 DATABASE_URL=mysql://adminegypt:admin2025$@rootsegypt_database-egyptroots:3306/rootsegypt
@@ -72,7 +75,7 @@ If your EasyPanel database service is named `rootsegypt_database-egyptroots`, th
 | **Dockerfile Path** | `frontend/Dockerfile` |
 | **Exposed Port** | `80` |
 | **Healthcheck** | `curl -fsS http://localhost/healthz \|\| exit 1` |
-| **Start Command** | `nginx -g "daemon off;"` (from Dockerfile) |
+| **Start Command** | leave empty to use Dockerfile `CMD` (`/docker-start.sh`) |
 
 **Build Arguments / Environment:**
 The canonical production frontend uses same-origin `/api` on `rootsegypt.org` so login/signup/reset do not depend on browser CORS. nginx proxies `/api` to the backend service through EasyPanel internal DNS.
@@ -82,6 +85,9 @@ BACKEND_UPSTREAM=rootsegypt_backend:5000
 ```
 
 If EasyPanel gives the backend service a different internal DNS name, set `BACKEND_UPSTREAM` to that exact `host:port` value.
+
+Do not override the frontend start command with raw `nginx -g "daemon off;"`.
+The `/docker-start.sh` command renders nginx with the correct backend upstream and prints `API upstream: ...` in the logs.
 
 **Domains:**
 

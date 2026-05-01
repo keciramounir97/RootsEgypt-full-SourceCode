@@ -41,7 +41,13 @@ export class HealthController {
     return {
       ok: true,
       routes: {
-        health: ["/api", "/api/health", "/api/health/live", "/health/live"],
+        health: [
+          "/api",
+          "/api/health",
+          "/api/health/live",
+          "/healthz",
+          "/health/live",
+        ],
         auth: [
           "/api/login",
           "/api/signup",

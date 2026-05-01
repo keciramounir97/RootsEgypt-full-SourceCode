@@ -118,6 +118,35 @@ function apiInfoPayload() {
   };
 }
 
+function getStartupDbTimeoutMs(): number {
+  const raw =
+    process.env.DB_STARTUP_READY_TIMEOUT_MS ||
+    process.env.STARTUP_DB_TIMEOUT_MS ||
+    "3000";
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 3000;
+}
+
+async function withStartupTimeout<T>(
+  task: Promise<T>,
+  timeoutMs: number,
+  label: string,
+): Promise<T> {
+  let timeout: NodeJS.Timeout | undefined;
+  try {
+    return await Promise.race([
+      task,
+      new Promise<T>((_resolve, reject) => {
+        timeout = setTimeout(() => {
+          reject(new Error(`${label} timed out after ${timeoutMs}ms`));
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timeout) clearTimeout(timeout);
+  }
+}
+
 async function ensureCriticalSchema(knex: Knex) {
   // Belt-and-suspenders: add missing columns / tables that must exist for the
   // app to function, regardless of whether formal migrations ran.
@@ -584,7 +613,9 @@ async function bootstrap() {
     app.use((req: any, res: any, next: () => void) => {
       if (
         req.method === "GET" &&
-        (req.path === "/health" || req.path === "/health/live")
+        (req.path === "/healthz" ||
+          req.path === "/health" ||
+          req.path === "/health/live")
       ) {
         return res.type("application/json").json({
           ok: true,
@@ -746,14 +777,24 @@ async function bootstrap() {
     app.useGlobalInterceptors(new TransformInterceptor());
     app.useGlobalFilters(new AllExceptionsFilter());
 
-    // Ensure DB and required schema are ready before serving traffic.
+    // Try DB/schema readiness briefly, but never block the API port forever.
+    // Health and seed-admin fallback must stay reachable while DB recovers.
     const knex = app.get<Knex>("KnexConnection");
     let dbReady = false;
+    const startupDbTimeoutMs = getStartupDbTimeoutMs();
     try {
-      await knex.raw("SELECT 1");
+      await withStartupTimeout(
+        knex.raw("SELECT 1"),
+        startupDbTimeoutMs,
+        "DB startup readiness",
+      );
       dbReady = true;
       console.log("🟢 MySQL successfully connected");
-      await ensureSchemaReady(knex);
+      await withStartupTimeout(
+        ensureSchemaReady(knex),
+        startupDbTimeoutMs,
+        "Schema startup readiness",
+      );
     } catch (err: any) {
       console.error(
         `🔴 DB startup readiness failed: ${err?.message || err?.code || err}`,

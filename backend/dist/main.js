@@ -96,6 +96,30 @@ function apiInfoPayload() {
         message: "API routes are available under /api. If this appears for /api/errors/not-found, check reverse proxy path forwarding.",
     };
 }
+function getStartupDbTimeoutMs() {
+    const raw = process.env.DB_STARTUP_READY_TIMEOUT_MS ||
+        process.env.STARTUP_DB_TIMEOUT_MS ||
+        "3000";
+    const parsed = Number.parseInt(raw, 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 3000;
+}
+async function withStartupTimeout(task, timeoutMs, label) {
+    let timeout;
+    try {
+        return await Promise.race([
+            task,
+            new Promise((_resolve, reject) => {
+                timeout = setTimeout(() => {
+                    reject(new Error(`${label} timed out after ${timeoutMs}ms`));
+                }, timeoutMs);
+            }),
+        ]);
+    }
+    finally {
+        if (timeout)
+            clearTimeout(timeout);
+    }
+}
 async function ensureCriticalSchema(knex) {
     try {
         if (await knex.schema.hasTable("users")) {
@@ -467,7 +491,9 @@ async function bootstrap() {
         app.use(cors(corsOptions));
         app.use((req, res, next) => {
             if (req.method === "GET" &&
-                (req.path === "/health" || req.path === "/health/live")) {
+                (req.path === "/healthz" ||
+                    req.path === "/health" ||
+                    req.path === "/health/live")) {
                 return res.type("application/json").json({
                     ok: true,
                     status: "healthy",
@@ -578,11 +604,12 @@ async function bootstrap() {
         app.useGlobalFilters(new AllExceptionsFilter());
         const knex = app.get("KnexConnection");
         let dbReady = false;
+        const startupDbTimeoutMs = getStartupDbTimeoutMs();
         try {
-            await knex.raw("SELECT 1");
+            await withStartupTimeout(knex.raw("SELECT 1"), startupDbTimeoutMs, "DB startup readiness");
             dbReady = true;
             console.log("🟢 MySQL successfully connected");
-            await ensureSchemaReady(knex);
+            await withStartupTimeout(ensureSchemaReady(knex), startupDbTimeoutMs, "Schema startup readiness");
         }
         catch (err) {
             console.error(`🔴 DB startup readiness failed: ${(err === null || err === void 0 ? void 0 : err.message) || (err === null || err === void 0 ? void 0 : err.code) || err}`);
