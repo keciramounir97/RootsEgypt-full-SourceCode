@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../RootsAbraham/AbrahamRoots-full-code-source"
+		}
+	],
+	"settings": {
+		"liveServer.settings.port": 5501
+	}
+}
