@@ -17,6 +17,7 @@ function buildGalleryItem(
   title: string,
   description: string,
   category: string,
+  imageFile = `roots-egypt-gallery-${sequence}.jpeg`,
 ): CuratedGalleryItem {
   return {
     id: `roots-egypt-gallery-${sequence}`,
@@ -26,7 +27,7 @@ function buildGalleryItem(
     archiveSource: "Roots Egypt Photo Collection",
     location: "Egypt",
     year: "2026",
-    imagePath: `/assets/gallery/roots-egypt-gallery-${sequence}.jpeg`,
+    imagePath: `/assets/gallery/${imageFile}`,
     createdAt,
   };
 }
@@ -55,24 +56,6 @@ export const curatedGalleryItems: CuratedGalleryItem[] = [
     "Roots Egypt Portrait Study II",
     "Integrated into the gallery as a visual record of heritage, identity, and the lived details that shape family history in Egypt.",
     "Portrait Archive",
-  ),
-  buildGalleryItem(
-    "05",
-    "Roots Egypt Heritage Detail I",
-    "A supporting gallery image chosen to enrich Roots Egypt with texture, atmosphere, and a stronger sense of archival storytelling.",
-    "Heritage Detail",
-  ),
-  buildGalleryItem(
-    "06",
-    "Roots Egypt Heritage Detail II",
-    "Curated for the public collection to complement research, genealogy, and image-based preservation throughout the site.",
-    "Heritage Detail",
-  ),
-  buildGalleryItem(
-    "07",
-    "Roots Egypt Documentary Frame I",
-    "A compact documentary image that adds rhythm to the gallery while reinforcing the platform's focus on preserving Egyptian memory.",
-    "Documentary Frame",
   ),
   buildGalleryItem(
     "08",
@@ -117,15 +100,16 @@ export const curatedGalleryItems: CuratedGalleryItem[] = [
     "Memory Collection",
   ),
   buildGalleryItem(
-    "15",
-    "Roots Egypt Memory Collection XV",
-    "Added to the gallery with a descriptive caption so the complete supplied image set appears clearly and consistently in the interface.",
-    "Memory Collection",
-  ),
-  buildGalleryItem(
     "16",
     "Roots Egypt Memory Collection XVI",
     "The final image in the integrated sixteen-photo set, helping complete the Roots Egypt gallery as a polished public collection.",
     "Memory Collection",
+  ),
+  buildGalleryItem(
+    "whatsapp-2026-03-19",
+    "Roots Egypt Shared Memory",
+    "A supplied image from the current photos folder, included so the public gallery reflects the exact available collection.",
+    "Memory Collection",
+    "roots-egypt-gallery-whatsapp-2026-03-19.jpeg",
   ),
 ];
