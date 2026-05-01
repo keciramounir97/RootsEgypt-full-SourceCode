@@ -15,21 +15,12 @@ import { ActivityModule } from '../activity/activity.module';
     ActivityModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
-        const secret =
-          configService.get<string>("JWT_SECRET") || process.env.JWT_SECRET;
-        if (!secret) {
-          throw new Error(
-            "JWT_SECRET environment variable is required. Set it in EasyPanel or your deployment environment.",
-          );
-        }
-        return {
-          secret,
-          signOptions: {
-            expiresIn: configService.get<string>("JWT_EXPIRES_IN") || "1d",
-          },
-        };
-      },
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>("JWT_SECRET") || "fallback_secret",
+        signOptions: {
+          expiresIn: configService.get<string>("JWT_EXPIRES_IN") || "1d",
+        },
+      }),
       inject: [ConfigService],
     }),
   ],

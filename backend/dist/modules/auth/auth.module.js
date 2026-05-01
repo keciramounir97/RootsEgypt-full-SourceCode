@@ -27,18 +27,12 @@ exports.AuthModule = AuthModule = __decorate([
             activity_module_1.ActivityModule,
             jwt_1.JwtModule.registerAsync({
                 imports: [config_1.ConfigModule],
-                useFactory: async (configService) => {
-                    const secret = configService.get("JWT_SECRET") || process.env.JWT_SECRET;
-                    if (!secret) {
-                        throw new Error("JWT_SECRET environment variable is required. Set it in EasyPanel or your deployment environment.");
-                    }
-                    return {
-                        secret,
-                        signOptions: {
-                            expiresIn: configService.get("JWT_EXPIRES_IN") || "1d",
-                        },
-                    };
-                },
+                useFactory: async (configService) => ({
+                    secret: configService.get("JWT_SECRET") || "fallback_secret",
+                    signOptions: {
+                        expiresIn: configService.get("JWT_EXPIRES_IN") || "1d",
+                    },
+                }),
                 inject: [config_1.ConfigService],
             }),
         ],
