@@ -6,7 +6,14 @@ export const CONTACT_PHONE_TEL =
     ? fromEnv.startsWith("+")
       ? fromEnv
       : `+${fromEnv}`
-    : "+201000000000";
+    : "+9613626082";
 
 export const CONTACT_PHONE_DISPLAY =
-  import.meta.env.VITE_CONTACT_PHONE_DISPLAY ?? "+20 10 0000 0000";
+  import.meta.env.VITE_CONTACT_PHONE_DISPLAY ?? "+961 36 26 082";
+
+export const CONTACT_WHATSAPP_TEL =
+  import.meta.env.VITE_CONTACT_WHATSAPP?.replace(/\s/g, "") ||
+  CONTACT_PHONE_TEL;
+
+export const CONTACT_WHATSAPP_DISPLAY =
+  import.meta.env.VITE_CONTACT_WHATSAPP_DISPLAY ?? CONTACT_PHONE_DISPLAY;

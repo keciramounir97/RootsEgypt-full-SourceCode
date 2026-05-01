@@ -16,7 +16,12 @@ import {
 import { useTranslation } from "../context/TranslationContext";
 import { api } from "../api/client";
 import EgyptianLogoMark from "./EgyptianLogoMark";
-import { CONTACT_PHONE_TEL, CONTACT_PHONE_DISPLAY } from "../constants/contact";
+import {
+  CONTACT_PHONE_DISPLAY,
+  CONTACT_PHONE_TEL,
+  CONTACT_WHATSAPP_DISPLAY,
+  CONTACT_WHATSAPP_TEL,
+} from "../constants/contact";
 import { HieroglyphicBorder } from "./motion/EgyptianMotion";
 
 interface FooterProps {
@@ -245,14 +250,22 @@ export default function Footer({ data }: FooterProps) {
             </li>
             <li className="flex items-center gap-2 text-dark-beige/80">
               <MessageCircle size={16} className="text-[#d4a843]" />
-              <span>
-                {t("contact_whatsapp_line", "WhatsApp: +20 2 XXX XXXX")}
-              </span>
+              <a
+                href={`https://wa.me/${CONTACT_WHATSAPP_TEL.replace(/^\+/, "")}`}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#d4a843] transition-colors interactive-link"
+              >
+                {t(
+                  "contact_whatsapp_line",
+                  `WhatsApp: ${CONTACT_WHATSAPP_DISPLAY}`,
+                )}
+              </a>
             </li>
             <li className="flex items-center gap-2 text-dark-beige/80">
               <Clock size={16} className="text-[#d4a843]" />
               <span>
-                {t("contact_hours_week", "Sun–Thu: 9:00–18:00 (Cairo time)")}
+                {t("contact_hours_week", "Lun-Ven: 9h-17h")}
               </span>
             </li>
           </ul>

@@ -126,14 +126,11 @@ export function EyeOfHorus({
       transition={{ duration: 1.2, ease: EGYPT_EASE.pharaoh }}
     >
       {/* Eye outline */}
-      <motion.path
+      <path
         d="M20 60 Q60 20 100 60 Q140 100 180 60"
         fill="none"
         stroke={color}
         strokeWidth="3"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
       />
       {/* Iris */}
       <motion.circle
@@ -158,14 +155,11 @@ export function EyeOfHorus({
         transition={{ delay: 1.2, duration: 0.3 }}
       />
       {/* Lower curve (Horus tear) */}
-      <motion.path
+      <path
         d="M100 75 Q100 100 85 110"
         fill="none"
         stroke={color}
         strokeWidth="2.5"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ delay: 1.5, duration: 0.8 }}
       />
     </motion.svg>
   );

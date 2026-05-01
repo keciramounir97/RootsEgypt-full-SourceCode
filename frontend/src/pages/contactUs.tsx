@@ -215,7 +215,7 @@ export default function ContactUs() {
     {
       icon: Phone,
       label: t("call_us", "Call Us"),
-      value: t("contact_phone_primary", "+20 2 XXX XXXX"),
+      value: t("contact_phone_primary", "+961 36 26 082"),
       gradient: isDark
         ? "linear-gradient(135deg, rgba(13,148,136,0.15), rgba(12,74,110,0.25))"
         : "linear-gradient(135deg, rgba(13,148,136,0.08), rgba(12,74,110,0.12))",
@@ -244,7 +244,7 @@ export default function ContactUs() {
       label: t("opening_hours", "Opening Hours"),
       value: t(
         "contact_hours_week",
-        "Sun\u2013Thu: 9:00\u201318:00 (Cairo time)",
+        "Lun-Ven: 9h-17h",
       ),
       gradient: isDark
         ? "linear-gradient(135deg, rgba(212,168,67,0.15), rgba(201,168,138,0.2))"
