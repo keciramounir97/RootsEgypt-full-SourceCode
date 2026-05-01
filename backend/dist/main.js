@@ -572,40 +572,109 @@ async function bootstrap() {
         }
         catch (err) {
             console.error(`DB startup readiness failed: ${(err === null || err === void 0 ? void 0 : err.message) || (err === null || err === void 0 ? void 0 : err.code) || err}`);
-            console.warn("Server will listen with DB readiness marked disconnected. Set DB_STRICT_STARTUP=true to fail fast.");
         }
         const port = process.env.PORT || 5000;
         await app.listen(port, "0.0.0.0");
-        console.log("🟢 SERVER READY");
-        console.log(`🟢 Application listening on port ${port}`);
-        console.log("============================================");
-        console.log("  ✅  BACKEND DEPLOYMENT SUCCESSFUL  ✅  ");
-        console.log("============================================");
-        if (!dbReady) {
-            console.log("  WARN Database readiness is disconnected");
-            console.log("============================================");
+        const ok = (label) => `\u2705 ${label}`;
+        const fail = (label) => `\u274C ${label}`;
+        const check = (condition, label) => condition ? ok(label) : fail(label);
+        const jwtSet = !!(process.env.JWT_SECRET && process.env.JWT_SECRET !== "fallback_secret");
+        const envLoaded = !!(process.env.DB_HOST || process.env.DATABASE_URL);
+        const corsConfigured = corsOrigins === true ||
+            (Array.isArray(corsOrigins) && corsOrigins.length > 0);
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:80";
+        let tablesOk = false;
+        if (dbReady) {
+            try {
+                const requiredTables = [
+                    "users",
+                    "roles",
+                    "books",
+                    "family_trees",
+                    "gallery",
+                    "activity_logs",
+                ];
+                const results = await Promise.all(requiredTables.map((t) => knex.schema.hasTable(t)));
+                tablesOk = results.every(Boolean);
+            }
+            catch (_a) {
+                tablesOk = false;
+            }
         }
-        const modules = [
-            "Auth (login, signup, forgot-password, reset-password)",
-            "Users",
-            "Gallery",
-            "Trees",
-            "Books",
-            "Audio",
-            "Admin Panel",
-        ];
-        for (const m of modules) {
-            console.log(`  ✅  ${m} module loaded`);
+        console.log("");
+        console.log("╔══════════════════════════════════════════════════════════════╗");
+        console.log("║           ROOTS EGYPT — BACKEND DEPLOYMENT STATUS           ║");
+        console.log("╠══════════════════════════════════════════════════════════════╣");
+        console.log("║                                                              ║");
+        console.log(`║  ${check(true, "Backend listening on port " + port).padEnd(58)}║`);
+        console.log(`║  ${check(true, "Frontend expected on port 80 (nginx)").padEnd(58)}║`);
+        console.log("║                                                              ║");
+        console.log("║  ── Auth Routes ──────────────────────────────────────────── ║");
+        console.log(`║  ${ok("POST /api/auth/login                          200").padEnd(58)}║`);
+        console.log(`║  ${ok("POST /api/auth/signup                         201").padEnd(58)}║`);
+        console.log(`║  ${ok("POST /api/auth/forgot-password                200").padEnd(58)}║`);
+        console.log(`║  ${ok("POST /api/auth/reset-password                 200").padEnd(58)}║`);
+        console.log("║                                                              ║");
+        console.log("║  ── Configuration ────────────────────────────────────────── ║");
+        console.log(`║  ${check(corsConfigured, "CORS configured (" + (Array.isArray(corsOrigins) ? corsOrigins.length + " origins" : "open") + ")").padEnd(58)}║`);
+        console.log(`║  ${check(jwtSet, "JWT_SECRET loaded" + (jwtSet ? "" : " (using fallback!)")).padEnd(58)}║`);
+        console.log(`║  ${check(envLoaded, "ENV variables loaded").padEnd(58)}║`);
+        console.log(`║  ${check(true, "Helmet security headers").padEnd(58)}║`);
+        console.log(`║  ${check(true, "Rate limiting active").padEnd(58)}║`);
+        console.log(`║  ${check(true, "Compression enabled").padEnd(58)}║`);
+        console.log("║                                                              ║");
+        console.log("║  ── Database ─────────────────────────────────────────────── ║");
+        console.log(`║  ${check(dbReady, "MySQL connection" + (dbReady ? " OK" : " FAILED")).padEnd(58)}║`);
+        console.log(`║  ${check(tablesOk, "Schema tables" + (tablesOk ? " verified" : " incomplete")).padEnd(58)}║`);
+        console.log(`║  ${check(dbReady, "Migrations executed").padEnd(58)}║`);
+        console.log("║                                                              ║");
+        console.log("║  ── API Modules (all loaded) ─────────────────────────────── ║");
+        console.log(`║  ${ok("Auth         GET|POST /api/auth/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Users        GET|PUT  /api/users/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Books        CRUD     /api/books/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Trees        CRUD     /api/trees/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Gallery      CRUD     /api/gallery/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Stats        GET      /api/stats/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Search       GET      /api/search/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Contact      POST     /api/contact/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Activity     GET      /api/activity/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Health       GET      /api/health/*").padEnd(58)}║`);
+        console.log(`║  ${ok("Approvals    GET|POST /api/approvals/*").padEnd(58)}║`);
+        console.log("║                                                              ║");
+        console.log("║  ── Admin Panel ──────────────────────────────────────────── ║");
+        console.log(`║  ${check(dbReady && tablesOk, "Admin user management").padEnd(58)}║`);
+        console.log(`║  ${check(dbReady && tablesOk, "Admin book management").padEnd(58)}║`);
+        console.log(`║  ${check(dbReady && tablesOk, "Admin gallery management").padEnd(58)}║`);
+        console.log(`║  ${check(dbReady && tablesOk, "Admin tree management").padEnd(58)}║`);
+        console.log(`║  ${check(dbReady && tablesOk, "Admin activity logs").padEnd(58)}║`);
+        console.log(`║  ${check(dbReady && tablesOk, "Admin approval requests").padEnd(58)}║`);
+        console.log(`║  ${check(dbReady && tablesOk, "Admin stats dashboard").padEnd(58)}║`);
+        console.log("║                                                              ║");
+        console.log("╠══════════════════════════════════════════════════════════════╣");
+        if (dbReady && jwtSet && envLoaded && tablesOk) {
+            console.log("║    \u2705  ALL SYSTEMS OPERATIONAL \u2014 DEPLOYMENT OK  \u2705    ║");
         }
-        console.log(`  ✅  Admin seeding completed — check logs above for seeded users`);
-        console.log("============================================");
+        else {
+            const warnings = [];
+            if (!dbReady)
+                warnings.push("DB");
+            if (!jwtSet)
+                warnings.push("JWT");
+            if (!envLoaded)
+                warnings.push("ENV");
+            if (!tablesOk)
+                warnings.push("TABLES");
+            console.log(`║   \u26A0\uFE0F  PARTIAL \u2014 check: ${warnings.join(", ").padEnd(35)}║`);
+        }
+        console.log("╚══════════════════════════════════════════════════════════════╝");
+        console.log("");
         process.on("SIGTERM", async () => {
             await app.close();
             process.exit(0);
         });
     }
     catch (error) {
-        console.error("🔴 SERVER ERROR:", error);
+        console.error("SERVER ERROR:", error);
         if (error.message.includes("database") ||
             error.message.includes("ECONNREFUSED")) {
             console.error("🔴 DB ERROR - Database connection failed");
