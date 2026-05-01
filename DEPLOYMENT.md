@@ -112,7 +112,7 @@ EasyPanel auto-creates this. Key values from your screenshot:
 2. [ ] Database migrations ran (backend auto-runs on startup via `start:easypanel` script)
 3. [ ] Frontend loads without console errors
 4. [ ] Login/Signup API responds correctly
-5. [ ] Same-origin login uses `https://rootsegypt.org/api/login`; CORS preflight on `https://api.rootsegypt.org` is still useful as an API-domain check but is no longer required for canonical frontend login
+5. [ ] Same-origin auth uses `https://rootsegypt.org/api/auth/login`; CORS preflight on `https://api.rootsegypt.org` is still useful as an API-domain check but is no longer required for canonical frontend login
 6. [ ] File uploads (books, gallery, trees) work within size limits
 
 ---

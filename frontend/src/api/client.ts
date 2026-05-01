@@ -173,7 +173,7 @@ api.interceptors.response.use(
       if (refreshToken && !error.config?._retry) {
         try {
           const { data } = await axios.post(
-            `${NORMALIZED_API_ROOT}/api/refresh`,
+            `${NORMALIZED_API_ROOT}/api/auth/refresh`,
             { refreshToken },
             { headers: { "Content-Type": "application/json" } },
           );
