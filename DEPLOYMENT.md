@@ -83,6 +83,13 @@ BACKEND_UPSTREAM=rootsegypt_backend:5000
 
 If EasyPanel gives the backend service a different internal DNS name, set `BACKEND_UPSTREAM` to that exact `host:port` value.
 
+**Domains:**
+
+- Attach `rootsegypt.org` and `www.rootsegypt.org` to the frontend service.
+- If `api.rootsegypt.org` is attached to the frontend service, the nginx config now treats that hostname as an API-only host and proxies every request to the backend.
+- If `api.rootsegypt.org` is attached directly to the backend service instead, it must use backend port `5000`.
+- A blank `404` from `https://api.rootsegypt.org/...` means the hostname is not attached to the service that contains the latest nginx/backend config, or EasyPanel is routing it to the wrong service.
+
 ### 3. Database Service (MySQL)
 
 EasyPanel auto-creates this. Key values from your screenshot:
@@ -103,6 +110,7 @@ EasyPanel auto-creates this. Key values from your screenshot:
 
 1. [ ] Backend health endpoint returns 200:
    ```bash
+   curl https://api.rootsegypt.org/health/live
    curl https://api.rootsegypt.org/api/health
    ```
    Same-origin frontend proxy also returns 200:
