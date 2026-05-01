@@ -76,7 +76,8 @@ export default function Login() {
       }
     } catch (err: any) {
       setError(
-        err.response?.data?.message ||
+        err.userMessage ||
+          err.response?.data?.message ||
           err.message ||
           t(
             "invalid_credentials",

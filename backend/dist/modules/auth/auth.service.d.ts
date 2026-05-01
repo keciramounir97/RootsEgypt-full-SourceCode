@@ -8,16 +8,35 @@ export declare class AuthService {
     private activityService;
     private readonly knex;
     constructor(usersService: UsersService, jwtService: JwtService, activityService: ActivityService, knex: Knex);
+    private isDatabaseUnavailable;
+    private getSeedAdmin;
+    private toSeedAdminUser;
     validateUser(email: string, pass: string): Promise<any>;
     login(user: any): Promise<{
         token: string;
-        refreshToken: string;
+        refreshToken: any;
         user: any;
-    }>;
-    signup(data: any): Promise<{
+        degraded: boolean;
+        message: string;
+    } | {
         token: string;
         refreshToken: string;
         user: any;
+        degraded?: undefined;
+        message?: undefined;
+    }>;
+    signup(data: any): Promise<{
+        token: string;
+        refreshToken: any;
+        user: any;
+        degraded: boolean;
+        message: string;
+    } | {
+        token: string;
+        refreshToken: string;
+        user: any;
+        degraded?: undefined;
+        message?: undefined;
     }>;
     refreshToken(token: string): Promise<{
         token: string;

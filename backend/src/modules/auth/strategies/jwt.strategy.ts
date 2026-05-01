@@ -16,6 +16,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    if (payload?.seedAdmin) {
+      return {
+        id: payload.sub,
+        email: payload.email,
+        fullName: payload.fullName,
+        full_name: payload.fullName,
+        role_id: payload.role,
+        roleId: payload.role,
+        roleName: payload.roleName || "admin",
+        status: "active",
+        permissions: ["all"],
+        seedAdmin: true,
+        database: "unavailable",
+      };
+    }
+
     const user = await this.usersService.findOne(payload.sub);
     if (!user) {
       throw new UnauthorizedException();

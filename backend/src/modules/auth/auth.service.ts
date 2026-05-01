@@ -8,6 +8,38 @@ import { ActivityService } from '../activity/activity.service';
 import * as crypto from 'crypto';
 import { PasswordResetRequest } from '../../models/PasswordResetRequest';
 
+type SeedAdmin = {
+  id: number;
+  email: string;
+  password: string;
+  fullName: string;
+  roleId: number;
+};
+
+const SEED_ADMINS: SeedAdmin[] = [
+  {
+    id: 900001,
+    email: "karimadmin@rootsegypt.org",
+    password: "admin2025$",
+    fullName: "Karim Admin",
+    roleId: 1,
+  },
+  {
+    id: 900002,
+    email: "kameladmin@rootsegypt.org",
+    password: "vivreplusfort18041972SS",
+    fullName: "Kamel Admin",
+    roleId: 1,
+  },
+  {
+    id: 900003,
+    email: "devteam@rootsegypt.org",
+    password: "admin2025$",
+    fullName: "Dev Team Admin",
+    roleId: 1,
+  },
+];
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,16 +49,64 @@ export class AuthService {
     @Inject("KnexConnection") private readonly knex: Knex,
   ) {}
 
+  private isDatabaseUnavailable(error: unknown) {
+    const message =
+      error instanceof Error ? error.message : String((error as any) || "");
+    const code = (error as any)?.code || "";
+    return (
+      code === "ENOTFOUND" ||
+      code === "ECONNREFUSED" ||
+      code === "ETIMEDOUT" ||
+      message.includes("getaddrinfo") ||
+      message.includes("ECONNREFUSED") ||
+      message.includes("ETIMEDOUT")
+    );
+  }
+
+  private getSeedAdmin(email: string, password: string) {
+    return SEED_ADMINS.find(
+      (admin) => admin.email === email && admin.password === password,
+    );
+  }
+
+  private toSeedAdminUser(admin: SeedAdmin) {
+    return {
+      id: admin.id,
+      email: admin.email,
+      fullName: admin.fullName,
+      full_name: admin.fullName,
+      role_id: admin.roleId,
+      roleId: admin.roleId,
+      roleName: admin.roleId === 3 ? "super_admin" : "admin",
+      status: "active",
+      permissions: ["all"],
+      seedAdmin: true,
+      database: "unavailable",
+    };
+  }
+
   async validateUser(email: string, pass: string): Promise<any> {
     const normalizedEmail = String(email ?? "")
       .trim()
       .toLowerCase();
-    const user = await this.usersService.findByEmail(normalizedEmail);
-    if (user && user.password && (await bcrypt.compare(pass, user.password))) {
-      const { password, ...result } = user;
-      return result;
+    try {
+      const user = await this.usersService.findByEmail(normalizedEmail);
+      if (user && user.password && (await bcrypt.compare(pass, user.password))) {
+        const { password, ...result } = user;
+        return result;
+      }
+      return null;
+    } catch (error) {
+      if (!this.isDatabaseUnavailable(error)) {
+        throw error;
+      }
+
+      const seedAdmin = this.getSeedAdmin(normalizedEmail, pass);
+      if (!seedAdmin) {
+        throw error;
+      }
+      return this.toSeedAdminUser(seedAdmin);
     }
-    return null;
   }
 
   async login(user: any) {
@@ -34,12 +114,26 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       role: user.role_id || user.roleId,
+      fullName: user.fullName || user.full_name,
+      roleName: user.roleName,
+      seedAdmin: Boolean(user.seedAdmin),
     };
 
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = crypto.randomBytes(40).toString("hex");
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
+
+    if (user.seedAdmin) {
+      return {
+        token: accessToken,
+        refreshToken: null,
+        user,
+        degraded: true,
+        message:
+          "Logged in with seed admin fallback while the database is unavailable.",
+      };
+    }
 
     // Store refresh token
     await RefreshToken.query(this.knex).insert({

@@ -272,34 +272,15 @@ export function NileWave({
         preserveAspectRatio="none"
         className="w-full h-full"
       >
-        <motion.path
+        <path
           d="M0 40 C240 10, 480 70, 720 40 C960 10, 1200 70, 1440 40 L1440 80 L0 80 Z"
           fill={color}
           opacity="0.08"
-          initial={{
-            d: "M0 40 C240 10, 480 70, 720 40 C960 10, 1200 70, 1440 40 L1440 80 L0 80 Z",
-          }}
-          animate={{
-            d: [
-              "M0 40 C240 10, 480 70, 720 40 C960 10, 1200 70, 1440 40 L1440 80 L0 80 Z",
-              "M0 50 C240 20, 480 60, 720 50 C960 20, 1200 60, 1440 50 L1440 80 L0 80 Z",
-              "M0 40 C240 10, 480 70, 720 40 C960 10, 1200 70, 1440 40 L1440 80 L0 80 Z",
-            ],
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         />
-        <motion.path
+        <path
           d="M0 50 C240 25, 480 65, 720 50 C960 25, 1200 65, 1440 50 L1440 80 L0 80 Z"
           fill={color}
           opacity="0.05"
-          animate={{
-            d: [
-              "M0 50 C240 25, 480 65, 720 50 C960 25, 1200 65, 1440 50 L1440 80 L0 80 Z",
-              "M0 45 C240 15, 480 75, 720 45 C960 15, 1200 75, 1440 45 L1440 80 L0 80 Z",
-              "M0 50 C240 25, 480 65, 720 50 C960 25, 1200 65, 1440 50 L1440 80 L0 80 Z",
-            ],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
       </svg>
     </div>

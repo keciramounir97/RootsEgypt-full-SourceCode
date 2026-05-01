@@ -14,13 +14,29 @@ export declare class AuthController {
     private serviceUnavailable;
     login(loginDto: LoginDto): Promise<{
         token: string;
-        refreshToken: string;
+        refreshToken: any;
         user: any;
-    }>;
-    signup(signupDto: SignupDto): Promise<{
+        degraded: boolean;
+        message: string;
+    } | {
         token: string;
         refreshToken: string;
         user: any;
+        degraded?: undefined;
+        message?: undefined;
+    }>;
+    signup(signupDto: SignupDto): Promise<{
+        token: string;
+        refreshToken: any;
+        user: any;
+        degraded: boolean;
+        message: string;
+    } | {
+        token: string;
+        refreshToken: string;
+        user: any;
+        degraded?: undefined;
+        message?: undefined;
     }>;
     refresh(body: {
         refreshToken?: string;
