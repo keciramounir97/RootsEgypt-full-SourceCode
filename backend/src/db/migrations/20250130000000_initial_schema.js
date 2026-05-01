@@ -197,7 +197,7 @@ exports.up = async function (knex) {
       table.index(["tree_id"]);
     });
   }
-};;
+};
 
 exports.down = async function (knex) {
   // Drop in reverse order to respect foreign keys

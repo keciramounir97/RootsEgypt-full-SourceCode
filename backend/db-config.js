@@ -3,7 +3,9 @@
 const { getEnvBootstrapMeta, getEnvSource } = require("./env-bootstrap");
 
 const DB_ENV_HELP =
-  "Production resolves DB config in this order: DATABASE_URL, then DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME, then MYSQL_HOST/MYSQL_PORT/MYSQL_USER/MYSQL_PASSWORD/MYSQL_DATABASE. Compatibility URL aliases also work: DB_URL, MYSQL_URL, MYSQL_URI. In production, .env.production is loaded only when process.env values are missing; local .env files are for development.";
+  "Set DATABASE_URL (recommended) or DB_HOST + DB_USER + DB_PASSWORD + DB_NAME. " +
+  "EasyPanel: copy the Internal Connection URL from your MySQL/MariaDB service and paste it as DATABASE_URL in the backend service Environment tab. " +
+  "Aliases also work: DB_URL, MYSQL_URL, MYSQL_URI, MYSQL_HOST/MYSQL_USER/MYSQL_PASSWORD/MYSQL_DATABASE.";
 
 function pickFirstDefined(...values) {
   for (const value of values) {

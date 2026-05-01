@@ -12,7 +12,13 @@ exports.up = async function (knex) {
 };
 
 exports.down = async function (knex) {
-    await knex.schema.alterTable('family_trees', (table) => {
-        table.dropColumn('data_format');
-    });
+    const hasColumn = await knex.schema.hasColumn(
+      "family_trees",
+      "data_format",
+    );
+    if (hasColumn) {
+      await knex.schema.alterTable("family_trees", (table) => {
+        table.dropColumn("data_format");
+      });
+    }
 };

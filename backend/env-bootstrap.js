@@ -34,6 +34,7 @@ function resolveCandidateFiles(cwd, env) {
   const isProduction = String(env.NODE_ENV || "").toLowerCase() === "production";
   const candidates = isProduction
     ? [
+        // Primary: .env.production in cwd and app root
         {
           label: ".env.production",
           fullPath: path.resolve(cwd, ".env.production"),
@@ -41,6 +42,15 @@ function resolveCandidateFiles(cwd, env) {
         {
           label: "app-root:.env.production",
           fullPath: path.resolve(APP_ROOT, ".env.production"),
+        },
+        // Fallback: .env (some Docker/EasyPanel setups use .env even in production)
+        {
+          label: ".env",
+          fullPath: path.resolve(cwd, ".env"),
+        },
+        {
+          label: "app-root:.env",
+          fullPath: path.resolve(APP_ROOT, ".env"),
         },
       ]
     : [
@@ -77,7 +87,15 @@ function bootstrapEnv(options = {}) {
 
   for (const candidate of candidateSpecs) {
     const { label, fullPath } = candidate;
-    if (!fs.existsSync(fullPath)) {
+    const exists = fs.existsSync(fullPath);
+
+    if (!exists) {
+      continue;
+    }
+
+    // Skip empty placeholder files (e.g. Docker touch .env.production)
+    const stat = fs.statSync(fullPath);
+    if (stat.size === 0) {
       continue;
     }
 
