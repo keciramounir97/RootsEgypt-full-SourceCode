@@ -18,17 +18,7 @@ const getApiRoot = (): string => {
     return "http://localhost:5000";
   }
 
-  // 2. Production site: use same-origin /api so login is not blocked by CORS
-  // when the api.rootsegypt.org EasyPanel domain is misrouted.
-  if (
-    typeof window !== "undefined" &&
-    (window.location.hostname === "rootsegypt.org" ||
-      window.location.hostname === "www.rootsegypt.org")
-  ) {
-    return window.location.origin;
-  }
-
-  // 3. Non-canonical deployments can still override the API root.
+  // 2. Production: call the backend API domain directly. The backend owns CORS.
   return import.meta.env.VITE_API_URL || "https://api.rootsegypt.org";
 };
 
