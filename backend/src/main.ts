@@ -421,35 +421,52 @@ async function seedInitialData(knex: Knex) {
       }
     }
 
-    // 2) Admin users - seed only from explicit environment configuration.
+    // 2) Admin users — env vars take priority; hardcoded defaults guarantee
+    //    seeding works even when EasyPanel env vars aren't configured.
     if (!(await knex.schema.hasTable("users"))) {
-      console.warn("WARN admin seed skipped: users table missing");
+      console.warn("🟠 Skipping admin seed: users table missing");
       return;
     }
-    const seedPrefixes = ["SEED_ADMIN", "SEED_ADMIN2", "SEED_ADMIN3"];
-    for (const prefix of seedPrefixes) {
-      const rawSeedEmail = String(process.env[`${prefix}_EMAIL`] || "")
+    const adminDefaults: Record<
+      string,
+      { email: string; password: string; fullName: string; roleId: number }
+    > = {
+      SEED_ADMIN: {
+        email: "karimadmin@rootsegypt.org",
+        password: "admin2025$",
+        fullName: "Karim Admin",
+        roleId: 1,
+      },
+      SEED_ADMIN2: {
+        email: "kameladmin@rootsegypt.org",
+        password: "vivreplusfort18041972SS",
+        fullName: "Kamel Admin",
+        roleId: 1,
+      },
+      SEED_ADMIN3: {
+        email: "devteam@rootsegypt.org",
+        password: "admin2025$",
+        fullName: "Dev Team Admin",
+        roleId: 1,
+      },
+    };
+    for (const prefix of Object.keys(adminDefaults)) {
+      const def = adminDefaults[prefix];
+      const seedEmail = (process.env[`${prefix}_EMAIL`] || def.email)
         .trim()
         .toLowerCase();
-      const seedPassword = String(process.env[`${prefix}_PASSWORD`] || "");
-      const seedFullName = String(
-        process.env[`${prefix}_FULL_NAME`] || "",
-      ).trim();
-      const seedRoleId = parseInt(process.env[`${prefix}_ROLE_ID`] || "1", 10);
+      const seedPassword = process.env[`${prefix}_PASSWORD`] || def.password;
+      const seedFullName = process.env[`${prefix}_FULL_NAME`] || def.fullName;
+      const seedRoleId = parseInt(
+        process.env[`${prefix}_ROLE_ID`] || String(def.roleId),
+        10,
+      );
 
-      if (!rawSeedEmail && !seedPassword && !seedFullName) {
-        console.log(`INFO admin seed not configured for ${prefix}`);
+      if (!seedEmail || !seedPassword) {
+        console.warn(`🟠 Skipping ${prefix}: email or password missing`);
         continue;
       }
 
-      if (!rawSeedEmail || !seedPassword || !seedFullName) {
-        console.warn(
-          `WARN skipping ${prefix}: email, password, or full name missing`,
-        );
-        continue;
-      }
-
-      const seedEmail = rawSeedEmail;
       const existing = await knex("users").where({ email: seedEmail }).first();
       if (!existing) {
         const hash = await bcrypt.hash(seedPassword, 10);
@@ -460,7 +477,7 @@ async function seedInitialData(knex: Knex) {
           role_id: seedRoleId,
           status: "active",
         });
-        console.log(`INFO seeded admin user: ${seedEmail}`);
+        console.log(`🟢 Seeded admin user: ${seedEmail}`);
       } else {
         const matches = await bcrypt.compare(
           seedPassword,
@@ -474,7 +491,7 @@ async function seedInitialData(knex: Knex) {
             status: "active",
             full_name: seedFullName,
           });
-          console.log(`INFO refreshed admin password: ${seedEmail}`);
+          console.log(`🟡 Refreshed admin password: ${seedEmail}`);
         }
       }
     }
