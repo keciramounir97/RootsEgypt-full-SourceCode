@@ -70,6 +70,7 @@ If your EasyPanel database service is named `rootsegypt_database-egyptroots`, th
 | **Build Context** | `frontend` |
 | **Dockerfile Path** | `frontend/Dockerfile` |
 | **Exposed Port** | `80` |
+| **Healthcheck** | `curl -fsS http://localhost/healthz \|\| exit 1` |
 | **Start Command** | `nginx -g "daemon off;"` (from Dockerfile) |
 
 **Build Arguments / Environment:**
