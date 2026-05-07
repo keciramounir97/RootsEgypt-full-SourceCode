@@ -9,27 +9,21 @@ import {
 const EGYPT_DEFAULT_SLIDES: SiteImageRecord[] = [
   {
     id: -1,
-    imagePath: "/assets/gallery/roots-egypt-gallery-01.jpeg",
-    title: "Ancient Egypt",
+    imagePath: "/photos/slider1.jpeg",
+    title: "Egyptian Heritage",
     caption: "Discover the roots of Egyptian civilisation",
   },
   {
     id: -2,
-    imagePath: "/assets/gallery/roots-egypt-gallery-02.jpeg",
+    imagePath: "/photos/slider2.jpeg",
     title: "Sacred Sites",
     caption: "Temples and monuments along the Nile",
   },
   {
     id: -3,
-    imagePath: "/assets/gallery/roots-egypt-gallery-03.jpeg",
+    imagePath: "/photos/slider3.jpeg",
     title: "Living Heritage",
     caption: "Traditions passed through generations",
-  },
-  {
-    id: -4,
-    imagePath: "/assets/gallery/roots-egypt-gallery-04.jpeg",
-    title: "Egyptian Archives",
-    caption: "Preserving family memories since antiquity",
   },
 ];
 
