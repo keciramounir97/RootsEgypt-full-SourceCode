@@ -12,6 +12,11 @@ import { StatsModule } from './modules/stats/stats.module';
 import { SearchModule } from './modules/search/search.module';
 import { HealthModule } from './modules/health/health.module';
 import { ApprovalsModule } from './modules/approvals/approvals.module';
+import { ArticlesModule } from './modules/articles/articles.module';
+import { AudiosModule } from './modules/audios/audios.module';
+import { DocumentsModule } from './modules/documents/documents.module';
+import { SuggestionsModule } from './modules/suggestions/suggestions.module';
+import { SettingsModule } from './modules/settings/settings.module';
 
 @Module({
   imports: [
@@ -30,6 +35,11 @@ import { ApprovalsModule } from './modules/approvals/approvals.module';
     SearchModule,
     HealthModule,
     ApprovalsModule,
+    ArticlesModule,
+    AudiosModule,
+    DocumentsModule,
+    SuggestionsModule,
+    SettingsModule,
   ],
   controllers: [],
   providers: [],

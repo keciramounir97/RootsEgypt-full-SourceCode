@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { Suspense, memo } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useTranslation } from "./context/TranslationContext";
@@ -29,9 +29,15 @@ function AppWithRouter() {
 // ===== EAGER-LOAD ALL ROUTE COMPONENTS =====
 import Home from "./pages/home";
 import GalleryPage from "./pages/Gallery";
-import LibraryPage from "./pages/library";
+import GalleryTrees from "./pages/GalleryTrees";
+import GalleryImages from "./pages/GalleryImages";
+import GalleryAudios from "./pages/GalleryAudios";
+import GalleryBooks from "./pages/GalleryBooks";
+import GalleryDocuments from "./pages/GalleryDocuments";
+import GalleryArticles from "./pages/GalleryArticles";
 import GenealogyGallery from "./pages/genealogy-gallery";
 import Periods from "./pages/periods";
+import Research from "./pages/Research";
 import SourcesAndArchives from "./pages/SourcesAndArchives";
 import AudioPage from "./pages/audio";
 import ArticlesPage from "./pages/articles";
@@ -58,6 +64,13 @@ import UserApprovals from "./admin/pages/UserApprovals";
 import UsersPage from "./admin/pages/Users";
 import Settings from "./admin/pages/Settings";
 import ActivityLog from "./admin/pages/ActivityLog";
+import FooterSettings from "./admin/pages/FooterSettings";
+import HeroImages from "./admin/pages/HeroImages";
+import BackgroundImages from "./admin/pages/BackgroundImages";
+import ValidationApprovals from "./admin/pages/ValidationApprovals";
+import PasswordResetRequests from "./admin/pages/PasswordResetRequests";
+import AccountDeletionRequests from "./admin/pages/AccountDeletionRequests";
+import RoleDistribution from "./admin/pages/RoleDistribution";
 
 /**
  * Loading Fallback Component
@@ -120,6 +133,54 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/gallery/trees"
+        element={
+          <PageTransition>
+            <GalleryTrees />
+          </PageTransition>
+        }
+      />
+      <Route
+        path="/gallery/images"
+        element={
+          <PageTransition>
+            <GalleryImages />
+          </PageTransition>
+        }
+      />
+      <Route
+        path="/gallery/audios"
+        element={
+          <PageTransition>
+            <GalleryAudios />
+          </PageTransition>
+        }
+      />
+      <Route
+        path="/gallery/documents"
+        element={
+          <PageTransition>
+            <GalleryDocuments />
+          </PageTransition>
+        }
+      />
+      <Route
+        path="/gallery/books"
+        element={
+          <PageTransition>
+            <GalleryBooks />
+          </PageTransition>
+        }
+      />
+      <Route
+        path="/gallery/articles"
+        element={
+          <PageTransition>
+            <GalleryArticles />
+          </PageTransition>
+        }
+      />
+      <Route
         path="/genealogy-gallery"
         element={
           <PageTransition>
@@ -131,7 +192,7 @@ function AppRoutes() {
         path="/library"
         element={
           <PageTransition>
-            <LibraryPage />
+            <GalleryTrees />
           </PageTransition>
         }
       />
@@ -186,7 +247,14 @@ function AppRoutes() {
       />
       <Route path="/access-reliability" element={<SourcesAndArchives />} />
       <Route path="/sourcesandarchives" element={<SourcesAndArchives />} />
-      <Route path="/research" element={<Navigate to="/" replace />} />
+      <Route
+        path="/research"
+        element={
+          <PageTransition>
+            <Research />
+          </PageTransition>
+        }
+      />
 
       {/* ===== AUTH ROUTES ===== */}
       <Route
@@ -213,13 +281,21 @@ function AppRoutes() {
           </PageTransition>
         }
       />
+      <Route
+        path="/myprofile"
+        element={
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
 
       {/* ===== ADMIN ROUTES ===== */}
       <Route
         path="/admin/*"
         element={
           <Suspense fallback={<LoadingFallback />}>
-            <ProtectedRoute>
+            <ProtectedRoute roles={[1, 3]}>
               <AdminLayout />
             </ProtectedRoute>
           </Suspense>
@@ -229,7 +305,9 @@ function AppRoutes() {
           index
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <Dashboard />
+              <ProtectedRoute privileges={["dashboard"]}>
+                <Dashboard />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -237,7 +315,9 @@ function AppRoutes() {
           path="trees"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <Trees />
+              <ProtectedRoute privileges={["trees"]}>
+                <Trees />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -245,7 +325,9 @@ function AppRoutes() {
           path="gallery"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <AdminGallery />
+              <ProtectedRoute privileges={["gallery"]}>
+                <AdminGallery />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -253,7 +335,9 @@ function AppRoutes() {
           path="books"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <AdminBooks />
+              <ProtectedRoute privileges={["books"]}>
+                <AdminBooks />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -261,7 +345,9 @@ function AppRoutes() {
           path="users"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <UsersPage />
+              <ProtectedRoute privileges={["users"]}>
+                <UsersPage />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -269,7 +355,39 @@ function AppRoutes() {
           path="settings"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <Settings />
+              <ProtectedRoute privileges={["settings"]}>
+                <Settings />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="footer-settings"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute privileges={["footer-settings", "settings"]}>
+                <FooterSettings />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="hero-images"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute privileges={["hero-images"]}>
+                <HeroImages />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="background-images"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute privileges={["background-images"]}>
+                <BackgroundImages />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -277,7 +395,9 @@ function AppRoutes() {
           path="activity"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <ActivityLog />
+              <ProtectedRoute privileges={["activity"]}>
+                <ActivityLog />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -285,7 +405,9 @@ function AppRoutes() {
           path="audios"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <AdminAudios />
+              <ProtectedRoute privileges={["audios"]}>
+                <AdminAudios />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -293,7 +415,9 @@ function AppRoutes() {
           path="documents"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <AdminDocuments />
+              <ProtectedRoute privileges={["documents"]}>
+                <AdminDocuments />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -301,7 +425,9 @@ function AppRoutes() {
           path="articles"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <AdminArticles />
+              <ProtectedRoute privileges={["articles"]}>
+                <AdminArticles />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -309,7 +435,19 @@ function AppRoutes() {
           path="suggestions"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <AdminSuggestions />
+              <ProtectedRoute privileges={["suggestions"]}>
+                <AdminSuggestions />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="validation-approvals"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute privileges={["validation-approvals"]}>
+                <ValidationApprovals />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -317,7 +455,9 @@ function AppRoutes() {
           path="newsletter"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <NewsletterSubscribers />
+              <ProtectedRoute privileges={["newsletter"]}>
+                <NewsletterSubscribers />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -325,7 +465,9 @@ function AppRoutes() {
           path="contact-messages"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <ContactMessages />
+              <ProtectedRoute privileges={["contact-messages"]}>
+                <ContactMessages />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -333,7 +475,49 @@ function AppRoutes() {
           path="approvals"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <SuperAdminApprovals />
+              <ProtectedRoute roles={[3]}>
+                <SuperAdminApprovals />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="password-reset-requests"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute roles={[3]}>
+                <PasswordResetRequests />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="account-deletion-requests"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute roles={[3]}>
+                <AccountDeletionRequests />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="role-distribution"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute roles={[3]}>
+                <RoleDistribution />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="admins"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute roles={[3]}>
+                <AdminManagement />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -341,7 +525,9 @@ function AppRoutes() {
           path="admin-management"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <AdminManagement />
+              <ProtectedRoute roles={[3]}>
+                <AdminManagement />
+              </ProtectedRoute>
             </Suspense>
           }
         />
@@ -349,7 +535,9 @@ function AppRoutes() {
           path="user-approvals"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <UserApprovals />
+              <ProtectedRoute privileges={["validation-approvals"]}>
+                <UserApprovals />
+              </ProtectedRoute>
             </Suspense>
           }
         />

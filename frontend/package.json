@@ -8,6 +8,7 @@
     "start": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "audit:translations": "node scripts/audit-translations.cjs",
     "preview": "vite preview",
     "test": "vitest"
   },

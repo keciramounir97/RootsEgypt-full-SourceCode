@@ -7,6 +7,7 @@ export const UPLOADS_DIR = path.join(__dirname, '..', '..', '..', 'uploads');
 export const BOOK_UPLOADS_DIR = path.join(UPLOADS_DIR, 'books');
 export const TREE_UPLOADS_DIR = path.join(UPLOADS_DIR, 'trees');
 export const GALLERY_UPLOADS_DIR = path.join(UPLOADS_DIR, 'gallery');
+export const SITE_UPLOADS_DIR = path.join(UPLOADS_DIR, 'site');
 
 export const PRIVATE_UPLOADS_DIR = path.join(__dirname, '..', '..', '..', 'private_uploads');
 export const PRIVATE_BOOK_UPLOADS_DIR = path.join(PRIVATE_UPLOADS_DIR, 'books');
@@ -17,6 +18,7 @@ export const PRIVATE_TREE_UPLOADS_DIR = path.join(PRIVATE_UPLOADS_DIR, 'trees');
     BOOK_UPLOADS_DIR,
     TREE_UPLOADS_DIR,
     GALLERY_UPLOADS_DIR,
+    SITE_UPLOADS_DIR,
     PRIVATE_BOOK_UPLOADS_DIR,
     PRIVATE_TREE_UPLOADS_DIR,
 ].forEach((dir) => {

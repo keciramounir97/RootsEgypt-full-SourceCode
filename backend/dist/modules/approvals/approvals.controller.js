@@ -29,19 +29,23 @@ let ApprovalsController = class ApprovalsController {
         return this.approvalsService.findAllPasswordResetRequests(status);
     }
     async approvePasswordReset(id, req) {
-        return this.approvalsService.approvePasswordReset(id, req.user.userId);
+        var _a;
+        return this.approvalsService.approvePasswordReset(id, (_a = req.user.id) !== null && _a !== void 0 ? _a : req.user.userId);
     }
     async rejectPasswordReset(id, req) {
-        return this.approvalsService.rejectPasswordReset(id, req.user.userId);
+        var _a;
+        return this.approvalsService.rejectPasswordReset(id, (_a = req.user.id) !== null && _a !== void 0 ? _a : req.user.userId);
     }
     async getAccountDeletionRequests(status) {
         return this.approvalsService.findAllAccountDeletionRequests(status);
     }
     async approveAccountDeletion(id, req) {
-        return this.approvalsService.approveAccountDeletion(id, req.user.userId);
+        var _a;
+        return this.approvalsService.approveAccountDeletion(id, (_a = req.user.id) !== null && _a !== void 0 ? _a : req.user.userId);
     }
     async rejectAccountDeletion(id, req) {
-        return this.approvalsService.rejectAccountDeletion(id, req.user.userId);
+        var _a;
+        return this.approvalsService.rejectAccountDeletion(id, (_a = req.user.id) !== null && _a !== void 0 ? _a : req.user.userId);
     }
 };
 exports.ApprovalsController = ApprovalsController;
@@ -60,6 +64,7 @@ __decorate([
 ], ApprovalsController.prototype, "getPasswordResetRequests", null);
 __decorate([
     (0, common_1.Put)("password-reset/:id/approve"),
+    (0, common_1.Post)("password-reset/:id/approve"),
     __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -68,6 +73,7 @@ __decorate([
 ], ApprovalsController.prototype, "approvePasswordReset", null);
 __decorate([
     (0, common_1.Put)("password-reset/:id/reject"),
+    (0, common_1.Post)("password-reset/:id/reject"),
     __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -83,6 +89,7 @@ __decorate([
 ], ApprovalsController.prototype, "getAccountDeletionRequests", null);
 __decorate([
     (0, common_1.Put)("account-deletion/:id/approve"),
+    (0, common_1.Post)("account-deletion/:id/approve"),
     __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -91,6 +98,7 @@ __decorate([
 ], ApprovalsController.prototype, "approveAccountDeletion", null);
 __decorate([
     (0, common_1.Put)("account-deletion/:id/reject"),
+    (0, common_1.Post)("account-deletion/:id/reject"),
     __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),

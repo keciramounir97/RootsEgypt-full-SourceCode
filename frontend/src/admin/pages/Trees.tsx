@@ -42,26 +42,18 @@ import { useAuth } from "../components/AuthContext";
 
 const MAX_GEDCOM_BYTES = 50 * 1024 * 1024;
 
-interface TreeItem {
-  id: string | number;
-  title?: string;
-  description?: string;
-  archiveSource?: string;
-  documentCode?: string;
-  isPublic?: boolean;
-  hasGedcom?: boolean;
-  data_format?: string;
-  owner?: unknown;
-  owner_name?: string;
-  is_public?: boolean;
-  updatedAt?: string;
-  [key: string]: unknown;
-}
+const normalizeOwner = (tree) => normalizeTree(tree);
 
-interface PersonItem {
-  id?: string | number;
-  [key: string]: unknown;
-}
+const buildMockTrees = () =>
+  Array.from({ length: 10 }).map((_, i) => ({
+    id: `mock-tree-${i}`,
+    title: `RootsAbraham Sample Family ${i + 1}`,
+    description: `A sample Jewish family tree for testing the genealogy panel.`,
+    owner: "kameladmin",
+    isPublic: i % 2 === 0,
+    hasGedcom: true,
+    createdAt: new Date().toISOString(),
+  }));
 
 export default function Trees() {
   const { theme } = useThemeStore();
@@ -74,46 +66,48 @@ export default function Trees() {
 
   const isAdmin = user?.role === 1 || user?.role === 3;
 
-  const pageBg = isDark ? "bg-[#0d1b2a]" : "bg-[#f5f1e8]";
-  const text = isDark ? "text-[#f8f5ef]" : "text-[#0d1b2a]";
-  const card = isDark ? "bg-[#0d1b2a]" : "bg-white";
-  const border = isDark ? "border-white/10" : "border-[#e8dfca]";
+  const pageBg = isDark ? "bg-[#071827]" : "bg-[#f5f1e8]";
+  const text = isDark ? "text-white" : "text-[#162238]";
+  const card = isDark ? "bg-[#0f1f33]" : "bg-white";
+  const border = isDark ? "border-[#1a3048]" : "border-[#e8e4dc]";
   const metaPanel = isDark
-    ? "bg-white/5 border-white/10"
-    : "bg-[#0c4a6e]/5 border-[#e8dfca]/80";
+    ? "bg-[#1a3048]/50 border-[#1a3048]"
+    : "bg-[#24766f]/5 border-[#e8e4dc]";
 
   const hoverRow = isDark ? "hover:bg-white/5" : "hover:bg-black/[0.02]";
 
-  const inputBg = isDark ? "bg-[#0d1b2a]" : "bg-white";
-  const inputText = isDark ? "text-[#f8f5ef]" : "text-[#0d1b2a]";
+  const inputBg = isDark ? "bg-[#0f1f33]" : "bg-white";
+  const inputText = isDark ? "text-[#f8f5ef]" : "text-[#162238]";
 
   const [tab, setTab] = useState("my"); // my | public
 
   const [q, setQ] = useState("");
 
-  const [myTrees, setMyTrees] = useState<TreeItem[]>([]);
+  const [myTrees, setMyTrees] = useState([]);
 
-  const [publicTrees, setPublicTrees] = useState<TreeItem[]>([]);
+  const [publicTrees, setPublicTrees] = useState([]);
 
   const [loadingTrees, setLoadingTrees] = useState(true);
 
   const [treesError, setTreesError] = useState("");
 
-  const [selectedTree, setSelectedTree] = useState<TreeItem | null>(null);
+  const [selectedTree, setSelectedTree] = useState(null);
 
-  const [selectedScope, setSelectedScope] = useState<string | null>(null); // "my" | "public" | null
+  const [selectedScope, setSelectedScope] = useState(null); // "my" | "public" | null
 
   const [loadingGedcom, setLoadingGedcom] = useState(false);
 
   const [gedcomError, setGedcomError] = useState("");
 
-  const [people, setPeople] = useState<PersonItem[]>([]);
+  const [people, setPeople] = useState([]);
 
   const [saveFormat, setSaveFormat] = useState("gedcom"); // 'gedcom' | 'gedcomx_json' | 'gedcomx_xml' | 'gedcomx_gedx'
   const [treeForm, setTreeForm] = useState({
     title: "",
 
     description: "",
+
+    category: "",
 
     archiveSource: "",
 
@@ -134,9 +128,9 @@ export default function Trees() {
 
   const [deletingTree, setDeletingTree] = useState(false);
 
-  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoSaveTimerRef = useRef(null);
 
-  const autoSavePeopleRef = useRef<unknown>(null);
+  const autoSavePeopleRef = useRef(null);
 
   const autoSaveInFlightRef = useRef(false);
 
@@ -148,22 +142,28 @@ export default function Trees() {
     setTreesError("");
     setSaveError("");
 
-    const mergeById = (list: TreeItem[]) => {
+    const isMock =
+      import.meta.env.DEV &&
+      localStorage.getItem("mockupDataActive") === "true";
+
+    const mockTrees = isMock ? buildMockTrees() : [];
+
+    const mergeById = (list) => {
       const map = new Map();
 
-      list.forEach((item) => {
-        if (!item) return;
+      list.forEach((t) => {
+        if (!t) return;
 
-        map.set(String(item.id), item);
+        map.set(String(t.id), t);
       });
 
-      return Array.from(map.values()) as TreeItem[];
+      return Array.from(map.values());
     };
 
     let loadError = "";
 
     try {
-      const shouldFallbackAdminRead = (err: { response?: { status?: number } }) =>
+      const shouldFallbackAdminRead = (err) =>
         shouldFallbackRoute(err) ||
         err?.response?.status === 401 ||
         err?.response?.status === 403 ||
@@ -185,25 +185,33 @@ export default function Trees() {
       if (mineRes.status === "fulfilled") {
         const mine = mineRes.value?.data;
 
-        const myList = mergeById(
-          Array.isArray(mine)
-            ? mine.map((t) => normalizeTree(t, { isPublic: !!t?.is_public || !!t?.isPublic }))
-            : [],
-        );
+        const myList = mergeById([
+          ...(Array.isArray(mine) ? mine.map((t) => normalizeTree(t, { isPublic: !!t?.is_public || !!t?.isPublic })) : []),
+          ...mockTrees,
+        ]);
 
         setMyTrees(myList);
+      } else if (isMock) {
+        setMyTrees((prev) =>
+          Array.isArray(prev) && prev.length ? prev : mockTrees
+        );
       }
 
       if (pubRes.status === "fulfilled") {
         const pub = pubRes.value?.data;
 
-        const publicList = mergeById(
-          Array.isArray(pub)
-            ? pub.map((t) => normalizeTree(t, { isPublic: true }))
-            : [],
-        );
+        const publicList = mergeById([
+          ...(Array.isArray(pub) ? pub.map((t) => normalizeTree(t, { isPublic: true })) : []),
+          ...mockTrees.filter((t) => t.isPublic),
+        ]);
 
         setPublicTrees(publicList);
+      } else if (isMock) {
+        setPublicTrees((prev) =>
+          Array.isArray(prev) && prev.length
+            ? prev
+            : mockTrees.filter((t) => t.isPublic)
+        );
       }
 
       const err =
@@ -266,6 +274,7 @@ export default function Trees() {
       setTreeForm({
         title: "",
         description: "",
+        category: "",
         archiveSource: "",
         documentCode: "",
         isPublic: false,
@@ -280,6 +289,8 @@ export default function Trees() {
       title: selectedTree.title || "",
 
       description: selectedTree.description || "",
+
+      category: selectedTree.category || "",
 
       archiveSource: selectedTree.archiveSource || "",
 
@@ -304,7 +315,9 @@ export default function Trees() {
   const trees = tab === "public" ? publicTrees : myTrees;
 
   const canUpdateSelected =
-    selectedTree && (selectedScope === "my" || isAdmin);
+    selectedTree &&
+    !String(selectedTree.id).startsWith("mock-") &&
+    (selectedScope === "my" || isAdmin);
 
   const builderReadOnly = !!selectedTree && !canUpdateSelected;
 
@@ -320,7 +333,7 @@ export default function Trees() {
 
       const ownerValue =
         ownerRaw && typeof ownerRaw === "object"
-          ? (ownerRaw as { fullName?: string; email?: string }).fullName || (ownerRaw as { fullName?: string; email?: string }).email || ""
+          ? ownerRaw.fullName || ownerRaw.email || ""
           : ownerRaw || "";
 
       const owner = String(ownerValue).toLowerCase();
@@ -329,7 +342,7 @@ export default function Trees() {
     });
   }, [trees, q]);
 
-  const upsertTree = (list: TreeItem[], patch: TreeItem) => {
+  const upsertTree = (list, patch) => {
     const id = String(patch?.id);
 
     const existing = list.find((t) => String(t?.id) === id) || null;
@@ -343,25 +356,18 @@ export default function Trees() {
     id,
     title,
     description,
+    category,
     isPublic,
     hasGedcom,
     archiveSource,
     documentCode,
     data_format,
-  }: {
-    id: string | number;
-    title?: string;
-    description?: string;
-    isPublic?: boolean;
-    hasGedcom?: boolean;
-    archiveSource?: string;
-    documentCode?: string;
-    data_format?: string;
   }) => {
-    const patch: TreeItem = {
+    const patch = {
       id,
       title,
       description: description ?? "",
+      category: category ?? "",
       archiveSource: archiveSource ?? "",
       documentCode: documentCode ?? "",
       isPublic: !!isPublic,
@@ -391,7 +397,7 @@ export default function Trees() {
     });
   };
 
-  const openTree = async (tree: TreeItem) => {
+  const openTree = async (tree) => {
     setSelectedScope(tab);
 
     setSelectedTree(tree);
@@ -403,10 +409,142 @@ export default function Trees() {
     setLoadingGedcom(true);
 
     try {
-      if (!tree?.hasGedcom) {
-        setPeople([]);
+    if (!tree?.hasGedcom) {
+      setPeople([]);
+
+      peopleDirtyRef.current = false;
+
+      setSaveSuccess(t("tree_loaded", "Tree loaded."));
+
+      return;
+    }
+
+      if (String(tree.id).startsWith("mock-")) {
+        // Generate sample Jewish family members for local mock mode.
+
+        const familyName = tree.title.split(" ").pop() || "Levi";
+
+        const mockPeople = [
+          // Grandfather (Gen 0)
+
+          {
+            id: "m1",
+            names: { en: `David ${familyName}`, ar: `דוד ${familyName}` },
+            gender: "Male",
+            birthYear: "1920",
+            details: "The patriarch.",
+            color: "#f8f5ef",
+            children: ["m3", "m4"],
+            spouse: "m2",
+          },
+
+          {
+            id: "m2",
+            names: { en: `Miriam ${familyName}`, ar: `מרים ${familyName}` },
+            gender: "Female",
+            birthYear: "1925",
+            details: "Matriarch.",
+            color: "#f8f5ef",
+            children: ["m3", "m4"],
+            spouse: "m1",
+          },
+
+          // Children (Gen 1)
+
+          {
+            id: "m3",
+            names: { en: `Eli ${familyName}`, ar: `אלי ${familyName}` },
+            gender: "Male",
+            birthYear: "1950",
+            details: "Eldest son.",
+            color: "#f8f5ef",
+            father: "m1",
+            mother: "m2",
+            children: ["m5", "m6"],
+            spouse: "s1",
+          },
+
+          {
+            id: "m4",
+            names: { en: `Rachel ${familyName}`, ar: `רחל ${familyName}` },
+            gender: "Female",
+            birthYear: "1955",
+            details: "Daughter.",
+            color: "#f8f5ef",
+            father: "m1",
+            mother: "m2",
+            children: ["m7"],
+            spouse: "s2",
+          },
+
+          // Spouses (Gen 1)
+
+          {
+            id: "s1",
+            names: { en: "Leah Ben-David", ar: "לאה בן-דוד" },
+            gender: "Female",
+            birthYear: "1952",
+            details: "Spouse of Eli.",
+            color: "#f8f5ef",
+            spouse: "m3",
+            children: ["m5", "m6"],
+          },
+
+          {
+            id: "s2",
+            names: { en: "Isaac Cohen", ar: "יצחק כהן" },
+            gender: "Male",
+            birthYear: "1950",
+            details: "Spouse of Rachel.",
+            color: "#f8f5ef",
+            spouse: "m4",
+            children: ["m7"],
+          },
+
+          // Grandchildren (Gen 2)
+
+          {
+            id: "m5",
+            names: { en: `Noah ${familyName}`, ar: `נח ${familyName}` },
+            gender: "Male",
+            birthYear: "1980",
+            details: "Grandson.",
+            color: "#f8f5ef",
+            father: "m3",
+            mother: "s1",
+          },
+
+          {
+            id: "m6",
+            names: { en: `Sarah ${familyName}`, ar: `שרה ${familyName}` },
+            gender: "Female",
+            birthYear: "1985",
+            details: "Granddaughter.",
+            color: "#f8f5ef",
+            father: "m3",
+            mother: "s1",
+          },
+
+          {
+            id: "m7",
+            names: { en: `Benjamin Cohen`, ar: `בנימין כהן` },
+            gender: "Male",
+            birthYear: "1982",
+            details: "Grandson.",
+            color: "#f8f5ef",
+            father: "s2",
+            mother: "m4",
+          },
+        ];
+
+        setPeople(mockPeople);
+
         peopleDirtyRef.current = false;
+
         setSaveSuccess(t("tree_loaded", "Tree loaded."));
+
+        setLoadingGedcom(false);
+
         return;
       }
 
@@ -414,7 +552,7 @@ export default function Trees() {
       const tryAdmin = () => api.get(`/admin/trees/${tree.id}/gedcom`, opts);
       const tryMy = () => api.get(`/my/trees/${tree.id}/gedcom`, opts);
       const tryPublic = () => api.get(`/trees/${tree.id}/gedcom`, opts);
-      const fallbackGedcom = (err: { response?: { status?: number } }) =>
+      const fallbackGedcom = (err) =>
         err?.response?.status === 404 ||
         err?.response?.status === 403 ||
         err?.response?.status === 401 ||
@@ -424,23 +562,21 @@ export default function Trees() {
         tab === "public"
           ? [tryAdmin, tryPublic, tryMy]
           : [tryAdmin, tryMy, tryPublic],
-        fallbackGedcom,
+        fallbackGedcom
       );
 
-      const raw =
-        typeof res?.data === "string"
-          ? res.data
-          : res?.data && (res.data as any).data != null
-            ? String((res.data as any).data)
-            : "";
+      const raw = typeof res?.data === "string" ? res.data : (res?.data && (res.data as any).data != null ? String((res.data as any).data) : "");
       const isGedcomX = tree.data_format === "gedcomx";
       setPeople(isGedcomX ? parseGedcomX(raw) : parseGedcom(raw));
 
       peopleDirtyRef.current = false;
+
       setSaveSuccess(t("tree_loaded", "Tree loaded."));
     } catch (err) {
       setPeople([]);
+
       setGedcomError(getApiErrorMessage(err, "Failed to load tree file"));
+
       peopleDirtyRef.current = false;
       setSaveError(getApiErrorMessage(err, "Failed to load tree file"));
     } finally {
@@ -448,7 +584,120 @@ export default function Trees() {
     }
   };
 
-  const downloadTreeFile = async (tree: TreeItem, scope: string) => {
+  const shouldFallbackTreeWrite = (err) =>
+    shouldFallbackRoute(err) || err?.response?.status === 500;
+
+  const submitTree = async ({
+    treeId,
+
+    title,
+
+    description,
+
+    category,
+
+    archiveSource,
+
+    documentCode,
+
+    isPublic,
+
+    people = [],
+
+    includeFile = true,
+  }) => {
+    const safeTitle = String(title || "").trim();
+
+    if (!safeTitle) throw new Error("Title is required");
+
+    const fd = new FormData();
+
+    fd.append("title", safeTitle);
+
+    fd.append("description", String(description || ""));
+
+    const categoryValue = String(category || "").trim();
+    fd.append("category", categoryValue);
+
+    const archiveValue = String(archiveSource || "").trim();
+    if (archiveValue) fd.append("archiveSource", archiveValue);
+
+    const documentValue = String(documentCode || "").trim();
+    if (documentValue) fd.append("documentCode", documentValue);
+
+    fd.append("isPublic", String(!!isPublic));
+
+    if (includeFile) {
+      const safePeople = Array.isArray(people) ? people : [];
+      let content = "";
+      let mime = "text/plain";
+      let ext = "ged";
+      try {
+        if (saveFormat === "gedcom") {
+          content = buildGedcom(safePeople, locale, t);
+          mime = "text/plain";
+          ext = "ged";
+        } else if (saveFormat === "gedcom7") {
+          content = buildGedcom7(safePeople, locale, t);
+          mime = "text/plain";
+          ext = "ged";
+        } else {
+          if (saveFormat === "gedcomx_json") {
+            content = buildGedcomXJson(safePeople, locale, t);
+            mime = "application/json";
+            ext = "json";
+          } else {
+            content = buildGedcomXXml(safePeople, locale, t);
+            mime = saveFormat === "gedcomx_gedx" ? "application/xml" : "application/xml";
+            ext = saveFormat === "gedcomx_gedx" ? "gedx" : "xml";
+          }
+        }
+      } catch (err) {
+        throw new Error(
+          err?.message ||
+            (saveFormat === "gedcom7"
+              ? t("gedcom7_build_failed", "Failed to build GEDCOM 7.0")
+              : saveFormat === "gedcom"
+                ? t("gedcom_build_failed", "Failed to build GEDCOM")
+                : t("gedcomx_build_failed", "Failed to build GEDCOM X"))
+        );
+      }
+      const blob = new Blob([content], { type: mime });
+      if (blob.size > MAX_GEDCOM_BYTES) {
+        throw new Error(t("file_too_large", "File is too large (max 50MB)."));
+      }
+      const fileName = `${safeTitle}.${ext}`;
+      if (typeof File === "function") {
+        const file = new File([blob], fileName, { type: mime });
+        fd.append("file", file);
+      } else {
+        fd.append("file", blob, fileName);
+      }
+      if (saveFormat === "gedcom7") fd.append("dataFormat", "gedcom7");
+      else if (saveFormat === "gedcom") fd.append("dataFormat", "gedcom");
+      else if (saveFormat.startsWith("gedcomx")) fd.append("dataFormat", "gedcomx");
+    }
+
+    if (treeId) {
+      await requestWithFallback(
+        [
+          () => api.put(`/my/trees/${treeId}`, fd),
+          () => api.post(`/my/trees/${treeId}/save`, fd),
+        ],
+        shouldFallbackTreeWrite
+      );
+      return treeId;
+    }
+
+    const { data } = await requestWithFallback(
+      [() => api.post("/my/trees", fd)],
+      shouldFallbackTreeWrite
+    );
+
+    return data?.id;
+  };
+
+  const downloadTreeFile = async (tree, scope) => {
     if (!tree?.id) return;
     const endpoint =
       scope === "public"
@@ -524,6 +773,8 @@ export default function Trees() {
 
         description: nextDescription,
 
+        category: treeForm.category || "",
+
         archiveSource: treeForm.archiveSource || "",
 
         documentCode: treeForm.documentCode || "",
@@ -540,6 +791,7 @@ export default function Trees() {
           id: treeId,
           title: nextTitle,
           description: nextDescription,
+          category: treeForm.category || "",
           archiveSource: treeForm.archiveSource || "",
           documentCode: treeForm.documentCode || "",
           isPublic: nextIsPublic,
@@ -564,7 +816,7 @@ export default function Trees() {
     }
   };
 
-  const scheduleAutoSave = (nextPeople: PersonItem[]) => {
+  const scheduleAutoSave = (nextPeople) => {
     if (!canUpdateSelected) return;
 
     peopleDirtyRef.current = true;
@@ -637,6 +889,8 @@ export default function Trees() {
 
         description,
 
+        category: treeForm.category || "",
+
         archiveSource: treeForm.archiveSource || "",
 
         documentCode: treeForm.documentCode || "",
@@ -656,6 +910,7 @@ export default function Trees() {
           id: treeId,
           title,
           description,
+          category: treeForm.category || "",
           archiveSource: treeForm.archiveSource || "",
           documentCode: treeForm.documentCode || "",
           isPublic,
@@ -681,6 +936,7 @@ export default function Trees() {
             id: treeId,
             title,
             description,
+            category: treeForm.category || "",
             archiveSource: treeForm.archiveSource || "",
             documentCode: treeForm.documentCode || "",
             isPublic,
@@ -753,8 +1009,7 @@ export default function Trees() {
 
       setSaveSuccess(t("tree_deleted", "Tree deleted."));
     } catch (err) {
-      const deleteErr = err as { response?: { status?: number } };
-      if (deleteErr?.response?.status === 404) {
+      if (err?.response?.status === 404) {
         setMyTrees((prev) =>
           prev.filter((t) => String(t.id) !== String(deletedId))
         );
@@ -791,11 +1046,11 @@ export default function Trees() {
       <div
         className={`rounded-lg p-5 mb-6 border ${border}
 
-        bg-gradient-to-r from-[#0d1b2a]/10 to-[#556b2f]/10 heritage-panel heritage-panel--accent`}
+        bg-gradient-to-r from-[#0f2742]/10 to-[#24766f]/10 heritage-panel heritage-panel--accent`}
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
-            <Network className={`w-6 h-6 ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`} />
+            <Network className="w-6 h-6 text-[#24766f]" />
 
             <div>
               <h3 className="text-2xl font-bold">
@@ -805,7 +1060,7 @@ export default function Trees() {
               <p className="opacity-70">
                 {t(
                   "trees_builder_desc",
-                  "Public trees are visible to everyone; private trees are only for you."
+                  "Public trees are visible to everyone; private trees are only for you.",
                 )}
               </p>
             </div>
@@ -845,7 +1100,9 @@ export default function Trees() {
           <div
             className={`rounded-xl border ${border} ${card} p-5 shadow-md heritage-panel`}
           >
-            <div className={`text-lg font-bold mb-4 ${isDark ? 'text-[#f8f5ef]' : 'text-[#0d1b2a]'}`}>
+            <div
+              className={`text-lg font-bold mb-4 ${isDark ? "text-[#f8f5ef]" : "text-[#162238]"}`}
+            >
               {selectedTree
                 ? t("tree_details", "Tree Details")
                 : t("new_tree", "New Tree")}
@@ -853,8 +1110,11 @@ export default function Trees() {
 
             <div className="space-y-3">
               <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                  {t("tree_title", "Tree title")} <span className="text-red-500">*</span>
+                <label
+                  className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
+                >
+                  {t("tree_title", "Tree title")}{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={treeForm.title}
@@ -863,13 +1123,38 @@ export default function Trees() {
                   }
                   placeholder={t("tree_title", "Tree title")}
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText}
-                  focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25 focus:border-[#0c4a6e]/50 transition-all`}
+                  focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50 transition-all`}
                 />
               </div>
 
               <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                  {t("description", "Description")} <span className="text-xs opacity-60">({t("optional", "Optional")})</span>
+                <label
+                  className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
+                >
+                  {t("custom_category", "Custom Category")}{" "}
+                  <span className="text-xs opacity-60">
+                    ({t("optional", "Optional")})
+                  </span>
+                </label>
+                <input
+                  value={treeForm.category}
+                  onChange={(e) =>
+                    setTreeForm((s) => ({ ...s, category: e.target.value }))
+                  }
+                  placeholder={t("custom_category_placeholder", "Name this category...")}
+                  className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText}
+                  focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50 transition-all`}
+                />
+              </div>
+
+              <div>
+                <label
+                  className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
+                >
+                  {t("description", "Description")}{" "}
+                  <span className="text-xs opacity-60">
+                    ({t("optional", "Optional")})
+                  </span>
                 </label>
                 <textarea
                   value={treeForm.description}
@@ -879,28 +1164,41 @@ export default function Trees() {
                   placeholder={t("description", "Description (optional)")}
                   rows={3}
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText}
-                  focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25 focus:border-[#0c4a6e]/50 transition-all resize-none`}
+                  focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50 transition-all resize-none`}
                 />
               </div>
 
               <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                  {t("archive_source", "Archive Source")} <span className="text-xs opacity-60">({t("optional", "Optional")})</span>
+                <label
+                  className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
+                >
+                  {t("archive_source", "Archive Source")}{" "}
+                  <span className="text-xs opacity-60">
+                    ({t("optional", "Optional")})
+                  </span>
                 </label>
                 <input
                   value={treeForm.archiveSource}
                   onChange={(e) =>
-                    setTreeForm((s) => ({ ...s, archiveSource: e.target.value }))
+                    setTreeForm((s) => ({
+                      ...s,
+                      archiveSource: e.target.value,
+                    }))
                   }
                   placeholder={t("archive_source", "Archive Source (optional)")}
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText}
-                  focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25 focus:border-[#0c4a6e]/50 transition-all`}
+                  focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50 transition-all`}
                 />
               </div>
 
               <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                  {t("document_code", "Document Code")} <span className="text-xs opacity-60">({t("optional", "Optional")})</span>
+                <label
+                  className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
+                >
+                  {t("document_code", "Document Code")}{" "}
+                  <span className="text-xs opacity-60">
+                    ({t("optional", "Optional")})
+                  </span>
                 </label>
                 <input
                   value={treeForm.documentCode}
@@ -909,12 +1207,14 @@ export default function Trees() {
                   }
                   placeholder={t("document_code", "Document Code (optional)")}
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText}
-                  focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25 focus:border-[#0c4a6e]/50 transition-all`}
+                  focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50 transition-all`}
                 />
               </div>
 
-              <label className={`flex items-center gap-3 p-3 rounded-lg border ${border} 
-              ${isDark ? 'bg-white/5' : 'bg-[#f8f5ef]/50'} cursor-pointer transition-all hover:opacity-90`}>
+              <label
+                className={`flex items-center gap-3 p-3 rounded-lg border ${border} 
+              ${isDark ? "bg-white/5" : "bg-[#f8f5ef]/50"} cursor-pointer transition-all hover:opacity-90`}
+              >
                 <input
                   type="checkbox"
                   checked={treeForm.isPublic}
@@ -922,9 +1222,11 @@ export default function Trees() {
                     setTreeForm((s) => ({ ...s, isPublic: e.target.checked }))
                   }
                   className={`h-5 w-5 rounded border-2 ${border} 
-                  ${isDark ? 'accent-teal' : 'accent-[#0c4a6e]'} cursor-pointer`}
+                  ${isDark ? "accent-[#d9a441]" : "accent-[#24766f]"} cursor-pointer`}
                 />
-                <span className={`text-sm font-semibold ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
+                <span
+                  className={`text-sm font-semibold ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
+                >
                   {treeForm.isPublic
                     ? t("public", "Public")
                     : t("private", "Private")}
@@ -934,25 +1236,38 @@ export default function Trees() {
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <label className="flex items-center gap-2 text-sm font-medium">
-                <span className={isDark ? "text-[#e8dfca]" : "text-[#0c4a6e]"}>{t("save_file_as", "Save file as")}:</span>
+                <span className={isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}>
+                  {t("save_file_as", "Save file as")}:
+                </span>
                 <select
                   value={saveFormat}
                   onChange={(e) => setSaveFormat(e.target.value)}
                   className={`rounded-lg border ${border} px-3 py-2 text-sm ${inputBg} ${inputText}`}
                 >
-                  <option value="gedcom">{t("gedcom_format_551", "GEDCOM 5.5.1")}</option>
-                  <option value="gedcom7">{t("format_gedcom7", "GEDCOM 7.0")}</option>
-                  <option value="gedcomx_json">{t("gedcomx_format_json", "GEDCOM X (JSON)")}</option>
-                  <option value="gedcomx_xml">{t("gedcomx_format_xml", "GEDCOM X (XML)")}</option>
-                  <option value="gedcomx_gedx">{t("gedcomx_format_gedx", "GEDCOM X (.gedx)")}</option>
+                  <option value="gedcom">
+                    {t("gedcom_format_551", "GEDCOM 5.5.1")}
+                  </option>
+                  <option value="gedcom7">
+                    {t("format_gedcom7", "GEDCOM 7.0")}
+                  </option>
+                  <option value="gedcomx_json">
+                    {t("gedcomx_format_json", "GEDCOM X (JSON)")}
+                  </option>
+                  <option value="gedcomx_xml">
+                    {t("gedcomx_format_xml", "GEDCOM X (XML)")}
+                  </option>
+                  <option value="gedcomx_gedx">
+                    {t("gedcomx_format_gedx", "GEDCOM X (.gedx)")}
+                  </option>
                 </select>
               </label>
               <button
                 type="button"
                 className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg disabled:opacity-60
-                ${isDark 
-                  ? 'bg-[#0c4a6e] hover:bg-[#0c4a6e]/90 text-white' 
-                  : 'bg-[#0c4a6e] hover:bg-[#0c4a6e]/90 text-white'
+                ${
+                  isDark
+                    ? "bg-[#24766f] hover:bg-[#24766f]/90 text-white"
+                    : "bg-[#24766f] hover:bg-[#24766f]/90 text-white"
                 }`}
                 onClick={() => void saveCurrentAsTree()}
                 disabled={saving || loadingGedcom || deletingTree}
@@ -961,16 +1276,17 @@ export default function Trees() {
                 {saving
                   ? t("saving", "Saving...")
                   : canUpdateSelected
-                  ? t("update_tree", "Update Tree")
-                  : t("save_tree", "Save Tree")}
+                    ? t("update_tree", "Update Tree")
+                    : t("save_tree", "Save Tree")}
               </button>
 
               <button
                 type="button"
                 className={`px-4 py-2.5 rounded-lg border ${border} inline-flex items-center gap-2 font-medium transition-all
-                ${isDark 
-                  ? 'bg-white/10 hover:bg-white/15 text-white' 
-                  : 'bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]'
+                ${
+                  isDark
+                    ? "bg-white/10 hover:bg-white/15 text-white"
+                    : "bg-white hover:bg-[#f8f5ef] text-[#24766f]"
                 }`}
                 onClick={clearCanvas}
                 disabled={saving || loadingGedcom}
@@ -984,9 +1300,10 @@ export default function Trees() {
                 <button
                   type="button"
                   className={`px-4 py-2.5 rounded-lg border ${border} text-sm font-semibold inline-flex items-center gap-2 transition-all
-                  ${isDark 
-                    ? 'bg-red-600/80 hover:bg-red-600 text-white' 
-                    : 'bg-red-600 hover:bg-red-700 text-white'
+                  ${
+                    isDark
+                      ? "bg-red-600/80 hover:bg-red-600 text-white"
+                      : "bg-red-600 hover:bg-red-700 text-white"
                   }`}
                   onClick={() => void deleteTree()}
                   disabled={
@@ -1018,8 +1335,8 @@ export default function Trees() {
                 type="button"
                 className={`px-4 py-2.5 rounded-lg border text-sm font-semibold transition-all ${
                   tab === "my"
-                    ? `${isDark ? 'bg-[#0c4a6e] text-white border-[#0c4a6e] shadow-md' : 'bg-[#0c4a6e] text-white border-[#0c4a6e] shadow-md'}`
-                    : `${border} ${hoverRow} ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`
+                    ? `${isDark ? "bg-[#24766f] text-white border-[#24766f] shadow-md" : "bg-[#24766f] text-white border-[#24766f] shadow-md"}`
+                    : `${border} ${hoverRow} ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`
                 }`}
                 onClick={() => setTab("my")}
               >
@@ -1030,8 +1347,8 @@ export default function Trees() {
                 type="button"
                 className={`px-4 py-2.5 rounded-lg border text-sm font-semibold transition-all ${
                   tab === "public"
-                    ? `${isDark ? 'bg-[#0c4a6e] text-white border-[#0c4a6e] shadow-md' : 'bg-[#0c4a6e] text-white border-[#0c4a6e] shadow-md'}`
-                    : `${border} ${hoverRow} ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`
+                    ? `${isDark ? "bg-[#24766f] text-white border-[#24766f] shadow-md" : "bg-[#24766f] text-white border-[#24766f] shadow-md"}`
+                    : `${border} ${hoverRow} ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`
                 }`}
                 onClick={() => setTab("public")}
               >
@@ -1040,13 +1357,15 @@ export default function Trees() {
             </div>
 
             <div className="relative mb-4">
-              <Search className={`w-4 h-4 absolute rtl:right-3 rtl:left-auto ltr:left-3 top-1/2 -translate-y-1/2 ${isDark ? 'text-teal/60' : 'text-[#0c4a6e]/60'}`} />
+              <Search
+                className={`w-4 h-4 absolute rtl:right-3 rtl:left-auto ltr:left-3 top-1/2 -translate-y-1/2 ${isDark ? "text-[#d9a441]/60" : "text-[#24766f]/60"}`}
+              />
 
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 className={`heritage-input w-full rtl:pr-9 rtl:pl-3 ltr:pl-9 ltr:pr-3 py-2.5 rounded-lg border
-                focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25 focus:border-[#0c4a6e]/50
+                focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50
                 transition-all ${inputBg} ${inputText} ${border}`}
                 placeholder={t("search_trees", "Search trees...")}
               />
@@ -1080,24 +1399,24 @@ export default function Trees() {
                         }
                       }}
                       className={`${card} border ${border} rounded-xl shadow-md overflow-hidden transition-all 
-                      focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/40 cursor-pointer
+                      focus:outline-none focus:ring-2 focus:ring-[#24766f]/40 cursor-pointer
                       ${
                         active
-                          ? `ring-2 ring-[#0c4a6e]/50 border-[#0c4a6e] ${isDark ? 'bg-[#0c4a6e]/20' : 'bg-[#0c4a6e]/10'} shadow-lg scale-[1.02]`
-                          : `hover:shadow-lg hover:border-[#0c4a6e]/30 ${hoverRow}`
+                          ? `ring-2 ring-[#24766f]/50 border-[#24766f] ${isDark ? "bg-[#24766f]/20" : "bg-[#24766f]/10"} shadow-lg scale-[1.02]`
+                          : `hover:shadow-lg hover:border-[#24766f]/30 ${hoverRow}`
                       }`}
                     >
-                      <div className="p-4 border-b border-white/5 bg-gradient-to-r from-primary-brown/10 via-teal/5 to-terracotta/5">
+                      <div className="p-4 border-b border-white/5 bg-gradient-to-r from-[#24766f]/10 to-transparent">
                         <div className="flex items-start justify-between gap-4">
                           <div className="min-w-0">
-                            <p className="text-[10px] uppercase tracking-[0.3em] text-[#0c4a6e] opacity-70">
+                            <p className="text-[10px] uppercase tracking-[0.3em] text-[#24766f] opacity-70">
                               {t("trees", "Family Trees")}
                             </p>
                             <h3 className="text-xl font-bold truncate">
                               {tree.title}
                             </h3>
                             <p className="text-sm opacity-70">
-                              {String(tree.owner || t("unknown", "Unknown"))}
+                              {tree.owner || t("unknown", "Unknown")}
                             </p>
                           </div>
                           <span
@@ -1116,11 +1435,17 @@ export default function Trees() {
                             t("no_description", "No description.")}
                         </p>
 
+                        {tree.category ? (
+                          <span className="inline-flex w-fit px-2.5 py-1 rounded-full bg-[#24766f]/10 text-[#24766f] text-xs font-semibold">
+                            {tree.category}
+                          </span>
+                        ) : null}
+
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div
                             className={`${metaPanel} border rounded-xl p-3 flex items-start gap-2`}
                           >
-                            <Archive className="w-4 h-4 text-terracotta mt-0.5" />
+                            <Archive className="w-4 h-4 text-[#d9a441] mt-0.5" />
                             <div>
                               <p className="text-[10px] uppercase opacity-60">
                                 {t("archive_source", "Archive Source")}
@@ -1134,7 +1459,7 @@ export default function Trees() {
                           <div
                             className={`${metaPanel} border rounded-xl p-3 flex items-start gap-2`}
                           >
-                            <FileText className="w-4 h-4 text-teal mt-0.5" />
+                            <FileText className="w-4 h-4 text-[#d9a441] mt-0.5" />
                             <div>
                               <p className="text-[10px] uppercase opacity-60">
                                 {t("document_code", "Document Code")}
@@ -1153,18 +1478,23 @@ export default function Trees() {
                             ? t("has_file", "Has file")
                             : t("no_file", "No file")}
                           {tree.hasGedcom && tree.data_format === "gedcomx" ? (
-                            <span className="px-2 py-0.5 rounded bg-[#0c4a6e]/20 text-[#0c4a6e] dark:text-teal font-medium">
+                            <span className="px-2 py-0.5 rounded bg-[#24766f]/20 text-[#24766f] dark:text-[#d9a441] font-medium">
                               {t("saved_with_gedcomx", "Saved with GEDCOM X")}
                             </span>
                           ) : null}
                           {tree.hasGedcom && tree.data_format === "gedcom7" ? (
-                            <span className="px-2 py-0.5 rounded bg-[#0c4a6e]/20 text-[#0c4a6e] dark:text-teal font-medium">
+                            <span className="px-2 py-0.5 rounded bg-[#24766f]/20 text-[#24766f] dark:text-[#d9a441] font-medium">
                               {t("saved_with_gedcom7", "Saved with GEDCOM 7.0")}
                             </span>
                           ) : null}
-                          {tree.hasGedcom && tree.data_format !== "gedcomx" && tree.data_format !== "gedcom7" ? (
-                            <span className="px-2 py-0.5 rounded bg-[#0c4a6e]/10 text-[#0c4a6e]/80 dark:text-[#e8dfca]/80 font-medium">
-                              {t("saved_with_gedcom551", "Saved with GEDCOM 5.5.1")}
+                          {tree.hasGedcom &&
+                          tree.data_format !== "gedcomx" &&
+                          tree.data_format !== "gedcom7" ? (
+                            <span className="px-2 py-0.5 rounded bg-[#24766f]/10 text-[#24766f]/80 dark:text-[#e8e4dc]/80 font-medium">
+                              {t(
+                                "saved_with_gedcom551",
+                                "Saved with GEDCOM 5.5.1",
+                              )}
                             </span>
                           ) : null}
                           {loadingGedcom && active ? (
@@ -1186,21 +1516,24 @@ export default function Trees() {
                             <Eye className="w-4 h-4" />
                             {t("view_tree", "View Tree")}
                           </button>
-                        {canDownload ? (
+                          {canDownload ? (
                             <button
                               type="button"
                               onClick={(event) => {
                                 event.stopPropagation();
                                 void downloadTreeFile(tree, tab);
                               }}
-                              className="interactive-btn btn-neu btn-neu--primary px-4 py-2 inline-flex items-center gap-2"
+                              className="px-4 py-2 rounded-md text-white font-medium bg-gradient-to-r from-[#0f2742] to-[#d9a441] hover:opacity-90 transition inline-flex items-center gap-2"
                             >
                               <Download className="w-4 h-4" />
                               {tree.data_format === "gedcomx"
                                 ? t("download_gedcomx", "Download GEDCOM X")
                                 : tree.data_format === "gedcom7"
                                   ? t("download_gedcom7", "Download GEDCOM 7.0")
-                                  : t("download_gedcom551", "Download GEDCOM 5.5.1")}
+                                  : t(
+                                      "download_gedcom551",
+                                      "Download GEDCOM 5.5.1",
+                                    )}
                             </button>
                           ) : null}
                         </div>
@@ -1217,11 +1550,15 @@ export default function Trees() {
           className={`rounded-xl border ${border} ${card} p-6 w-full shadow-md heritage-panel`}
         >
           <div className="mb-4">
-            <div className={`text-xl font-bold mb-1 ${isDark ? 'text-[#f8f5ef]' : 'text-[#0d1b2a]'}`}>
+            <div
+              className={`text-xl font-bold mb-1 ${isDark ? "text-[#f8f5ef]" : "text-[#162238]"}`}
+            >
               {selectedTree ? selectedTree.title : t("canvas", "Canvas")}
             </div>
 
-            <div className={`text-sm ${isDark ? 'text-[#e8dfca]/70' : 'text-[#6c5249]'}`}>
+            <div
+              className={`text-sm ${isDark ? "text-[#e8e4dc]/70" : "text-[#162238]"}`}
+            >
               {selectedTree
                 ? selectedTree.description || ""
                 : t("canvas_hint", "Import a file or add people to start.")}
@@ -1251,7 +1588,13 @@ export default function Trees() {
             <TreesBuilder
               people={people}
               setPeople={setPeople}
-              dataFormat={selectedTree?.data_format === "gedcomx" ? "gedcomx" : selectedTree?.data_format === "gedcom7" ? "gedcom7" : "gedcom"}
+              dataFormat={
+                selectedTree?.data_format === "gedcomx"
+                  ? "gedcomx"
+                  : selectedTree?.data_format === "gedcom7"
+                    ? "gedcom7"
+                    : "gedcom"
+              }
               onAutoSave={scheduleAutoSave}
               readOnly={builderReadOnly}
             />
@@ -1261,4 +1604,3 @@ export default function Trees() {
     </div>
   );
 }
-

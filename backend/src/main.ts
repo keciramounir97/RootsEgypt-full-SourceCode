@@ -183,6 +183,21 @@ async function ensureCriticalSchema(knex: Knex) {
 
     // ── Initial schema tables (may be missing if migration was recorded done but partially ran) ──
 
+    if (await knex.schema.hasTable("gallery")) {
+      if (!(await knex.schema.hasColumn("gallery", "seed_key"))) {
+        await knex.schema.alterTable("gallery", (t) =>
+          t.string("seed_key", 120).nullable(),
+        );
+        console.log("Schema patch: added gallery.seed_key");
+      }
+      if (!(await knex.schema.hasColumn("gallery", "show_details"))) {
+        await knex.schema.alterTable("gallery", (t) =>
+          t.boolean("show_details").defaultTo(true).nullable(),
+        );
+        console.log("Schema patch: added gallery.show_details");
+      }
+    }
+
     // activity_logs
     if (
       (await knex.schema.hasTable("users")) &&
@@ -333,6 +348,8 @@ async function ensureCriticalSchema(knex: Knex) {
         t.string("location");
         t.string("year");
         t.string("photographer");
+        t.string("seed_key", 120).nullable();
+        t.boolean("show_details").defaultTo(true).nullable();
         t.dateTime("created_at").defaultTo(knex.fn.now());
         t.dateTime("updated_at").defaultTo(knex.fn.now());
       });
@@ -410,6 +427,31 @@ async function ensureCriticalSchema(knex: Knex) {
     }
 
     console.log("🟢 Critical schema check complete");
+    if (
+      (await knex.schema.hasTable("users")) &&
+      !(await knex.schema.hasTable("suggestions"))
+    ) {
+      await knex.schema.createTable("suggestions", (t) => {
+        t.increments("id");
+        t.string("type", 80).notNullable().defaultTo("content");
+        t.string("category", 255).nullable();
+        t.string("content_title", 255).nullable();
+        t.integer("user_id").unsigned().nullable();
+        t.string("user_name", 255).nullable();
+        t.string("user_email", 255).nullable();
+        t.string("user_phone", 80).nullable();
+        t.text("message").nullable();
+        t.string("status", 20).notNullable().defaultTo("pending");
+        t.integer("processed_by").unsigned().nullable();
+        t.dateTime("processed_at").nullable();
+        t.dateTime("created_at").defaultTo(knex.fn.now());
+        t.dateTime("updated_at").defaultTo(knex.fn.now());
+        t.index(["status", "created_at"]);
+        t.index(["type", "status"]);
+        t.index(["user_id"]);
+      });
+      console.log("Schema patch: created suggestions table");
+    }
   } catch (err: any) {
     console.error("🔴 ensureCriticalSchema error:", err?.message || err);
   }

@@ -4,6 +4,7 @@ import { useThemeStore } from "../../store/theme";
 import { api } from "../../api/client";
 import { useAuth } from "../components/AuthContext";
 import { useTranslation } from "../../context/TranslationContext";
+import { notifyAdmin, notifyAdminSaved } from "../utils/notifications";
 
 const LANGUAGES = [
   { value: "en", label: "English" },
@@ -110,13 +111,15 @@ export default function Settings() {
         notifyAdmins: !!settings.notifyAdmins,
         activityRetentionDays: Number(settings.activityRetentionDays) || 90,
       });
-      setSuccess("Settings saved.");
+      setSuccess(t("settings_saved", "Settings saved."));
+      notifyAdminSaved(t("settings_saved", "Settings saved."));
     } catch (err: any) {
-      setError(
+      const message =
         err?.response?.data?.message ||
           err?.userMessage ||
-          t("save_settings_failed", "Save settings failed")
-      );
+          t("save_settings_failed", "Save settings failed");
+      setError(message);
+      notifyAdmin(message, "error");
     } finally {
       setSavingSettings(false);
     }
@@ -132,13 +135,15 @@ export default function Settings() {
         phone: profile.phone.trim(),
       });
       await refreshMe?.();
-      setSuccess("Profile updated.");
+      setSuccess(t("profile_updated", "Profile updated."));
+      notifyAdminSaved(t("profile_saved", "Profile saved."));
     } catch (err: any) {
-      setError(
+      const message =
         err?.response?.data?.message ||
           err?.userMessage ||
-          t("update_profile_failed", "Update profile failed")
-      );
+          t("update_profile_failed", "Update profile failed");
+      setError(message);
+      notifyAdmin(message, "error");
     } finally {
       setSavingProfile(false);
     }
@@ -394,6 +399,71 @@ export default function Settings() {
                 {savingProfile
                   ? t("saving", "Saving...")
                   : t("save_profile", "Save Profile")}
+              </button>
+            </div>
+            <div className="pt-2 grid md:grid-cols-2 gap-2">
+              <button
+                type="button"
+                className="px-4 py-2 rounded-md border border-amber-500/40 text-amber-600"
+                onClick={async () => {
+                  setError("");
+                  setSuccess("");
+                  try {
+                    await api.post("/user/requests/password-reset");
+                    const message = t(
+                      "password_reset_request_submitted",
+                      "Password reset request submitted for super-admin approval.",
+                    );
+                    setSuccess(message);
+                    notifyAdmin(message);
+                  } catch (err: any) {
+                    const message =
+                      err?.response?.data?.message ||
+                      err?.userMessage ||
+                      t(
+                        "password_reset_request_failed",
+                        "Failed to submit password reset request",
+                      );
+                    setError(message);
+                    notifyAdmin(message, "error");
+                  }
+                }}
+              >
+                {t("request_password_reset", "Request Password Reset")}
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 rounded-md border border-red-500/40 text-red-600"
+                onClick={async () => {
+                  setError("");
+                  setSuccess("");
+                  try {
+                    await api.post("/user/requests/account-deletion", {
+                      reason: t(
+                        "requested_from_profile_settings",
+                        "Requested from my profile settings",
+                      ),
+                    });
+                    const message = t(
+                      "account_deletion_request_submitted",
+                      "Account deletion request sent to super admin.",
+                    );
+                    setSuccess(message);
+                    notifyAdmin(message);
+                  } catch (err: any) {
+                    const message =
+                      err?.response?.data?.message ||
+                      err?.userMessage ||
+                      t(
+                        "account_deletion_request_failed",
+                        "Failed to submit account deletion request",
+                      );
+                    setError(message);
+                    notifyAdmin(message, "error");
+                  }
+                }}
+              >
+                {t("request_account_deletion", "Request Account Deletion")}
               </button>
             </div>
           </div>

@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.safeMoveFile = exports.safeUnlink = exports.resolveStoredFilePath = exports.PRIVATE_TREE_UPLOADS_DIR = exports.PRIVATE_BOOK_UPLOADS_DIR = exports.PRIVATE_UPLOADS_DIR = exports.GALLERY_UPLOADS_DIR = exports.TREE_UPLOADS_DIR = exports.BOOK_UPLOADS_DIR = exports.UPLOADS_DIR = void 0;
+exports.safeMoveFile = exports.safeUnlink = exports.resolveStoredFilePath = exports.PRIVATE_TREE_UPLOADS_DIR = exports.PRIVATE_BOOK_UPLOADS_DIR = exports.PRIVATE_UPLOADS_DIR = exports.SITE_UPLOADS_DIR = exports.GALLERY_UPLOADS_DIR = exports.TREE_UPLOADS_DIR = exports.BOOK_UPLOADS_DIR = exports.UPLOADS_DIR = void 0;
 const path = require("path");
 const fs = require("fs");
 exports.UPLOADS_DIR = path.join(__dirname, '..', '..', '..', 'uploads');
 exports.BOOK_UPLOADS_DIR = path.join(exports.UPLOADS_DIR, 'books');
 exports.TREE_UPLOADS_DIR = path.join(exports.UPLOADS_DIR, 'trees');
 exports.GALLERY_UPLOADS_DIR = path.join(exports.UPLOADS_DIR, 'gallery');
+exports.SITE_UPLOADS_DIR = path.join(exports.UPLOADS_DIR, 'site');
 exports.PRIVATE_UPLOADS_DIR = path.join(__dirname, '..', '..', '..', 'private_uploads');
 exports.PRIVATE_BOOK_UPLOADS_DIR = path.join(exports.PRIVATE_UPLOADS_DIR, 'books');
 exports.PRIVATE_TREE_UPLOADS_DIR = path.join(exports.PRIVATE_UPLOADS_DIR, 'trees');
@@ -14,6 +15,7 @@ exports.PRIVATE_TREE_UPLOADS_DIR = path.join(exports.PRIVATE_UPLOADS_DIR, 'trees
     exports.BOOK_UPLOADS_DIR,
     exports.TREE_UPLOADS_DIR,
     exports.GALLERY_UPLOADS_DIR,
+    exports.SITE_UPLOADS_DIR,
     exports.PRIVATE_BOOK_UPLOADS_DIR,
     exports.PRIVATE_TREE_UPLOADS_DIR,
 ].forEach((dir) => {

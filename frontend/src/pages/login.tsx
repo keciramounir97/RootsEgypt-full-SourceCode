@@ -1,28 +1,20 @@
 import { useThemeStore } from "../store/theme";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Lock, Mail, ShieldCheck, User } from "lucide-react";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  Lock,
+  LogIn,
+  Mail,
+  Shield,
+} from "lucide-react";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../admin/components/AuthContext";
 import { useTranslation } from "../context/TranslationContext";
-import RootsPageShell from "../components/RootsPageShell";
-import {
-  EyeOfHorus,
-  PapyrusCard,
-  EgyptianButton,
-  SandParticleField,
-  HieroglyphicBorder,
-  ScarabLoader,
-  EGYPT_COLORS,
-  EGYPT_EASE,
-} from "../components/motion/EgyptianMotion";
+import logoImage from "../assets/new-logo-dark.png";
 
-const DEMO_ACCOUNTS: Array<{
-  label: string;
-  email: string;
-  password: string;
-  color: string;
-}> = [];
+const bgImage = "/assets/egypt-bg.jpeg";
 
 export default function Login() {
   const { theme } = useThemeStore();
@@ -34,29 +26,24 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [notValidated, setNotValidated] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const mockMode = false;
 
   useEffect(() => {
-    if (user) {
-      navigate("/admin", { replace: true });
-    }
+    if (user) navigate("/admin", { replace: true });
   }, [user, navigate]);
 
   const isDark = theme === "dark";
-  const inputBg = isDark ? "bg-white/5" : "bg-black/5";
-  const borderColor = isDark ? "border-[#d4a843]/20" : "border-[#d4a843]/25";
-  const fillDemo = () => {};
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setNotValidated(false);
 
     const trimmedEmail = email.trim().toLowerCase();
     if (!trimmedEmail || !emailPattern.test(trimmedEmail)) {
-      setError(
-        t("invalid_email", "Please provide a valid email before logging in"),
-      );
+      setError(t("invalid_email", "Please provide a valid email before logging in"));
       return;
     }
     if (!password) {
@@ -66,233 +53,171 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const result = await login(trimmedEmail, password);
-      if (result) {
-        navigate("/admin", { replace: true });
+      const loggedInUser = await login(trimmedEmail, password);
+      if (loggedInUser) {
+        if (loggedInUser.status === "pending" || loggedInUser.status === "unvalidated") {
+          setNotValidated(true);
+        } else {
+          navigate("/admin", { replace: true });
+        }
       } else {
-        setError(
-          t("login_failed_no_user", "Login failed: No user data received"),
-        );
+        setError(t("login_failed_no_user", "Login failed: No user data received"));
       }
     } catch (err: any) {
-      setError(
+      const message =
         err.userMessage ||
-          err.response?.data?.message ||
-          err.message ||
-          t(
-            "invalid_credentials",
-            "Invalid credentials. Please check your email and password.",
-          ),
-      );
+        err.response?.data?.message ||
+        err.message ||
+        t("invalid_credentials", "Invalid credentials. Please check your email and password.");
+
+      if (
+        String(message).toLowerCase().includes("validat") ||
+        String(message).toLowerCase().includes("pending") ||
+        String(message).toLowerCase().includes("not approved") ||
+        err.response?.status === 403
+      ) {
+        setNotValidated(true);
+      } else {
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <RootsPageShell
-      hero={
-        <motion.div
-          className="space-y-3 flex flex-col items-center"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EGYPT_EASE.pharaoh }}
-        >
-          <EyeOfHorus
-            size={80}
-            color={isDark ? EGYPT_COLORS.gold : EGYPT_COLORS.terracotta}
-          />
-          <h1
-            className={`text-4xl font-bold text-center font-cinzel ${isDark ? "text-[#d4a843]" : "text-[#0c4a6e]"}`}
-          >
-            {t("welcome_back", "Welcome Back")}
-          </h1>
-          <p className="text-lg opacity-80 text-center max-w-md">
+    <div className="min-h-screen flex">
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#071827]/90 via-[#0f2742]/80 to-[#24766f]/60" />
+        <div className="relative z-10 flex flex-col justify-center items-center p-12 text-center">
+          <img src={logoImage} alt="RootsEgypt" className="w-24 h-24 rounded-2xl mb-8 shadow-2xl bg-white p-2 object-contain" />
+          <h2 className="text-4xl font-bold !text-white mb-4 drop-shadow-md font-cinzel">
+            RootsEgypt
+          </h2>
+          <p className="text-white/80 text-lg max-w-md leading-relaxed">
             {t(
               "login_with_email_password",
-              "Securely log in and continue building your Roots Egypt archive.",
+              "Securely log in and continue building your Egyptian family archive.",
             )}
           </p>
-        </motion.div>
-      }
-      className="min-h-[calc(100vh-120px)] relative"
-    >
-      {/* Sand particles background */}
-      <SandParticleField
-        count={12}
-        className="absolute inset-0 -z-[1] pointer-events-none"
-      />
+        </div>
+      </div>
 
-      <section className="roots-section">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease: EGYPT_EASE.pharaoh }}
-          className="relative mx-auto w-full max-w-md"
-        >
-          <PapyrusCard
-            isDark={isDark}
-            className="px-4 sm:px-6 md:px-10 py-6 sm:py-8 md:py-12"
-          >
-            {/* Top hieroglyphic border */}
-            <HieroglyphicBorder position="top" className="mb-4" />
+      <div className={`flex-1 flex items-center justify-center p-6 sm:p-10 ${isDark ? "bg-[#071827]" : "bg-[#f7f2e8]"}`}>
+        <div className="w-full max-w-md">
+          <div className="flex flex-col items-center mb-8 lg:hidden">
+            <img src={logoImage} alt="RootsEgypt" className="w-16 h-16 rounded-xl mb-4 shadow-lg bg-white p-1.5 object-contain" />
+            <h2 className="text-2xl font-bold font-cinzel">RootsEgypt</h2>
+          </div>
 
-            {/* Demo credentials panel — only shown in mock mode */}
-            {mockMode && (
-              <motion.div
-                className={`mb-6 rounded-xl border ${isDark ? "border-[#d4a843]/20 bg-[#d4a843]/5" : "border-[#d4a843]/25 bg-[#d4a843]/5"} p-4`}
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <ShieldCheck
-                    className={`w-4 h-4 ${isDark ? "text-[#d4a843]" : "text-[#c45c3e]"}`}
-                  />
-                  <span
-                    className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-[#d4a843]" : "text-[#c45c3e]"}`}
-                  >
-                    Demo Mode — click to fill credentials
-                  </span>
-                </div>
-                <div className="space-y-2">
-                  {DEMO_ACCOUNTS.map((acc, i) => (
-                    <motion.button
-                      key={acc.email}
-                      type="button"
-                      onClick={() => fillDemo(acc)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border ${isDark ? "border-[#d4a843]/15 hover:border-[#d4a843]/30 bg-white/5 hover:bg-white/10" : "border-[#d4a843]/15 hover:border-[#d4a843]/30 bg-white hover:bg-[#d4a843]/5"} transition-colors text-left`}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.4 + i * 0.1 }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <User className={`w-3.5 h-3.5 ${acc.color}`} />
-                        <span className={`text-xs font-semibold ${acc.color}`}>
-                          {acc.label}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <div
-                          className={`text-xs ${isDark ? "text-white/60" : "text-gray-500"}`}
-                        >
-                          {acc.email}
-                        </div>
-                        <div
-                          className={`text-xs ${isDark ? "text-white/40" : "text-gray-400"}`}
-                        >
-                          pw: {acc.password}
-                        </div>
-                      </div>
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
+          <div className="mb-8">
+            <h1 className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-[#0f2742]"}`}>
+              {t("welcome_back", "Welcome Back")}
+            </h1>
+            <p className={`text-base ${isDark ? "text-white/60" : "text-[#162238]/60"}`}>
+              {t("login_subtitle", "Sign in to your account")}
+            </p>
+          </div>
+
+          <form className="space-y-5" onSubmit={handleLogin}>
+            <div>
+              <label className={`text-sm font-medium mb-2 block ${isDark ? "text-white/80" : "text-[#162238]/80"}`}>
+                {t("email", "Email")}
+              </label>
+              <div className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all focus-within:border-[#d9a441] focus-within:shadow-lg focus-within:shadow-[#d9a441]/10 ${isDark ? "bg-white/5 border-white/10" : "bg-white border-[#e8e4dc]"}`}>
+                <Mail className="w-5 h-5 text-[#d9a441] shrink-0" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t("email_placeholder", "example@email.com")}
+                  className={`bg-transparent outline-none flex-1 text-base ${isDark ? "text-white placeholder:text-white/30" : "text-[#162238] placeholder:text-[#162238]/30"}`}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className={`text-sm font-medium mb-2 block ${isDark ? "text-white/80" : "text-[#162238]/80"}`}>
+                {t("password", "Password")}
+              </label>
+              <div className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all focus-within:border-[#d9a441] focus-within:shadow-lg focus-within:shadow-[#d9a441]/10 ${isDark ? "bg-white/5 border-white/10" : "bg-white border-[#e8e4dc]"}`}>
+                <Lock className="w-5 h-5 text-[#d9a441] shrink-0" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="********"
+                  className={`bg-transparent outline-none flex-1 text-base ${isDark ? "text-white placeholder:text-white/30" : "text-[#162238] placeholder:text-[#162238]/30"}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-[#d9a441]/60 hover:text-[#d9a441] transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <NavLink to="/resetpassword" className="text-sm text-[#d9a441] hover:text-[#24766f] transition-colors font-medium">
+                {t("forgot_password", "Forgot password?")}
+              </NavLink>
+            </div>
+
+            {error && (
+              <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
+                <p className="text-red-500 text-sm text-center font-medium">{error}</p>
+              </div>
             )}
 
-            <form className="space-y-6" onSubmit={handleLogin}>
-              <div className="space-y-2">
-                <label
-                  className={`text-sm font-semibold ${isDark ? "text-[#d4a843]/80" : "text-[#0c4a6e]"}`}
-                >
-                  {t("email", "Email")}
-                </label>
-                <motion.div
-                  className={`flex items-center gap-3 p-3 rounded-md border ${borderColor} ${inputBg} focus-within:border-[#d4a843]/50 transition-colors`}
-                  whileFocus={{ borderColor: `${EGYPT_COLORS.gold}80` }}
-                >
-                  <Mail
-                    className={`w-5 h-5 ${isDark ? "text-[#d4a843]/60" : "text-[#c45c3e]/60"}`}
-                  />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="example@email.com"
-                    className={`bg-transparent outline-none flex-1 ${isDark ? "text-white" : "text-[#091326]"}`}
-                  />
-                </motion.div>
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  className={`text-sm font-semibold ${isDark ? "text-[#d4a843]/80" : "text-[#0c4a6e]"}`}
-                >
-                  {t("password", "Password")}
-                </label>
-                <div
-                  className={`flex items-center gap-3 p-3 rounded-md border ${borderColor} ${inputBg} focus-within:border-[#d4a843]/50 transition-colors`}
-                >
-                  <Lock
-                    className={`w-5 h-5 ${isDark ? "text-[#d4a843]/60" : "text-[#c45c3e]/60"}`}
-                  />
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="********"
-                    className={`bg-transparent outline-none flex-1 ${isDark ? "text-white" : "text-[#091326]"}`}
-                  />
+            {notValidated && (
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                <div className="flex items-start gap-3">
+                  <Shield className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-amber-600 dark:text-amber-400 text-sm font-medium">
+                      {t("account_pending_validation", "Your account is pending validation.")}
+                    </p>
+                    <p className="text-amber-600/60 dark:text-amber-400/60 text-xs mt-1">
+                      {t("account_pending_desc", "A super admin must approve your account before you can log in.")}
+                    </p>
+                  </div>
                 </div>
               </div>
+            )}
 
-              <AnimatePresence>
-                {error && (
-                  <motion.p
-                    className="text-red-500 text-sm text-center"
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                  >
-                    {error}
-                  </motion.p>
-                )}
-              </AnimatePresence>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group w-full py-4 rounded-2xl text-white font-bold text-base shadow-xl bg-gradient-to-r from-[#0f2742] via-[#24766f] to-[#d9a441] hover:shadow-2xl hover:shadow-[#d9a441]/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  {t("please_wait", "Please wait...")}
+                </>
+              ) : (
+                <>
+                  <LogIn className="w-5 h-5" />
+                  {t("login", "Login")}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
 
-              <EgyptianButton
-                type="submit"
-                variant="gold"
-                isDark={isDark}
-                disabled={loading}
-                onClick={() => {}}
-                className="w-full"
-              >
-                {loading ? <ScarabLoader size={24} /> : t("login", "Login")}
-              </EgyptianButton>
-
-              {/* Gold divider */}
-              <div
-                className="w-full h-px"
-                style={{
-                  background: `linear-gradient(90deg, transparent, ${EGYPT_COLORS.gold}44, transparent)`,
-                }}
-              />
-
-              <div className="flex justify-between text-sm">
-                <NavLink
-                  to="/resetpassword"
-                  className={`interactive-link ${isDark ? "text-[#d4a843]/70 hover:text-[#d4a843]" : "text-[#c45c3e] hover:text-[#0c4a6e]"}`}
-                >
-                  {t("forgot_password", "Forgot password?")}
-                </NavLink>
-                <NavLink
-                  to="/signup"
-                  className={`interactive-link font-semibold ${isDark ? "text-[#d4a843]/70 hover:text-[#d4a843]" : "text-[#c45c3e] hover:text-[#0c4a6e]"}`}
-                >
-                  {t("create_account", "Create account")}
-                </NavLink>
-              </div>
-            </form>
-
-            {/* Bottom hieroglyphic border */}
-            <HieroglyphicBorder position="bottom" className="mt-4" />
-          </PapyrusCard>
-        </motion.div>
-      </section>
-    </RootsPageShell>
+            <p className={`text-center text-sm pt-2 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}>
+              {t("no_account_yet", "Don't have an account?")}{" "}
+              <NavLink to="/signup" className="text-[#24766f] font-bold hover:text-[#d9a441] transition-colors">
+                {t("create_account", "Create account")}
+              </NavLink>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 }

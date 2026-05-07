@@ -2,6 +2,7 @@ export declare const UPLOADS_DIR: string;
 export declare const BOOK_UPLOADS_DIR: string;
 export declare const TREE_UPLOADS_DIR: string;
 export declare const GALLERY_UPLOADS_DIR: string;
+export declare const SITE_UPLOADS_DIR: string;
 export declare const PRIVATE_UPLOADS_DIR: string;
 export declare const PRIVATE_BOOK_UPLOADS_DIR: string;
 export declare const PRIVATE_TREE_UPLOADS_DIR: string;

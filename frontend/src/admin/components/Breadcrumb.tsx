@@ -14,6 +14,19 @@ const LABELS: Record<string, string> = {
   contact: "Contact",
   audio: "Audio Library",
   articles: "Articles",
+  audios: "Audios",
+  documents: "Documents",
+  suggestions: "Suggestions",
+  newsletter: "Newsletter",
+  "contact-messages": "Contact Messages",
+  "validation-approvals": "validation_approvals",
+  "password-reset-requests": "password_reset_requests",
+  "account-deletion-requests": "account_deletion_requests",
+  "role-distribution": "role_distribution",
+  "hero-images": "hero_images",
+  "background-images": "background_images",
+  "footer-settings": "footer_settings",
+  admins: "admins",
 };
 
 export default function Breadcrumb() {
@@ -26,7 +39,7 @@ export default function Breadcrumb() {
 
   const segments = parts.map((p, i) => ({
     raw: p,
-    label: t(p) || LABELS[p] || p.charAt(0).toUpperCase() + p.slice(1),
+    label: LABELS[p] ? t(LABELS[p], LABELS[p]) : t(p, p.charAt(0).toUpperCase() + p.slice(1)),
     to: "/" + parts.slice(0, i + 1).join("/"),
   }));
 
@@ -71,4 +84,3 @@ export default function Breadcrumb() {
     </nav>
   );
 }
-

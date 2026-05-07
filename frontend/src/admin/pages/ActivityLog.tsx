@@ -12,14 +12,6 @@ import { api } from "../../api/client";
 import { useTranslation } from "../../context/TranslationContext";
 import { useAuth } from "../components/AuthContext";
 
-interface ActivityRow {
-  id: string | number;
-  type: string;
-  description: string;
-  user: string;
-  date: string;
-}
-
 export default function ActivityLog() {
   const { theme } = useThemeStore();
   const { t } = useTranslation();
@@ -29,17 +21,17 @@ export default function ActivityLog() {
 
   const [q, setQ] = useState("");
   const [type, setType] = useState("all");
-  const [rows, setRows] = useState<ActivityRow[]>([]);
+  const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const pageBg = isDark ? "bg-[#0d1b2a]" : "bg-[#f5f1e8]";
-  const text = isDark ? "text-[#f8f5ef]" : "text-[#0d1b2a]";
-  const card = isDark ? "bg-[#0d1b2a]" : "bg-white";
+  const pageBg = isDark ? "bg-[#0f1f33]" : "bg-[#f5f1e8]";
+  const text = isDark ? "text-[#f8f5ef]" : "text-[#162238]";
+  const card = isDark ? "bg-[#0f1f33]" : "bg-white";
   const subtle = isDark ? "bg-white/5" : "bg-black/[0.02]";
-  const border = isDark ? "border-white/10" : "border-[#e8dfca]";
-  const inputBg = isDark ? "bg-[#0d1b2a]" : "bg-white";
-  const inputText = isDark ? "text-[#f8f5ef]" : "text-[#0d1b2a]";
+  const border = isDark ? "border-[#1a3048]" : "border-[#e8e4dc]";
+  const inputBg = isDark ? "bg-[#071827]" : "bg-white";
+  const inputText = isDark ? "text-[#f8f5ef]" : "text-[#162238]";
 
   useEffect(() => {
     let active = true;
@@ -57,11 +49,10 @@ export default function ActivityLog() {
           });
           if (!active) return;
           setRows(Array.isArray(data) ? data : []);
-        } catch (err: unknown) {
+        } catch (err) {
           if (!active) return;
           setRows([]);
-          const apiErr = err as { response?: { data?: { message?: string } } };
-          setError(apiErr?.response?.data?.message || t("activity_load_failed", "Failed to load activity"));
+          setError(err.response?.data?.message || t("activity_load_failed", "Failed to load activity"));
         } finally {
           if (!active) return;
           setLoading(false);
@@ -76,33 +67,39 @@ export default function ActivityLog() {
   }, [q, type]);
 
   const iconFor = useMemo(
-    () => (rowType: string) => {
-      if (rowType === "security") return <ShieldAlert className="w-4 h-4" />;
-      if (rowType === "users") return <Users className="w-4 h-4" />;
-      if (rowType === "books") return <BookOpen className="w-4 h-4" />;
+    () => (t) => {
+      if (t === "security") return <ShieldAlert className="w-4 h-4" />;
+      if (t === "users") return <Users className="w-4 h-4" />;
+      if (t === "books") return <BookOpen className="w-4 h-4" />;
+      if (t === "notifications") return <Activity className="w-4 h-4" />;
       return <Activity className="w-4 h-4" />;
     },
     []
   );
 
-  const chipClass = (rowType: string) => {
-    if (rowType === "security") {
-      return isDark ? "bg-[#556b2f]/20 text-[#f8f5ef]" : "bg-[#556b2f]/15 text-[#0d1b2a]";
+  const chipClass = (t) => {
+    if (t === "security") {
+      return isDark
+        ? "bg-[#556b2f]/20 text-[#f8f5ef]"
+        : "bg-[#556b2f]/15 text-[#162238]";
     }
-    if (rowType === "users") return "bg-[#0c4a6e]/15 text-[#0c4a6e]";
-    if (rowType === "books") {
-      return isDark ? "bg-teal/20 text-[#f8f5ef]" : "bg-teal/15 text-[#0d1b2a]";
+    if (t === "users") return "bg-[#24766f]/15 text-[#24766f]";
+    if (t === "notifications") return "bg-[#24766f]/15 text-[#24766f]";
+    if (t === "books") {
+      return isDark
+        ? "bg-[#d9a441]/20 text-[#f8f5ef]"
+        : "bg-[#d9a441]/15 text-[#162238]";
     }
     return isDark
       ? "bg-white/10 text-[#f8f5ef]"
-      : "bg-black/[0.05] text-[#0d1b2a]";
+      : "bg-black/[0.05] text-[#162238]";
   };
 
   return (
     <div className={`p-4 min-h-screen ${pageBg} ${text} heritage-page-root`}>
       <div
         className={`rounded-lg p-5 mb-6 border ${border}
-        bg-gradient-to-r from-[#0c4a6e]/15 to-[#0d1b2a]/10 heritage-panel heritage-panel--accent`}
+        bg-gradient-to-r from-[#24766f]/15 to-[#0f1f33]/10 heritage-panel heritage-panel--accent`}
       >
         <h3 className="text-2xl font-bold">{t("activity", "Activity Log")}</h3>
         <p className="opacity-70">
@@ -116,7 +113,7 @@ export default function ActivityLog() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               className={`heritage-input w-full pl-9 pr-3 py-2 rounded-md border
-              focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25
+              focus:outline-none focus:ring-2 focus:ring-[#24766f]/25
               ${inputBg} ${inputText} ${border}`}
               placeholder={t("search_activity", "Search activity...")}
             />
@@ -128,13 +125,14 @@ export default function ActivityLog() {
               value={type}
               onChange={(e) => setType(e.target.value)}
               className={`heritage-input w-full pl-9 pr-3 py-2 rounded-md border
-              focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25
+              focus:outline-none focus:ring-2 focus:ring-[#24766f]/25
               ${inputBg} ${inputText} ${border}`}
             >
               <option value="all">{t("all_types", "All types")}</option>
               <option value="security">{t("security", "Security")}</option>
               <option value="users">{t("users", "Users")}</option>
               <option value="books">{t("books", "Books")}</option>
+              <option value="notifications">{t("notifications", "Notifications")}</option>
               <option value="trees">{t("trees", "Family Trees")}</option>
             </select>
           </div>
@@ -147,7 +145,9 @@ export default function ActivityLog() {
         </div>
       </div>
 
-      <div className={`rounded-lg shadow-sm border ${border} ${card} heritage-panel`}>
+      <div
+        className={`rounded-lg shadow-sm border ${border} ${card} heritage-panel`}
+      >
         <div className="overflow-x-auto">
           <table className="heritage-table w-full text-sm">
             <thead className={subtle}>
@@ -171,7 +171,10 @@ export default function ActivityLog() {
                     <div className="text-[#a0552a] font-semibold">{error}</div>
                     {!isAdmin ? (
                       <div className="text-sm opacity-70 mt-2">
-                        {t("admin_required", "This page requires an admin account.")}
+                        {t(
+                          "admin_required",
+                          "This page requires an admin account.",
+                        )}
                       </div>
                     ) : null}
                   </td>
@@ -193,7 +196,7 @@ export default function ActivityLog() {
                     <td className="py-3 px-4">
                       <span
                         className={`inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-semibold ${chipClass(
-                          row.type
+                          row.type,
                         )}`}
                       >
                         {iconFor(row.type)}

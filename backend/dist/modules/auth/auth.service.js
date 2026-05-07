@@ -98,6 +98,13 @@ let AuthService = class AuthService {
         try {
             const user = await this.usersService.findByEmail(normalizedEmail);
             if (user && user.password && (await bcrypt.compare(pass, user.password))) {
+                const status = String(user.status || "active").toLowerCase();
+                if (["pending", "unvalidated"].includes(status)) {
+                    throw new common_1.ForbiddenException("Your account is pending validation");
+                }
+                if (status === "rejected" || status === "banned") {
+                    throw new common_1.ForbiddenException("Your account is not allowed to log in");
+                }
                 const { password } = user, result = __rest(user, ["password"]);
                 return result;
             }

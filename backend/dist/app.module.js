@@ -21,6 +21,11 @@ const stats_module_1 = require("./modules/stats/stats.module");
 const search_module_1 = require("./modules/search/search.module");
 const health_module_1 = require("./modules/health/health.module");
 const approvals_module_1 = require("./modules/approvals/approvals.module");
+const articles_module_1 = require("./modules/articles/articles.module");
+const audios_module_1 = require("./modules/audios/audios.module");
+const documents_module_1 = require("./modules/documents/documents.module");
+const suggestions_module_1 = require("./modules/suggestions/suggestions.module");
+const settings_module_1 = require("./modules/settings/settings.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -42,6 +47,11 @@ exports.AppModule = AppModule = __decorate([
             search_module_1.SearchModule,
             health_module_1.HealthModule,
             approvals_module_1.ApprovalsModule,
+            articles_module_1.ArticlesModule,
+            audios_module_1.AudiosModule,
+            documents_module_1.DocumentsModule,
+            suggestions_module_1.SuggestionsModule,
+            settings_module_1.SettingsModule,
         ],
         controllers: [],
         providers: [],

@@ -1,3 +1,4 @@
+import { AUTO_TRANSLATIONS } from "./generatedTranslations";
 import { englishGeneratedTranslations } from "./englishGeneratedTranslations";
 
 export const DEFAULT_LOCALE = "en";
@@ -4098,7 +4099,89 @@ const humanizeTranslationKey = (key: string): string =>
     .trim()
     .replace(/\b\w/g, (char) => char.toUpperCase());
 
-Object.assign(translations.en, englishGeneratedTranslations);
+const parityTranslations: Record<SupportedLocale, Record<string, string>> = {
+  en: {
+    checking_authentication: "Checking authentication...",
+    validation_approvals: "Validation Approvals",
+    password_reset_requests: "Password Reset Requests",
+    account_deletion_requests: "Account Deletion Requests",
+    role_distribution: "Role Distribution",
+    hero_images: "Hero Images",
+    background_images: "Background Images",
+    footer_settings: "Footer Settings",
+    admins: "Admins",
+    request_password_reset: "Request Password Reset",
+    request_account_deletion: "Request Account Deletion",
+    password_reset_request_submitted:
+      "Password reset request submitted for super-admin approval.",
+    account_deletion_request_submitted:
+      "Account deletion request sent to super admin.",
+    no_password_reset_requests: "No password reset requests",
+    no_account_deletion_requests: "No account deletion requests",
+  },
+  fr: {
+    checking_authentication: "Verification de l'authentification...",
+    validation_approvals: "Validations de comptes",
+    password_reset_requests: "Demandes de reinitialisation",
+    account_deletion_requests: "Demandes de suppression de compte",
+    role_distribution: "Distribution des roles",
+    hero_images: "Images hero",
+    background_images: "Images d'arriere-plan",
+    footer_settings: "Parametres du pied de page",
+    admins: "Administrateurs",
+    request_password_reset: "Demander une reinitialisation",
+    request_account_deletion: "Demander la suppression du compte",
+    password_reset_request_submitted:
+      "Demande de reinitialisation envoyee pour approbation super admin.",
+    account_deletion_request_submitted:
+      "Demande de suppression envoyee au super admin.",
+    no_password_reset_requests: "Aucune demande de reinitialisation",
+    no_account_deletion_requests: "Aucune demande de suppression",
+  },
+  ar: {
+    checking_authentication: "جار التحقق من المصادقة...",
+    validation_approvals: "موافقات التحقق",
+    password_reset_requests: "طلبات اعادة تعيين كلمة المرور",
+    account_deletion_requests: "طلبات حذف الحساب",
+    role_distribution: "توزيع الادوار",
+    hero_images: "صور الواجهة",
+    background_images: "صور الخلفية",
+    footer_settings: "اعدادات التذييل",
+    admins: "المديرون",
+    request_password_reset: "طلب اعادة تعيين كلمة المرور",
+    request_account_deletion: "طلب حذف الحساب",
+    password_reset_request_submitted:
+      "تم ارسال طلب اعادة تعيين كلمة المرور لموافقة المدير العام.",
+    account_deletion_request_submitted:
+      "تم ارسال طلب حذف الحساب الى المدير العام.",
+    no_password_reset_requests: "لا توجد طلبات اعادة تعيين",
+    no_account_deletion_requests: "لا توجد طلبات حذف حساب",
+  },
+  es: {
+    checking_authentication: "Comprobando autenticacion...",
+    validation_approvals: "Aprobaciones de validacion",
+    password_reset_requests: "Solicitudes de restablecimiento",
+    account_deletion_requests: "Solicitudes de eliminacion de cuenta",
+    role_distribution: "Distribucion de roles",
+    hero_images: "Imagenes hero",
+    background_images: "Imagenes de fondo",
+    footer_settings: "Ajustes del pie de pagina",
+    admins: "Administradores",
+    request_password_reset: "Solicitar restablecimiento",
+    request_account_deletion: "Solicitar eliminacion de cuenta",
+    password_reset_request_submitted:
+      "Solicitud de restablecimiento enviada para aprobacion del super admin.",
+    account_deletion_request_submitted:
+      "Solicitud de eliminacion enviada al super admin.",
+    no_password_reset_requests: "No hay solicitudes de restablecimiento",
+    no_account_deletion_requests: "No hay solicitudes de eliminacion",
+  },
+};
+
+Object.assign(translations.en, AUTO_TRANSLATIONS.en, englishGeneratedTranslations, parityTranslations.en);
+Object.assign(translations.fr, AUTO_TRANSLATIONS.fr, parityTranslations.fr);
+Object.assign(translations.ar, AUTO_TRANSLATIONS.ar, parityTranslations.ar);
+Object.assign(translations.es, AUTO_TRANSLATIONS.es, parityTranslations.es);
 
 export const tForLocale = (locale: string, key: string, fallback?: string): string => {
   const dict = translations[locale] || translations[DEFAULT_LOCALE];

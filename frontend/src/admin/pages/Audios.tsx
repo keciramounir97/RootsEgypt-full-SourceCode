@@ -1,9 +1,25 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "../../store/theme";
 import { useTranslation } from "../../context/TranslationContext";
 import { api } from "../../api/client";
-import { getApiErrorMessage, requestWithFallback } from "../../api/helpers";
-import { Upload, Trash2, Edit, Music, Play, Pause, Clock } from "lucide-react";
+import {
+  getApiErrorMessage,
+  getApiRoot,
+  requestWithFallback,
+  shouldFallbackRoute,
+} from "../../api/helpers";
+import {
+  Upload,
+  Trash2,
+  Edit,
+  X,
+  Music,
+  Play,
+  Pause,
+  Clock,
+} from "lucide-react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import Toast from "../../components/Toast";
 
 interface Audio {
@@ -15,35 +31,59 @@ interface Audio {
   category?: string;
   isPublic?: boolean;
   createdAt?: string;
-  [key: string]: unknown;
 }
 
 export default function AdminAudios() {
   const { theme } = useThemeStore();
   const { t } = useTranslation();
   const isDark = theme === "dark";
+  const apiRoot = useMemo(() => getApiRoot(), []);
 
-  const pageBg = isDark ? "bg-[#0d1b2a]" : "bg-[#f5f1e8]";
-  const text = isDark ? "text-[#f8f5ef]" : "text-[#0d1b2a]";
-  const card = isDark ? "bg-[#0d1b2a]" : "bg-white";
-  const border = isDark ? "border-white/10" : "border-black/10";
-  const muted = isDark ? "text-[#7a8fa3]" : "text-gray-500";
+  const maxAudioBytes = 50 * 1024 * 1024;
+  const allowedAudioExts = new Set(["mp3", "wav", "m4a", "ogg", "aac"]);
 
   const [audios, setAudios] = useState<Audio[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [editingId, setEditingId] = useState<number | string | null>(null);
-  const [playingId, setPlayingId] = useState<number | string | null>(null);
-  const [toast, setToast] = useState({ message: "", tone: "success" });
   const [form, setForm] = useState({
     title: "",
     description: "",
     category: "",
     isPublic: true,
   });
-  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [playingId, setPlayingId] = useState<number | string | null>(null);
+  const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
+  const [toast, setToast] = useState({ message: "", tone: "success" });
+  const audioStats = useMemo(() => {
+    const total = audios.length;
+    const publicCount = audios.filter((a) => !!a.isPublic).length;
+    const withDuration = audios.filter((a) => Number(a.duration) > 0).length;
+    return { total, publicCount, withDuration };
+  }, [audios]);
 
-  const notify = useCallback((message: string, tone = "success") => {
+  const getExtension = (name: string) => {
+    const parts = String(name || "").toLowerCase().split(".");
+    return parts.length > 1 ? parts.pop() : "";
+  };
+
+  const validateAudioFile = (file: File, { required = false } = {}) => {
+    if (!file) {
+      return required ? t("audio_required", "Please select an audio file") : "";
+    }
+    if (file.size > maxAudioBytes) {
+      return t("file_too_large", "File is too large (max 50MB).");
+    }
+    const ext = getExtension(file.name);
+    const isAudioType = file.type ? file.type.startsWith("audio/") : false;
+    if (!isAudioType && ext && !allowedAudioExts.has(ext)) {
+      return t("invalid_audio_type", "Only audio files are allowed.");
+    }
+    return "";
+  };
+
+  const notify = useCallback((message: string, tone: "success" | "error" = "success") => {
     setToast({ message, tone });
   }, []);
 
@@ -55,342 +95,442 @@ export default function AdminAudios() {
     return () => clearTimeout(timer);
   }, [toast.message]);
 
-  const loadAudios = useCallback(
-    async ({ notify: notifyToast = false } = {}) => {
-      try {
-        setLoading(true);
-        const { data } = await requestWithFallback([
+  const resolveAudioUrl = (value: string | undefined) => {
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    if (raw.startsWith("http")) return raw;
+    let path = raw.startsWith("/") ? raw : `/${raw}`;
+    if (!path.startsWith("/uploads/")) {
+      path = `/uploads/audios/${raw.replace(/^\/+/, "")}`;
+    }
+    return `${apiRoot.replace(/\/+$/, "")}${path}`;
+  };
+
+  const loadAudios = useCallback(async ({ notify: notifyToast = false } = {}) => {
+    try {
+      setLoading(true);
+      const shouldFallbackAdminRead = (err: any) =>
+        shouldFallbackRoute(err) ||
+        err?.response?.status === 401 ||
+        err?.response?.status === 403 ||
+        err?.response?.status === 500;
+      const { data } = await requestWithFallback(
+        [
           () => api.get("/admin/audios"),
+          () => api.get("/my/audios"),
           () => api.get("/audios"),
-        ]);
-        setAudios(Array.isArray(data) ? data : []);
-        if (notifyToast) {
-          notify(t("audios_loaded", "Audios loaded."));
-        }
-      } catch (err: unknown) {
-        notify(getApiErrorMessage(err, "Failed to load audios"), "error");
-      } finally {
-        setLoading(false);
+        ],
+        shouldFallbackAdminRead
+      );
+      const list =
+        (data?.success && Array.isArray(data.data) ? data.data : null) ||
+        (Array.isArray(data?.audios) && data.audios) ||
+        (Array.isArray(data) && data) ||
+        [];
+      setAudios(list);
+      if (notifyToast) {
+        notify(t("audios_loaded", "Audio archives loaded."));
       }
-    },
-    [notify, t],
-  );
+    } catch (error) {
+      console.error("Failed to load audios:", error);
+      setAudios([]);
+      notify(
+        getApiErrorMessage(
+          error,
+          t("audios_load_failed", "Failed to load audios"),
+        ),
+        "error",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [notify, t]);
 
   useEffect(() => {
-    loadAudios();
+    AOS.init({ duration: 800, once: true });
+    loadAudios({ notify: true });
   }, [loadAudios]);
 
   const resetForm = () => {
-    setForm({ title: "", description: "", category: "", isPublic: true });
-    setAudioFile(null);
+    setForm({
+      title: "",
+      description: "",
+      category: "",
+      isPublic: true,
+    });
+    setSelectedFile(null);
     setEditingId(null);
   };
 
-  const handleSave = async () => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const audioError = validateAudioFile(file);
+    if (audioError) {
+      notify(audioError, "error");
+      e.target.value = "";
+      return;
+    }
+
+    setSelectedFile(file);
+  };
+
+  const handleEdit = (item: Audio) => {
+    setEditingId(item.id);
+    setForm({
+      title: item.title || "",
+      description: item.description || "",
+      category: item.category || "",
+      isPublic: item.isPublic ?? true,
+    });
+    setSelectedFile(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!form.title.trim()) {
+      notify(t("fill_required_fields", "Please fill all required fields"), "error");
+      return;
+    }
+
+    const formData = new FormData();
+    const audioError = selectedFile ? validateAudioFile(selectedFile) : (editingId ? "" : t("audio_required", "Please select an audio file"));
+    if (audioError) {
+      notify(audioError, "error");
+      return;
+    }
+    if (selectedFile) formData.append("audio", selectedFile);
+    formData.append("title", form.title.trim());
+    if (form.description.trim()) formData.append("description", form.description.trim());
+    formData.append("category", form.category || "");
+    formData.append("isPublic", String(form.isPublic));
+
+    const shouldFallbackWrite = (err: any) =>
+      shouldFallbackRoute(err) ||
+      err?.response?.status === 401 ||
+      err?.response?.status === 403 ||
+      err?.response?.status === 500;
+
     try {
-      setSaving(true);
-      const fd = new FormData();
-      fd.append("title", form.title);
-      fd.append("description", form.description);
-      fd.append("category", form.category);
-      fd.append("isPublic", String(form.isPublic));
-      if (audioFile) fd.append("audio", audioFile);
+      setUploading(true);
 
       if (editingId) {
-        await api.patch(`/admin/audios/${editingId}`, fd);
-        notify(t("audioUpdated", "Audio updated"));
+        await requestWithFallback(
+          [
+            () => api.put(`/admin/audios/${editingId}`, formData),
+            () => api.post(`/admin/audios/${editingId}/save`, formData),
+            () => api.put(`/my/audios/${editingId}`, formData),
+          ],
+          shouldFallbackWrite
+        );
+        notify(t("audio_updated", "Audio updated."));
       } else {
-        await api.post("/admin/audios", fd);
-        notify(t("audioCreated", "Audio created"));
+        await requestWithFallback(
+          [() => api.post("/admin/audios", formData), () => api.post("/my/audios", formData)],
+          shouldFallbackWrite
+        );
+        notify(t("audio_created", "Audio uploaded."));
       }
+
       resetForm();
-      loadAudios({ notify: true });
-    } catch (err: unknown) {
-      notify(getApiErrorMessage(err, "Failed to save audio"), "error");
+      loadAudios();
+    } catch (error) {
+      console.error("Operation failed:", error);
+      notify(getApiErrorMessage(error, t("operation_failed", "Operation failed")), "error");
     } finally {
-      setSaving(false);
+      setUploading(false);
     }
   };
 
   const handleDelete = async (id: number | string) => {
-    if (!confirm(t("confirmDelete", "Are you sure?"))) return;
+    if (!window.confirm(t("confirm_delete", "Are you sure you want to delete this item?"))) {
+      return;
+    }
+
     try {
-      await api.delete(`/admin/audios/${id}`);
-      notify(t("audioDeleted", "Audio deleted"));
-      loadAudios({ notify: true });
-    } catch (err: unknown) {
-      notify(getApiErrorMessage(err, "Failed to delete audio"), "error");
+      const shouldFallbackWrite = (err: any) =>
+        shouldFallbackRoute(err) ||
+        err?.response?.status === 401 ||
+        err?.response?.status === 403 ||
+        err?.response?.status === 500;
+      await requestWithFallback(
+        [
+          () => api.delete(`/admin/audios/${id}`),
+          () => api.delete(`/my/audios/${id}`),
+        ],
+        shouldFallbackWrite
+      );
+      loadAudios();
+      notify(t("audio_deleted", "Audio deleted."));
+    } catch (error) {
+      console.error("Delete failed:", error);
+      notify(getApiErrorMessage(error, t("delete_failed", "Failed to delete")), "error");
     }
   };
 
-  const startEdit = (audio: Audio) => {
-    setEditingId(audio.id);
-    setForm({
-      title: audio.title || "",
-      description: audio.description || "",
-      category: audio.category || "",
-      isPublic: audio.isPublic ?? true,
-    });
-    setAudioFile(null);
+  const handlePlayPause = (audio: Audio) => {
+    const url = resolveAudioUrl(audio.audioPath);
+    if (!url) return;
+
+    if (playingId === audio.id) {
+      audioRef?.pause();
+      setPlayingId(null);
+    } else {
+      if (audioRef) {
+        audioRef.pause();
+      }
+      const newAudio = new Audio(url);
+      newAudio.onended = () => setPlayingId(null);
+      newAudio.play();
+      setAudioRef(newAudio);
+      setPlayingId(audio.id);
+    }
   };
 
-  const togglePlay = (id: number | string) => {
-    setPlayingId((prev) => (prev === id ? null : id));
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
+
+  const cardBg = isDark ? "bg-[#0f1f33]" : "bg-white";
+  const border = isDark ? "border-[#d9a441]/20" : "border-[#24766f]/20";
+  const inputBg = isDark ? "bg-[#071827]" : "bg-[#f7f2e8]";
+  const textColor = isDark ? "text-[#f5f1e8]" : "text-[#162238]";
 
   return (
-    <div className={`min-h-screen ${pageBg} ${text} p-6`}>
+    <div className={`min-h-screen p-6 ${isDark ? "bg-[#071827]" : "bg-[#f5f1e8]"}`}>
       <Toast message={toast.message} tone={toast.tone} />
-      <div className="max-w-6xl mx-auto">
-        {/* Page Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div
-              className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isDark ? "bg-teal/15" : "bg-teal/10"}`}
-            >
-              <Music className="w-6 h-6 text-teal" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-cinzel font-bold">
-                {t("adminAudios", "Audio Management")}
-              </h1>
-              <p className={`text-sm ${muted}`}>
-                {audios.length} {t("totalItems", "items")}
-              </p>
-            </div>
-          </div>
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8" data-aos="fade-down">
+          <h1 className={`text-4xl font-bold font-serif ${isDark ? "text-[#d9a441]" : "text-[#24766f]"} mb-2`}>
+            {t("audio_management", "Audio Archives Management")}
+          </h1>
+          <p className={`${textColor} opacity-70`}>
+            {t("audio_desc", "Upload and manage oral histories, songs, and audio recordings")}
+          </p>
         </div>
 
-        {/* Form Card */}
-        <div
-          className={`${card} border ${border} rounded-2xl overflow-hidden mb-8 shadow-sm hover:shadow-md transition-shadow`}
-        >
-          <div
-            className={`px-6 py-4 border-b ${border} ${isDark ? "bg-gradient-to-r from-teal/5 to-transparent" : "bg-gradient-to-r from-teal/5 to-transparent"}`}
-          >
-            <h2 className="text-lg font-semibold flex items-center gap-2">
+        <div className="grid md:grid-cols-3 gap-3 mb-6">
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("total", "Total")}</p><p className="text-xl font-bold">{audioStats.total}</p></div>
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("public", "Public")}</p><p className="text-xl font-bold">{audioStats.publicCount}</p></div>
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("timed", "Timed")}</p><p className="text-xl font-bold">{audioStats.withDuration}</p></div>
+        </div>
+
+        {/* Upload/Edit Form */}
+        <div className={`${cardBg} border ${border} rounded-xl p-6 mb-8 shadow-lg`} data-aos="fade-up">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className={`text-2xl font-bold font-serif ${isDark ? "text-[#d9a441]" : "text-[#24766f]"} flex items-center gap-2`}>
               {editingId ? (
                 <>
-                  <Edit className="w-4 h-4 text-terracotta" />{" "}
-                  {t("editAudio", "Edit Audio")}
+                  <Edit className="w-6 h-6" />
+                  {t("edit_audio", "Edit Audio")}
                 </>
               ) : (
                 <>
-                  <Upload className="w-4 h-4 text-teal" />{" "}
-                  {t("addAudio", "Add Audio")}
+                  <Upload className="w-6 h-6" />
+                  {t("upload_new_audio", "Upload New Audio")}
                 </>
               )}
             </h2>
-          </div>
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wider opacity-60">
-                  {t("title", "Title")}
-                </label>
-                <input
-                  placeholder={t("title", "Title")}
-                  value={form.title}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, title: e.target.value }))
-                  }
-                  className={`w-full px-4 py-2.5 rounded-xl border ${border} ${isDark ? "bg-white/5" : "bg-black/5"} outline-none focus:ring-2 focus:ring-teal/30 transition-shadow`}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wider opacity-60">
-                  {t("category", "Category")}
-                </label>
-                <input
-                  placeholder={t("category", "Category")}
-                  value={form.category}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, category: e.target.value }))
-                  }
-                  className={`w-full px-4 py-2.5 rounded-xl border ${border} ${isDark ? "bg-white/5" : "bg-black/5"} outline-none focus:ring-2 focus:ring-teal/30 transition-shadow`}
-                />
-              </div>
-              <div className="space-y-1.5 md:col-span-2">
-                <label className="text-xs font-semibold uppercase tracking-wider opacity-60">
-                  {t("description", "Description")}
-                </label>
-                <textarea
-                  placeholder={t("description", "Description")}
-                  value={form.description}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, description: e.target.value }))
-                  }
-                  rows={3}
-                  className={`w-full px-4 py-2.5 rounded-xl border ${border} ${isDark ? "bg-white/5" : "bg-black/5"} outline-none focus:ring-2 focus:ring-teal/30 transition-shadow resize-none`}
-                />
-              </div>
-              <div className="flex items-center gap-3">
-                <label
-                  className={`px-4 py-2.5 rounded-xl border ${border} ${isDark ? "bg-white/5" : "bg-black/5"} cursor-pointer flex items-center gap-2 hover:border-teal/40 transition-colors`}
-                >
-                  <Upload className="w-4 h-4 text-teal" />
-                  <span className="text-sm truncate max-w-[180px]">
-                    {audioFile
-                      ? audioFile.name
-                      : t("chooseFile", "Choose audio file")}
-                  </span>
-                  <input
-                    type="file"
-                    accept="audio/*"
-                    className="hidden"
-                    onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
-                  />
-                </label>
-              </div>
-              <label
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl border ${border} ${isDark ? "bg-white/5" : "bg-black/5"} cursor-pointer w-fit hover:border-teal/40 transition-colors`}
+            {editingId && (
+              <button
+                onClick={resetForm}
+                className={`${textColor} opacity-70 hover:opacity-100 flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-red-500/10 transition`}
               >
-                <div
-                  className={`w-10 h-5 rounded-full transition-colors relative ${form.isPublic ? "bg-teal" : isDark ? "bg-white/20" : "bg-black/20"}`}
-                >
-                  <div
-                    className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${form.isPublic ? "translate-x-5" : "translate-x-0.5"}`}
-                  />
-                </div>
-                <input
-                  type="checkbox"
-                  checked={form.isPublic}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, isPublic: e.target.checked }))
-                  }
-                  className="hidden"
-                />
-                <span className="text-sm">{t("public", "Public")}</span>
+                <X className="w-5 h-5" />
+                {t("cancel", "Cancel")}
+              </button>
+            )}
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* File Input */}
+            <div>
+              <label className={`block text-sm font-semibold ${textColor} mb-2`}>
+                {t("select_audio", "Select Audio File")} {!editingId && <span className="text-red-500">*</span>}
+              </label>
+              <div
+                className={`border-2 border-dashed ${border} rounded-lg p-6 text-center cursor-pointer transition hover:border-[#d9a441] hover:bg-[#d9a441]/5`}
+                onClick={() => document.getElementById("audioInput")?.click()}
+              >
+                {selectedFile ? (
+                  <div className="py-4">
+                    <Music className={`w-12 h-12 mx-auto ${isDark ? "text-[#24766f]" : "text-[#d9a441]"} mb-2`} />
+                    <p className={`${textColor} font-medium`}>{selectedFile.name}</p>
+                    <p className={`${textColor} opacity-50 text-sm`}>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                  </div>
+                ) : (
+                  <div className="py-8">
+                    <Music className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`} />
+                    <p className={`${textColor} opacity-50 text-lg`}>{t("click_to_upload_audio", "Click to upload audio")}</p>
+                    <p className={`${textColor} opacity-30 text-sm mt-2`}>
+                      {t("audio_file_formats", "MP3, WAV, M4A, OGG (max 50MB)")}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <input
+                id="audioInput"
+                type="file"
+                accept="audio/*"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+            </div>
+
+            {/* Title */}
+            <div>
+              <label className={`block text-sm font-semibold ${textColor} mb-2`}>
+                {t("title", "Title")} <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                className={`w-full px-4 py-3 rounded-lg ${inputBg} border ${border} ${textColor} outline-none focus:border-[#d9a441]`}
+                placeholder={t("title_placeholder", "Audio title")}
+              />
+            </div>
+
+            {/* Category */}
+            <div>
+              <label className={`block text-sm font-semibold ${textColor} mb-2`}>
+                {t("category", "Category")}
+              </label>
+              <input
+                type="text"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className={`w-full px-4 py-3 rounded-lg ${inputBg} border ${border} ${textColor} outline-none`}
+                placeholder={t("custom_category_placeholder", "Name this category...")}
+              />
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className={`block text-sm font-semibold ${textColor} mb-2`}>
+                {t("description", "Description")}
+              </label>
+              <textarea
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                rows={3}
+                className={`w-full px-4 py-3 rounded-lg ${inputBg} border ${border} ${textColor} outline-none focus:border-[#d9a441] resize-none`}
+                placeholder={t("description_placeholder", "Description")}
+              />
+            </div>
+
+            {/* Public Toggle */}
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="isPublic"
+                checked={form.isPublic}
+                onChange={(e) => setForm({ ...form, isPublic: e.target.checked })}
+                className="w-5 h-5 rounded"
+              />
+              <label htmlFor="isPublic" className={`${textColor} font-medium`}>
+                {t("make_public", "Make Public")}
               </label>
             </div>
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={handleSave}
-                disabled={saving || !form.title}
-                className="px-6 py-2.5 bg-gradient-to-r from-teal to-tealDark text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-teal/25 disabled:opacity-50 transition-all hover:-translate-y-0.5 active:translate-y-0"
-              >
-                {saving
-                  ? t("saving", "Saving...")
-                  : editingId
-                    ? t("update", "Update")
-                    : t("create", "Create")}
-              </button>
-              {editingId && (
-                <button
-                  onClick={resetForm}
-                  className={`px-6 py-2.5 border ${border} rounded-xl hover:bg-black/5 transition-colors`}
-                >
-                  {t("cancel", "Cancel")}
-                </button>
-              )}
-            </div>
-          </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={uploading}
+              className={`w-full py-3 rounded-lg font-semibold transition ${
+                uploading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#24766f] text-white hover:bg-[#24766f]/90"
+              }`}
+            >
+              {uploading ? t("uploading", "Uploading...") : editingId ? t("update", "Update") : t("upload", "Upload")}
+            </button>
+          </form>
         </div>
 
-        {/* Audio Grid */}
-        {loading ? (
-          <div className="flex justify-center py-16">
-            <div className="w-10 h-10 border-[3px] border-teal border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : audios.length === 0 ? (
-          <div
-            className={`text-center py-16 ${card} border ${border} rounded-2xl`}
-          >
-            <Music className={`w-12 h-12 mx-auto mb-4 ${muted}`} />
-            <p className={`${muted} text-lg`}>
-              {t("noAudios", "No audios yet")}
-            </p>
-            <p className={`text-sm ${muted} mt-1`}>
-              {t("addFirstItem", "Use the form above to add your first item")}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {audios.map((audio) => (
-              <div
-                key={audio.id}
-                className={`${card} border ${border} rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all group`}
-              >
+        {/* Audio List */}
+        <div className={`${cardBg} border ${border} rounded-xl p-6 shadow-lg`} data-aos="fade-up">
+          <h2 className={`text-2xl font-bold font-serif ${isDark ? "text-[#d9a441]" : "text-[#24766f]"} mb-6`}>
+            {t("audio_list", "Audio Archives")} ({audios.length})
+          </h2>
+
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="w-12 h-12 border-4 border-[#d9a441] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+              <p className={textColor}>{t("loading", "Loading...")}</p>
+            </div>
+          ) : audios.length === 0 ? (
+            <div className="text-center py-8">
+              <Music className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`} />
+              <p className={`${textColor} opacity-70`}>{t("no_audios", "No audio archives yet.")}</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {audios.map((audio) => (
                 <div
-                  className={`px-4 py-3 border-b ${border} ${isDark ? "bg-gradient-to-r from-teal/5 to-transparent" : "bg-gradient-to-r from-teal/5 to-transparent"}`}
+                  key={audio.id}
+                  className={`flex items-center gap-4 p-4 rounded-lg ${isDark ? "bg-white/5" : "bg-black/5"} hover:shadow-md transition`}
                 >
-                  <div className="flex items-start justify-between">
-                    <h3 className="font-semibold flex items-center gap-2">
-                      <Music className="w-4 h-4 text-teal" />
-                      {audio.title}
-                    </h3>
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={() => startEdit(audio)}
-                        className="p-1.5 rounded-lg hover:bg-teal/10 text-teal transition-colors"
-                      >
-                        <Edit className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(audio.id)}
-                        className="p-1.5 rounded-lg hover:bg-red-500/10 text-red-400 transition-colors"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                  {/* Play Button */}
+                  <button
+                    onClick={() => handlePlayPause(audio)}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      playingId === audio.id
+                        ? "bg-[#24766f] text-white"
+                        : isDark
+                        ? "bg-white/10 hover:bg-[#24766f]"
+                        : "bg-black/10 hover:bg-[#24766f] hover:text-white"
+                    } transition`}
+                  >
+                    {playingId === audio.id ? (
+                      <Pause className="w-5 h-5" />
+                    ) : (
+                      <Play className="w-5 h-5 ml-0.5" />
+                    )}
+                  </button>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className={`font-bold truncate ${textColor}`}>{audio.title}</h3>
+                    <div className="flex items-center gap-3 text-sm opacity-60">
+                      {audio.category && <span>{audio.category}</span>}
+                      {audio.duration && (
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {formatDuration(audio.duration)}
+                        </span>
+                      )}
                     </div>
                   </div>
-                </div>
-                <div className="p-4 space-y-3">
-                  {audio.description && (
-                    <p className={`text-sm ${muted} line-clamp-2`}>
-                      {audio.description}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-3 text-sm flex-wrap">
-                    {audio.audioPath && (
-                      <button
-                        onClick={() => togglePlay(audio.id)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors ${
-                          playingId === audio.id
-                            ? "bg-teal text-white"
-                            : "bg-teal/10 text-teal hover:bg-teal/20"
-                        }`}
-                      >
-                        {playingId === audio.id ? (
-                          <Pause className="w-3.5 h-3.5" />
-                        ) : (
-                          <Play className="w-3.5 h-3.5" />
-                        )}
-                        {playingId === audio.id
-                          ? t("pause", "Pause")
-                          : t("play", "Play")}
-                      </button>
-                    )}
-                    {audio.duration && (
-                      <span
-                        className={`flex items-center gap-1 ${muted} text-xs`}
-                      >
-                        <Clock className="w-3 h-3" />
-                        {Math.round(audio.duration)}s
-                      </span>
-                    )}
-                    {audio.category && (
-                      <span
-                        className={`px-2.5 py-1 rounded-lg text-xs font-medium ${isDark ? "bg-terracotta/15 text-terracotta" : "bg-terracotta/10 text-terracotta"}`}
-                      >
-                        {audio.category}
-                      </span>
-                    )}
-                    {audio.isPublic !== undefined && (
-                      <span
-                        className={`px-2 py-0.5 rounded-lg text-xs ${audio.isPublic ? "bg-green-500/10 text-green-400" : "bg-amber-500/10 text-amber-400"}`}
-                      >
-                        {audio.isPublic
-                          ? t("public", "Public")
-                          : t("private", "Private")}
-                      </span>
-                    )}
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleEdit(audio)}
+                      className={`p-2 rounded-lg hover:bg-[#24766f]/20 transition ${textColor} opacity-70 hover:opacity-100`}
+                      title={t("edit", "Edit")}
+                    >
+                      <Edit className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(audio.id)}
+                      className="p-2 rounded-lg hover:bg-red-500/20 text-red-500 transition"
+                      title={t("delete", "Delete")}
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

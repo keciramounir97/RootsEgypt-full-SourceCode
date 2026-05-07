@@ -27,15 +27,12 @@ import {
   X,
 } from "lucide-react";
 import { useTranslation } from "../context/TranslationContext";
-import { useState, useEffect, useRef } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../api/client";
 import { getApiRoot, normalizeTree } from "../api/helpers";
+import HeroSlider from "../components/HeroSlider";
+import { useSiteImages } from "../hooks/useSiteImages";
 import TreesBuilder, {
   parseGedcom,
   parseGedcomX,
@@ -186,13 +183,7 @@ export default function Home() {
   const { theme } = useThemeStore();
   const { t } = useTranslation();
   const isDark = theme === "dark";
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const { settings } = useSiteImages();
 
   const [viewTree, setViewTree] = useState<FeaturedTree | null>(null);
   const [viewPeople, setViewPeople] = useState<Person[]>([]);
@@ -291,21 +282,16 @@ export default function Home() {
   return (
     <div className="heritage-page-root home-page-stack space-y-8 md:space-y-10 lg:space-y-12">
       {/* ==================== HERO SECTION — Photo Background ==================== */}
-      <section
-        ref={heroRef}
-        className="relative min-h-[92vh] flex items-center justify-center overflow-hidden rounded-2xl"
-      >
-        {/* Photo background with parallax */}
-        <motion.div
-          style={{ y: heroY }}
-          className="absolute inset-0 -top-[10%] -bottom-[10%]"
-        >
-          <img
-            src="/assets/roots-hero.jpg"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        </motion.div>
+      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden rounded-2xl">
+        {/* Hero Slider */}
+        <HeroSlider
+          slides={!settings.heroUseDefault ? settings.heroImages : undefined}
+          useDefaultFallback={settings.heroUseDefault}
+          autoInterval={6000}
+          showArrows={true}
+          showDots={true}
+          showCaptions={true}
+        />
 
         {/* Dark overlay for readability */}
         <div
@@ -344,7 +330,9 @@ export default function Home() {
 
         {/* Content */}
         <motion.div
-          style={{ opacity: heroOpacity }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
           className="relative z-10 text-center px-6 max-w-6xl mx-auto space-y-8 md:space-y-10"
         >
           {/* Badge */}
@@ -472,7 +460,9 @@ export default function Home() {
 
       {/* ==================== STATS SECTION ==================== */}
       <ScrollReveal>
-        <section className={`px-4 sm:px-6 lg:px-10 xl:px-14 py-8 md:py-10 ${homeSectionSpace}`}>
+        <section
+          className={`px-4 sm:px-6 lg:px-10 xl:px-14 py-8 md:py-10 ${homeSectionSpace}`}
+        >
           <div
             className={`w-full max-w-[var(--content-max,1600px)] mx-auto py-16 rounded-[2rem] border overflow-hidden ${isDark ? "bg-[#0d1b2a] border-[#d4a843]/15" : "bg-[#f5f1e8] border-[#d8c7b0]/45"}`}
           >
@@ -537,7 +527,9 @@ export default function Home() {
       </ScrollReveal>
 
       <ScrollReveal>
-        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
+        <section
+          className={`roots-section roots-section-alt ${homeSectionSpace}`}
+        >
           <div className="max-w-6xl mx-auto grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-start">
             <div className="space-y-6 text-left">
               <div>
@@ -569,7 +561,10 @@ export default function Home() {
               {[
                 {
                   icon: Archive,
-                  title: t("home_editorial_card_1_title", "Archive-led research"),
+                  title: t(
+                    "home_editorial_card_1_title",
+                    "Archive-led research",
+                  ),
                   desc: t(
                     "home_editorial_card_1_desc",
                     "Designed around the record families Egyptian researchers actually use: civil, court, parish, waqf, and institutional archives.",
@@ -577,7 +572,10 @@ export default function Home() {
                 },
                 {
                   icon: Heart,
-                  title: t("home_editorial_card_2_title", "Story-first preservation"),
+                  title: t(
+                    "home_editorial_card_2_title",
+                    "Story-first preservation",
+                  ),
                   desc: t(
                     "home_editorial_card_2_desc",
                     "Keep oral history, context, nicknames, and family memory beside the documented facts instead of losing them in scattered notes.",
@@ -585,7 +583,10 @@ export default function Home() {
                 },
                 {
                   icon: Sparkles,
-                  title: t("home_editorial_card_3_title", "A more elegant public memory"),
+                  title: t(
+                    "home_editorial_card_3_title",
+                    "A more elegant public memory",
+                  ),
                   desc: t(
                     "home_editorial_card_3_desc",
                     "Present trees, galleries, and collections in a polished format that feels worthy of Egyptian family heritage.",
@@ -609,7 +610,9 @@ export default function Home() {
 
       {/* ==================== HOW IT WORKS ==================== */}
       <ScrollReveal>
-        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
+        <section
+          className={`roots-section roots-section-alt ${homeSectionSpace}`}
+        >
           <div className="max-w-6xl mx-auto text-center space-y-10">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-teal font-semibold mb-3">
@@ -813,7 +816,9 @@ export default function Home() {
 
       {/* ==================== FEATURED TREES ==================== */}
       <ScrollReveal>
-        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
+        <section
+          className={`roots-section roots-section-alt ${homeSectionSpace}`}
+        >
           <div className="w-full max-w-7xl mx-auto space-y-10">
             <div className="text-center">
               <p className="text-sm uppercase tracking-[0.3em] text-teal font-semibold mb-3">
@@ -1145,7 +1150,9 @@ export default function Home() {
 
       {/* ==================== ANCESTRAL STORIES ==================== */}
       <ScrollReveal>
-        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
+        <section
+          className={`roots-section roots-section-alt ${homeSectionSpace}`}
+        >
           <div className="max-w-6xl mx-auto space-y-10 text-center">
             <div>
               <h2 className="roots-heading">
@@ -1265,7 +1272,9 @@ export default function Home() {
       </ScrollReveal>
 
       <ScrollReveal>
-        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
+        <section
+          className={`roots-section roots-section-alt ${homeSectionSpace}`}
+        >
           <div className="max-w-6xl mx-auto space-y-10">
             <div className="text-center">
               <p className="text-sm uppercase tracking-[0.3em] text-teal font-semibold mb-3">
@@ -1325,7 +1334,10 @@ export default function Home() {
                 },
               ].map((item) => (
                 <StaggerItem key={item.title}>
-                  <motion.div whileHover={{ y: -4 }} className="roots-card h-full text-left">
+                  <motion.div
+                    whileHover={{ y: -4 }}
+                    className="roots-card h-full text-left"
+                  >
                     <item.icon className={`w-9 h-9 mb-4 ${item.color}`} />
                     <h3 className="text-xl font-bold mb-3">{item.title}</h3>
                     <p className="text-sm leading-7 opacity-85">{item.desc}</p>
@@ -1339,7 +1351,9 @@ export default function Home() {
 
       {/* ==================== COMMUNITY CTA ==================== */}
       <ScrollReveal>
-        <section className={`roots-section roots-section-alt ${homeSectionSpace}`}>
+        <section
+          className={`roots-section roots-section-alt ${homeSectionSpace}`}
+        >
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <motion.div
               initial={{ scale: 0.9 }}

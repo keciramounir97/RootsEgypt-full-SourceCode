@@ -21,10 +21,15 @@ import {
   Music,
   FileText,
   MessageSquare,
-  MessageCircle,
   Mail,
   Shield,
   UserCheck,
+  Newspaper,
+  Globe,
+  KeyRound,
+  Trash2,
+  UserCog,
+  ShieldCheck,
   X,
   LogOut,
   ChevronRight,
@@ -39,17 +44,34 @@ const links = [
   { to: "/admin/books", labelKey: "books", Icon: BookOpen },
   { to: "/admin/audios", labelKey: "audios", Icon: Music },
   { to: "/admin/documents", labelKey: "documents", Icon: FileText },
-  { to: "/admin/articles", labelKey: "articles", Icon: MessageCircle },
+  { to: "/admin/articles", labelKey: "articles", Icon: Newspaper },
   { to: "/admin/suggestions", labelKey: "suggestions", Icon: MessageSquare },
   { to: "/admin/newsletter", labelKey: "newsletter", Icon: Mail },
   { to: "/admin/contact-messages", labelKey: "contactMessages", Icon: Mail },
   { to: "/admin/users", labelKey: "users", Icon: Users },
-  { to: "/admin/user-approvals", labelKey: "userApprovals", Icon: UserCheck },
-  { to: "/admin/admin-management", labelKey: "adminManagement", Icon: Shield },
-  { to: "/admin/approvals", labelKey: "approvals", Icon: Shield },
+  { to: "/admin/validation-approvals", labelKey: "validation_approvals", Icon: ShieldCheck },
+  { to: "/admin/hero-images", labelKey: "hero_images", Icon: Image },
+  { to: "/admin/background-images", labelKey: "background_images", Icon: Globe },
+  { to: "/admin/approvals", labelKey: "approvals", Icon: UserCheck },
+  { to: "/admin/password-reset-requests", labelKey: "password_reset_requests", Icon: KeyRound },
+  { to: "/admin/account-deletion-requests", labelKey: "account_deletion_requests", Icon: Trash2 },
+  { to: "/admin/role-distribution", labelKey: "role_distribution", Icon: UserCog },
+  { to: "/admin/admins", labelKey: "admins", Icon: Shield },
   { to: "/admin/activity", labelKey: "activity", Icon: Activity },
   { to: "/admin/settings", labelKey: "settings", Icon: Settings },
+  { to: "/admin/footer-settings", labelKey: "footer_settings", Icon: Globe },
 ];
+
+const labelFallbacks: Record<string, string> = {
+  validation_approvals: "Validation Approvals",
+  password_reset_requests: "Password Reset Requests",
+  account_deletion_requests: "Account Deletion Requests",
+  role_distribution: "Role Distribution",
+  hero_images: "Hero Images",
+  background_images: "Background Images",
+  footer_settings: "Footer Settings",
+  contactMessages: "Contact Messages",
+};
 
 export default function AdminSidebar({
   open,
@@ -61,9 +83,29 @@ export default function AdminSidebar({
   onToggle: () => void;
 }) {
   const { theme } = useThemeStore();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const { t } = useTranslation();
   const isDark = theme === "dark";
+  const granted = Array.isArray(user?.permissions) ? user.permissions : [];
+  const isSuperAdmin = user?.role === 3;
+
+  const visibleLinks = links.filter((link) => {
+    if (isSuperAdmin) return true;
+    const superAdminOnly = [
+      "/admin/approvals",
+      "/admin/password-reset-requests",
+      "/admin/account-deletion-requests",
+      "/admin/role-distribution",
+      "/admin/admins",
+    ];
+    if ((user?.role === 1 || user?.role === 3) && granted.length === 0) {
+      return !superAdminOnly.includes(link.to);
+    }
+    if (superAdminOnly.includes(link.to)) return false;
+    if (link.to === "/admin") return granted.includes("dashboard");
+    const key = link.to.replace("/admin/", "");
+    return granted.includes(key);
+  });
 
   return (
     <>
@@ -164,7 +206,7 @@ export default function AdminSidebar({
             </span>
           </div>
 
-          {links.map(({ to, end, labelKey, Icon }, i) => (
+          {visibleLinks.map(({ to, end, labelKey, Icon }) => (
             <NavLink
               key={to}
               to={to}
@@ -194,7 +236,7 @@ export default function AdminSidebar({
                     />
                   </motion.div>
                   <span className="text-sm tracking-wide flex-1">
-                    {t(labelKey)}
+                    {t(labelKey, labelFallbacks[labelKey] || labelKey)}
                   </span>
                   {isActive && (
                     <motion.div

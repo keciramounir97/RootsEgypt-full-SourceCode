@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, BadRequestException, Inject } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, ForbiddenException, Inject } from '@nestjs/common';
 import { Knex } from "knex";
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -92,6 +92,13 @@ export class AuthService {
     try {
       const user = await this.usersService.findByEmail(normalizedEmail);
       if (user && user.password && (await bcrypt.compare(pass, user.password))) {
+        const status = String(user.status || "active").toLowerCase();
+        if (["pending", "unvalidated"].includes(status)) {
+          throw new ForbiddenException("Your account is pending validation");
+        }
+        if (status === "rejected" || status === "banned") {
+          throw new ForbiddenException("Your account is not allowed to log in");
+        }
         const { password, ...result } = user;
         return result;
       }

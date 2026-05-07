@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BookOpen,
   Plus,
@@ -22,32 +22,6 @@ import { useTranslation } from "../../context/TranslationContext";
 import { useAuth } from "../components/AuthContext";
 import Toast from "../../components/Toast";
 
-interface BookItem {
-  id: string | number;
-  title?: string;
-  author?: string;
-  category?: string;
-  isPublic?: boolean;
-  downloads?: number;
-  uploadedBy?: string;
-  createdAt?: string;
-  fileUrl?: string;
-  coverUrl?: string;
-  [key: string]: unknown;
-}
-
-interface BookForm {
-  title: string;
-  author: string;
-  category: string;
-  description: string;
-  archiveSource: string;
-  documentCode: string;
-  isPublic: boolean;
-  file: File | null;
-  cover: File | null;
-}
-
 export default function Books() {
   const { theme } = useThemeStore();
   const { t } = useTranslation();
@@ -55,15 +29,15 @@ export default function Books() {
   const isDark = theme === "dark";
   const isAdmin = user?.role === 1 || user?.role === 3;
 
-  const pageBg = isDark ? "bg-[#0d1b2a]" : "bg-[#f5f1e8]";
-  const text = isDark ? "text-[#f8f5ef]" : "text-[#0d1b2a]";
-  const card = isDark ? "bg-[#0d1b2a]" : "bg-white";
-  const border = isDark ? "border-white/10" : "border-[#e8dfca]";
+  const pageBg = isDark ? "bg-[#0f1f33]" : "bg-[#f5f1e8]";
+  const text = isDark ? "text-[#f8f5ef]" : "text-[#162238]";
+  const card = isDark ? "bg-[#0f1f33]" : "bg-white";
+  const border = isDark ? "border-[#1a3048]" : "border-[#e8e4dc]";
   const subtle = isDark ? "bg-white/5" : "bg-[#f8f5ef]";
   const hoverRow = isDark ? "hover:bg-white/5" : "hover:bg-[#f8f5ef]";
-  const inputBg = isDark ? "bg-[#0d1b2a]" : "bg-white";
-  const inputText = isDark ? "text-[#f8f5ef]" : "text-[#0d1b2a]";
-  const accentText = isDark ? "text-teal" : "text-[#0c4a6e]";
+  const inputBg = isDark ? "bg-[#071827]" : "bg-white";
+  const inputText = isDark ? "text-[#f8f5ef]" : "text-[#162238]";
+  const accentText = isDark ? "text-[#d9a441]" : "text-[#24766f]";
   const softPanel = isDark ? "bg-white/5" : "bg-[#fdf6ea]";
 
   const maxBookBytes = 50 * 1024 * 1024;
@@ -78,14 +52,14 @@ export default function Books() {
   ]);
   const allowedImageExts = new Set(["jpg", "jpeg", "png", "gif", "webp"]);
 
-  const getExtension = (name: string) => {
+  const getExtension = (name) => {
     const parts = String(name || "")
       .toLowerCase()
       .split(".");
     return parts.length > 1 ? parts.pop() : "";
   };
 
-  const validateBookFile = (file: File | null) => {
+  const validateBookFile = (file) => {
     if (!file) return t("file_required", "File is required");
     if (file.size > maxBookBytes) {
       return t("file_too_large", "File is too large (max 50MB).");
@@ -100,7 +74,7 @@ export default function Books() {
     return "";
   };
 
-  const validateCoverFile = (file: File | null) => {
+  const validateCoverFile = (file) => {
     if (!file) return t("cover_required", "Cover image is required");
     if (file.size > maxCoverBytes) {
       return t("file_too_large", "File is too large (max 50MB).");
@@ -115,21 +89,19 @@ export default function Books() {
 
   const [tab, setTab] = useState("public"); // public | my (non-admin)
   const [q, setQ] = useState("");
-  const [adminBooks, setAdminBooks] = useState<BookItem[]>([]);
-  const [myBooks, setMyBooks] = useState<BookItem[]>([]);
-  const [publicBooks, setPublicBooks] = useState<BookItem[]>([]);
+  const [adminBooks, setAdminBooks] = useState([]);
+  const [myBooks, setMyBooks] = useState([]);
+  const [publicBooks, setPublicBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState<BookForm>({
+  const [form, setForm] = useState({
     title: "",
     author: "",
     category: "",
     description: "",
-    archiveSource: "",
-    documentCode: "",
     isPublic: true,
     file: null,
     cover: null,
@@ -137,7 +109,7 @@ export default function Books() {
   const [coverPreview, setCoverPreview] = useState("");
   const [toast, setToast] = useState({ message: "", tone: "success" });
 
-  const notify = useCallback((message: string, tone = "success") => {
+  const notify = useCallback((message, tone = "success") => {
     setToast({ message, tone });
   }, []);
 
@@ -154,7 +126,124 @@ export default function Books() {
       setLoading(true);
       setError("");
       try {
-        const shouldFallbackAdminRead = (err: { response?: { status?: number } }) =>
+        const isMock =
+          import.meta.env.DEV &&
+          localStorage.getItem("mockupDataActive") === "true";
+        if (isMock) {
+          // REALISTIC ARABIC/ENGLISH/FRENCH HISTORY BOOKS
+          const mockBooks = [
+            {
+              id: "mb1",
+              title: "Muqaddimah (The Introduction)",
+              author: "Ibn Khaldun",
+              category: "History / Sociology",
+              isPublic: true,
+              downloads: 1240,
+              uploadedBy: "admin",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "mb2",
+              title: "Kitab al-Ansab (The Book of Genealogies)",
+              author: "Al-Sam'ani",
+              category: "Genealogy",
+              isPublic: true,
+              downloads: 850,
+              uploadedBy: "admin",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "mb3",
+              title: "Histoire de l'Afrique du Nord",
+              author: "Charles-André Julien",
+              category: "History",
+              isPublic: false,
+              downloads: 320,
+              uploadedBy: "kameladmin",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "mb4",
+              title: "Jamharat Ansab al-Arab",
+              author: "Ibn Hazm",
+              category: "Genealogy",
+              isPublic: true,
+              downloads: 2100,
+              uploadedBy: "admin",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "mb5",
+              title: "The Berbers",
+              author: "Michael Brett & Elizabeth Fentress",
+              category: "Anthropology",
+              isPublic: false,
+              downloads: 150,
+              uploadedBy: "kameladmin",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "mb6",
+              title: "Description de l'Afrique septentrionale",
+              author: "Al-Bakri",
+              category: "Geography / History",
+              isPublic: true,
+              downloads: 670,
+              uploadedBy: "admin",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "mb7",
+              title: "Genealogy of the Prophet",
+              author: "Unknown",
+              category: "Religious History",
+              isPublic: true,
+              downloads: 5000,
+              uploadedBy: "admin",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "mb8",
+              title: "L'Algérie ancienne et moderne",
+              author: "Léon Galibert",
+              category: "History",
+              isPublic: false,
+              downloads: 90,
+              uploadedBy: "kameladmin",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "mb9",
+              title: "Tarikh al-Rusul wa al-Muluk",
+              author: "Al-Tabari",
+              category: "History",
+              isPublic: true,
+              downloads: 1800,
+              uploadedBy: "admin",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "mb10",
+              title: "Modern History of the Arab World",
+              author: "Cleveland",
+              category: "Modern History",
+              isPublic: false,
+              downloads: 400,
+              uploadedBy: "kameladmin",
+              createdAt: new Date().toISOString(),
+            },
+          ];
+
+          setAdminBooks(mockBooks);
+          setMyBooks(mockBooks);
+          setPublicBooks(mockBooks.filter((b) => b.isPublic));
+          if (notifyToast) {
+            notify(t("books_loaded", "Books loaded."));
+          }
+          return;
+        }
+
+        const shouldFallbackAdminRead = (err) =>
           shouldFallbackRoute(err) ||
           err?.response?.status === 401 ||
           err?.response?.status === 403 ||
@@ -190,7 +279,10 @@ export default function Books() {
           notify(t("books_loaded", "Books loaded."));
         }
       } catch (err) {
-        const message = getApiErrorMessage(err, "Failed to load books");
+        const message = getApiErrorMessage(
+          err,
+          t("books_load_failed", "Failed to load books"),
+        );
         setError(message);
         notify(message, "error");
       } finally {
@@ -215,6 +307,12 @@ export default function Books() {
   }, [form.cover]);
 
   const books = isAdmin ? adminBooks : tab === "my" ? myBooks : publicBooks;
+  const bookStats = useMemo(() => {
+    const total = books.length;
+    const publicCount = books.filter((b) => !!b.isPublic).length;
+    const totalDownloads = books.reduce((acc, b) => acc + (Number(b.downloads) || 0), 0);
+    return { total, publicCount, totalDownloads };
+  }, [books]);
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -233,7 +331,7 @@ export default function Books() {
 
   const apiRoot = useMemo(() => getApiRoot(), []);
 
-  const resolveAssetUrl = (value: unknown) => {
+  const resolveAssetUrl = (value) => {
     const raw = String(value || "");
     if (!raw) return "";
     if (raw.startsWith("http")) return raw;
@@ -241,7 +339,7 @@ export default function Books() {
     return `${apiRoot}/${raw}`;
   };
 
-  const coverInitial = (value: unknown) =>
+  const coverInitial = (value) =>
     String(value || "")
       .trim()
       .charAt(0)
@@ -263,13 +361,13 @@ export default function Books() {
     setShowAdd(true);
   };
 
-  const submitAdd = async (e: React.FormEvent) => {
+  const submitAdd = async (e) => {
     e.preventDefault();
     setSaving(true);
     setError("");
 
     try {
-      const shouldFallbackWrite = (err: { response?: { status?: number } }) =>
+      const shouldFallbackWrite = (err) =>
         shouldFallbackRoute(err) ||
         err?.response?.status === 401 ||
         err?.response?.status === 403 ||
@@ -336,7 +434,10 @@ export default function Books() {
       notify(t("book_uploaded", "Book uploaded."));
       if (!isAdmin) setTab("my");
     } catch (err) {
-      const message = getApiErrorMessage(err, "Upload failed");
+      const message = getApiErrorMessage(
+        err,
+        t("upload_failed", "Upload failed"),
+      );
       setError(message);
       notify(message, "error");
     } finally {
@@ -344,7 +445,7 @@ export default function Books() {
     }
   };
 
-  const openProtected = async (book: BookItem) => {
+  const openProtected = async (book) => {
     if (!book?.id) return;
     setSaving(true);
     setError("");
@@ -359,7 +460,10 @@ export default function Books() {
       // Refresh list to update download count
       void loadBooks();
     } catch (err) {
-      const message = getApiErrorMessage(err, "Open failed");
+      const message = getApiErrorMessage(
+        err,
+        t("open_failed", "Open failed"),
+      );
       setError(message);
       notify(message, "error");
     } finally {
@@ -367,7 +471,7 @@ export default function Books() {
     }
   };
 
-  const downloadProtected = async (book: BookItem) => {
+  const downloadProtected = async (book) => {
     if (!book?.id) return;
     setSaving(true);
     setError("");
@@ -387,7 +491,10 @@ export default function Books() {
       // Refresh list to update download count
       void loadBooks();
     } catch (err) {
-      const message = getApiErrorMessage(err, "Download failed");
+      const message = getApiErrorMessage(
+        err,
+        t("download_failed", "Download failed"),
+      );
       setError(message);
       notify(message, "error");
     } finally {
@@ -395,7 +502,7 @@ export default function Books() {
     }
   };
 
-  const openFile = (book: BookItem) => {
+  const openFile = (book) => {
     const fileUrl = book?.fileUrl;
     if (fileUrl) {
       const url = resolveAssetUrl(fileUrl);
@@ -405,9 +512,9 @@ export default function Books() {
     void openProtected(book);
   };
 
-  const downloadUrl = (id: string | number) => `${apiRoot}/api/books/${id}/download`;
+  const downloadUrl = (id) => `${apiRoot}/api/books/${id}/download`;
 
-  const deleteBook = async (book: BookItem) => {
+  const deleteBook = async (book) => {
     const ok = window.confirm(
       t("confirm_delete_book", `Delete "${book?.title || "book"}"?`),
     );
@@ -416,7 +523,7 @@ export default function Books() {
     setSaving(true);
     setError("");
     try {
-      const shouldFallbackWrite = (err: { response?: { status?: number } }) =>
+      const shouldFallbackWrite = (err) =>
         shouldFallbackRoute(err) ||
         err?.response?.status === 401 ||
         err?.response?.status === 403 ||
@@ -440,9 +547,8 @@ export default function Books() {
       }
       void loadBooks();
       notify(t("book_deleted", "Book deleted."));
-    } catch (err: unknown) {
-      const apiErr = err as { response?: { status?: number } };
-      if (apiErr?.response?.status === 404) {
+    } catch (err) {
+      if (err?.response?.status === 404) {
         if (isAdmin) {
           setAdminBooks((prev) => prev.filter((b) => b.id !== book.id));
         } else {
@@ -452,7 +558,10 @@ export default function Books() {
         notify(t("book_deleted", "Book deleted."));
         return;
       }
-      const message = getApiErrorMessage(err, "Delete failed");
+      const message = getApiErrorMessage(
+        err,
+        t("delete_failed", "Delete failed"),
+      );
       setError(message);
       notify(message, "error");
     } finally {
@@ -465,7 +574,7 @@ export default function Books() {
       <Toast message={toast.message} tone={toast.tone} />
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <BookOpen className={`w-6 h-6 ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`} />
+          <BookOpen className="w-6 h-6 text-[#24766f]" />
           <h3 className="text-2xl font-bold">{t("books", "Books")}</h3>
         </div>
 
@@ -483,6 +592,21 @@ export default function Books() {
         </button>
       </div>
 
+      <div className="grid md:grid-cols-3 gap-3 mb-6">
+        <div className={`rounded-xl border ${border} ${card} p-3`}>
+          <p className="text-xs opacity-70">{t("total", "Total")}</p>
+          <p className="text-xl font-bold">{bookStats.total}</p>
+        </div>
+        <div className={`rounded-xl border ${border} ${card} p-3`}>
+          <p className="text-xs opacity-70">{t("public", "Public")}</p>
+          <p className="text-xl font-bold">{bookStats.publicCount}</p>
+        </div>
+        <div className={`rounded-xl border ${border} ${card} p-3`}>
+          <p className="text-xs opacity-70">{t("downloads", "Downloads")}</p>
+          <p className="text-xl font-bold">{bookStats.totalDownloads}</p>
+        </div>
+      </div>
+
       <div
         className={`rounded-lg p-5 mb-6 border ${border} ${subtle} heritage-panel heritage-panel--accent`}
       >
@@ -491,23 +615,24 @@ export default function Books() {
             <p className="opacity-80">
               {isAdmin
                 ? t(
-                  "books_admin_desc",
-                  "Upload and manage your genealogy library.",
-                )
+                    "books_admin_desc",
+                    "Upload and manage your genealogy library.",
+                  )
                 : t(
-                  "books_user_desc",
-                  "Browse public books or upload private books for your account.",
-                )}
+                    "books_user_desc",
+                    "Browse public books or upload private books for your account.",
+                  )}
             </p>
 
             {!isAdmin ? (
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className={`px-3 py-2 rounded-md border text-sm font-semibold ${border} ${tab === "public"
-                      ? "bg-[#0c4a6e] text-white border-transparent"
+                  className={`px-3 py-2 rounded-md border text-sm font-semibold ${border} ${
+                    tab === "public"
+                      ? "bg-[#24766f] text-white border-transparent"
                       : hoverRow
-                    }`}
+                  }`}
                   onClick={() => setTab("public")}
                   disabled={loading}
                 >
@@ -515,10 +640,11 @@ export default function Books() {
                 </button>
                 <button
                   type="button"
-                  className={`px-3 py-2 rounded-md border text-sm font-semibold ${border} ${tab === "my"
-                      ? "bg-[#0c4a6e] text-white border-transparent"
+                  className={`px-3 py-2 rounded-md border text-sm font-semibold ${border} ${
+                    tab === "my"
+                      ? "bg-[#24766f] text-white border-transparent"
                       : hoverRow
-                    }`}
+                  }`}
                   onClick={() => setTab("my")}
                   disabled={loading}
                 >
@@ -533,7 +659,7 @@ export default function Books() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               className={`heritage-input w-full pl-9 pr-3 py-2 rounded-md border
-            focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25
+            focus:outline-none focus:ring-2 focus:ring-[#24766f]/25
               ${inputBg} ${inputText} ${border}`}
               placeholder={t("search_books", "Search books...")}
             />
@@ -608,13 +734,13 @@ export default function Books() {
                             {coverSrc ? (
                               <img
                                 src={coverSrc}
-                                alt={b.title || "Book cover"}
+                                alt={b.title || t("book_cover", "Book cover")}
                                 className={`h-12 w-9 object-cover rounded-md ${border}`}
                                 loading="lazy"
                               />
                             ) : (
                               <div
-                                className={`h-12 w-9 rounded-md ${border} bg-gradient-to-br from-[#0c4a6e]/10 to-teal/15 ${accentText} text-xs font-bold flex items-center justify-center`}
+                                className={`h-12 w-9 rounded-md ${border} bg-gradient-to-br from-[#24766f]/10 to-[#d9a441]/15 text-[#24766f] text-xs font-bold flex items-center justify-center`}
                               >
                                 {initial}
                               </div>
@@ -653,7 +779,7 @@ export default function Books() {
                                 type="button"
                                 className={`px-3 py-2 rounded-md border ${border} hover:opacity-90`}
                                 onClick={() => openFile(b)}
-                                title="Open file"
+                                title={t("open_file", "Open file")}
                               >
                                 <ExternalLink className="w-4 h-4" />
                               </button>
@@ -664,7 +790,7 @@ export default function Books() {
                                 href={downloadUrl(b.id)}
                                 target="_blank"
                                 rel="noreferrer"
-                                title="Download"
+                                title={t("download", "Download")}
                               >
                                 <Download className="w-4 h-4" />
                               </a>
@@ -674,7 +800,7 @@ export default function Books() {
                                 className={`px-3 py-2 rounded-md border ${border} hover:opacity-90 disabled:opacity-60`}
                                 onClick={() => void downloadProtected(b)}
                                 disabled={saving}
-                                title="Download"
+                                title={t("download", "Download")}
                               >
                                 <Download className="w-4 h-4" />
                               </button>
@@ -686,7 +812,7 @@ export default function Books() {
                                 className="px-3 py-2 rounded-md bg-[#a0552a] text-white hover:bg-[#a0552a] disabled:opacity-60"
                                 onClick={() => deleteBook(b)}
                                 disabled={saving}
-                                title="Delete"
+                                title={t("delete", "Delete")}
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -752,16 +878,16 @@ export default function Books() {
                   </div>
                   <div className="mt-3 grid grid-cols-[96px_1fr] gap-3 items-center">
                     <div
-                      className={`h-28 w-20 rounded-md border ${border} overflow-hidden bg-gradient-to-br from-[#0c4a6e]/10 to-teal/15 flex items-center justify-center`}
+                      className={`h-28 w-20 rounded-md border ${border} overflow-hidden bg-gradient-to-br from-[#24766f]/10 to-[#d9a441]/15 flex items-center justify-center`}
                     >
                       {coverPreview ? (
                         <img
                           src={coverPreview}
-                          alt="Cover preview"
+                          alt={t("cover_preview", "Cover preview")}
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <span className={`text-xs font-semibold ${accentText}`}>
+                        <span className="text-xs font-semibold text-[#24766f]">
                           {t("add_cover", "Add cover")}
                         </span>
                       )}
@@ -834,7 +960,7 @@ export default function Books() {
                     }
                     required
                     className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                    placeholder="Book title"
+                    placeholder={t("book_title_placeholder", "Book title")}
                     disabled={saving}
                   />
                 </label>
@@ -850,14 +976,14 @@ export default function Books() {
                         setForm((s) => ({ ...s, author: e.target.value }))
                       }
                       className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                      placeholder="Author"
+                      placeholder={t("author", "Author")}
                       disabled={saving}
                     />
                   </label>
 
                   <label className="block">
                     <span className="text-sm font-semibold">
-                      {t("category", "Category")}
+                      {t("custom_category", "Custom Category")}
                     </span>
                     <input
                       value={form.category}
@@ -865,7 +991,7 @@ export default function Books() {
                         setForm((s) => ({ ...s, category: e.target.value }))
                       }
                       className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                      placeholder="Category"
+                      placeholder={t("custom_category_placeholder", "Name this category...")}
                       disabled={saving}
                     />
                   </label>
@@ -885,7 +1011,7 @@ export default function Books() {
                         }))
                       }
                       className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                      placeholder="Archive Source"
+                      placeholder={t("archive_source", "Archive Source")}
                       disabled={saving}
                     />
                   </label>
@@ -900,7 +1026,7 @@ export default function Books() {
                         setForm((s) => ({ ...s, documentCode: e.target.value }))
                       }
                       className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                      placeholder="Document Code"
+                      placeholder={t("document_code", "Document Code")}
                       disabled={saving}
                     />
                   </label>
@@ -916,7 +1042,7 @@ export default function Books() {
                       setForm((s) => ({ ...s, description: e.target.value }))
                     }
                     className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                    placeholder="Short description"
+                    placeholder={t("short_description", "Short description")}
                     rows={2}
                     disabled={saving}
                   />

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "../../store/theme";
 import { useTranslation } from "../../context/TranslationContext";
 import { api } from "../../api/client";
@@ -24,22 +24,37 @@ import {
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Toast from "../../components/Toast";
+import { useAuth } from "../components/AuthContext";
+import {
+  emitGalleryChanged,
+  normalizeGalleryItem,
+  unwrapGalleryResponse,
+  withLocalGalleryFallback,
+} from "../../utils/galleryData";
 
 interface GalleryItem {
-  id: string | number;
-  title?: string;
+  id: number | string;
+  title: string;
   description?: string;
-  isPublic?: boolean;
-  archiveSource?: string;
-  documentCode?: string;
-  location?: string;
-  year?: string | number;
-  photographer?: string;
+  category?: string;
   image_path?: string;
   imagePath?: string;
+  uploaded_by?: number;
+  is_public?: boolean;
+  isPublic?: boolean;
+  archiveSource?: string;
+  archive_source?: string;
+  documentCode?: string;
+  document_code?: string;
+  location?: string;
+  year?: string;
+  photographer?: string;
+  show_details?: boolean;
+  showDetails?: boolean;
   createdAt?: string;
-  name?: string;
-  [key: string]: unknown;
+  created_at?: string;
+  isLocalAsset?: boolean;
+  uploader?: { id: number; full_name?: string; email?: string };
 }
 
 export default function AdminGallery() {
@@ -51,28 +66,44 @@ export default function AdminGallery() {
   const maxImageBytes = 10 * 1024 * 1024;
   const allowedImageExts = new Set(["jpg", "jpeg", "png", "gif", "webp"]);
 
+  const { user } = useAuth();
+  const isAdminUser =
+    user &&
+    (Number((user as any).roleId ?? (user as any).role_id) === 1 ||
+      Number((user as any).roleId ?? (user as any).role_id) === 3);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [editingId, setEditingId] = useState<string | number | null>(null);
+  const [editingId, setEditingId] = useState<number | string | null>(null);
   const [form, setForm] = useState({
     title: "",
     description: "",
+    category: "",
     isPublic: true,
+    showDetails: true,
     archiveSource: "",
     documentCode: "",
+    location: "",
+    year: "",
+    photographer: "",
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [viewItem, setViewItem] = useState<GalleryItem | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [toast, setToast] = useState({ message: "", tone: "success" });
+  const galleryStats = useMemo(() => {
+    const total = gallery.length;
+    const publicCount = gallery.filter((g) => !!g.isPublic).length;
+    const withArchive = gallery.filter((g) => !!g.archiveSource).length;
+    return { total, publicCount, withArchive };
+  }, [gallery]);
 
-  const getExtension = (name: string) => {
+  const getExtension = (name) => {
     const parts = String(name || "").toLowerCase().split(".");
     return parts.length > 1 ? parts.pop() : "";
   };
 
-  const validateImageFile = (file: File | null | undefined, { required = false } = {}) => {
+  const validateImageFile = (file, { required = false } = {}) => {
     if (!file) {
       return required ? t("image_required", "Please select an image") : "";
     }
@@ -87,7 +118,7 @@ export default function AdminGallery() {
     return "";
   };
 
-  const notify = useCallback((message: string, tone = "success") => {
+  const notify = useCallback((message, tone = "success") => {
     setToast({ message, tone });
   }, []);
 
@@ -99,10 +130,19 @@ export default function AdminGallery() {
     return () => clearTimeout(timer);
   }, [toast.message]);
 
-  const resolveImageUrl = (value: unknown) => {
+  const resolveImageUrl = (value) => {
     const raw = String(value || "").trim();
     if (!raw) return "";
-    if (raw.startsWith("http")) return raw;
+    if (
+      raw.startsWith("http") ||
+      raw.startsWith("data:") ||
+      raw.startsWith("blob:") ||
+      raw.startsWith("/assets/") ||
+      raw.startsWith("/src/assets/") ||
+      raw.startsWith("assets/")
+    ) {
+      return raw;
+    }
     let path = raw.startsWith("/") ? raw : `/${raw}`;
     if (!path.startsWith("/uploads/")) {
       path = `/uploads/gallery/${raw.replace(/^\/+/, "")}`;
@@ -113,7 +153,7 @@ export default function AdminGallery() {
   const loadGallery = useCallback(async ({ notify: notifyToast = false } = {}) => {
     try {
       setLoading(true);
-      const shouldFallbackAdminRead = (err: { response?: { status?: number } }) =>
+      const shouldFallbackAdminRead = (err) =>
         shouldFallbackRoute(err) ||
         err?.response?.status === 401 ||
         err?.response?.status === 403 ||
@@ -126,19 +166,21 @@ export default function AdminGallery() {
         ],
         shouldFallbackAdminRead
       );
-      const list =
-        (data?.success && Array.isArray(data.data) ? data.data : null) ||
-        (Array.isArray(data?.gallery) && data.gallery) ||
-        (Array.isArray(data) && data) ||
-        [];
-      setGallery(list);
+      const list = unwrapGalleryResponse(data).map(normalizeGalleryItem);
+      setGallery(withLocalGalleryFallback(list));
       if (notifyToast) {
         notify(t("gallery_loaded", "Images loaded."));
       }
     } catch (error) {
       console.error("Failed to load gallery:", error);
-      setGallery([]);
-      notify(getApiErrorMessage(error, "Failed to load gallery"), "error");
+      setGallery(withLocalGalleryFallback([]));
+      notify(
+        getApiErrorMessage(
+          error,
+          t("gallery_load_failed", "Failed to load gallery"),
+        ),
+        "error",
+      );
     } finally {
       setLoading(false);
     }
@@ -153,9 +195,14 @@ export default function AdminGallery() {
     setForm({
       title: "",
       description: "",
+      category: "",
       isPublic: true,
+      showDetails: true,
       archiveSource: "",
       documentCode: "",
+      location: "",
+      year: "",
+      photographer: "",
     });
     if (previewUrl.startsWith("blob:")) {
       URL.revokeObjectURL(previewUrl);
@@ -165,7 +212,7 @@ export default function AdminGallery() {
     setEditingId(null);
   };
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -183,14 +230,29 @@ export default function AdminGallery() {
     setPreviewUrl(URL.createObjectURL(file));
   };
 
-  const handleEdit = (item: GalleryItem) => {
+  const handleEdit = (item) => {
+    if (item.isLocalAsset) {
+      notify(
+        t(
+          "gallery_assets_need_backend",
+          "Start the backend once to import bundled gallery images before editing them.",
+        ),
+        "error",
+      );
+      return;
+    }
     setEditingId(item.id);
     setForm({
       title: item.title || "",
       description: item.description || "",
-      isPublic: !!item.isPublic,
-      archiveSource: item.archiveSource || "",
-      documentCode: item.documentCode || "",
+      category: item.category || "",
+      isPublic: item.isPublic ?? item.is_public ?? true,
+      showDetails: item.showDetails ?? item.show_details ?? true,
+      archiveSource: item.archiveSource ?? item.archive_source ?? "",
+      documentCode: item.documentCode ?? item.document_code ?? "",
+      location: item.location || "",
+      year: item.year || "",
+      photographer: item.photographer || "",
     });
     setSelectedImage(null);
     setPreviewUrl(resolveImageUrl(item.image_path ?? item.imagePath));
@@ -198,7 +260,7 @@ export default function AdminGallery() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!form.title.trim()) {
@@ -214,15 +276,17 @@ export default function AdminGallery() {
     }
     if (selectedImage) formData.append("image", selectedImage);
     formData.append("title", form.title.trim());
-    if (form.description.trim())
-      formData.append("description", form.description.trim());
+    formData.append("description", form.description.trim());
+    formData.append("category", form.category.trim());
     formData.append("isPublic", String(form.isPublic));
-    if (form.archiveSource.trim())
-      formData.append("archiveSource", form.archiveSource.trim());
-    if (form.documentCode.trim())
-      formData.append("documentCode", form.documentCode.trim());
+    formData.append("showDetails", String(form.showDetails));
+    formData.append("archiveSource", form.archiveSource.trim());
+    formData.append("documentCode", form.documentCode.trim());
+    formData.append("location", form.location.trim());
+    formData.append("year", form.year.trim());
+    formData.append("photographer", form.photographer.trim());
 
-    const shouldFallbackWrite = (err: { response?: { status?: number } }) =>
+    const shouldFallbackWrite = (err) =>
       shouldFallbackRoute(err) ||
       err?.response?.status === 401 ||
       err?.response?.status === 403 ||
@@ -257,7 +321,8 @@ export default function AdminGallery() {
       }
 
       resetForm();
-      loadGallery();
+      await loadGallery();
+      emitGalleryChanged({ id: editingId, action: editingId ? "updated" : "created" });
     } catch (error) {
       console.error("Operation failed:", error);
       notify(
@@ -272,7 +337,17 @@ export default function AdminGallery() {
     }
   };
 
-  const handleDelete = async (id: string | number) => {
+  const handleDelete = async (id) => {
+    if (typeof id === "string") {
+      notify(
+        t(
+          "gallery_assets_need_backend",
+          "Start the backend once to import bundled gallery images before editing them.",
+        ),
+        "error",
+      );
+      return;
+    }
     if (
       !window.confirm(
         t("confirm_delete", "Are you sure you want to delete this item?")
@@ -282,7 +357,7 @@ export default function AdminGallery() {
     }
 
     try {
-      const shouldFallbackWrite = (err: { response?: { status?: number } }) =>
+      const shouldFallbackWrite = (err) =>
         shouldFallbackRoute(err) ||
         err?.response?.status === 401 ||
         err?.response?.status === 403 ||
@@ -294,7 +369,8 @@ export default function AdminGallery() {
         ],
         shouldFallbackWrite
       );
-      loadGallery();
+      await loadGallery();
+      emitGalleryChanged({ id, action: "deleted" });
       notify(t("gallery_deleted", "Image deleted."));
     } catch (error) {
       console.error("Delete failed:", error);
@@ -302,17 +378,20 @@ export default function AdminGallery() {
     }
   };
 
-  const cardBg = isDark ? "bg-[#0d1b2a]" : "bg-white";
-  const border = isDark ? "border-teal/25" : "border-[#0c4a6e]/20";
-  const inputBg = isDark ? "bg-[#0d1b2a]" : "bg-[#fff9f0]";
-  const textColor = isDark ? "text-[#f5f1e8]" : "text-[#0d1b2a]";
+  const cardBg = isDark ? "bg-[#0f1f33]" : "bg-white";
+  const border = isDark ? "border-[#d9a441]/20" : "border-[#24766f]/20";
+  const inputBg = isDark ? "bg-[#071827]" : "bg-[#f7f2e8]";
+  const textColor = isDark ? "text-[#f5f1e8]" : "text-[#162238]";
   const viewImageUrl = (viewItem?.image_path ?? viewItem?.imagePath)
     ? resolveImageUrl(viewItem.image_path ?? viewItem.imagePath)
     : "";
+  const imageNotFoundLabel = encodeURIComponent(
+    t("image_not_found", "Image not found"),
+  );
 
   return (
     <div
-      className={`min-h-screen p-6 ${isDark ? "bg-[#060e1c]" : "bg-[#f5f1e8]"}`}
+      className={`min-h-screen p-6 ${isDark ? "bg-[#071827]" : "bg-[#f5f1e8]"}`}
     >
       <Toast message={toast.message} tone={toast.tone} />
       <div className="max-w-7xl mx-auto">
@@ -320,7 +399,7 @@ export default function AdminGallery() {
         <div className="mb-8" data-aos="fade-down">
           <h1
             className={`text-4xl font-bold font-serif ${
-              isDark ? "text-teal" : "text-[#0c4a6e]"
+              isDark ? "text-[#d9a441]" : "text-[#24766f]"
             } mb-2`}
           >
             {t("gallery_management", "Gallery Management")}
@@ -328,9 +407,24 @@ export default function AdminGallery() {
           <p className={`${textColor} opacity-70`}>
             {t(
               "gallery_desc",
-              "Upload and manage photos with archive metadata"
+              "Upload and manage photos with archive metadata",
             )}
           </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-3 mb-6">
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}>
+            <p className="text-xs opacity-70">{t("total", "Total")}</p>
+            <p className="text-xl font-bold">{galleryStats.total}</p>
+          </div>
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}>
+            <p className="text-xs opacity-70">{t("public", "Public")}</p>
+            <p className="text-xl font-bold">{galleryStats.publicCount}</p>
+          </div>
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}>
+            <p className="text-xs opacity-70">{t("archived", "Archived")}</p>
+            <p className="text-xl font-bold">{galleryStats.withArchive}</p>
+          </div>
         </div>
 
         {/* Upload/Edit Form */}
@@ -341,7 +435,7 @@ export default function AdminGallery() {
           <div className="flex items-center justify-between mb-6">
             <h2
               className={`text-2xl font-bold font-serif ${
-                isDark ? "text-teal" : "text-[#0c4a6e]"
+                isDark ? "text-[#d9a441]" : "text-[#24766f]"
               } flex items-center gap-2`}
             >
               {editingId ? (
@@ -377,14 +471,14 @@ export default function AdminGallery() {
                 {!editingId && <span className="text-red-500">*</span>}
               </label>
               <div
-                className={`border-2 border-dashed ${border} rounded-lg p-6 text-center cursor-pointer transition hover:border-teal hover:bg-teal/5`}
-                onClick={() => (document.getElementById("imageInput") as HTMLInputElement | null)?.click()}
+                className={`border-2 border-dashed ${border} rounded-lg p-6 text-center cursor-pointer transition hover:border-[#d9a441] hover:bg-[#d9a441]/5`}
+                onClick={() => document.getElementById("imageInput").click()}
               >
                 {previewUrl ? (
                   <div className="space-y-3">
                     <img
                       src={previewUrl}
-                      alt="Preview"
+                      alt={t("preview", "Preview")}
                       className="max-h-64 mx-auto object-contain rounded-lg shadow-md"
                     />
                     <p className={`${textColor} text-sm`}>
@@ -401,7 +495,7 @@ export default function AdminGallery() {
                       {t("click_to_upload", "Click to upload image")}
                     </p>
                     <p className={`${textColor} opacity-30 text-sm mt-2`}>
-                      JPG, PNG, GIF, WEBP (max 10MB)
+                      {t("image_file_formats", "JPG, PNG, GIF, WEBP (max 10MB)")}
                     </p>
                   </div>
                 )}
@@ -427,9 +521,29 @@ export default function AdminGallery() {
                   type="text"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  className={`w-full px-4 py-3 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-teal transition`}
+                  className={`w-full px-4 py-3 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] transition`}
                   placeholder={t("enter_title", "Enter photo title...")}
                   required
+                />
+              </div>
+
+              <div>
+                <label
+                  className={`block text-sm font-semibold ${textColor} mb-2`}
+                >
+                  {t("custom_category", "Custom Category")}
+                </label>
+                <input
+                  type="text"
+                  value={form.category}
+                  onChange={(e) =>
+                    setForm({ ...form, category: e.target.value })
+                  }
+                  className={`w-full px-4 py-3 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] transition`}
+                  placeholder={t(
+                    "custom_category_placeholder",
+                    "Name this category...",
+                  )}
                 />
               </div>
 
@@ -450,6 +564,24 @@ export default function AdminGallery() {
                   {t("make_public", "Make public (visible to all users)")}
                 </label>
               </div>
+
+              <div className="flex items-center gap-3 pt-2">
+                <input
+                  type="checkbox"
+                  checked={form.showDetails}
+                  onChange={(e) =>
+                    setForm({ ...form, showDetails: e.target.checked })
+                  }
+                  className="w-5 h-5"
+                  id="showDetails"
+                />
+                <label
+                  htmlFor="showDetails"
+                  className={`${textColor} cursor-pointer font-medium`}
+                >
+                  {t("show_details", "Show details (archive metadata) in card")}
+                </label>
+              </div>
             </div>
 
             <div>
@@ -463,7 +595,7 @@ export default function AdminGallery() {
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
                 }
-                className={`w-full px-4 py-3 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-teal transition`}
+                className={`w-full px-4 py-3 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] transition`}
                 placeholder={t("enter_description", "Enter description...")}
                 rows={3}
               />
@@ -476,12 +608,12 @@ export default function AdminGallery() {
               <div className="flex items-center gap-2 mb-4">
                 <Archive
                   className={`w-5 h-5 ${
-                    isDark ? "text-teal" : "text-[#0c4a6e]"
+                    isDark ? "text-[#d9a441]" : "text-[#24766f]"
                   }`}
                 />
                 <h3
                   className={`text-lg font-bold ${
-                    isDark ? "text-teal" : "text-[#0c4a6e]"
+                    isDark ? "text-[#d9a441]" : "text-[#24766f]"
                   }`}
                 >
                   {t("archive_metadata", "Archive Metadata")} (
@@ -503,8 +635,8 @@ export default function AdminGallery() {
                     onChange={(e) =>
                       setForm({ ...form, archiveSource: e.target.value })
                     }
-                    className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-teal text-sm`}
-                    placeholder="e.g. Dar al-Wathaeq al-Qawmiyya, Cairo"
+                    className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] text-sm`}
+                    placeholder={t("archive_source_placeholder", "e.g. National Archives of Algeria")}
                   />
                 </div>
 
@@ -521,8 +653,62 @@ export default function AdminGallery() {
                     onChange={(e) =>
                       setForm({ ...form, documentCode: e.target.value })
                     }
-                    className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-teal text-sm`}
-                    placeholder="e.g. ALG-1920-042"
+                    className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] text-sm`}
+                    placeholder={t("document_code_placeholder", "e.g. ALG-1920-042")}
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label
+                    className={`block text-xs font-semibold ${textColor} opacity-80 mb-2 flex items-center gap-2`}
+                  >
+                    <MapPin className="w-4 h-4" />
+                    {t("location", "Location")}
+                  </label>
+                  <input
+                    type="text"
+                    value={form.location}
+                    onChange={(e) =>
+                      setForm({ ...form, location: e.target.value })
+                    }
+                    className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] text-sm`}
+                    placeholder={t("location_placeholder", "e.g. Beirut")}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    className={`block text-xs font-semibold ${textColor} opacity-80 mb-2 flex items-center gap-2`}
+                  >
+                    <Calendar className="w-4 h-4" />
+                    {t("year", "Year")}
+                  </label>
+                  <input
+                    type="text"
+                    value={form.year}
+                    onChange={(e) => setForm({ ...form, year: e.target.value })}
+                    className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] text-sm`}
+                    placeholder={t("year_placeholder", "e.g. 1962")}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    className={`block text-xs font-semibold ${textColor} opacity-80 mb-2 flex items-center gap-2`}
+                  >
+                    <Camera className="w-4 h-4" />
+                    {t("photographer", "Photographer")}
+                  </label>
+                  <input
+                    type="text"
+                    value={form.photographer}
+                    onChange={(e) =>
+                      setForm({ ...form, photographer: e.target.value })
+                    }
+                    className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] text-sm`}
+                    placeholder={t("photographer_placeholder", "e.g. Family archive")}
                   />
                 </div>
               </div>
@@ -531,7 +717,7 @@ export default function AdminGallery() {
             <button
               type="submit"
               disabled={uploading}
-              className="interactive-btn btn-neu btn-neu--primary w-full py-4 font-bold text-lg disabled:opacity-50 flex items-center justify-center gap-3"
+              className="w-full bg-gradient-to-r from-[#0f2742] to-[#d9a441] text-white py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-3"
             >
               {editingId ? (
                 <>
@@ -556,7 +742,7 @@ export default function AdminGallery() {
         <div className="mb-4" data-aos="fade-up">
           <h2
             className={`text-2xl font-bold font-serif ${
-              isDark ? "text-teal" : "text-[#0c4a6e]"
+              isDark ? "text-[#d9a441]" : "text-[#24766f]"
             }`}
           >
             {t("uploaded_photos", "Uploaded Photos")} ({gallery.length})
@@ -565,7 +751,7 @@ export default function AdminGallery() {
 
         {loading ? (
           <div className="text-center py-20">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-teal border-t-transparent"></div>
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-[#d9a441] border-t-transparent"></div>
           </div>
         ) : gallery.length === 0 ? (
           <div
@@ -587,24 +773,24 @@ export default function AdminGallery() {
                 data-aos="fade-up"
                 data-aos-delay={index * 30}
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-mediaCardSoft">
-                    <img
-                      src={resolveImageUrl(item.image_path ?? item.imagePath)}
-                      alt={item.title || ""}
+                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#24766f]/10 to-[#d9a441]/10">
+                  <img
+                    src={resolveImageUrl(item.image_path ?? item.imagePath)}
+                    alt={item.title || ""}
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                     onError={(e) => {
-                      console.error("Image load error:", item.imagePath);
-                      (e.target as HTMLImageElement).src =
-                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23ddd' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23999' font-size='18'%3EImage not found%3C/text%3E%3C/svg%3E";
+                      console.error("Image load error:", item.imagePath ?? item.image_path);
+                      e.target.src =
+                        `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23ddd' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23999' font-size='18'%3E${imageNotFoundLabel}%3C/text%3E%3C/svg%3E`;
                     }}
                   />
                   <button
                     type="button"
-                    onClick={() => setViewItem(item)}
-                    className="absolute inset-0 bg-black/0 hover:bg-black/40 transition flex items-center justify-center cursor-zoom-in"
+                    onClick={() => handleEdit(item)}
+                    className="absolute inset-0 bg-black/0 hover:bg-black/40 transition flex items-center justify-center cursor-pointer"
                   >
                     <span className="px-4 py-2 rounded-full border border-white/70 text-white text-xs uppercase tracking-[0.3em]">
-                      {t("view", "View")}
+                      {t("edit", "Edit")}
                     </span>
                   </button>
                 </div>
@@ -620,6 +806,12 @@ export default function AdminGallery() {
                     >
                       {item.description}
                     </p>
+                  )}
+
+                  {item.category && (
+                    <span className="inline-flex w-fit px-2.5 py-1 rounded-full bg-[#24766f]/10 text-[#24766f] text-xs font-semibold">
+                      {item.category}
+                    </span>
                   )}
 
                   {/* Archive Metadata Display */}
@@ -671,23 +863,32 @@ export default function AdminGallery() {
 
                   <div className="flex items-center justify-between pt-2">
                     <span className={`${textColor} opacity-40 text-xs`}>
-                      {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ""}
+                      {item.createdAt || item.created_at
+                        ? new Date(
+                            item.createdAt ?? item.created_at!,
+                          ).toLocaleDateString()
+                        : ""}
                     </span>
                     <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleEdit(item)}
-                        className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded-lg transition flex items-center gap-1"
-                        title={t("edit", "Edit")}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-lg transition flex items-center gap-1"
-                        title={t("delete", "Delete")}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      {!item.isLocalAsset && (isAdminUser ||
+                        item.uploaded_by === (user as any)?.id) && (
+                        <>
+                          <button
+                            onClick={() => handleEdit(item)}
+                            className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded-lg transition flex items-center gap-1"
+                            title={t("edit", "Edit")}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-lg transition flex items-center gap-1"
+                            title={t("delete", "Delete")}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -704,12 +905,12 @@ export default function AdminGallery() {
             <button
               type="button"
               onClick={() => setViewItem(null)}
-              className="absolute top-6 right-6 text-white hover:text-teal transition z-10 bg-black/40 hover:bg-black/60 rounded-full p-3 flex items-center gap-2"
-              aria-label={t("close_image", "Quittez l'image")}
+              className="absolute top-6 right-6 text-white hover:text-[#d9a441] transition z-10 bg-black/40 hover:bg-black/60 rounded-full p-3 flex items-center gap-2"
+              aria-label={t("close_image", "Close image")}
             >
               <X className="w-5 h-5" />
               <span className="text-xs uppercase tracking-[0.2em]">
-                {t("close_image", "Quittez l'image")}
+                {t("close_image", "Close image")}
               </span>
             </button>
             <div
@@ -720,11 +921,11 @@ export default function AdminGallery() {
                 {viewImageUrl ? (
                   <img
                     src={viewImageUrl}
-                    alt={viewItem.title || "Gallery"}
+                    alt={viewItem.title || t("gallery", "Gallery")}
                     className="w-full h-full object-contain rounded-xl"
                   />
                 ) : (
-                  <div className={`w-full h-full flex items-center justify-center ${isDark ? 'text-teal' : 'text-[#0c4a6e]'} opacity-60`}>
+                  <div className="w-full h-full flex items-center justify-center text-[#24766f] opacity-60">
                     <ImageIcon className="w-12 h-12" />
                   </div>
                 )}

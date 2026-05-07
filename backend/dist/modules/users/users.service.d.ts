@@ -1,18 +1,43 @@
-import { Knex } from "knex";
 import { User } from '../../models/User';
 import { ActivityService } from '../activity/activity.service';
 export declare class UsersService {
     private readonly knex;
     private readonly activityService;
-    constructor(knex: Knex, activityService: ActivityService);
+    constructor(knex: any, activityService: ActivityService);
     private parsePrivileges;
     private serializePrivileges;
     findAll(): Promise<any[]>;
+    findRoles(): Promise<any>;
     findOne(id: number): Promise<any>;
     findByEmail(email: string): Promise<User>;
     create(data: any, adminId: number | null): Promise<User>;
     update(id: number, data: any, adminId: number): Promise<{
         message: string;
+    }>;
+    findValidationUsers(status?: string): Promise<any[]>;
+    validateUser(id: number, adminId: number): Promise<{
+        message: string;
+        user: any;
+    }>;
+    rejectValidation(id: number, adminId: number): Promise<{
+        message: string;
+        user: any;
+    }>;
+    getRoleDistributionPages(): {
+        key: string;
+        label: string;
+    }[];
+    getRoleDistribution(): Promise<{
+        users: any[];
+        roles: any;
+        pages: {
+            key: string;
+            label: string;
+        }[];
+    }>;
+    updateRoleDistribution(id: number, data: any, superAdminId: number): Promise<{
+        message: string;
+        user: any;
     }>;
     delete(id: number, adminId: number): Promise<{
         message: string;

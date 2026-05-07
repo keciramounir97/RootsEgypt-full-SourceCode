@@ -35,19 +35,21 @@ export class ApprovalsController {
   }
 
   @Put("password-reset/:id/approve")
+  @Post("password-reset/:id/approve")
   async approvePasswordReset(
     @Param("id", ParseIntPipe) id: number,
     @Request() req: ExpressRequest,
   ) {
-    return this.approvalsService.approvePasswordReset(id, req.user.userId);
+    return this.approvalsService.approvePasswordReset(id, req.user.id ?? req.user.userId);
   }
 
   @Put("password-reset/:id/reject")
+  @Post("password-reset/:id/reject")
   async rejectPasswordReset(
     @Param("id", ParseIntPipe) id: number,
     @Request() req: ExpressRequest,
   ) {
-    return this.approvalsService.rejectPasswordReset(id, req.user.userId);
+    return this.approvalsService.rejectPasswordReset(id, req.user.id ?? req.user.userId);
   }
 
   // ==================== ACCOUNT DELETION REQUESTS ====================
@@ -57,19 +59,21 @@ export class ApprovalsController {
   }
 
   @Put("account-deletion/:id/approve")
+  @Post("account-deletion/:id/approve")
   async approveAccountDeletion(
     @Param("id", ParseIntPipe) id: number,
     @Request() req: ExpressRequest,
   ) {
-    return this.approvalsService.approveAccountDeletion(id, req.user.userId);
+    return this.approvalsService.approveAccountDeletion(id, req.user.id ?? req.user.userId);
   }
 
   @Put("account-deletion/:id/reject")
+  @Post("account-deletion/:id/reject")
   async rejectAccountDeletion(
     @Param("id", ParseIntPipe) id: number,
     @Request() req: ExpressRequest,
   ) {
-    return this.approvalsService.rejectAccountDeletion(id, req.user.userId);
+    return this.approvalsService.rejectAccountDeletion(id, req.user.id ?? req.user.userId);
   }
 }
 

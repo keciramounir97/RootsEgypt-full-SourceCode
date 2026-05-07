@@ -1,9 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  BookOpen,
   Building2,
-  CalendarRange,
   ChevronDown,
   Crown,
   Landmark,
@@ -92,7 +90,7 @@ export default function Periods() {
         title: t("periods_title_fatimid_ayyubid_new", "Fatimid and Ayyubid Egypt"),
         summary: t(
           "periods_summary_fatimid_ayyubid_new",
-          "A key era for Cairo's scholarly, mercantile, and communal worlds, especially when combined with Geniza-adjacent and judicial evidence."
+          "A key era for Cairo's scholarly, mercantile, and communal worlds, especially when combined with manuscript, waqf, and judicial evidence."
         ),
         records: ["religious", "court", "community"],
         bullets: [
@@ -137,7 +135,7 @@ export default function Periods() {
       },
       {
         id: "colonial",
-        icon: CalendarRange,
+        icon: Landmark,
         accent: "#2563eb",
         range: t("periods_range_colonial", "1882 - 1952"),
         title: t("periods_title_colonial_new", "British Occupation and the Kingdom of Egypt"),
