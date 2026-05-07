@@ -7,8 +7,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY tsconfig.json knexfile.js server.js db-config.js env-bootstrap.js ./
-COPY scripts/ scripts/
+COPY tsconfig.json knexfile.js server.js ./
 COPY src/ src/
 
 RUN npm run build
@@ -22,9 +21,6 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/knexfile.js ./
 COPY --from=builder /app/server.js ./
-COPY --from=builder /app/db-config.js ./
-COPY --from=builder /app/env-bootstrap.js ./
-COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/src/db ./src/db
 
 # uploads directory
@@ -32,4 +28,4 @@ RUN mkdir -p uploads private_uploads
 
 EXPOSE 5000
 
-CMD ["node", "scripts/start-easypanel.js"]
+CMD ["node", "server.js"]
