@@ -14,7 +14,7 @@ import {
 import { useState } from "react";
 import { useAuth } from "../admin/components/AuthContext";
 import { useTranslation } from "../context/TranslationContext";
-import logoImage from "../assets/new-logo-dark.png";
+import EgyptianLogoMark from "../components/EgyptianLogoMark";
 
 const bgImage = "/assets/egypt-bg.jpeg";
 
@@ -82,10 +82,16 @@ export default function Signup() {
   return (
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <img
+          src={bgImage}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-br from-[#071827]/90 via-[#0f2742]/80 to-[#24766f]/60" />
         <div className="relative z-10 flex flex-col justify-center items-center p-12 text-center">
-          <img src={logoImage} alt="RootsEgypt" className="w-24 h-24 rounded-2xl mb-8 shadow-2xl bg-white p-2 object-contain" />
+          <div className="w-24 h-24 rounded-2xl mb-8 shadow-2xl bg-gradient-to-br from-[#d4a843]/20 to-[#c45c3e]/20 backdrop-blur-sm border-2 border-[#d4a843]/30 flex items-center justify-center p-4">
+            <EgyptianLogoMark size={64} className="text-[#d4a843]" />
+          </div>
           <h2 className="text-4xl font-bold !text-white mb-4 drop-shadow-md font-cinzel">
             RootsEgypt
           </h2>
@@ -98,18 +104,26 @@ export default function Signup() {
         </div>
       </div>
 
-      <div className={`flex-1 flex items-center justify-center p-6 sm:p-10 ${isDark ? "bg-[#071827]" : "bg-[#f7f2e8]"}`}>
+      <div
+        className={`flex-1 flex items-center justify-center p-6 sm:p-10 ${isDark ? "bg-[#071827]" : "bg-[#f7f2e8]"}`}
+      >
         <div className="w-full max-w-md">
           <div className="flex flex-col items-center mb-6 lg:hidden">
-            <img src={logoImage} alt="RootsEgypt" className="w-16 h-16 rounded-xl mb-4 shadow-lg bg-white p-1.5 object-contain" />
+            <div className="w-16 h-16 rounded-xl mb-4 shadow-lg bg-gradient-to-br from-[#d4a843]/20 to-[#c45c3e]/20 backdrop-blur-sm border-2 border-[#d4a843]/30 flex items-center justify-center p-3">
+              <EgyptianLogoMark size={40} className="text-[#d4a843]" />
+            </div>
             <h2 className="text-2xl font-bold font-cinzel">RootsEgypt</h2>
           </div>
 
           <div className="mb-6">
-            <h1 className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-[#0f2742]"}`}>
+            <h1
+              className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-[#0f2742]"}`}
+            >
               {t("create_account", "Create Account")}
             </h1>
-            <p className={`text-base ${isDark ? "text-white/60" : "text-[#162238]/60"}`}>
+            <p
+              className={`text-base ${isDark ? "text-white/60" : "text-[#162238]/60"}`}
+            >
               {t("signup_subtitle", "Fill in your details to get started")}
             </p>
           </div>
@@ -117,7 +131,9 @@ export default function Signup() {
           <form className="space-y-4" onSubmit={handleSignup}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelCls}>{t("full_name", "Full Name")}</label>
+                <label className={labelCls}>
+                  {t("full_name", "Full Name")}
+                </label>
                 <div className={inputCls}>
                   <User className="w-5 h-5 text-[#d9a441] shrink-0" />
                   <input
@@ -138,7 +154,10 @@ export default function Signup() {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder={t("phone_placeholder", "e.g. +20 100 123 4567")}
+                    placeholder={t(
+                      "phone_placeholder",
+                      "e.g. +20 100 123 4567",
+                    )}
                     className={inputTextCls}
                   />
                 </div>
@@ -178,12 +197,18 @@ export default function Signup() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="text-[#d9a441]/60 hover:text-[#d9a441] transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
                   </button>
                 </div>
               </div>
               <div>
-                <label className={labelCls}>{t("confirm_password", "Confirm")}</label>
+                <label className={labelCls}>
+                  {t("confirm_password", "Confirm")}
+                </label>
                 <div className={inputCls}>
                   <Lock className="w-5 h-5 text-[#d9a441] shrink-0" />
                   <input
@@ -199,7 +224,11 @@ export default function Signup() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="text-[#d9a441]/60 hover:text-[#d9a441] transition-colors"
                   >
-                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showConfirmPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -207,7 +236,9 @@ export default function Signup() {
 
             {error && (
               <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
-                <p className="text-red-500 text-sm text-center font-medium">{error}</p>
+                <p className="text-red-500 text-sm text-center font-medium">
+                  {error}
+                </p>
               </div>
             )}
 
@@ -219,7 +250,9 @@ export default function Signup() {
                     <p className="text-green-600 dark:text-green-400 text-sm font-medium">
                       {t("account_created", "Account Created")}
                     </p>
-                    <p className="text-green-600/60 dark:text-green-400/60 text-xs mt-1">{success}</p>
+                    <p className="text-green-600/60 dark:text-green-400/60 text-xs mt-1">
+                      {success}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -244,9 +277,14 @@ export default function Signup() {
               )}
             </button>
 
-            <p className={`text-center text-sm pt-2 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}>
+            <p
+              className={`text-center text-sm pt-2 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}
+            >
               {t("already_have_account", "Already have an account?")}{" "}
-              <NavLink to="/login" className="text-[#24766f] font-bold hover:text-[#d9a441] transition-colors">
+              <NavLink
+                to="/login"
+                className="text-[#24766f] font-bold hover:text-[#d9a441] transition-colors"
+              >
                 {t("login", "Login")}
               </NavLink>
             </p>

@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { useAuth } from "../admin/components/AuthContext";
 import { useTranslation } from "../context/TranslationContext";
-import logoImage from "../assets/new-logo-dark.png";
+import EgyptianLogoMark from "../components/EgyptianLogoMark";
 
 const bgImage = "/assets/egypt-bg.jpeg";
 
@@ -88,10 +88,16 @@ export default function Login() {
   return (
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <img
+          src={bgImage}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-br from-[#071827]/90 via-[#0f2742]/80 to-[#24766f]/60" />
         <div className="relative z-10 flex flex-col justify-center items-center p-12 text-center">
-          <img src={logoImage} alt="RootsEgypt" className="w-24 h-24 rounded-2xl mb-8 shadow-2xl bg-white p-2 object-contain" />
+          <div className="w-24 h-24 rounded-2xl mb-8 shadow-2xl bg-gradient-to-br from-[#d4a843]/20 to-[#c45c3e]/20 backdrop-blur-sm border-2 border-[#d4a843]/30 flex items-center justify-center p-4">
+            <EgyptianLogoMark size={64} className="text-[#d4a843]" />
+          </div>
           <h2 className="text-4xl font-bold !text-white mb-4 drop-shadow-md font-cinzel">
             RootsEgypt
           </h2>
@@ -104,28 +110,40 @@ export default function Login() {
         </div>
       </div>
 
-      <div className={`flex-1 flex items-center justify-center p-6 sm:p-10 ${isDark ? "bg-[#071827]" : "bg-[#f7f2e8]"}`}>
+      <div
+        className={`flex-1 flex items-center justify-center p-6 sm:p-10 ${isDark ? "bg-[#071827]" : "bg-[#f7f2e8]"}`}
+      >
         <div className="w-full max-w-md">
           <div className="flex flex-col items-center mb-8 lg:hidden">
-            <img src={logoImage} alt="RootsEgypt" className="w-16 h-16 rounded-xl mb-4 shadow-lg bg-white p-1.5 object-contain" />
+            <div className="w-16 h-16 rounded-xl mb-4 shadow-lg bg-gradient-to-br from-[#d4a843]/20 to-[#c45c3e]/20 backdrop-blur-sm border-2 border-[#d4a843]/30 flex items-center justify-center p-3">
+              <EgyptianLogoMark size={40} className="text-[#d4a843]" />
+            </div>
             <h2 className="text-2xl font-bold font-cinzel">RootsEgypt</h2>
           </div>
 
           <div className="mb-8">
-            <h1 className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-[#0f2742]"}`}>
+            <h1
+              className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-[#0f2742]"}`}
+            >
               {t("welcome_back", "Welcome Back")}
             </h1>
-            <p className={`text-base ${isDark ? "text-white/60" : "text-[#162238]/60"}`}>
+            <p
+              className={`text-base ${isDark ? "text-white/60" : "text-[#162238]/60"}`}
+            >
               {t("login_subtitle", "Sign in to your account")}
             </p>
           </div>
 
           <form className="space-y-5" onSubmit={handleLogin}>
             <div>
-              <label className={`text-sm font-medium mb-2 block ${isDark ? "text-white/80" : "text-[#162238]/80"}`}>
+              <label
+                className={`text-sm font-medium mb-2 block ${isDark ? "text-white/80" : "text-[#162238]/80"}`}
+              >
                 {t("email", "Email")}
               </label>
-              <div className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all focus-within:border-[#d9a441] focus-within:shadow-lg focus-within:shadow-[#d9a441]/10 ${isDark ? "bg-white/5 border-white/10" : "bg-white border-[#e8e4dc]"}`}>
+              <div
+                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all focus-within:border-[#d9a441] focus-within:shadow-lg focus-within:shadow-[#d9a441]/10 ${isDark ? "bg-white/5 border-white/10" : "bg-white border-[#e8e4dc]"}`}
+              >
                 <Mail className="w-5 h-5 text-[#d9a441] shrink-0" />
                 <input
                   type="email"
@@ -139,10 +157,14 @@ export default function Login() {
             </div>
 
             <div>
-              <label className={`text-sm font-medium mb-2 block ${isDark ? "text-white/80" : "text-[#162238]/80"}`}>
+              <label
+                className={`text-sm font-medium mb-2 block ${isDark ? "text-white/80" : "text-[#162238]/80"}`}
+              >
                 {t("password", "Password")}
               </label>
-              <div className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all focus-within:border-[#d9a441] focus-within:shadow-lg focus-within:shadow-[#d9a441]/10 ${isDark ? "bg-white/5 border-white/10" : "bg-white border-[#e8e4dc]"}`}>
+              <div
+                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all focus-within:border-[#d9a441] focus-within:shadow-lg focus-within:shadow-[#d9a441]/10 ${isDark ? "bg-white/5 border-white/10" : "bg-white border-[#e8e4dc]"}`}
+              >
                 <Lock className="w-5 h-5 text-[#d9a441] shrink-0" />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -157,20 +179,29 @@ export default function Login() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="text-[#d9a441]/60 hover:text-[#d9a441] transition-colors"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
 
             <div className="flex justify-end">
-              <NavLink to="/resetpassword" className="text-sm text-[#d9a441] hover:text-[#24766f] transition-colors font-medium">
+              <NavLink
+                to="/resetpassword"
+                className="text-sm text-[#d9a441] hover:text-[#24766f] transition-colors font-medium"
+              >
                 {t("forgot_password", "Forgot password?")}
               </NavLink>
             </div>
 
             {error && (
               <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
-                <p className="text-red-500 text-sm text-center font-medium">{error}</p>
+                <p className="text-red-500 text-sm text-center font-medium">
+                  {error}
+                </p>
               </div>
             )}
 
@@ -180,10 +211,16 @@ export default function Login() {
                   <Shield className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-amber-600 dark:text-amber-400 text-sm font-medium">
-                      {t("account_pending_validation", "Your account is pending validation.")}
+                      {t(
+                        "account_pending_validation",
+                        "Your account is pending validation.",
+                      )}
                     </p>
                     <p className="text-amber-600/60 dark:text-amber-400/60 text-xs mt-1">
-                      {t("account_pending_desc", "A super admin must approve your account before you can log in.")}
+                      {t(
+                        "account_pending_desc",
+                        "A super admin must approve your account before you can log in.",
+                      )}
                     </p>
                   </div>
                 </div>
@@ -209,9 +246,14 @@ export default function Login() {
               )}
             </button>
 
-            <p className={`text-center text-sm pt-2 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}>
+            <p
+              className={`text-center text-sm pt-2 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}
+            >
               {t("no_account_yet", "Don't have an account?")}{" "}
-              <NavLink to="/signup" className="text-[#24766f] font-bold hover:text-[#d9a441] transition-colors">
+              <NavLink
+                to="/signup"
+                className="text-[#24766f] font-bold hover:text-[#d9a441] transition-colors"
+              >
                 {t("create_account", "Create account")}
               </NavLink>
             </p>

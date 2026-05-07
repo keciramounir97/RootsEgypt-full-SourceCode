@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useAuth } from "../admin/components/AuthContext";
 import { useTranslation } from "../context/TranslationContext";
 import { api } from "../api/client";
-import logoImage from "../assets/new-logo-dark.png";
+import EgyptianLogoMark from "../components/EgyptianLogoMark";
 
 const bgImage = "/assets/egypt-bg.jpeg";
 
@@ -99,10 +99,16 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <img
+          src={bgImage}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-br from-[#071827]/90 via-[#0f2742]/80 to-[#24766f]/60" />
         <div className="relative z-10 flex flex-col justify-center items-center p-12 text-center">
-          <img src={logoImage} alt="RootsEgypt" className="w-24 h-24 rounded-2xl mb-8 shadow-2xl bg-white p-2 object-contain" />
+          <div className="w-24 h-24 rounded-2xl mb-8 shadow-2xl bg-gradient-to-br from-[#d4a843]/20 to-[#c45c3e]/20 backdrop-blur-sm border-2 border-[#d4a843]/30 flex items-center justify-center p-4">
+            <EgyptianLogoMark size={64} className="text-[#d4a843]" />
+          </div>
           <h2 className="text-4xl font-bold !text-white mb-4 drop-shadow-md font-cinzel">
             RootsEgypt
           </h2>
@@ -115,32 +121,54 @@ export default function ForgotPassword() {
         </div>
       </div>
 
-      <div className={`flex-1 flex items-center justify-center p-6 sm:p-10 ${isDark ? "bg-[#071827]" : "bg-[#f7f2e8]"}`}>
+      <div
+        className={`flex-1 flex items-center justify-center p-6 sm:p-10 ${isDark ? "bg-[#071827]" : "bg-[#f7f2e8]"}`}
+      >
         <div className="w-full max-w-md">
           <div className="flex flex-col items-center mb-8 lg:hidden">
-            <img src={logoImage} alt="RootsEgypt" className="w-16 h-16 rounded-xl mb-4 shadow-lg bg-white p-1.5 object-contain" />
+            <div className="w-16 h-16 rounded-xl mb-4 shadow-lg bg-gradient-to-br from-[#d4a843]/20 to-[#c45c3e]/20 backdrop-blur-sm border-2 border-[#d4a843]/30 flex items-center justify-center p-3">
+              <EgyptianLogoMark size={40} className="text-[#d4a843]" />
+            </div>
             <h2 className="text-2xl font-bold font-cinzel">RootsEgypt</h2>
           </div>
 
-          <h1 className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-[#0f2742]"}`}>
+          <h1
+            className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-[#0f2742]"}`}
+          >
             {token
               ? t("set_new_password", "Set New Password")
               : step === 1
                 ? t("reset_password", "Reset Password")
                 : t("verify_and_reset", "Verify & Reset")}
           </h1>
-          <p className={`text-base mb-8 ${isDark ? "text-white/60" : "text-[#162238]/60"}`}>
+          <p
+            className={`text-base mb-8 ${isDark ? "text-white/60" : "text-[#162238]/60"}`}
+          >
             {token
-              ? t("set_new_password_desc", "Choose a new password for your account.")
+              ? t(
+                  "set_new_password_desc",
+                  "Choose a new password for your account.",
+                )
               : step === 1
-                ? t("reset_step1_desc", "Enter your email to request a reset code.")
-                : t("reset_step2_desc", "Use the approved code and set a new secure password.")}
+                ? t(
+                    "reset_step1_desc",
+                    "Enter your email to request a reset code.",
+                  )
+                : t(
+                    "reset_step2_desc",
+                    "Use the approved code and set a new secure password.",
+                  )}
           </p>
 
           {submitted && !token ? (
-            <div className={`mt-6 rounded-2xl border-2 p-5 ${isDark ? "bg-white/5 border-white/10 text-white/80" : "bg-white border-[#e8e4dc] text-[#162238]/80"}`}>
+            <div
+              className={`mt-6 rounded-2xl border-2 p-5 ${isDark ? "bg-white/5 border-white/10 text-white/80" : "bg-white border-[#e8e4dc] text-[#162238]/80"}`}
+            >
               <p className="font-semibold mb-2">
-                {t("reset_request_submitted", "Password reset request submitted.")}
+                {t(
+                  "reset_request_submitted",
+                  "Password reset request submitted.",
+                )}
               </p>
               <p className="text-sm leading-relaxed">
                 {t(
@@ -148,7 +176,9 @@ export default function ForgotPassword() {
                   "A super admin will review it. If approved, you will receive a 24-hour one-time code by email.",
                 )}
               </p>
-              <p className={`text-center text-sm pt-5 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}>
+              <p
+                className={`text-center text-sm pt-5 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}
+              >
                 {t("back_to", "Back to")}{" "}
                 <NavLink to="/login" className="text-[#24766f] font-bold">
                   {t("login", "Login")}
@@ -156,7 +186,16 @@ export default function ForgotPassword() {
               </p>
             </div>
           ) : (
-            <form className="space-y-5" onSubmit={token ? handleTokenReset : step === 1 ? handleRequest : handleReset}>
+            <form
+              className="space-y-5"
+              onSubmit={
+                token
+                  ? handleTokenReset
+                  : step === 1
+                    ? handleRequest
+                    : handleReset
+              }
+            >
               {!token && step === 1 && (
                 <div>
                   <label className={labelCls}>{t("email", "Email")}</label>
@@ -176,7 +215,9 @@ export default function ForgotPassword() {
 
               {!token && step === 2 && (
                 <div>
-                  <label className={labelCls}>{t("verification_code", "Verification Code")}</label>
+                  <label className={labelCls}>
+                    {t("verification_code", "Verification Code")}
+                  </label>
                   <div className={inputCls}>
                     <ShieldCheck className="w-5 h-5 text-[#d9a441] shrink-0" />
                     <input
@@ -193,7 +234,9 @@ export default function ForgotPassword() {
 
               {(token || step === 2) && (
                 <div>
-                  <label className={labelCls}>{t("new_password", "New Password")}</label>
+                  <label className={labelCls}>
+                    {t("new_password", "New Password")}
+                  </label>
                   <div className={inputCls}>
                     <Lock className="w-5 h-5 text-[#d9a441] shrink-0" />
                     <input
@@ -210,7 +253,9 @@ export default function ForgotPassword() {
 
               {error && (
                 <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
-                  <p className="text-red-500 text-sm text-center font-medium">{error}</p>
+                  <p className="text-red-500 text-sm text-center font-medium">
+                    {error}
+                  </p>
                 </div>
               )}
 
@@ -238,9 +283,14 @@ export default function ForgotPassword() {
                 )}
               </button>
 
-              <p className={`text-center text-sm pt-2 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}>
+              <p
+                className={`text-center text-sm pt-2 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}
+              >
                 {t("back_to", "Back to")}{" "}
-                <NavLink to="/login" className="text-[#24766f] font-bold hover:text-[#d9a441] transition-colors">
+                <NavLink
+                  to="/login"
+                  className="text-[#24766f] font-bold hover:text-[#d9a441] transition-colors"
+                >
                   {t("login", "Login")}
                 </NavLink>
               </p>
