@@ -5,23 +5,26 @@ import {
   resolveSiteImageUrl,
   type SiteImageRecord,
 } from "../hooks/useSiteImages";
+import slider1 from "../photos/slider1.jpeg";
+import slider2 from "../photos/slider2.jpeg";
+import slider3 from "../photos/slider3.jpeg";
 
 const EGYPT_DEFAULT_SLIDES: SiteImageRecord[] = [
   {
     id: -1,
-    imagePath: "/photos/slider1.jpeg",
+    imagePath: slider1,
     title: "Egyptian Heritage",
     caption: "Discover the roots of Egyptian civilisation",
   },
   {
     id: -2,
-    imagePath: "/photos/slider2.jpeg",
+    imagePath: slider2,
     title: "Sacred Sites",
     caption: "Temples and monuments along the Nile",
   },
   {
     id: -3,
-    imagePath: "/photos/slider3.jpeg",
+    imagePath: slider3,
     title: "Living Heritage",
     caption: "Traditions passed through generations",
   },
