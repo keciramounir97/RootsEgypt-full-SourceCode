@@ -18,9 +18,9 @@ const getApiRoot = (): string => {
     return "http://localhost:5000";
   }
 
-  // 2. Production: use VITE_API_URL or same-origin fallback
-  return import.meta.env.VITE_API_URL || window.location.origin;
-};;
+  // 2. Production: use VITE_API_URL or API domain fallback
+  return import.meta.env.VITE_API_URL || "https://api.rootsegypt.org";
+}
 
 const API_ROOT = getApiRoot();
 const NORMALIZED_API_ROOT = API_ROOT.replace(/\/+$/, "").replace(/\/api$/, "");
