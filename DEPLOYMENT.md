@@ -81,7 +81,7 @@ If your EasyPanel database service is named `rootsegypt_database-egyptroots`, th
 The canonical production frontend uses same-origin `/api` on `rootsegypt.org` so login/signup/reset do not depend on browser CORS. nginx proxies `/api` to the backend service through EasyPanel internal DNS.
 
 ```bash
-BACKEND_UPSTREAM=rootsegypt_backend:5000
+BACKEND_UPSTREAM=rootsegypt-backend:5000
 ```
 
 If EasyPanel gives the backend service a different internal DNS name, set `BACKEND_UPSTREAM` to that exact `host:port` value.

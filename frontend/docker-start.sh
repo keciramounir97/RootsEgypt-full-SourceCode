@@ -15,26 +15,37 @@ is_resolvable() {
   getent hosts "$host" >/dev/null 2>&1
 }
 
+is_http_ready() {
+  candidate="$1"
+  wget -q -T 2 -O /dev/null "http://$candidate/api/health/live" >/dev/null 2>&1 ||
+    wget -q -T 2 -O /dev/null "http://$candidate/healthz" >/dev/null 2>&1
+}
+
 configured="$(normalize_upstream "${BACKEND_UPSTREAM:-}")"
+preferred="${configured:-rootsegypt-backend:5000}"
 selected=""
+resolvable=""
 
 for candidate in \
-  "$configured" \
-  "backend:5000" \
-  "rootsegypt_backend:5000" \
+  "$preferred" \
   "rootsegypt-backend:5000" \
+  "rootsegypt_backend:5000" \
+  "roots-egypt-backend:5000" \
   "api:5000" \
-  "roots-egypt-backend:5000"
+  "backend:5000"
 do
   [ -n "$candidate" ] || continue
-  if is_resolvable "$candidate"; then
+  if is_http_ready "$candidate"; then
     selected="$candidate"
     break
+  fi
+  if [ -z "$resolvable" ] && is_resolvable "$candidate"; then
+    resolvable="$candidate"
   fi
 done
 
 if [ -z "$selected" ]; then
-  selected="${configured:-backend:5000}"
+  selected="${resolvable:-$preferred}"
 fi
 
 export BACKEND_UPSTREAM="$selected"

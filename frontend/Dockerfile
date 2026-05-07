@@ -23,7 +23,7 @@ COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
 # EasyPanel commonly exposes internal service DNS with underscores. Override
 # BACKEND_UPSTREAM in the frontend service if the backend DNS name differs.
-ENV BACKEND_UPSTREAM=backend:5000
+ENV BACKEND_UPSTREAM=rootsegypt-backend:5000
 
 COPY docker-start.sh /docker-start.sh
 RUN chmod +x /docker-start.sh
