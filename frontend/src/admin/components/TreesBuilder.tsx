@@ -86,7 +86,7 @@ const PersonListItem = memo(function PersonListItem({
   active,
   onClick,
   inputText,
-}) {
+}: any) {
   return (
     <button
       onClick={onClick}
@@ -1336,7 +1336,7 @@ export default function TreesBuilder({
   readOnly = false,
   onAutoSave,
   dataFormat = "gedcom", // "gedcom" | "gedcom7" | "gedcomx" – affects display label and format-specific display
-}) {
+}: any) {
   const { theme } = useThemeStore();
 
   const { locale, dir, t } = useTranslation();
@@ -1388,7 +1388,7 @@ export default function TreesBuilder({
     return () => document.removeEventListener("mousedown", close);
   }, []);
 
-  const [selectedPerson, setSelectedPerson] = useState(null);
+  const [selectedPerson, setSelectedPerson] = useState<any>(null);
 
   const [personStatus, setPersonStatus] = useState({
     message: "",

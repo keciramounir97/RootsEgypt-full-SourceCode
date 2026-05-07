@@ -193,8 +193,8 @@ function BookDetailModal({
   fileUrl: (p: any) => string;
   apiRoot: string;
   t: (key: string, fallback?: string) => string;
-  isFavorite: (type: string, id: string) => boolean;
-  toggleFavorite: (type: string, id: string) => void;
+  isFavorite: (type: any, id: string | number) => boolean;
+  toggleFavorite: (type: any, id: string | number) => void;
   shareItem: (title: string) => void;
 }) {
   const coverPath = book.coverUrl || book.cover_path || book.coverPath || "";

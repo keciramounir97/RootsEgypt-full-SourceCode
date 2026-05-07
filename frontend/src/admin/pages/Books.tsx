@@ -89,19 +89,31 @@ export default function Books() {
 
   const [tab, setTab] = useState("public"); // public | my (non-admin)
   const [q, setQ] = useState("");
-  const [adminBooks, setAdminBooks] = useState([]);
-  const [myBooks, setMyBooks] = useState([]);
-  const [publicBooks, setPublicBooks] = useState([]);
+  const [adminBooks, setAdminBooks] = useState<any[]>([]);
+  const [myBooks, setMyBooks] = useState<any[]>([]);
+  const [publicBooks, setPublicBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    title: string;
+    author: string;
+    category: string;
+    description: string;
+    archiveSource: string;
+    documentCode: string;
+    isPublic: boolean;
+    file: File | null;
+    cover: File | null;
+  }>({
     title: "",
     author: "",
     category: "",
     description: "",
+    archiveSource: "",
+    documentCode: "",
     isPublic: true,
     file: null,
     cover: null,

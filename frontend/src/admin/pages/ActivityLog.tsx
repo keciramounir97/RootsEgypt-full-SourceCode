@@ -21,7 +21,7 @@ export default function ActivityLog() {
 
   const [q, setQ] = useState("");
   const [type, setType] = useState("all");
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

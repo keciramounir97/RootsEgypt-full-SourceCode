@@ -67,7 +67,7 @@ export default function AdminDocuments() {
 
   const getExtension = (name: string) => {
     const parts = String(name || "").toLowerCase().split(".");
-    return parts.length > 1 ? parts.pop() : "";
+    return parts.length > 1 ? parts.pop() || "" : "";
   };
 
   const validateDocFile = (file: File) => {

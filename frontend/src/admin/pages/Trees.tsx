@@ -83,23 +83,23 @@ export default function Trees() {
 
   const [q, setQ] = useState("");
 
-  const [myTrees, setMyTrees] = useState([]);
+  const [myTrees, setMyTrees] = useState<any[]>([]);
 
-  const [publicTrees, setPublicTrees] = useState([]);
+  const [publicTrees, setPublicTrees] = useState<any[]>([]);
 
   const [loadingTrees, setLoadingTrees] = useState(true);
 
   const [treesError, setTreesError] = useState("");
 
-  const [selectedTree, setSelectedTree] = useState(null);
+  const [selectedTree, setSelectedTree] = useState<any>(null);
 
-  const [selectedScope, setSelectedScope] = useState(null); // "my" | "public" | null
+  const [selectedScope, setSelectedScope] = useState<any>(null); // "my" | "public" | null
 
   const [loadingGedcom, setLoadingGedcom] = useState(false);
 
   const [gedcomError, setGedcomError] = useState("");
 
-  const [people, setPeople] = useState([]);
+  const [people, setPeople] = useState<any[]>([]);
 
   const [saveFormat, setSaveFormat] = useState("gedcom"); // 'gedcom' | 'gedcomx_json' | 'gedcomx_xml' | 'gedcomx_gedx'
   const [treeForm, setTreeForm] = useState({
@@ -128,9 +128,9 @@ export default function Trees() {
 
   const [deletingTree, setDeletingTree] = useState(false);
 
-  const autoSaveTimerRef = useRef(null);
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const autoSavePeopleRef = useRef(null);
+  const autoSavePeopleRef = useRef<any[] | null>(null);
 
   const autoSaveInFlightRef = useRef(false);
 
@@ -363,7 +363,7 @@ export default function Trees() {
     documentCode,
     data_format,
   }) => {
-    const patch = {
+    const patch: any = {
       id,
       title,
       description: description ?? "",
@@ -605,7 +605,7 @@ export default function Trees() {
     people = [],
 
     includeFile = true,
-  }) => {
+  }: any) => {
     const safeTitle = String(title || "").trim();
 
     if (!safeTitle) throw new Error("Title is required");
@@ -816,7 +816,7 @@ export default function Trees() {
     }
   };
 
-  const scheduleAutoSave = (nextPeople) => {
+  const scheduleAutoSave = (nextPeople: any[]) => {
     if (!canUpdateSelected) return;
 
     peopleDirtyRef.current = true;

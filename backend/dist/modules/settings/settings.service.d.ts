@@ -1,6 +1,6 @@
-import { OnModuleInit } from '@nestjs/common';
-import { ActivityService } from '../activity/activity.service';
-import { UpdateSettingsDto } from './dto/settings.dto';
+import { OnModuleInit } from "@nestjs/common";
+import { ActivityService } from "../activity/activity.service";
+import { UpdateSettingsDto } from "./dto/settings.dto";
 type SettingsShape = {
     allowRegistration: boolean;
     defaultLanguage: string;
@@ -11,6 +11,8 @@ type SiteImageRecord = {
     id: number;
     imagePath: string;
     sortOrder: number;
+    title?: string | null;
+    caption?: string | null;
     createdAt?: string;
     updatedAt?: string;
 };
@@ -38,6 +40,12 @@ export declare class SettingsService implements OnModuleInit {
     getSiteImages(): Promise<SiteImagesShape>;
     updateHeroOptions(data: any, actorId: number): Promise<SiteImagesShape>;
     addHeroImages(files: Express.Multer.File[], actorId: number): Promise<SiteImagesShape>;
+    updateHeroImage(id: number, data: {
+        title?: string;
+        caption?: string;
+        sortOrder?: number;
+    }, actorId: number): Promise<SiteImagesShape>;
+    reorderHeroImages(ids: number[], actorId: number): Promise<SiteImagesShape>;
     deleteHeroImage(id: number, actorId: number): Promise<SiteImagesShape>;
     updateBackgroundOptions(data: any, actorId: number): Promise<SiteImagesShape>;
     addBackgroundImages(files: Express.Multer.File[], actorId: number): Promise<SiteImagesShape>;

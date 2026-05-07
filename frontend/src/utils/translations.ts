@@ -4178,10 +4178,325 @@ const parityTranslations: Record<SupportedLocale, Record<string, string>> = {
   },
 };
 
-Object.assign(translations.en, AUTO_TRANSLATIONS.en, englishGeneratedTranslations, parityTranslations.en);
-Object.assign(translations.fr, AUTO_TRANSLATIONS.fr, parityTranslations.fr);
-Object.assign(translations.ar, AUTO_TRANSLATIONS.ar, parityTranslations.ar);
-Object.assign(translations.es, AUTO_TRANSLATIONS.es, parityTranslations.es);
+const contentOverrides: Record<string, string> = {
+  sources_and_archives: "Sources & Periods",
+  sources_archives_eyebrow: "Egyptian Research Map",
+  sources_archives_title: "Egyptian Sources and Periods",
+  sources_archives_intro_new:
+    "Use Egypt's record families and historical periods together: civil status, Dar al-Wathaeq, court sijill, waqf, church registers, maps, and private collections.",
+  sources_archive_hubs_title: "Egyptian Source Families",
+  sources_archive_hubs_intro:
+    "Filter the repository types below, then open a card to see which source is strong, what proof it can provide, and where it fits in the Egyptian timeline.",
+  sources_search_placeholder_new:
+    "Search source types, archive names, record families, or time periods...",
+  sources_filter_all: "All sources",
+  sources_filter_state: "State archives",
+  sources_filter_legal: "Courts and deeds",
+  sources_filter_religious: "Religious records",
+  sources_filter_community: "Community collections",
+  sources_lane_1_title: "Start with family memory",
+  sources_lane_1_text:
+    "Collect Arabic spellings, nicknames, occupations, village memories, migration stories, and old photographs before requesting archive records.",
+  sources_lane_2_title: "Anchor names in official records",
+  sources_lane_2_text:
+    "Move from modern civil extracts into court, waqf, parish, mosque, municipal, and national archive material until the same names repeat independently.",
+  sources_lane_3_title: "Keep every source traceable",
+  sources_lane_3_text:
+    "Attach the office name, shelfmark, parish, court, file number, retrieval date, and family provenance to every fact in the tree.",
+  sources_roots_card_archives_title: "Dar al-Wathaeq al-Qawmiyya",
+  sources_roots_card_archives_subtitle: "Egypt's national archive",
+  sources_roots_card_archives_desc:
+    "The main national repository for Ottoman, khedival, royal, republican, administrative, land, and court-adjacent documentation.",
+  sources_roots_card_archives_b1:
+    "Use governorate, district, village, office, or appointment clues to narrow requests.",
+  sources_roots_card_archives_b2:
+    "Strong for land files, official correspondence, family petitions, and administrative series.",
+  sources_roots_card_archives_b3:
+    "Best paired with civil status extracts and oral place memory.",
+  sources_roots_card_civil_title: "Civil Status Offices",
+  sources_roots_card_civil_subtitle: "Birth, marriage, death, and household continuity",
+  sources_roots_card_civil_desc:
+    "Modern civil status records create the verified bridge from living relatives into nineteenth- and twentieth-century Egyptian records.",
+  sources_roots_card_civil_b1: "Birth, marriage, death, identity, and family-register extracts.",
+  sources_roots_card_civil_b2: "Useful for exact parent names, dates, places, and branch continuity.",
+  sources_roots_card_civil_b3: "Start here before moving backward into courts and older archives.",
+  sources_roots_card_courts_title: "Sharia Courts and Awqaf Records",
+  sources_roots_card_courts_subtitle: "Marriage, inheritance, guardianship, property, and endowments",
+  sources_roots_card_courts_desc:
+    "Court sijill and waqf records often reveal spouses, guardians, heirs, witnesses, property, occupations, and kinship networks.",
+  sources_roots_card_courts_b1: "Marriage contracts and inheritance settlements can name several generations.",
+  sources_roots_card_courts_b2: "Awqaf deeds preserve family obligations, place, lineage, and social role.",
+  sources_roots_card_courts_b3: "Excellent for confirming relationships that civil extracts do not show.",
+  sources_roots_card_azhar_title: "Al-Azhar and Scholarly Registers",
+  sources_roots_card_azhar_subtitle: "Scholars, judges, teachers, and students",
+  sources_roots_card_azhar_desc:
+    "Al-Azhar and scholarly records can connect families tied to education, law, religious service, teaching circles, and ijazat.",
+  sources_roots_card_azhar_b1: "Look for titles, nisba names, teachers, posts, and study networks.",
+  sources_roots_card_azhar_b2: "Useful for Cairo families and provincial scholarly lineages.",
+  sources_roots_card_azhar_b3: "Works best beside court, waqf, and biographical sources.",
+  sources_roots_card_coptic_title: "Coptic Church Registers",
+  sources_roots_card_coptic_subtitle: "Baptism, marriage, burial, and parish continuity",
+  sources_roots_card_coptic_desc:
+    "For Coptic families, parish records can preserve continuous identity through baptisms, marriages, burials, godparents, and family clusters.",
+  sources_roots_card_coptic_b1: "Track parish, diocese, old village name, and family branch names together.",
+  sources_roots_card_coptic_b2: "Baptism and marriage entries can clarify naming patterns and kinship.",
+  sources_roots_card_coptic_b3: "Especially useful where civil registration starts late or is incomplete.",
+  sources_roots_card_private_title: "Community and Private Collections",
+  sources_roots_card_private_subtitle: "Family notebooks, deeds, letters, portraits, and oral testimony",
+  sources_roots_card_private_desc:
+    "Some of the most precise Egyptian family evidence remains in homes, churches, associations, clubs, schools, and private papers.",
+  sources_roots_card_private_b1: "Record provenance before copying family-held evidence into the tree.",
+  sources_roots_card_private_b2: "Letters, memorial cards, notebooks, deeds, and photographs decode nicknames.",
+  sources_roots_card_private_b3: "Private records often explain why a family moved between regions.",
+  sources_roots_card_maps_title: "Regional Maps and Local Gazetteers",
+  sources_roots_card_maps_subtitle: "Villages, quarters, hamlets, routes, and administrative name changes",
+  sources_roots_card_maps_desc:
+    "Place names shift across Ottoman, khedival, colonial, and republican records. Mapping old and current names prevents false matches.",
+  sources_roots_card_maps_b1: "Track district names, village spellings, canals, quarters, and old administrative borders.",
+  sources_roots_card_maps_b2: "Connect movement between Cairo, Delta, Upper Egypt, canal cities, oases, and diaspora.",
+  sources_roots_card_maps_b3: "Essential when family memory preserves an origin place but not the modern spelling.",
+  sources_workflow_title: "A Strong Roots Egypt Research Workflow",
+  sources_step_label: "Step",
+  sources_verify_1: "Match a person through at least two independent record families whenever possible.",
+  sources_verify_2: "Preserve variant spellings in Arabic, French, English, Ottoman Turkish, and church records.",
+  sources_verify_3: "Separate documented facts, careful inferences, and oral-only memory.",
+  sources_verify_4: "Attach shelfmarks, office names, parish names, court names, and retrieval dates.",
+  sources_checklist_title: "Before You Request a Record",
+  sources_checklist_1_title: "Normalize names",
+  sources_checklist_1_text:
+    "Write Arabic spellings, Latin spellings, branch names, honorifics, and occupations together.",
+  sources_checklist_2_title: "Lock the place",
+  sources_checklist_2_text:
+    "List governorate, district, village, quarter, parish, mosque, cemetery, and older local names.",
+  sources_checklist_3_title: "Define the proof",
+  sources_checklist_3_text:
+    "Know whether you are proving identity, marriage, parentage, inheritance, property, service, or migration.",
+  sources_no_results:
+    "No source groups matched that search. Try a broader archive name, record type, place, or period.",
+
+  home_hero_title: "Egyptian Sources, Archives, and Family Timelines",
+  home_hero_subtitle:
+    "Explore Egypt's civil records, court registers, waqf deeds, church and mosque records, family photographs, oral memory, and historical periods in one research-ready heritage platform.",
+  home_stat_years: "Years of History",
+  home_stat_archives: "Source Families",
+  home_stat_regions: "Governorates",
+  home_stat_periods: "Research Periods",
+  home_editorial_label: "Why Roots Egypt",
+  home_editorial_title: "Egyptian family history needs sources, places, and time periods together",
+  home_editorial_paragraph_1:
+    "Roots Egypt is built for families who want evidence without losing memory. It connects civil extracts, court records, waqf references, parish registers, photographs, maps, and oral testimony.",
+  home_editorial_paragraph_2:
+    "A family branch can begin with a modern ID extract, move into a marriage contract, connect to a village in the Delta or Upper Egypt, and finally sit inside the period where that record was produced.",
+  home_editorial_card_1_title: "Archive-led research",
+  home_editorial_card_1_desc:
+    "Work from civil status, Dar al-Wathaeq, court sijill, waqf, church registers, school records, and local collections.",
+  home_editorial_card_2_title: "Memory with evidence",
+  home_editorial_card_2_desc:
+    "Keep stories, nicknames, photographs, and migration memories beside the records that support or challenge them.",
+  home_editorial_card_3_title: "Period-aware genealogy",
+  home_editorial_card_3_desc:
+    "Understand which records exist for Pharaonic, Islamic, Mamluk, Ottoman, khedival, colonial, republican, and contemporary Egypt.",
+  home_how_label: "Research Method",
+  home_how_title: "Build the Egyptian Evidence Chain",
+  home_how_step1_title: "Start with living records",
+  home_how_step1_desc:
+    "Gather civil status extracts, identity papers, family notebooks, photographs, oral testimony, and exact place names.",
+  home_how_step2_title: "Move into archives",
+  home_how_step2_desc:
+    "Search court registers, waqf deeds, Dar al-Wathaeq files, parish records, municipal documents, and map references.",
+  home_how_step3_title: "Place every record in time",
+  home_how_step3_desc:
+    "Use the Egyptian period timeline to decide what evidence should exist, how names were recorded, and which archive can answer the next question.",
+  home_explore_label: "Explore Roots Egypt",
+  home_explore_title: "Research Tools for Egyptian Family History",
+  home_explore_desc:
+    "Trees, galleries, books, documents, audio, articles, sources, and periods work together as one Egyptian genealogy workspace.",
+  home_card_trees_title: "Family Trees",
+  home_card_trees_desc:
+    "Build multi-generational trees, import GEDCOM files, and attach Egyptian records, places, dates, names, and source notes.",
+  home_card_gallery_title: "Photo Gallery",
+  home_card_gallery_desc:
+    "Preserve family portraits, documents, maps, studio photographs, and visual evidence with context and provenance.",
+  home_card_library_title: "Library & Documents",
+  home_card_library_desc:
+    "Organize digitized books, manuscripts, civil extracts, nasab texts, maps, court records, and research notes.",
+  home_card_audio_title: "Oral Histories",
+  home_card_audio_desc:
+    "Record elders, songs, recitations, dialect memories, migration stories, and family explanations that documents cannot carry alone.",
+  home_card_articles_title: "Articles & Stories",
+  home_card_articles_desc:
+    "Publish family narratives, archive guides, research findings, and contextual essays for the Roots Egypt community.",
+  home_card_archives_title: "Sources & Periods",
+  home_card_archives_desc:
+    "Navigate Dar al-Wathaeq, civil status, courts, waqf, church registers, maps, private collections, and the periods that shaped them.",
+  home_featured_label: "Featured Trees",
+  home_family_tree_intro:
+    "Explore public Egyptian family trees with archive-ready metadata, GEDCOM support, source notes, and document references.",
+  tree_card_default_desc:
+    "A public Egyptian family tree with space for civil records, archive references, oral memory, and regional context.",
+  home_timeline_label: "Egyptian Timeline",
+  home_timeline_title: "Which Egyptian Records Belong to Which Period?",
+  home_era_pharaonic: "Pharaonic",
+  home_era_pharaonic_sub: "Temple lists, royal names, papyri",
+  home_era_ptolemaic: "Ptolemaic & Roman",
+  home_era_ptolemaic_sub: "Greek, Roman, Coptic documentary culture",
+  home_era_rashidun: "Early Islamic",
+  home_era_rashidun_sub: "Arabic papyri, tax, land, administration",
+  home_era_fatimid: "Fatimid & Ayyubid",
+  home_era_fatimid_sub: "Cairo, courts, scholarship, endowments",
+  home_era_mamluk: "Mamluk",
+  home_era_mamluk_sub: "Waqf, guilds, property, urban families",
+  home_era_ottoman: "Ottoman",
+  home_era_ottoman_sub: "Court sijill, tax, land, provincial files",
+  home_era_colonial: "Khedival & British",
+  home_era_colonial_sub: "Civil status, surveys, schools, municipalities",
+  home_era_nasserist: "Republican",
+  home_era_nasserist_sub: "Civil registry, migration, education, service",
+  home_era_sadat_mubarak: "Late 20th Century",
+  home_era_sadat_mubarak_sub: "Diaspora, documents, photographs, testimony",
+  home_era_contemporary: "Contemporary",
+  home_era_contemporary_sub: "Digital archives, restoration, collaboration",
+  home_explore_periods: "Explore All Periods",
+  ancestral_stories: "Ancestral Stories",
+  home_ancestral_intro:
+    "Egyptian family history lives in documents and in memory. Preserve the spoken stories while the archive trail is still being rebuilt.",
+  home_ancestral_oral_title: "Record Oral Histories",
+  home_ancestral_oral_desc:
+    "Interview elders about names, villages, occupations, marriages, migrations, sayings, and family traditions.",
+  home_ancestral_traditions_title: "Document Traditions",
+  home_ancestral_traditions_desc:
+    "Capture customs, crafts, recipes, celebrations, religious life, and neighborhood memory as part of the family record.",
+  home_ancestral_branches_title: "Reconnect Branches",
+  home_ancestral_branches_desc:
+    "Use civil records, court files, photographs, and regional clues to rebuild relatives separated by time or migration.",
+  library_title: "Egyptian Genealogy Library",
+  home_library_intro:
+    "A curated library for Egyptian family research: manuscripts, civil extracts, court records, waqf deeds, Coptic registers, maps, and archive guides.",
+  home_library_tag_manuscripts: "Manuscripts & Family Papers",
+  home_library_tag_civil: "Civil Status Records",
+  home_library_tag_nasab: "Nasab & Lineage Texts",
+  home_library_tag_ottoman: "Ottoman Court Registers",
+  home_library_tag_coptic: "Coptic Church Registers",
+  home_library_tag_maps: "Maps & Gazetteers",
+  home_visit_library: "Visit the Library",
+  home_memory_streams_label: "More to Preserve",
+  home_memory_streams_title: "A fuller Roots Egypt record",
+  home_memory_streams_intro:
+    "Sources and periods are the structure, but voices, images, articles, and dialogue make the lineage feel alive.",
+  home_stream_audio_title: "Audio Memory",
+  home_stream_audio_desc:
+    "Preserve elders' voices, recitations, poems, songs, and family explanations before they disappear.",
+  home_stream_gallery_title: "Visual Heritage",
+  home_stream_gallery_desc:
+    "Keep portraits, studio images, documents, maps, and places connected to the people they prove.",
+  home_stream_articles_title: "Research Writing",
+  home_stream_articles_desc:
+    "Turn findings into public notes, archive explanations, family essays, and local history.",
+  home_stream_dialogue_title: "Family Dialogue",
+  home_stream_dialogue_desc:
+    "Let relatives and researchers compare memory, documents, and source notes in one shared place.",
+
+  periods_eyebrow_new: "Egyptian Historical Timeline",
+  periods_hero_title_new: "Egyptian Periods for Family Research",
+  periods_hero_intro_new:
+    "Use this timeline to understand what records survive, how names and places were written, and which sources can support each era of an Egyptian family tree.",
+  periods_filter_all_new: "All records",
+  periods_filter_state_new: "State",
+  periods_filter_religious_new: "Religious",
+  periods_filter_court_new: "Court",
+  periods_filter_land_new: "Land and waqf",
+  periods_filter_community_new: "Community",
+  periods_range_ancient: "Ancient to Late Antique",
+  periods_title_ancient_new: "Pharaonic, Ptolemaic, and Roman Egypt",
+  periods_summary_ancient_new:
+    "Best for elite, temple, military-colony, place-based, and contextual research rather than continuous household reconstruction.",
+  periods_ancient_b1_new: "Temple inscriptions, papyri, royal lists, priestly lineages, and elite references.",
+  periods_ancient_b2_new: "Greek and Roman census, tax, contract, and military documents survive unevenly by place.",
+  periods_ancient_b3_new: "Use this era for context, place identity, and rare named evidence.",
+  periods_range_early_islamic: "641 - 969",
+  periods_title_early_islamic_new: "Early Islamic Egypt",
+  periods_summary_early_islamic_new:
+    "A bridge period for Arabic administration, tax systems, landholding, and legal habits that shape later Egyptian records.",
+  periods_early_islamic_b1_new: "Arabic papyri, taxation notes, land references, and administrative correspondence.",
+  periods_early_islamic_b2_new: "Early legal and inheritance patterns begin to leave structured traces.",
+  periods_early_islamic_b3_new: "Useful for regional context and the formation of later archive practices.",
+  periods_range_fatimid_ayyubid: "969 - 1250",
+  periods_title_fatimid_ayyubid_new: "Fatimid and Ayyubid Egypt",
+  periods_summary_fatimid_ayyubid_new:
+    "A key era for Cairo's scholarly, mercantile, religious, and communal worlds.",
+  periods_fatimid_b1_new: "Urban court culture, waqf activity, teaching circles, and institutional records.",
+  periods_fatimid_b2_new: "Manuscripts and biographical works can preserve scholars, judges, and families.",
+  periods_fatimid_b3_new: "Strong for social history and named clusters in major cities.",
+  periods_range_mamluk: "1250 - 1517",
+  periods_title_mamluk_new: "Mamluk Egypt",
+  periods_summary_mamluk_new:
+    "Strong for court, waqf, guild, urban property, and status-based research.",
+  periods_mamluk_b1_new: "Marriage, inheritance, property, and waqf records can show kin networks.",
+  periods_mamluk_b2_new: "Craft, trade, quarter, and institutional links help identify families.",
+  periods_mamluk_b3_new: "Best for socially visible lineages and urban research.",
+  periods_range_ottoman_new: "1517 - 1882",
+  periods_title_ottoman_new_2: "Ottoman and Khedival Egypt",
+  periods_summary_ottoman_new_2:
+    "The most practical deep-research period for many families because court registers, land, taxation, and administrative records become more repeatable.",
+  periods_ottoman_b1_new_2: "Court sijill, tax registers, provincial administration, and appointment records.",
+  periods_ottoman_b2_new_2: "Landholding, waqf chains, guardianship, marriage, inheritance, and trade references.",
+  periods_ottoman_b3_new_2: "Excellent for tracing families across governorates, districts, and quarters.",
+  periods_range_colonial: "1882 - 1952",
+  periods_title_colonial_new: "British Occupation and the Kingdom of Egypt",
+  periods_summary_colonial_new:
+    "One of the strongest periods for connecting civil registration, cadastral surveys, schools, municipalities, photographs, and migration.",
+  periods_colonial_b1_new: "Civil status, census-style administration, land surveys, and municipal files.",
+  periods_colonial_b2_new: "Studio portraits, school records, employment files, and newspapers add context.",
+  periods_colonial_b3_new: "Useful for matching living families to late Ottoman roots.",
+  periods_range_republic: "1952 - Present",
+  periods_title_republic_new: "Republican and Contemporary Egypt",
+  periods_summary_republic_new:
+    "The modern bridge to living memory, civil registration, consular records, migration histories, and family-held photographs.",
+  periods_republic_b1_new: "Civil registry continuity, national identity records, education, and military service.",
+  periods_republic_b2_new: "Diaspora and migration records explain why branches moved.",
+  periods_republic_b3_new: "Critical for validating oral history before moving backward.",
+  periods_strategy_title_new: "How to Use the Timeline",
+  periods_strategy_step_label: "Step",
+  periods_strategy_1_title: "Start from the latest secure proof",
+  periods_strategy_1_text:
+    "Modern civil and family-held records should define the line before earlier eras are used for extension.",
+  periods_strategy_2_title: "Match the source to the period",
+  periods_strategy_2_text:
+    "Each era preserves different evidence. Do not expect a Pharaonic or early Islamic trail to behave like a modern civil registry.",
+  periods_strategy_3_title: "Let region shape the search",
+  periods_strategy_3_text:
+    "Cairo, the Delta, Upper Egypt, Alexandria, canal cities, Nubia, and oases preserve different paper trails.",
+  periods_regions_title_new: "Research by Egyptian Region",
+  periods_region_cairo_title: "Greater Cairo",
+  periods_region_cairo_summary:
+    "The densest mix of civil, court, scholarly, communal, photographic, and institutional evidence.",
+  periods_region_cairo_b1: "Strong for court, school, mosque, church, municipality, and notarial trails.",
+  periods_region_cairo_b2: "Use quarter names, occupations, and institutional links.",
+  periods_region_cairo_b3: "Dar al-Wathaeq and major libraries often connect here.",
+  periods_region_delta_title: "Nile Delta",
+  periods_region_delta_summary:
+    "Research often pivots on village continuity, landholding, branch names, and migration to Cairo or Alexandria.",
+  periods_region_delta_b1: "Track district and village spellings carefully.",
+  periods_region_delta_b2: "Land, waqf, and marriage ties can connect nearby settlements.",
+  periods_region_delta_b3: "Useful when family memory preserves an origin place but not dates.",
+  periods_region_upper_title: "Upper Egypt",
+  periods_region_upper_summary:
+    "Oral continuity is often strong and becomes powerful beside church, court, waqf, and local civil records.",
+  periods_region_upper_b1: "Build from parish, family, village, and cemetery memory together.",
+  periods_region_upper_b2: "Note nisba names, branch names, and migration to canal or capital cities.",
+  periods_region_upper_b3: "Upper Egypt research rewards multi-source validation.",
+  periods_region_alex_title: "Alexandria and Canal Cities",
+  periods_region_alex_summary:
+    "Trade, mobility, ports, schools, and foreign contact create rich nineteenth- and twentieth-century trails.",
+  periods_region_alex_b1: "Look for municipal, port, school, and consular clues.",
+  periods_region_alex_b2: "Families may appear under mixed Arabic, French, Greek, Italian, or English spellings.",
+  periods_region_alex_b3: "Particularly strong for late Ottoman, colonial, and modern periods.",
+};
+
+Object.assign(translations.en, AUTO_TRANSLATIONS.en, englishGeneratedTranslations, parityTranslations.en, contentOverrides);
+Object.assign(translations.fr, AUTO_TRANSLATIONS.fr, parityTranslations.fr, contentOverrides);
+Object.assign(translations.ar, AUTO_TRANSLATIONS.ar, parityTranslations.ar, contentOverrides);
+Object.assign(translations.es, AUTO_TRANSLATIONS.es, parityTranslations.es, contentOverrides);
 
 export const tForLocale = (locale: string, key: string, fallback?: string): string => {
   const dict = translations[locale] || translations[DEFAULT_LOCALE];

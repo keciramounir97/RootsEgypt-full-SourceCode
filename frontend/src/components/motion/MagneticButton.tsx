@@ -1,7 +1,7 @@
 import React, { useRef, useState, ReactNode } from "react";
-import { motion } from "framer-motion";
+import { motion, type HTMLMotionProps } from "framer-motion";
 
-export default function MagneticButton({ children, className = "", strength = 0.3, ...props }: { children: ReactNode; className?: string; strength?: number; } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "ref">) {
+export default function MagneticButton({ children, className = "", strength = 0.3, ...props }: { children: ReactNode; className?: string; strength?: number; } & Omit<HTMLMotionProps<"button">, "ref">) {
   const ref = useRef<HTMLButtonElement>(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
 

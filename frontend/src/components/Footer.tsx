@@ -65,8 +65,8 @@ export default function Footer({ data }: FooterProps) {
       { label: t("home", "Home"), href: "/" },
       { label: t("resources", "Resources"), href: "/gallery" },
       {
-        label: t("sources_and_archives", "Sources & Archives"),
-        href: "/sourcesandarchives",
+        label: t("sources_and_archives", "Sources & Periods"),
+        href: "/sources-and-periods",
       },
       { label: t("periods", "Periods"), href: "/periods" },
     ],

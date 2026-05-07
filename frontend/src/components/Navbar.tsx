@@ -226,8 +226,8 @@ export default function Navbar() {
 
   const secondaryNav = [
     {
-      to: "/sourcesandarchives",
-      label: t("sources_and_archives", "Archives"),
+      to: "/sources-and-periods",
+      label: t("sources_and_archives", "Sources & Periods"),
       icon: Archive,
     },
     { to: "/periods", label: t("periods", "Periods"), icon: Clock },
@@ -243,6 +243,7 @@ export default function Navbar() {
   const resourceActive = resourcePaths.some((p) =>
     location.pathname.startsWith(p),
   );
+  const secondaryActivePaths = ["/sources-and-periods", "/sources-periods", "/sources", "/archives", "/sourcesandarchives"];
   const resourceMenuId = "navbar-resources-menu";
 
   const closeSidebar = () => setSidebarOpen(false);
@@ -339,7 +340,7 @@ export default function Navbar() {
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `navbar-link${isActive ? " active" : ""}`
+                  `navbar-link${isActive || (to === "/sources-and-periods" && secondaryActivePaths.some((path) => location.pathname.startsWith(path))) ? " active" : ""}`
                 }
               >
                 {label}

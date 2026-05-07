@@ -45,10 +45,7 @@ import {
 } from "../components/motion/StaggerChildren";
 import CountUp from "../components/motion/CountUp";
 import {
-  EyeOfHorus,
   NileWave,
-  EGYPT_COLORS,
-  EGYPT_EASE,
 } from "../components/motion/EgyptianMotion";
 
 /* ------------------------------------------------------------------ */
@@ -218,7 +215,8 @@ export default function Home() {
               .slice(0, 3)
               .map((t) =>
                 normalizeTree(t, { apiRoot: apiRootVal, isPublic: true }),
-              ),
+              )
+              .filter((tree) => tree.id !== undefined) as FeaturedTree[],
           );
         }
       } catch (err: any) {
@@ -290,7 +288,7 @@ export default function Home() {
           autoInterval={6000}
           showArrows={true}
           showDots={true}
-          showCaptions={true}
+          showCaptions={false}
         />
 
         {/* Dark overlay for readability */}
@@ -335,28 +333,15 @@ export default function Home() {
           transition={{ delay: 0.3, duration: 0.8 }}
           className="relative z-10 text-center px-6 max-w-6xl mx-auto space-y-8 md:space-y-10"
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6, ease: EGYPT_EASE.pharaoh }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#d4a843]/40 bg-black/30 backdrop-blur-sm"
-          >
-            <EyeOfHorus size={18} color={EGYPT_COLORS.gold} />
-            <span className="text-sm font-medium text-[#d4a843]">
-              {t("home_badge", "Preserving the Memory of Roots Egypt")}
-            </span>
-          </motion.div>
-
           {/* Title */}
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ delay: 0.25, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             style={{ color: "#ffffff" }}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
           >
-            {t("home_hero_title", "Discover Your Egyptian Heritage")}
+            {t("home_hero_title", "Egyptian Sources, Archives, and Family Timelines")}
           </motion.h1>
 
           <motion.p
@@ -367,7 +352,7 @@ export default function Home() {
           >
             {t(
               "home_hero_subtitle",
-              "Discover the stories, photographs, records, and family connections that define Roots Egypt. Explore a modern archive dedicated to Egyptian heritage, memory, and belonging.",
+              "Explore Egypt's civil records, court registers, waqf deeds, church and mosque records, family photographs, oral memory, and historical periods in one research-ready heritage platform.",
             )}
           </motion.p>
 
@@ -379,10 +364,10 @@ export default function Home() {
             className="flex flex-wrap justify-center gap-4"
           >
             <NavLink
-              to="/library"
+              to="/sources-and-periods"
               className="px-8 py-4 rounded-xl font-semibold text-[#0a1220] bg-gradient-to-r from-[#d4a843] to-[#c45c3e] shadow-lg shadow-[#d4a843]/30 hover:shadow-xl hover:shadow-[#d4a843]/40 transition-all hover:-translate-y-0.5 flex items-center gap-2 backdrop-blur-sm"
             >
-              {t("start_exploring", "Start Exploring")}
+              {t("start_exploring", "Explore Sources & Periods")}
               <ArrowRight className="w-5 h-5" />
             </NavLink>
             <NavLink
@@ -394,48 +379,6 @@ export default function Home() {
             </NavLink>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1 }}
-            className="grid gap-3 sm:grid-cols-3 max-w-4xl mx-auto"
-          >
-            {[
-              {
-                value: t("home_hero_metric_1_value", "Civil to Ottoman"),
-                label: t(
-                  "home_hero_metric_1_label",
-                  "Bridge modern civil records into deeper archive generations",
-                ),
-              },
-              {
-                value: t("home_hero_metric_2_value", "Photos to Proof"),
-                label: t(
-                  "home_hero_metric_2_label",
-                  "Connect portraits, oral memory, and documents in one place",
-                ),
-              },
-              {
-                value: t("home_hero_metric_3_value", "Roots to Diaspora"),
-                label: t(
-                  "home_hero_metric_3_label",
-                  "Trace Egyptian family movement across governorates and beyond",
-                ),
-              },
-            ].map((item) => (
-              <div
-                key={item.value}
-                className="rounded-2xl border border-white/15 bg-white/8 px-4 py-4 backdrop-blur-md text-left"
-              >
-                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#d4a843]">
-                  {item.value}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-white/82">
-                  {item.label}
-                </p>
-              </div>
-            ))}
-          </motion.div>
         </motion.div>
 
         {/* Scroll indicator */}
@@ -777,7 +720,7 @@ export default function Home() {
                 },
                 {
                   icon: Archive,
-                  to: "/sourcesandarchives",
+                  to: "/sources-and-periods",
                   color: "text-[#d4a843]",
                   accent: isDark
                     ? "border-[#d4a843]/20 hover:border-[#d4a843]/50"

@@ -5,6 +5,7 @@ import {
   BookOpen,
   Building2,
   ChevronDown,
+  Clock,
   FileBadge2,
   FileSearch,
   Landmark,
@@ -214,6 +215,44 @@ export default function SourcesAndArchives() {
     [t]
   );
 
+  const periodHighlights = useMemo(
+    () => [
+      {
+        range: "3100 BC - 641 AD",
+        title: t("periods_title_ancient_new", "Pharaonic, Ptolemaic, and Roman Egypt"),
+        text: t(
+          "periods_summary_ancient_new",
+          "Use inscriptions, papyri, temple references, Greek and Roman documents, and place context for rare named evidence."
+        ),
+      },
+      {
+        range: "641 - 1517",
+        title: t("periods_title_early_islamic_new", "Early Islamic, Fatimid, Ayyubid, and Mamluk Egypt"),
+        text: t(
+          "periods_summary_fatimid_ayyubid_new",
+          "Arabic administration, courts, waqf, scholarship, urban quarters, guilds, and religious institutions begin to shape stronger family clues."
+        ),
+      },
+      {
+        range: "1517 - 1882",
+        title: t("periods_title_ottoman_new_2", "Ottoman and Khedival Egypt"),
+        text: t(
+          "periods_summary_ottoman_new_2",
+          "Court registers, land, taxation, provincial administration, and waqf chains make this the deepest practical archive period for many families."
+        ),
+      },
+      {
+        range: "1882 - Present",
+        title: t("periods_title_colonial_new", "Modern Civil, Colonial, Royal, and Republican Egypt"),
+        text: t(
+          "periods_summary_colonial_new",
+          "Civil status, municipal records, cadastral surveys, schools, photographs, identity papers, migration, and oral testimony connect archives to living memory."
+        ),
+      },
+    ],
+    [t]
+  );
+
   const visibleCards = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return archiveCards.filter((card) => {
@@ -237,7 +276,7 @@ export default function SourcesAndArchives() {
           <p className="text-sm uppercase tracking-[0.28em] text-[#d4a843]">
             {t("sources_archives_eyebrow", "Research Resources")}
           </p>
-          <h1>{t("sources_archives_title", "Sources and Archives for Roots Egypt")}</h1>
+          <h1>{t("sources_archives_title", "Sources and Periods for Roots Egypt")}</h1>
           <p className="text-lg opacity-90">
             {t(
               "sources_archives_intro_new",
@@ -262,6 +301,45 @@ export default function SourcesAndArchives() {
           ))}
         </StaggerContainer>
       </section>
+
+      <ScrollReveal>
+        <section className="roots-section roots-section-alt">
+          <div className="mb-8 max-w-4xl">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.28em] text-[#d4a843]">
+              {t("periods_eyebrow_new", "Egyptian Historical Timeline")}
+            </p>
+            <h2 className="roots-heading">
+              {t("periods_hero_title_new", "Egyptian Periods for Family Research")}
+            </h2>
+            <p className="text-base leading-7 opacity-85">
+              {t(
+                "periods_hero_intro_new",
+                "Use this timeline to understand what records survive, how names and places were written, and which sources can support each era of an Egyptian family tree."
+              )}
+            </p>
+          </div>
+
+          <div className="relative grid gap-4 lg:grid-cols-4">
+            <div className="pointer-events-none absolute left-0 right-0 top-8 hidden h-px bg-gradient-to-r from-transparent via-[#d4a843]/45 to-transparent lg:block" />
+            {periodHighlights.map((period) => (
+              <motion.article
+                key={period.range}
+                whileHover={{ y: -4 }}
+                className={`relative rounded-2xl border p-5 ${surfaceClass}`}
+              >
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#d4a843]/12 text-[#d4a843]">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-teal">
+                  {period.range}
+                </p>
+                <h3 className="mt-3 text-xl font-bold leading-tight">{period.title}</h3>
+                <p className="mt-3 text-sm leading-6 opacity-85">{period.text}</p>
+              </motion.article>
+            ))}
+          </div>
+        </section>
+      </ScrollReveal>
 
       <section className="roots-section roots-section-alt">
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">

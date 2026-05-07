@@ -9,7 +9,7 @@ import {
   AlertCircle,
   CheckCircle2,
 } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, type Variants } from "framer-motion";
 import { useTranslation } from "../context/TranslationContext";
 import { api } from "../api/client";
 import RootsPageShell from "../components/RootsPageShell";
@@ -111,20 +111,20 @@ function EyeOfHorus({ className = "" }: { className?: string }) {
 /* ------------------------------------------------------------------ */
 /*  Stagger animation variants for form fields                         */
 /* ------------------------------------------------------------------ */
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: {},
   visible: {
     transition: { staggerChildren: 0.12, delayChildren: 0.3 },
   },
 };
 
-const fieldVariants = {
+const fieldVariants: Variants = {
   hidden: { opacity: 0, y: 28, filter: "blur(4px)" },
   visible: {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
   },
 };
 
@@ -389,11 +389,9 @@ export default function ContactUs() {
         {/* Eye of Horus decorative watermarks */}
         <EyeOfHorus
           className="absolute top-8 right-8 w-28 h-20 opacity-[0.06] pointer-events-none"
-          style={{} as any}
         />
         <EyeOfHorus
           className="absolute bottom-12 left-6 w-24 h-16 opacity-[0.04] pointer-events-none rotate-12"
-          style={{} as any}
         />
 
         {/* Ankh decorative elements */}

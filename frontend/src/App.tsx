@@ -38,7 +38,7 @@ import GalleryArticles from "./pages/GalleryArticles";
 import GenealogyGallery from "./pages/genealogy-gallery";
 import Periods from "./pages/periods";
 import Research from "./pages/Research";
-import SourcesAndArchives from "./pages/SourcesAndArchives";
+import SourcesAndPeriods from "./pages/SourcesAndArchives";
 import AudioPage from "./pages/audio";
 import ArticlesPage from "./pages/articles";
 import ContactPage from "./pages/contactUs";
@@ -192,7 +192,7 @@ function AppRoutes() {
         path="/library"
         element={
           <PageTransition>
-            <GalleryTrees />
+            <GalleryBooks />
           </PageTransition>
         }
       />
@@ -228,12 +228,28 @@ function AppRoutes() {
           </PageTransition>
         }
       />
-      {/* Unified Sources & Archives page */}
+      {/* Unified Sources & Periods page */}
+      <Route
+        path="/sources-and-periods"
+        element={
+          <PageTransition>
+            <SourcesAndPeriods />
+          </PageTransition>
+        }
+      />
+      <Route
+        path="/sources-periods"
+        element={
+          <PageTransition>
+            <SourcesAndPeriods />
+          </PageTransition>
+        }
+      />
       <Route
         path="/archives"
         element={
           <PageTransition>
-            <SourcesAndArchives />
+            <SourcesAndPeriods />
           </PageTransition>
         }
       />
@@ -241,12 +257,12 @@ function AppRoutes() {
         path="/sources"
         element={
           <PageTransition>
-            <SourcesAndArchives />
+            <SourcesAndPeriods />
           </PageTransition>
         }
       />
-      <Route path="/access-reliability" element={<SourcesAndArchives />} />
-      <Route path="/sourcesandarchives" element={<SourcesAndArchives />} />
+      <Route path="/access-reliability" element={<SourcesAndPeriods />} />
+      <Route path="/sourcesandarchives" element={<SourcesAndPeriods />} />
       <Route
         path="/research"
         element={

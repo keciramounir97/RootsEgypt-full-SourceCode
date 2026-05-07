@@ -111,7 +111,7 @@ export default function AdminArticles() {
         (Array.isArray(data?.articles) && data.articles) ||
         (Array.isArray(data) && data) ||
         [];
-      setArticles(list.map((item: any) => normalizeArticle(item, apiRoot, t("user", "User"))));
+      setArticles(list.map((item: any) => normalizeArticle(item, apiRoot)));
     } catch (err) {
       setArticles([]);
       notify(

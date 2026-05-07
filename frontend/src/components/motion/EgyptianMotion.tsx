@@ -2,7 +2,7 @@
  * EgyptianMotion — Reusable Egyptian-themed animation components
  * Uses Framer Motion + GSAP for immersive pharaonic effects
  */
-import { useRef, ReactNode } from "react";
+import { useRef, ReactNode, type CSSProperties } from "react";
 import { motion, useInView } from "framer-motion";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -111,16 +111,19 @@ export function EyeOfHorus({
   className = "",
   size = 120,
   color = EGYPT_COLORS.gold,
+  style,
 }: {
   className?: string;
   size?: number;
   color?: string;
+  style?: CSSProperties;
 }) {
   return (
     <motion.svg
       viewBox="0 0 200 120"
       width={size}
       className={className}
+      style={style}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1.2, ease: EGYPT_EASE.pharaoh }}

@@ -14,7 +14,7 @@ import { queryKeys, CACHE_TIMES } from "../lib/queryClient";
 /**
  * Fetch public books
  */
-export const usePublicBooks = (options = {}) => {
+export const usePublicBooks = (options: any = {}) => {
   return useQuery({
     queryKey: queryKeys.books.public(),
     queryFn: async () => {
@@ -29,7 +29,7 @@ export const usePublicBooks = (options = {}) => {
 /**
  * Fetch my books (authenticated user)
  */
-export const useMyBooks = (options = {}) => {
+export const useMyBooks = (options: any = {}) => {
   return useQuery({
     queryKey: queryKeys.books.my(),
     queryFn: async () => {
@@ -44,7 +44,7 @@ export const useMyBooks = (options = {}) => {
 /**
  * Fetch all books (admin)
  */
-export const useAdminBooks = (options = {}) => {
+export const useAdminBooks = (options: any = {}) => {
   return useQuery({
     queryKey: queryKeys.books.admin(),
     queryFn: async () => {
@@ -59,7 +59,7 @@ export const useAdminBooks = (options = {}) => {
 /**
  * Fetch single book by ID
  */
-export const useBook = (id: string | number | undefined, options = {}) => {
+export const useBook = (id: string | number | undefined, options: any = {}) => {
   return useQuery({
     queryKey: queryKeys.books.detail(id),
     queryFn: async () => {
@@ -75,11 +75,11 @@ export const useBook = (id: string | number | undefined, options = {}) => {
 /**
  * Create book mutation
  */
-export const useCreateBook = (options = {}) => {
+export const useCreateBook = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (formData) => {
+    mutationFn: async (formData: any) => {
       const { data } = await api.post("/my/books", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -96,11 +96,11 @@ export const useCreateBook = (options = {}) => {
 /**
  * Create book mutation (admin)
  */
-export const useAdminCreateBook = (options = {}) => {
+export const useAdminCreateBook = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (formData) => {
+    mutationFn: async (formData: any) => {
       const { data } = await api.post("/admin/books", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -116,7 +116,7 @@ export const useAdminCreateBook = (options = {}) => {
 /**
  * Update book mutation
  */
-export const useUpdateBook = (options = {}) => {
+export const useUpdateBook = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -133,7 +133,7 @@ export const useUpdateBook = (options = {}) => {
       
       // Optimistically update the detail
       if (previousBook) {
-        queryClient.setQueryData(queryKeys.books.detail(id), (old) => ({
+        queryClient.setQueryData(queryKeys.books.detail(id), (old: any) => ({
           ...old,
           ...Object.fromEntries(formData.entries()),
         }));
@@ -141,13 +141,13 @@ export const useUpdateBook = (options = {}) => {
       
       return { previousBook };
     },
-    onError: (err, { id }, context) => {
+    onError: (err: any, { id }: any, context: any) => {
       // Rollback on error
       if (context?.previousBook) {
         queryClient.setQueryData(queryKeys.books.detail(id), context.previousBook);
       }
     },
-    onSettled: (data, error, { id }) => {
+    onSettled: (data: any, error: any, { id }: any) => {
       // Always refetch after mutation
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(id) });
@@ -159,17 +159,17 @@ export const useUpdateBook = (options = {}) => {
 /**
  * Update book mutation (admin)
  */
-export const useAdminUpdateBook = (options = {}) => {
+export const useAdminUpdateBook = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, formData }) => {
+    mutationFn: async ({ id, formData }: any) => {
       const { data } = await api.put(`/admin/books/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return data;
     },
-    onSuccess: (data, { id }) => {
+    onSuccess: (data: any, { id }: any) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(id) });
     },
@@ -180,27 +180,27 @@ export const useAdminUpdateBook = (options = {}) => {
 /**
  * Delete book mutation
  */
-export const useDeleteBook = (options = {}) => {
+export const useDeleteBook = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id) => {
+    mutationFn: async (id: any) => {
       await api.delete(`/my/books/${id}`);
       return id;
     },
     // Optimistic delete
-    onMutate: async (id) => {
+    onMutate: async (id: any) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.books.my() });
       const previousBooks = queryClient.getQueryData(queryKeys.books.my());
       
       // Remove from list optimistically
-      queryClient.setQueryData(queryKeys.books.my(), (old) =>
+      queryClient.setQueryData(queryKeys.books.my(), (old: any[] | undefined) =>
         old?.filter((book) => book.id !== id) || []
       );
       
       return { previousBooks };
     },
-    onError: (err, id, context) => {
+    onError: (err: any, id: any, context: any) => {
       // Rollback on error
       if (context?.previousBooks) {
         queryClient.setQueryData(queryKeys.books.my(), context.previousBooks);
@@ -216,25 +216,25 @@ export const useDeleteBook = (options = {}) => {
 /**
  * Delete book mutation (admin)
  */
-export const useAdminDeleteBook = (options = {}) => {
+export const useAdminDeleteBook = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id) => {
+    mutationFn: async (id: any) => {
       await api.delete(`/admin/books/${id}`);
       return id;
     },
-    onMutate: async (id) => {
+    onMutate: async (id: any) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.books.admin() });
       const previousBooks = queryClient.getQueryData(queryKeys.books.admin());
       
-      queryClient.setQueryData(queryKeys.books.admin(), (old) =>
+      queryClient.setQueryData(queryKeys.books.admin(), (old: any[] | undefined) =>
         old?.filter((book) => book.id !== id) || []
       );
       
       return { previousBooks };
     },
-    onError: (err, id, context) => {
+    onError: (err: any, id: any, context: any) => {
       if (context?.previousBooks) {
         queryClient.setQueryData(queryKeys.books.admin(), context.previousBooks);
       }

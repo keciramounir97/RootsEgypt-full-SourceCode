@@ -36,14 +36,14 @@ export default function GenealogyGallery() {
   const location = useLocation();
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  const [trees, setTrees] = useState([]);
+  const [trees, setTrees] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [treesError, setTreesError] = useState("");
   const [query, setQuery] = useState("");
   const [treeFilter, setTreeFilter] = useState("all");
-  const [viewTree, setViewTree] = useState(null);
-  const [viewPeople, setViewPeople] = useState([]);
+  const [viewTree, setViewTree] = useState<any>(null);
+  const [viewPeople, setViewPeople] = useState<any[]>([]);
   const [viewLoading, setViewLoading] = useState(false);
   const [viewTreeError, setViewTreeError] = useState("");
 

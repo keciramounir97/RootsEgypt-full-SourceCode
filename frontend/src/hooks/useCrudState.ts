@@ -4,15 +4,15 @@
  */
 import { useState, useCallback } from "react";
 
-export function useCrudState(initialData = null) {
-  const [data, setData] = useState(initialData);
+export function useCrudState(initialData: any = null) {
+  const [data, setData] = useState<any>(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const setLoadingState = useCallback((v) => setLoading(!!v), []);
-  const setErrorState = useCallback((msg) => setError(msg || ""), []);
-  const setSavingState = useCallback((v) => setSaving(!!v), []);
+  const setLoadingState = useCallback((v: any) => setLoading(!!v), []);
+  const setErrorState = useCallback((msg: any) => setError(msg || ""), []);
+  const setSavingState = useCallback((v: any) => setSaving(!!v), []);
 
   const clearError = useCallback(() => setError(""), []);
 

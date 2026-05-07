@@ -14,7 +14,7 @@ import { queryKeys, CACHE_TIMES } from "../lib/queryClient";
 /**
  * Fetch public gallery
  */
-export const usePublicGallery = (options = {}) => {
+export const usePublicGallery = (options: any = {}) => {
   return useQuery({
     queryKey: queryKeys.gallery.public(),
     queryFn: async () => {
@@ -29,7 +29,7 @@ export const usePublicGallery = (options = {}) => {
 /**
  * Fetch my gallery (authenticated user)
  */
-export const useMyGallery = (options = {}) => {
+export const useMyGallery = (options: any = {}) => {
   return useQuery({
     queryKey: queryKeys.gallery.my(),
     queryFn: async () => {
@@ -44,7 +44,7 @@ export const useMyGallery = (options = {}) => {
 /**
  * Fetch all gallery items (admin)
  */
-export const useAdminGallery = (options = {}) => {
+export const useAdminGallery = (options: any = {}) => {
   return useQuery({
     queryKey: queryKeys.gallery.admin(),
     queryFn: async () => {
@@ -59,7 +59,7 @@ export const useAdminGallery = (options = {}) => {
 /**
  * Fetch single gallery item by ID
  */
-export const useGalleryItem = (id, options = {}) => {
+export const useGalleryItem = (id: any, options: any = {}) => {
   return useQuery({
     queryKey: queryKeys.gallery.detail(id),
     queryFn: async () => {
@@ -75,11 +75,11 @@ export const useGalleryItem = (id, options = {}) => {
 /**
  * Create gallery item mutation
  */
-export const useCreateGalleryItem = (options = {}) => {
+export const useCreateGalleryItem = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (formData) => {
+    mutationFn: async (formData: any) => {
       const { data } = await api.post("/my/gallery", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -95,11 +95,11 @@ export const useCreateGalleryItem = (options = {}) => {
 /**
  * Create gallery item mutation (admin)
  */
-export const useAdminCreateGalleryItem = (options = {}) => {
+export const useAdminCreateGalleryItem = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (formData) => {
+    mutationFn: async (formData: any) => {
       const { data } = await api.post("/admin/gallery", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -115,27 +115,27 @@ export const useAdminCreateGalleryItem = (options = {}) => {
 /**
  * Update gallery item mutation
  */
-export const useUpdateGalleryItem = (options = {}) => {
+export const useUpdateGalleryItem = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, formData }) => {
+    mutationFn: async ({ id, formData }: any) => {
       const { data } = await api.put(`/my/gallery/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return data;
     },
-    onMutate: async ({ id }) => {
+    onMutate: async ({ id }: any) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.gallery.detail(id) });
       const previousItem = queryClient.getQueryData(queryKeys.gallery.detail(id));
       return { previousItem };
     },
-    onError: (err, { id }, context) => {
+    onError: (err: any, { id }: any, context: any) => {
       if (context?.previousItem) {
         queryClient.setQueryData(queryKeys.gallery.detail(id), context.previousItem);
       }
     },
-    onSettled: (data, error, { id }) => {
+    onSettled: (data: any, error: any, { id }: any) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.gallery.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.gallery.detail(id) });
     },
@@ -146,17 +146,17 @@ export const useUpdateGalleryItem = (options = {}) => {
 /**
  * Update gallery item mutation (admin)
  */
-export const useAdminUpdateGalleryItem = (options = {}) => {
+export const useAdminUpdateGalleryItem = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, formData }) => {
+    mutationFn: async ({ id, formData }: any) => {
       const { data } = await api.put(`/admin/gallery/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return data;
     },
-    onSuccess: (data, { id }) => {
+    onSuccess: (data: any, { id }: any) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.gallery.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.gallery.detail(id) });
     },
@@ -167,25 +167,25 @@ export const useAdminUpdateGalleryItem = (options = {}) => {
 /**
  * Delete gallery item mutation
  */
-export const useDeleteGalleryItem = (options = {}) => {
+export const useDeleteGalleryItem = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id) => {
+    mutationFn: async (id: any) => {
       await api.delete(`/my/gallery/${id}`);
       return id;
     },
-    onMutate: async (id) => {
+    onMutate: async (id: any) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.gallery.my() });
       const previousItems = queryClient.getQueryData(queryKeys.gallery.my());
       
-      queryClient.setQueryData(queryKeys.gallery.my(), (old) =>
+      queryClient.setQueryData(queryKeys.gallery.my(), (old: any[] | undefined) =>
         old?.filter((item) => item.id !== id) || []
       );
       
       return { previousItems };
     },
-    onError: (err, id, context) => {
+    onError: (err: any, id: any, context: any) => {
       if (context?.previousItems) {
         queryClient.setQueryData(queryKeys.gallery.my(), context.previousItems);
       }
@@ -200,25 +200,25 @@ export const useDeleteGalleryItem = (options = {}) => {
 /**
  * Delete gallery item mutation (admin)
  */
-export const useAdminDeleteGalleryItem = (options = {}) => {
+export const useAdminDeleteGalleryItem = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id) => {
+    mutationFn: async (id: any) => {
       await api.delete(`/admin/gallery/${id}`);
       return id;
     },
-    onMutate: async (id) => {
+    onMutate: async (id: any) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.gallery.admin() });
       const previousItems = queryClient.getQueryData(queryKeys.gallery.admin());
       
-      queryClient.setQueryData(queryKeys.gallery.admin(), (old) =>
+      queryClient.setQueryData(queryKeys.gallery.admin(), (old: any[] | undefined) =>
         old?.filter((item) => item.id !== id) || []
       );
       
       return { previousItems };
     },
-    onError: (err, id, context) => {
+    onError: (err: any, id: any, context: any) => {
       if (context?.previousItems) {
         queryClient.setQueryData(queryKeys.gallery.admin(), context.previousItems);
       }

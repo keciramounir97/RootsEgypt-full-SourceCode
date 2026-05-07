@@ -1,0 +1,222 @@
+🟢 SERVER STARTING...
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +16ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMulterModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMulterModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMulterModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMulterModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMulterModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+🟡 DB CONFIG host=rootsegypt_database-egyptroots port=3306 database=rootsegypt user=adminegypt
+DB HANDSHAKE STARTED
+[33m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [33m   WARN[39m [38;5;3m[MailerService] [39m[33mSMTP is disabled (SMTP_ENABLED=false). Emails will not be sent.[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailerModule dependencies initialized[39m[38;5;3m +9ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDatabaseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mHealthModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mActivityModule dependencies initialized[39m[38;5;3m +5ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mStatsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSearchModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mContactModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUsersModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mArticlesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSuggestionsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSettingsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBooksModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mGalleryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mApprovalsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAudiosModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDocumentsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTreesModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:43 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mActivityController {/api/activity}:[39m[38;5;3m +1285ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/activity, GET} route[39m[38;5;3m +3ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/login, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/signup, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/signup, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/refresh, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/refresh, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/reset/verify, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/reset/verify, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/reset/token, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/reset/token, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/reset, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/reset, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/logout, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/logout, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/me, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/me, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/me, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/me, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUsersController {/api/admin/users}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users/validation, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users/pending, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users/:id, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users/:id/validate, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users/:id/approve, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users/:id/reject-validation, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users/:id/reject, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/users/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAdminManagementController {/api/admin/admins}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/admins, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/admins, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/admins/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/admins/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mBooksController {/api}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/books, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/books/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/books/:id/download, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/books, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/books/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/books, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/books/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/books/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/books/:id/download, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/books, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/books/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/books, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/books/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/books/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mTreesController {/api}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/trees, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/trees/:id/gedcom, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/trees/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees/:id, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees/:id/save, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees/:id/gedcom, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/trees, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/trees/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/trees/:id/gedcom, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/trees, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/trees/:id/save, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/trees/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/trees/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mPersonsController {/api}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/trees/:treeId/people, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/people/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees/:treeId/people, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/people/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees/:treeId/people, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees/:treeId/people/:id, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/trees/:treeId/people/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mGalleryController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/gallery, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/gallery/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/gallery, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/gallery/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/gallery, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/gallery/:id/save, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/gallery/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/gallery/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/gallery, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/gallery/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/gallery, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/gallery/:id/save, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/gallery/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/gallery/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mContactController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/contact, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/contact/messages, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mNewsletterController {/api}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/newsletter/subscribe, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/newsletter/subscribers, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mStatsController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/stats, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSearchController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/search, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/search/suggest, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mHealthController {/api}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/routes, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health/live, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/db-health, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/errors/not-found, OPTIONS} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/errors/not-found, ALL} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health/db-diag, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mApprovalsController {/api/admin/approvals}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/approvals/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/approvals/password-reset, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/approvals/password-reset/:id/approve, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/approvals/password-reset/:id/reject, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/approvals/account-deletion, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/approvals/account-deletion/:id/approve, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/approvals/account-deletion/:id/reject, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUserRequestsController {/api/user/requests}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/user/requests/password-reset, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/user/requests/account-deletion, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mArticlesController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/articles, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/articles/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/articles, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/articles, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/articles/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/articles/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/articles/:id/like, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/articles, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/articles, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/articles/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/articles/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAudiosController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/audios, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/audios/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/audios, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/audios, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/audios/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/audios/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/audios, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/audios, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/audios/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/audios/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDocumentsController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/documents, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/documents/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/documents, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/documents, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/documents/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/my/documents/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/documents, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/documents, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/documents/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/documents/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSuggestionsController {/api}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/suggestions, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/suggestions, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/suggestions, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/suggestions/:id, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/suggestions/:id/approve, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/suggestions/:id/approve, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/suggestions/:id/approve, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/suggestions/:id/reject, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/suggestions/:id/reject, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/suggestions/:id/reject, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSettingsController {/api/admin/settings}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/settings, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/settings, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mPublicSiteImagesController {/api/site-images}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/site-images, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAdminSiteImagesController {/api/admin/site-images}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/hero, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/hero, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/hero, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/hero/reorder, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/hero/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/hero/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/background, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/background, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/background, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/background/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 10628  - [39m05/07/2026, 5:39:45 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/admin/site-images/background, DELETE} route[39m[38;5;3m +1ms[39m

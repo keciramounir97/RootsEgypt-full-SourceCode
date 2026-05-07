@@ -472,7 +472,7 @@ export default function AdminGallery() {
               </label>
               <div
                 className={`border-2 border-dashed ${border} rounded-lg p-6 text-center cursor-pointer transition hover:border-[#d9a441] hover:bg-[#d9a441]/5`}
-                onClick={() => document.getElementById("imageInput").click()}
+                onClick={() => document.getElementById("imageInput")?.click()}
               >
                 {previewUrl ? (
                   <div className="space-y-3">
@@ -780,7 +780,7 @@ export default function AdminGallery() {
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                     onError={(e) => {
                       console.error("Image load error:", item.imagePath ?? item.image_path);
-                      e.target.src =
+                      e.currentTarget.src =
                         `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23ddd' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23999' font-size='18'%3E${imageNotFoundLabel}%3C/text%3E%3C/svg%3E`;
                     }}
                   />

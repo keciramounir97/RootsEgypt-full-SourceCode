@@ -28,14 +28,14 @@ export default function Research() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState({ trees: [], books: [], people: [] });
-  const [suggestedTrees, setSuggestedTrees] = useState([]);
+  const [suggestedTrees, setSuggestedTrees] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
-  const [viewTree, setViewTree] = useState(null);
-  const [viewPeople, setViewPeople] = useState([]);
+  const [viewTree, setViewTree] = useState<any>(null);
+  const [viewPeople, setViewPeople] = useState<any[]>([]);
   const [viewTreeError, setViewTreeError] = useState("");
   const [viewLoading, setViewLoading] = useState(false);
-  const searchTimerRef = useRef(null);
+  const searchTimerRef = useRef<number | null>(null);
 
   const apiRoot = useMemo(() => {
     const base = String(api.defaults.baseURL || "");
@@ -49,7 +49,7 @@ export default function Research() {
 
 
   const handleSearch = useCallback(
-    async (queryOverride) => {
+    async (queryOverride?: string) => {
       const q = typeof queryOverride === "string" ? queryOverride : searchQuery;
       if (!q.trim()) {
         setSearched(false);

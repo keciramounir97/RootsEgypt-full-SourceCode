@@ -1,0 +1,11 @@
+DB HANDSHAKE FAILED: getaddrinfo ENOTFOUND rootsegypt_database-egyptroots
+🔴 DB startup readiness failed: getaddrinfo ENOTFOUND rootsegypt_database-egyptroots
+SERVER ERROR: Error: getaddrinfo ENOTFOUND rootsegypt_database-egyptroots
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:121:26) {
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'rootsegypt_database-egyptroots',
+  fatal: true
+}
+🔴 DB ERROR - Database connection failed

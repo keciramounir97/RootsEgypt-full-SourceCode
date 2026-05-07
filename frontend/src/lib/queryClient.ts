@@ -60,7 +60,7 @@ export const queryKeys = {
     public: () => [...queryKeys.books.all, "public"],
     my: () => [...queryKeys.books.all, "my"],
     admin: () => [...queryKeys.books.all, "admin"],
-    detail: (id: string | number) => [...queryKeys.books.all, "detail", id],
+    detail: (id: string | number | undefined) => [...queryKeys.books.all, "detail", id],
   },
   // Trees
   trees: {
@@ -68,8 +68,8 @@ export const queryKeys = {
     public: () => [...queryKeys.trees.all, "public"],
     my: () => [...queryKeys.trees.all, "my"],
     admin: () => [...queryKeys.trees.all, "admin"],
-    detail: (id: string | number) => [...queryKeys.trees.all, "detail", id],
-    persons: (treeId: string | number) => [...queryKeys.trees.all, treeId, "persons"],
+    detail: (id: string | number | undefined) => [...queryKeys.trees.all, "detail", id],
+    persons: (treeId: string | number | undefined) => [...queryKeys.trees.all, treeId, "persons"],
   },
   // Gallery
   gallery: {
@@ -77,7 +77,7 @@ export const queryKeys = {
     public: () => [...queryKeys.gallery.all, "public"],
     my: () => [...queryKeys.gallery.all, "my"],
     admin: () => [...queryKeys.gallery.all, "admin"],
-    detail: (id: string | number) => [...queryKeys.gallery.all, "detail", id],
+    detail: (id: string | number | undefined) => [...queryKeys.gallery.all, "detail", id],
   },
   // Users (admin only)
   users: {

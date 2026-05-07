@@ -1,5 +1,5 @@
-import { SettingsService } from './settings.service';
-import { UpdateSettingsDto } from './dto/settings.dto';
+import { SettingsService } from "./settings.service";
+import { UpdateSettingsDto } from "./dto/settings.dto";
 export declare class SettingsController {
     private readonly settingsService;
     constructor(settingsService: SettingsService);
@@ -26,6 +26,8 @@ export declare class PublicSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -33,6 +35,8 @@ export declare class PublicSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -40,6 +44,8 @@ export declare class PublicSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
@@ -55,6 +61,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -62,6 +70,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -69,6 +79,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
@@ -80,6 +92,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -87,6 +101,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -94,6 +110,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
@@ -105,6 +123,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -112,6 +132,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -119,6 +141,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
@@ -130,6 +154,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -137,6 +163,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -144,6 +172,70 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
+            createdAt?: string;
+            updatedAt?: string;
+        } | null;
+    }>;
+    reorderHeroImages(body: any, req: any): Promise<{
+        heroUseDefault: boolean;
+        backgroundUseDefault: boolean;
+        heroImages: {
+            id: number;
+            imagePath: string;
+            sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
+            createdAt?: string;
+            updatedAt?: string;
+        }[];
+        backgroundImages: {
+            id: number;
+            imagePath: string;
+            sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
+            createdAt?: string;
+            updatedAt?: string;
+        }[];
+        backgroundImage: {
+            id: number;
+            imagePath: string;
+            sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
+            createdAt?: string;
+            updatedAt?: string;
+        } | null;
+    }>;
+    updateHeroImage(id: number, body: any, req: any): Promise<{
+        heroUseDefault: boolean;
+        backgroundUseDefault: boolean;
+        heroImages: {
+            id: number;
+            imagePath: string;
+            sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
+            createdAt?: string;
+            updatedAt?: string;
+        }[];
+        backgroundImages: {
+            id: number;
+            imagePath: string;
+            sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
+            createdAt?: string;
+            updatedAt?: string;
+        }[];
+        backgroundImage: {
+            id: number;
+            imagePath: string;
+            sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
@@ -155,6 +247,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -162,6 +256,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -169,6 +265,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
@@ -180,6 +278,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -187,6 +287,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -194,6 +296,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
@@ -205,6 +309,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -212,6 +318,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -219,6 +327,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
@@ -230,6 +340,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -237,6 +349,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -244,6 +358,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
@@ -255,6 +371,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -262,6 +380,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -269,6 +389,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
@@ -280,6 +402,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -287,6 +411,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         }[];
@@ -294,6 +420,8 @@ export declare class AdminSiteImagesController {
             id: number;
             imagePath: string;
             sortOrder: number;
+            title?: string | null;
+            caption?: string | null;
             createdAt?: string;
             updatedAt?: string;
         } | null;
