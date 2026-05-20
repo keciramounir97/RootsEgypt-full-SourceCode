@@ -5,6 +5,8 @@ export declare class TreesService {
     private readonly knex;
     private readonly activityService;
     constructor(knex: Knex, activityService: ActivityService);
+    private parseBoolean;
+    private getPublicInput;
     listPublic(): Promise<Tree[]>;
     getPublic(id: number): Promise<Tree>;
     listByUser(userId: number): Promise<Tree[]>;

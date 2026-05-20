@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useThemeStore } from "../store/theme";
 import {
   AnimatePresence,
@@ -8,12 +8,16 @@ import {
 } from "framer-motion";
 import {
   Archive,
+  BookOpen,
   ChevronLeft,
   ChevronRight,
+  FileAudio2,
   FileText,
   Heart,
   Image as ImageIcon,
   Loader2,
+  Network,
+  Newspaper,
   Search,
   Share2,
   X,
@@ -70,6 +74,45 @@ const normalizeGalleryPath = (path: string | undefined) => {
   if (raw.startsWith("assets/")) return `/${raw}`;
   return `/uploads/gallery/${raw.replace(/^\/+/, "")}`;
 };
+
+const gallerySections = [
+  {
+    to: "/gallery/images",
+    labelKey: "images",
+    fallback: "Images",
+    Icon: ImageIcon,
+  },
+  {
+    to: "/gallery/trees",
+    labelKey: "family_trees",
+    fallback: "Family Trees",
+    Icon: Network,
+  },
+  {
+    to: "/gallery/books",
+    labelKey: "books",
+    fallback: "Books",
+    Icon: BookOpen,
+  },
+  {
+    to: "/gallery/documents",
+    labelKey: "documents",
+    fallback: "Documents",
+    Icon: FileText,
+  },
+  {
+    to: "/gallery/audios",
+    labelKey: "audios",
+    fallback: "Audios",
+    Icon: FileAudio2,
+  },
+  {
+    to: "/gallery/articles",
+    labelKey: "articles",
+    fallback: "Articles",
+    Icon: Newspaper,
+  },
+];
 
 /* ------------------------------------------------------------------ */
 /*  Framer-motion variants                                             */
@@ -814,6 +857,45 @@ export default function GalleryPage() {
         </div>
       }
     >
+      <ScrollReveal>
+        <section className="roots-section" style={{ paddingBottom: "1rem" }}>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+            {gallerySections.map(({ to, labelKey, fallback, Icon }) => {
+              const isActive = location.pathname === to;
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  className={`
+                    group rounded-lg border p-4 transition-all duration-300
+                    ${isDark
+                      ? "border-white/10 bg-white/[0.03] hover:border-teal/50 hover:bg-teal/10"
+                      : "border-[#d8c7b0]/60 bg-white/70 hover:border-[#0c4a6e]/30 hover:bg-[#0c4a6e]/5"
+                    }
+                    ${isActive ? "ring-2 ring-teal/40" : ""}
+                  `}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span
+                      className={`text-sm font-semibold ${
+                        isDark ? "text-white" : "text-[#091326]"
+                      }`}
+                    >
+                      {t(`legacy.${labelKey}`, fallback)}
+                    </span>
+                    <Icon
+                      className={`h-5 w-5 transition-transform duration-300 group-hover:scale-110 ${
+                        isDark ? "text-teal" : "text-[#0c4a6e]"
+                      }`}
+                    />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      </ScrollReveal>
+
       {/* =============================== */}
       {/*  Search + Filter Bar             */}
       {/* =============================== */}

@@ -5,6 +5,7 @@ export declare class CreateTreeDto {
     archiveSource?: string;
     documentCode?: string;
     isPublic?: boolean | string;
+    is_public?: boolean | string;
     dataFormat?: string;
 }
 export declare class UpdateTreeDto {
@@ -14,5 +15,6 @@ export declare class UpdateTreeDto {
     archiveSource?: string;
     documentCode?: string;
     isPublic?: boolean | string;
+    is_public?: boolean | string;
     dataFormat?: string;
 }

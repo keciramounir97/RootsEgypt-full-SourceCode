@@ -47,6 +47,10 @@ __decorate([
     __metadata("design:type", Object)
 ], CreateTreeDto.prototype, "isPublic", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Object)
+], CreateTreeDto.prototype, "is_public", void 0);
+__decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
@@ -83,6 +87,10 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Object)
 ], UpdateTreeDto.prototype, "isPublic", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Object)
+], UpdateTreeDto.prototype, "is_public", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),

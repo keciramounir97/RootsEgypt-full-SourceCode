@@ -113,7 +113,7 @@ export default function Trees() {
 
     documentCode: "",
 
-    isPublic: false,
+    isPublic: isAdmin,
   });
 
   const [saving, setSaving] = useState(false);
@@ -277,7 +277,7 @@ export default function Trees() {
         category: "",
         archiveSource: "",
         documentCode: "",
-        isPublic: false,
+        isPublic: isAdmin,
       });
 
       setSelectedScope(null);
@@ -298,7 +298,7 @@ export default function Trees() {
 
       isPublic: !!selectedTree.isPublic,
     });
-  }, [selectedTree]);
+  }, [selectedTree, isAdmin]);
 
   useEffect(() => {
     autoSavePeopleRef.current = null;

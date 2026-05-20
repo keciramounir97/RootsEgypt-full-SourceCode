@@ -211,8 +211,8 @@ export default function Navbar() {
   const resourceSub = [
     { to: "/gallery", label: t("legacy.gallery", "Gallery"), icon: Image },
     {
-      to: "/genealogy-gallery",
-      label: t("legacy.genealogy_gallery", "Genealogy Gallery"),
+      to: "/gallery/trees",
+      label: t("legacy.family_trees", "Family Trees"),
       icon: Trees,
     },
     { to: "/library", label: t("legacy.library", "Library"), icon: Library },
@@ -235,6 +235,7 @@ export default function Navbar() {
 
   const resourcePaths = [
     "/gallery",
+    "/gallery/trees",
     "/genealogy-gallery",
     "/library",
     "/audio",

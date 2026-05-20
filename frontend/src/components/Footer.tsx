@@ -77,8 +77,8 @@ export default function Footer({ data }: FooterProps) {
     () => [
       { label: t("legacy.gallery", "Gallery"), href: "/gallery" },
       {
-        label: t("legacy.genealogy_gallery", "Genealogy Gallery"),
-        href: "/genealogy-gallery",
+        label: t("legacy.family_trees", "Family Trees"),
+        href: "/gallery/trees",
       },
       { label: t("legacy.library", "Library"), href: "/library" },
       { label: t("legacy.audio_library", "Audio Library"), href: "/audio" },

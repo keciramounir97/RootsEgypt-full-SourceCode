@@ -15,6 +15,22 @@ export class TreesService {
     private readonly activityService: ActivityService,
   ) {}
 
+  private parseBoolean(value: unknown, fallback = false) {
+    if (value === undefined || value === null || value === "") return fallback;
+    if (typeof value === "boolean") return value;
+    if (typeof value === "number") return value === 1;
+
+    const normalized = String(value).trim().toLowerCase();
+    if (["true", "1", "yes", "on"].includes(normalized)) return true;
+    if (["false", "0", "no", "off"].includes(normalized)) return false;
+
+    return fallback;
+  }
+
+  private getPublicInput(data: any, fallback = false) {
+    return this.parseBoolean(data?.isPublic ?? data?.is_public, fallback);
+  }
+
   async listPublic() {
     return Tree.query(this.knex)
       .where("is_public", true)
@@ -68,7 +84,7 @@ export class TreesService {
       throw new BadRequestException("Title is required");
     }
 
-    const isPublic = data.isPublic === "true" || data.isPublic === true;
+    const isPublic = this.getPublicInput(data, false);
     let gedcomPath = file ? `/uploads/trees/${file.filename}` : null;
 
     let dataFormat: "gedcom" | "gedcomx" | "gedcom7" = "gedcom";
@@ -138,10 +154,8 @@ export class TreesService {
       updateData.document_code = data.documentCode;
 
     const isPublic =
-      data.isPublic !== undefined
-        ? data.isPublic === "true" ||
-          data.isPublic === true ||
-          data.isPublic === 1
+      data.isPublic !== undefined || data.is_public !== undefined
+        ? this.getPublicInput(data, !!tree.is_public)
         : !!tree.is_public;
     updateData.is_public = Boolean(isPublic);
 

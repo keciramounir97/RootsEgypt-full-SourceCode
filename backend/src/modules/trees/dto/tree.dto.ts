@@ -28,6 +28,9 @@ export class CreateTreeDto {
     @IsOptional()
     isPublic?: boolean | string;
 
+    @IsOptional()
+    is_public?: boolean | string;
+
     @IsString()
     @IsOptional()
     dataFormat?: string;
@@ -56,6 +59,9 @@ export class UpdateTreeDto {
 
     @IsOptional()
     isPublic?: boolean | string;
+
+    @IsOptional()
+    is_public?: boolean | string;
 
     @IsString()
     @IsOptional()

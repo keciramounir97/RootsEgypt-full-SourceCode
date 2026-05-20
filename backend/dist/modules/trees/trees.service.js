@@ -27,6 +27,24 @@ let TreesService = class TreesService {
         this.knex = knex;
         this.activityService = activityService;
     }
+    parseBoolean(value, fallback = false) {
+        if (value === undefined || value === null || value === "")
+            return fallback;
+        if (typeof value === "boolean")
+            return value;
+        if (typeof value === "number")
+            return value === 1;
+        const normalized = String(value).trim().toLowerCase();
+        if (["true", "1", "yes", "on"].includes(normalized))
+            return true;
+        if (["false", "0", "no", "off"].includes(normalized))
+            return false;
+        return fallback;
+    }
+    getPublicInput(data, fallback = false) {
+        var _a;
+        return this.parseBoolean((_a = data === null || data === void 0 ? void 0 : data.isPublic) !== null && _a !== void 0 ? _a : data === null || data === void 0 ? void 0 : data.is_public, fallback);
+    }
     async listPublic() {
         return Tree_1.Tree.query(this.knex)
             .where("is_public", true)
@@ -72,7 +90,7 @@ let TreesService = class TreesService {
         if (!title) {
             throw new common_1.BadRequestException("Title is required");
         }
-        const isPublic = data.isPublic === "true" || data.isPublic === true;
+        const isPublic = this.getPublicInput(data, false);
         let gedcomPath = file ? `/uploads/trees/${file.filename}` : null;
         let dataFormat = "gedcom";
         if (file) {
@@ -127,10 +145,8 @@ let TreesService = class TreesService {
             updateData.archive_source = data.archiveSource;
         if (data.documentCode !== undefined)
             updateData.document_code = data.documentCode;
-        const isPublic = data.isPublic !== undefined
-            ? data.isPublic === "true" ||
-                data.isPublic === true ||
-                data.isPublic === 1
+        const isPublic = data.isPublic !== undefined || data.is_public !== undefined
+            ? this.getPublicInput(data, !!tree.is_public)
             : !!tree.is_public;
         updateData.is_public = Boolean(isPublic);
         let gedcomPath = tree.gedcom_path;
