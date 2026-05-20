@@ -149,15 +149,7 @@ function pickFirstDefined(
         try {
           const knex = Knex.default(knexConfig);
           Model.knex(knex);
-          knex.raw("SELECT 1").catch((err: any) => {
-            const msg =
-              err?.sqlMessage ||
-              err?.message ||
-              err?.code ||
-              JSON.stringify(err || {});
-            console.error(`DB HANDSHAKE FAILED: ${msg}`);
-          });
-          console.log("DB HANDSHAKE STARTED");
+          console.log("DB CONFIG READY");
           return knex;
         } catch (err: any) {
           const msg =

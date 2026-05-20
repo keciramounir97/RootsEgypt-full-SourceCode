@@ -49,6 +49,9 @@ export default function ProtectedRoute({
     if (user.role === 1 && granted.length === 0) {
       return children;
     }
+    if (granted.includes("all")) {
+      return children;
+    }
     const hasPrivilege = privileges.some((privilege) =>
       granted.includes(privilege),
     );

@@ -825,8 +825,12 @@ async function bootstrap() {
     app.useGlobalInterceptors(new TransformInterceptor());
     app.useGlobalFilters(new AllExceptionsFilter());
 
-    // Try DB/schema readiness briefly, but never block the API port forever.
-    // Health and seed-admin fallback must stay reachable while DB recovers.
+    // Passenger / cPanel Port. Bind the API before DB readiness work so health,
+    // routes, and frontend fallbacks remain reachable while DB DNS recovers.
+    const port = process.env.PORT || 5000;
+    await app.listen(port, "0.0.0.0");
+
+    // Try DB/schema readiness briefly after binding the API port.
     const knex = app.get<Knex>("KnexConnection");
     let dbReady = false;
     const startupDbTimeoutMs = getStartupDbTimeoutMs();
@@ -848,10 +852,6 @@ async function bootstrap() {
         `🔴 DB startup readiness failed: ${err?.message || err?.code || err}`,
       );
     }
-
-    // Passenger / cPanel Port
-    const port = process.env.PORT || 5000;
-    await app.listen(port, "0.0.0.0");
 
     // ── Deployment Diagnostic Table ──
     const ok = (label: string) => `\u2705 ${label}`;

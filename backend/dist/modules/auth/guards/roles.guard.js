@@ -105,6 +105,8 @@ let RolesGuard = class RolesGuard {
         if (normalizedRequired.includes(normalizedRoleName)) {
             const permissions = this.parsePermissions(user);
             if (roleId === 1 && permissions.length > 0) {
+                if (permissions.includes('all'))
+                    return true;
                 const requiredPermission = this.permissionFromRequestPath(request.path || request.url);
                 return !requiredPermission || permissions.includes(requiredPermission);
             }

@@ -153,6 +153,7 @@ let TreesService = class TreesService {
         if (file) {
             if (tree.gedcom_path)
                 (0, file_utils_1.safeUnlink)((0, file_utils_1.resolveStoredFilePath)(tree.gedcom_path));
+            const fileContent = fs.readFileSync(file.path, "utf8").slice(0, 4000);
             let newPath = `/uploads/trees/${file.filename}`;
             if (!isPublic) {
                 const dest = path.join(file_utils_1.PRIVATE_TREE_UPLOADS_DIR, file.filename);
@@ -167,8 +168,7 @@ let TreesService = class TreesService {
                 updateData.data_format = explicit;
             }
             else {
-                const content = fs.readFileSync(file.path, "utf8").slice(0, 4000);
-                updateData.data_format = this.inferDataFormat(file.originalname, content);
+                updateData.data_format = this.inferDataFormat(file.originalname, fileContent);
             }
             gedcomPath = newPath;
         }

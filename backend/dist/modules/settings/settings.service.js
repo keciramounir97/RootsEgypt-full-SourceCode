@@ -31,7 +31,12 @@ let SettingsService = class SettingsService {
         this.activityService = activityService;
     }
     async onModuleInit() {
-        await this.ensureSettingsSchema();
+        try {
+            await this.ensureSettingsSchema();
+        }
+        catch (err) {
+            console.warn(`Settings schema init skipped: ${(err === null || err === void 0 ? void 0 : err.message) || err}`);
+        }
     }
     async ensureSettingsSchema() {
         if (!(await this.knex.schema.hasTable("app_settings"))) {

@@ -142,11 +142,7 @@ export default function Trees() {
     setTreesError("");
     setSaveError("");
 
-    const isMock =
-      import.meta.env.DEV &&
-      localStorage.getItem("mockupDataActive") === "true";
-
-    const mockTrees = isMock ? buildMockTrees() : [];
+    const mockTrees = buildMockTrees();
 
     const mergeById = (list) => {
       const map = new Map();
@@ -184,14 +180,14 @@ export default function Trees() {
 
       if (mineRes.status === "fulfilled") {
         const mine = mineRes.value?.data;
+        const liveMine = Array.isArray(mine)
+          ? mine.map((t) => normalizeTree(t, { isPublic: !!t?.is_public || !!t?.isPublic }))
+          : [];
 
-        const myList = mergeById([
-          ...(Array.isArray(mine) ? mine.map((t) => normalizeTree(t, { isPublic: !!t?.is_public || !!t?.isPublic })) : []),
-          ...mockTrees,
-        ]);
+        const myList = mergeById(liveMine.length ? liveMine : mockTrees);
 
         setMyTrees(myList);
-      } else if (isMock) {
+      } else if (mockTrees.length) {
         setMyTrees((prev) =>
           Array.isArray(prev) && prev.length ? prev : mockTrees
         );
@@ -199,14 +195,16 @@ export default function Trees() {
 
       if (pubRes.status === "fulfilled") {
         const pub = pubRes.value?.data;
+        const livePublic = Array.isArray(pub)
+          ? pub.map((t) => normalizeTree(t, { isPublic: true }))
+          : [];
 
-        const publicList = mergeById([
-          ...(Array.isArray(pub) ? pub.map((t) => normalizeTree(t, { isPublic: true })) : []),
-          ...mockTrees.filter((t) => t.isPublic),
-        ]);
+        const publicList = mergeById(
+          livePublic.length ? livePublic : mockTrees.filter((t) => t.isPublic),
+        );
 
         setPublicTrees(publicList);
-      } else if (isMock) {
+      } else if (mockTrees.length) {
         setPublicTrees((prev) =>
           Array.isArray(prev) && prev.length
             ? prev

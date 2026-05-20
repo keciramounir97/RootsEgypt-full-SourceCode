@@ -14,29 +14,33 @@ export class AudiosService implements OnModuleInit {
     ) {}
 
     async onModuleInit() {
-        const exists = await this.knex.schema.hasTable('audios');
-        if (!exists) {
-            await this.knex.schema.createTable('audios', (table) => {
-                table.increments('id').primary();
-                table.string('title', 255).notNullable();
-                table.text('description').nullable();
-                table.string('audio_path', 512).nullable();
-                table.integer('duration').nullable();
-                table.string('category', 100).nullable();
-                table.string('archive_source', 255).nullable();
-                table.integer('uploaded_by').unsigned().nullable();
-                table.boolean('is_public').defaultTo(true);
-                table.integer('likes').defaultTo(0);
-                table.timestamp('created_at').defaultTo(this.knex.fn.now());
-                table.timestamp('updated_at').defaultTo(this.knex.fn.now());
-            });
-            return;
-        }
+        try {
+            const exists = await this.knex.schema.hasTable('audios');
+            if (!exists) {
+                await this.knex.schema.createTable('audios', (table) => {
+                    table.increments('id').primary();
+                    table.string('title', 255).notNullable();
+                    table.text('description').nullable();
+                    table.string('audio_path', 512).nullable();
+                    table.integer('duration').nullable();
+                    table.string('category', 100).nullable();
+                    table.string('archive_source', 255).nullable();
+                    table.integer('uploaded_by').unsigned().nullable();
+                    table.boolean('is_public').defaultTo(true);
+                    table.integer('likes').defaultTo(0);
+                    table.timestamp('created_at').defaultTo(this.knex.fn.now());
+                    table.timestamp('updated_at').defaultTo(this.knex.fn.now());
+                });
+                return;
+            }
 
-        if (!(await this.knex.schema.hasColumn('audios', 'category'))) {
-            await this.knex.schema.alterTable('audios', (table) => {
-                table.string('category', 100).nullable();
-            });
+            if (!(await this.knex.schema.hasColumn('audios', 'category'))) {
+                await this.knex.schema.alterTable('audios', (table) => {
+                    table.string('category', 100).nullable();
+                });
+            }
+        } catch (err: any) {
+            console.warn(`Audios schema init skipped: ${err?.message || err}`);
         }
     }
 

@@ -643,6 +643,8 @@ async function bootstrap() {
         const { AllExceptionsFilter } = await Promise.resolve().then(() => require("./common/filters/all-exceptions.filter"));
         app.useGlobalInterceptors(new TransformInterceptor());
         app.useGlobalFilters(new AllExceptionsFilter());
+        const port = process.env.PORT || 5000;
+        await app.listen(port, "0.0.0.0");
         const knex = app.get("KnexConnection");
         let dbReady = false;
         const startupDbTimeoutMs = getStartupDbTimeoutMs();
@@ -655,8 +657,6 @@ async function bootstrap() {
         catch (err) {
             console.error(`🔴 DB startup readiness failed: ${(err === null || err === void 0 ? void 0 : err.message) || (err === null || err === void 0 ? void 0 : err.code) || err}`);
         }
-        const port = process.env.PORT || 5000;
-        await app.listen(port, "0.0.0.0");
         const ok = (label) => `\u2705 ${label}`;
         const fail = (label) => `\u274C ${label}`;
         const check = (condition, label) => condition ? ok(label) : fail(label);

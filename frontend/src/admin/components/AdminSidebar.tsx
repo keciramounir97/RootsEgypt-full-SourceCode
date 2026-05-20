@@ -87,7 +87,8 @@ export default function AdminSidebar({
   const { t } = useLanguage();
   const isDark = theme === "dark";
   const granted = Array.isArray(user?.permissions) ? user.permissions : [];
-  const isSuperAdmin = user?.role === 3;
+  const hasAllPermissions = granted.includes("all");
+  const isSuperAdmin = user?.role === 3 || hasAllPermissions;
 
   const visibleLinks = links.filter((link) => {
     if (isSuperAdmin) return true;

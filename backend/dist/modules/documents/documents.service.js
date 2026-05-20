@@ -25,30 +25,35 @@ let DocumentsService = class DocumentsService {
         this.activityService = activityService;
     }
     async onModuleInit() {
-        const exists = await this.knex.schema.hasTable('documents');
-        if (!exists) {
-            await this.knex.schema.createTable('documents', (table) => {
-                table.increments('id').primary();
-                table.string('title', 255).notNullable();
-                table.text('description').nullable();
-                table.string('file_path', 512).nullable();
-                table.string('file_type', 50).nullable();
-                table.string('category', 100).nullable();
-                table.string('archive_source', 255).nullable();
-                table.string('document_code', 100).nullable();
-                table.string('date', 50).nullable();
-                table.integer('uploaded_by').unsigned().nullable();
-                table.boolean('is_public').defaultTo(true);
-                table.integer('likes').defaultTo(0);
-                table.timestamp('created_at').defaultTo(this.knex.fn.now());
-                table.timestamp('updated_at').defaultTo(this.knex.fn.now());
-            });
-            return;
+        try {
+            const exists = await this.knex.schema.hasTable('documents');
+            if (!exists) {
+                await this.knex.schema.createTable('documents', (table) => {
+                    table.increments('id').primary();
+                    table.string('title', 255).notNullable();
+                    table.text('description').nullable();
+                    table.string('file_path', 512).nullable();
+                    table.string('file_type', 50).nullable();
+                    table.string('category', 100).nullable();
+                    table.string('archive_source', 255).nullable();
+                    table.string('document_code', 100).nullable();
+                    table.string('date', 50).nullable();
+                    table.integer('uploaded_by').unsigned().nullable();
+                    table.boolean('is_public').defaultTo(true);
+                    table.integer('likes').defaultTo(0);
+                    table.timestamp('created_at').defaultTo(this.knex.fn.now());
+                    table.timestamp('updated_at').defaultTo(this.knex.fn.now());
+                });
+                return;
+            }
+            if (!(await this.knex.schema.hasColumn('documents', 'category'))) {
+                await this.knex.schema.alterTable('documents', (table) => {
+                    table.string('category', 100).nullable();
+                });
+            }
         }
-        if (!(await this.knex.schema.hasColumn('documents', 'category'))) {
-            await this.knex.schema.alterTable('documents', (table) => {
-                table.string('category', 100).nullable();
-            });
+        catch (err) {
+            console.warn(`Documents schema init skipped: ${(err === null || err === void 0 ? void 0 : err.message) || err}`);
         }
     }
     async listPublic() {

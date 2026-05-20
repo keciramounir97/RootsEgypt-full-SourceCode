@@ -57,7 +57,11 @@ export class SettingsService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.ensureSettingsSchema();
+    try {
+      await this.ensureSettingsSchema();
+    } catch (err: any) {
+      console.warn(`Settings schema init skipped: ${err?.message || err}`);
+    }
   }
 
   private async ensureSettingsSchema() {

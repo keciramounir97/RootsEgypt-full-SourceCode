@@ -29,7 +29,12 @@ let ArticlesService = ArticlesService_1 = class ArticlesService {
         this.seedEnsured = false;
     }
     async onModuleInit() {
-        await this.ensureArticleSchema();
+        try {
+            await this.ensureArticleSchema();
+        }
+        catch (err) {
+            this.logger.warn(`Articles schema init skipped: ${(err === null || err === void 0 ? void 0 : err.message) || err}`);
+        }
     }
     async ensureArticleSchema() {
         const exists = await this.knex.schema.hasTable('articles');

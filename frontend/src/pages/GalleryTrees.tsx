@@ -17,6 +17,7 @@ import {
 import { api } from "../api/client";
 import { getApiErrorMessage, getApiRoot, normalizeTree } from "../api/helpers";
 import { useLanguage } from "../i18n";
+import { MOCK_TREES } from "../lib/mockData";
 import RootsPageShell from "../components/RootsPageShell";
 import TreesBuilder, { parseGedcom, parseGedcomX } from "../admin/components/TreesBuilder";
 
@@ -51,6 +52,11 @@ export default function GalleryTrees() {
     let mounted = true;
 
     (async () => {
+      const apiRootVal = getApiRoot();
+      const fallbackTrees = () =>
+        MOCK_TREES.filter((tree: any) => tree?.isPublic ?? tree?.is_public)
+          .map((tree: any) => normalizeTree(tree, { apiRoot: apiRootVal, isPublic: true }));
+
       try {
         setLoading(true);
         setError("");
@@ -59,18 +65,18 @@ export default function GalleryTrees() {
 
         if (!mounted) return;
 
-        const apiRootVal = getApiRoot();
         const nextTrees =
           Array.isArray(treesRes.data)
             ? treesRes.data.map((t: any) => normalizeTree(t, { apiRoot: apiRootVal, isPublic: true }))
             : [];
 
-        setTrees(nextTrees);
+        setTrees(nextTrees.length ? nextTrees : fallbackTrees());
       } catch (err) {
         if (!mounted) return;
         const message = getApiErrorMessage(err, "Failed to load trees");
-        setError(message);
-        setTrees([]);
+        const nextTrees = fallbackTrees();
+        setTrees(nextTrees);
+        setError(nextTrees.length ? "" : message);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -128,14 +134,17 @@ export default function GalleryTrees() {
         return;
       }
 
-      const gedcomUrl = fileUrl(tree.gedcomUrl);
-      const response = await fetch(gedcomUrl);
-      if (!response.ok) {
-        setViewTreeError(t("legacy.tree_builder_error", "Failed to load tree."));
-        setViewLoading(false);
-        return;
+      let text = typeof tree.gedcom === "string" ? tree.gedcom : "";
+      if (!text) {
+        const gedcomUrl = fileUrl(tree.gedcomUrl);
+        const response = await fetch(gedcomUrl);
+        if (!response.ok) {
+          setViewTreeError(t("legacy.tree_builder_error", "Failed to load tree."));
+          setViewLoading(false);
+          return;
+        }
+        text = await response.text();
       }
-      const text = await response.text();
       const isGedcomX = /^\s*(\{|\<\?xml)/.test(text);
       const people = isGedcomX ? parseGedcomX(text) : parseGedcom(text);
       const list = Array.isArray(people) ? people : [];
@@ -148,6 +157,34 @@ export default function GalleryTrees() {
       setViewTreeError(t("legacy.tree_builder_error", "Failed to load tree."));
     } finally {
       setViewLoading(false);
+    }
+  };
+
+  const downloadTreeFile = async (tree: any) => {
+    if (!tree?.id) return;
+
+    try {
+      let text = typeof tree.gedcom === "string" ? tree.gedcom : "";
+      if (!text) {
+        const response = await fetch(downloadTreeUrl(tree.id));
+        if (!response.ok) throw new Error("Download failed");
+        text = await response.text();
+      }
+
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const safeName = String(tree.title || "tree")
+        .trim()
+        .replace(/[^\w.-]+/g, "_") || "tree";
+      link.href = url;
+      link.download = `${safeName}.${tree.data_format === "gedcomx" ? "xml" : "ged"}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setViewTreeError(t("legacy.no_gedcom_available", "No GEDCOM file available yet."));
     }
   };
 
@@ -254,7 +291,9 @@ export default function GalleryTrees() {
                     data-aos="fade-up"
                     data-aos-delay={index * 50}
                   >
-                    <div className="p-5 border-b ${borderColor} bg-gradient-to-r from-[#24766f]/10 via-[#d9a441]/5 to-transparent">
+                    <div
+                      className={`p-5 border-b ${borderColor} bg-gradient-to-r from-[#24766f]/10 via-[#d9a441]/5 to-transparent`}
+                    >
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <p className="text-[10px] uppercase tracking-[0.3em] text-[#24766f] opacity-70 mb-1">
@@ -313,14 +352,14 @@ export default function GalleryTrees() {
                           </button>
                         )}
                         {canDownload && (
-                          <a
-                            href={downloadTreeUrl(tree.id)}
-                            download
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border ${borderColor} text-sm font-medium hover:bg-[#d9a441]/10 hover:border-[#d9a441] transition-colors"
+                          <button
+                            type="button"
+                            onClick={() => void downloadTreeFile(tree)}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border ${borderColor} text-sm font-medium hover:bg-[#d9a441]/10 hover:border-[#d9a441] transition-colors`}
                           >
                             <Download className="w-4 h-4" />
                             {t("legacy.download", "Download")}
-                          </a>
+                          </button>
                         )}
                       </div>
                     </div>
@@ -342,7 +381,9 @@ export default function GalleryTrees() {
             className={`w-full max-w-6xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden ${cardBg} border ${borderColor}`}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-4 border-b ${borderColor}">
+            <div
+              className={`flex items-center justify-between p-4 border-b ${borderColor}`}
+            >
               <h3 className="text-xl font-bold">{viewTree.title}</h3>
               <button
                 onClick={() => setViewTree(null)}
@@ -363,7 +404,7 @@ export default function GalleryTrees() {
               ) : (
                 <TreesBuilder
                   people={viewPeople}
-                  isPublicView
+                  readOnly
                 />
               )}
             </div>

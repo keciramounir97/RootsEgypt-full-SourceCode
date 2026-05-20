@@ -1,0 +1,53 @@
+0 HEAD
+1 SOUR Genealogie de la famille Mokrani - sources ANOM, SHD, Gallica
+2 VERS 5.5.1
+1 DEST ANCIEST
+1 DATE 7 MAY 2026
+1 GEDC
+2 VERS 5.5.1
+2 FORM LINEAGE-LINKED
+1 CHAR UTF-8
+0 @I1@ INDI
+1 NAME Mohamed /el-Mokrani/
+1 SEX M
+1 BIRT
+2 DATE ABT 1770
+2 PLAC Kalaa des Ait Abbas, Bejaia, Algerie
+2 SOUR ANOM, F80/1694 - Correspondance avec Bugeaud, mai 1837 : reconnaissance de l'autorite francaise.
+1 DEAT
+2 DATE 1837
+2 PLAC Kalaa des Ait Abbas, Bejaia, Algerie
+2 SOUR Gallica - Rinn, "L'insurrection de 1871 en Algerie", 1891.
+0 @I2@ INDI
+1 NAME Ahmed /el-Mokrani/
+1 SEX M
+1 NOTE Chef de l'insurrection de 1871.
+1 BIRT
+2 DATE 1810
+2 PLAC Kalaa des Ait Abbas, Bejaia, Algerie
+2 SOUR SHD Vincennes, 1H 118 - Journal de marche de la colonne Lallemand.
+1 DEAT
+2 DATE 5 MAY 1871
+2 PLAC Kalaa des Ait Abbas, Bejaia, Algerie
+2 SOUR ANOM, 3B - Bureau arabe de Setif, rapport 15 mai 1871.
+1 EVEN
+2 TYPE Insurrection
+2 DATE 1871
+2 SOUR ANOM, 3B - Bureau arabe de Setif : tue au combat.
+1 FAMC @F1@
+0 @I3@ INDI
+1 NAME Boumezrag /el-Mokrani/
+1 SEX M
+1 BIRT
+2 DATE 1840
+2 PLAC Kalaa des Ait Abbas, Bejaia, Algerie
+2 SOUR ANOM, 1M - Personnel indigene, dossier Boumezrag.
+1 DEAT
+2 DATE 1900
+2 PLAC Constantine, Algerie
+1 FAMC @F1@
+0 @F1@ FAM
+1 HUSB @I1@
+1 CHIL @I2@
+1 CHIL @I3@
+0 TRLR

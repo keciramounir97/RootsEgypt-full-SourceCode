@@ -165,6 +165,8 @@ export class TreesService {
       // Delete old
       if (tree.gedcom_path) safeUnlink(resolveStoredFilePath(tree.gedcom_path));
 
+      const fileContent = fs.readFileSync(file.path, "utf8").slice(0, 4000);
+
       // Save new (store as-is, no conversion)
       let newPath = `/uploads/trees/${file.filename}`;
       if (!isPublic) {
@@ -181,10 +183,9 @@ export class TreesService {
       ) {
         updateData.data_format = explicit;
       } else {
-        const content = fs.readFileSync(file.path, "utf8").slice(0, 4000);
         updateData.data_format = this.inferDataFormat(
           file.originalname,
-          content,
+          fileContent,
         );
       }
       gedcomPath = newPath;

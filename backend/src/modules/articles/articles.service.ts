@@ -28,7 +28,11 @@ export class ArticlesService implements OnModuleInit {
     ) {}
 
     async onModuleInit() {
-        await this.ensureArticleSchema();
+        try {
+            await this.ensureArticleSchema();
+        } catch (err: any) {
+            this.logger.warn(`Articles schema init skipped: ${err?.message || err}`);
+        }
     }
 
     private async ensureArticleSchema() {
