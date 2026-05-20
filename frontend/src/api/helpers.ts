@@ -4,6 +4,7 @@ interface TreeRaw {
   id?: string | number;
   title?: string;
   description?: string;
+  category?: string;
   archive_source?: string;
   archiveSource?: string;
   document_code?: string;
@@ -18,6 +19,7 @@ interface TreeRaw {
   createdAt?: string;
   data_format?: string;
   dataFormat?: string;
+  people?: unknown[];
   [key: string]: unknown;
 }
 
@@ -39,7 +41,10 @@ interface ApiErrorOverrides {
 }
 
 /** Normalize tree from API (snake_case → camelCase, add hasGedcom, gedcomUrl, owner) */
-export const normalizeTree = (tree: TreeRaw, options?: { apiRoot?: string; isPublic?: boolean }) => {
+export const normalizeTree = (
+  tree: TreeRaw,
+  options?: { apiRoot?: string; isPublic?: boolean; gedcomScope?: "public" | "my" | "admin" },
+) => {
   if (!tree) return tree;
   const baseUrl = options?.apiRoot ?? "";
   const isPublic = options?.isPublic ?? (tree.is_public ?? tree.isPublic ?? false);
@@ -49,21 +54,25 @@ export const normalizeTree = (tree: TreeRaw, options?: { apiRoot?: string; isPub
       ? (ownerRaw as OwnerObject).full_name ?? (ownerRaw as OwnerObject).fullName ?? (ownerRaw as OwnerObject).email ?? ""
       : (ownerRaw as string) ?? "";
   const hasGedcom = !!(tree.gedcom_path ?? tree.gedcomPath);
-  const gedcomPath = hasGedcom
-    ? (isPublic ? `/api/trees/${tree.id}/gedcom` : `/api/my/trees/${tree.id}/gedcom`)
-    : null;
+  const scope = options?.gedcomScope ?? (isPublic ? "public" : "my");
+  const gedcomPathPrefix =
+    scope === "admin" ? "/api/admin/trees" : scope === "my" ? "/api/my/trees" : "/api/trees";
+  const gedcomPath = hasGedcom ? `${gedcomPathPrefix}/${tree.id}/gedcom` : null;
   const gedcomUrl = gedcomPath ? (baseUrl ? `${baseUrl}${gedcomPath}` : gedcomPath) : null;
+  const people = Array.isArray(tree.people) ? tree.people : [];
   return {
     ...tree,
     id: tree.id,
     title: tree.title ?? "",
     description: tree.description ?? "",
+    category: tree.category ?? "",
     archiveSource: tree.archive_source ?? tree.archiveSource ?? "",
     documentCode: tree.document_code ?? tree.documentCode ?? "",
     isPublic: !!isPublic,
     hasGedcom,
     gedcomUrl,
     owner,
+    personCount: people.length,
     createdAt: tree.created_at ?? tree.createdAt,
     data_format: tree.data_format ?? tree.dataFormat,
   };

@@ -47,9 +47,9 @@ const normalizeOwner = (tree) => normalizeTree(tree);
 const buildMockTrees = () =>
   Array.from({ length: 10 }).map((_, i) => ({
     id: `mock-tree-${i}`,
-    title: `RootsAbraham Sample Family ${i + 1}`,
-    description: `A sample Jewish family tree for testing the genealogy panel.`,
-    owner: "kameladmin",
+    title: `RootsEgypt Sample Family ${i + 1}`,
+    description: `A sample Egyptian family tree for testing the genealogy panel.`,
+    owner: "RootsEgypt Admin",
     isPublic: i % 2 === 0,
     hasGedcom: true,
     createdAt: new Date().toISOString(),
@@ -142,7 +142,11 @@ export default function Trees() {
     setTreesError("");
     setSaveError("");
 
-    const mockTrees = buildMockTrees();
+    const isMock =
+      import.meta.env.DEV &&
+      localStorage.getItem("mockupDataActive") === "true";
+
+    const mockTrees = isMock ? buildMockTrees() : [];
 
     const mergeById = (list) => {
       const map = new Map();
@@ -181,13 +185,18 @@ export default function Trees() {
       if (mineRes.status === "fulfilled") {
         const mine = mineRes.value?.data;
         const liveMine = Array.isArray(mine)
-          ? mine.map((t) => normalizeTree(t, { isPublic: !!t?.is_public || !!t?.isPublic }))
+          ? mine.map((t) =>
+              normalizeTree(t, {
+                isPublic: !!t?.is_public || !!t?.isPublic,
+                gedcomScope: isAdmin ? "admin" : "my",
+              }),
+            )
           : [];
 
-        const myList = mergeById(liveMine.length ? liveMine : mockTrees);
+        const myList = mergeById([...liveMine, ...mockTrees]);
 
         setMyTrees(myList);
-      } else if (mockTrees.length) {
+      } else if (isMock) {
         setMyTrees((prev) =>
           Array.isArray(prev) && prev.length ? prev : mockTrees
         );
@@ -199,12 +208,13 @@ export default function Trees() {
           ? pub.map((t) => normalizeTree(t, { isPublic: true }))
           : [];
 
-        const publicList = mergeById(
-          livePublic.length ? livePublic : mockTrees.filter((t) => t.isPublic),
-        );
+        const publicList = mergeById([
+          ...livePublic,
+          ...mockTrees.filter((t) => t.isPublic),
+        ]);
 
         setPublicTrees(publicList);
-      } else if (mockTrees.length) {
+      } else if (isMock) {
         setPublicTrees((prev) =>
           Array.isArray(prev) && prev.length
             ? prev
@@ -418,16 +428,16 @@ export default function Trees() {
     }
 
       if (String(tree.id).startsWith("mock-")) {
-        // Generate sample Jewish family members for local mock mode.
+        // Generate sample Egyptian family members for local mock mode.
 
-        const familyName = tree.title.split(" ").pop() || "Levi";
+        const familyName = tree.title.split(" ").pop() || "El-Masry";
 
         const mockPeople = [
           // Grandfather (Gen 0)
 
           {
             id: "m1",
-            names: { en: `David ${familyName}`, ar: `דוד ${familyName}` },
+            names: { en: `Mohamed ${familyName}`, ar: `محمد ${familyName}` },
             gender: "Male",
             birthYear: "1920",
             details: "The patriarch.",
@@ -438,7 +448,7 @@ export default function Trees() {
 
           {
             id: "m2",
-            names: { en: `Miriam ${familyName}`, ar: `מרים ${familyName}` },
+            names: { en: `Amina ${familyName}`, ar: `أمينة ${familyName}` },
             gender: "Female",
             birthYear: "1925",
             details: "Matriarch.",
@@ -451,7 +461,7 @@ export default function Trees() {
 
           {
             id: "m3",
-            names: { en: `Eli ${familyName}`, ar: `אלי ${familyName}` },
+            names: { en: `Ahmed ${familyName}`, ar: `أحمد ${familyName}` },
             gender: "Male",
             birthYear: "1950",
             details: "Eldest son.",
@@ -464,7 +474,7 @@ export default function Trees() {
 
           {
             id: "m4",
-            names: { en: `Rachel ${familyName}`, ar: `רחל ${familyName}` },
+            names: { en: `Fatima ${familyName}`, ar: `فاطمة ${familyName}` },
             gender: "Female",
             birthYear: "1955",
             details: "Daughter.",
@@ -479,7 +489,7 @@ export default function Trees() {
 
           {
             id: "s1",
-            names: { en: "Leah Ben-David", ar: "לאה בן-דוד" },
+            names: { en: "Nadia Hassan", ar: "نادية حسن" },
             gender: "Female",
             birthYear: "1952",
             details: "Spouse of Eli.",
@@ -490,7 +500,7 @@ export default function Trees() {
 
           {
             id: "s2",
-            names: { en: "Isaac Cohen", ar: "יצחק כהן" },
+            names: { en: "Youssef Mansour", ar: "يوسف منصور" },
             gender: "Male",
             birthYear: "1950",
             details: "Spouse of Rachel.",
@@ -503,7 +513,7 @@ export default function Trees() {
 
           {
             id: "m5",
-            names: { en: `Noah ${familyName}`, ar: `נח ${familyName}` },
+            names: { en: `Omar ${familyName}`, ar: `عمر ${familyName}` },
             gender: "Male",
             birthYear: "1980",
             details: "Grandson.",
@@ -514,7 +524,7 @@ export default function Trees() {
 
           {
             id: "m6",
-            names: { en: `Sarah ${familyName}`, ar: `שרה ${familyName}` },
+            names: { en: `Salma ${familyName}`, ar: `سلمى ${familyName}` },
             gender: "Female",
             birthYear: "1985",
             details: "Granddaughter.",
@@ -525,7 +535,7 @@ export default function Trees() {
 
           {
             id: "m7",
-            names: { en: `Benjamin Cohen`, ar: `בנימין כהן` },
+            names: { en: "Karim Mansour", ar: "كريم منصور" },
             gender: "Male",
             birthYear: "1982",
             details: "Grandson.",
@@ -564,7 +574,7 @@ export default function Trees() {
       );
 
       const raw = typeof res?.data === "string" ? res.data : (res?.data && (res.data as any).data != null ? String((res.data as any).data) : "");
-      const isGedcomX = tree.data_format === "gedcomx";
+      const isGedcomX = tree.data_format === "gedcomx" || /^\s*(\{|\<\?xml)/.test(raw);
       setPeople(isGedcomX ? parseGedcomX(raw) : parseGedcom(raw));
 
       peopleDirtyRef.current = false;
@@ -583,7 +593,9 @@ export default function Trees() {
   };
 
   const shouldFallbackTreeWrite = (err) =>
-    shouldFallbackRoute(err) || err?.response?.status === 500;
+    shouldFallbackRoute(err) ||
+    err?.response?.status === 403 ||
+    err?.response?.status === 500;
 
   const submitTree = async ({
     treeId,
@@ -678,17 +690,26 @@ export default function Trees() {
 
     if (treeId) {
       await requestWithFallback(
-        [
-          () => api.put(`/my/trees/${treeId}`, fd),
-          () => api.post(`/my/trees/${treeId}/save`, fd),
-        ],
+        isAdmin
+          ? [
+              () => api.put(`/admin/trees/${treeId}`, fd),
+              () => api.post(`/admin/trees/${treeId}/save`, fd),
+              () => api.put(`/my/trees/${treeId}`, fd),
+              () => api.post(`/my/trees/${treeId}/save`, fd),
+            ]
+          : [
+              () => api.put(`/my/trees/${treeId}`, fd),
+              () => api.post(`/my/trees/${treeId}/save`, fd),
+            ],
         shouldFallbackTreeWrite
       );
       return treeId;
     }
 
     const { data } = await requestWithFallback(
-      [() => api.post("/my/trees", fd)],
+      isAdmin
+        ? [() => api.post("/admin/trees", fd), () => api.post("/my/trees", fd)]
+        : [() => api.post("/my/trees", fd)],
       shouldFallbackTreeWrite
     );
 
@@ -698,7 +719,9 @@ export default function Trees() {
   const downloadTreeFile = async (tree, scope) => {
     if (!tree?.id) return;
     const endpoint =
-      scope === "public"
+      isAdmin
+        ? `/admin/trees/${tree.id}/gedcom`
+        : scope === "public"
         ? `/trees/${tree.id}/gedcom`
         : `/my/trees/${tree.id}/gedcom`;
 
@@ -764,6 +787,13 @@ export default function Trees() {
     setSaveError("");
 
     try {
+      const nextDataFormat =
+        saveFormat === "gedcom"
+          ? "gedcom"
+          : saveFormat === "gedcom7"
+          ? "gedcom7"
+          : "gedcomx";
+
       const treeId = await submitTree({
         treeId: tree.id,
 
@@ -794,7 +824,7 @@ export default function Trees() {
           documentCode: treeForm.documentCode || "",
           isPublic: nextIsPublic,
           hasGedcom: true,
-          data_format: selectedTree?.data_format,
+          data_format: nextDataFormat,
         });
 
         setAutoSaveNotice(t("legacy.auto_saved", "Auto-saved."));

@@ -17,7 +17,6 @@ import {
 import { api } from "../api/client";
 import { getApiErrorMessage, getApiRoot, normalizeTree } from "../api/helpers";
 import { useLanguage } from "../i18n";
-import { MOCK_TREES } from "../lib/mockData";
 import RootsPageShell from "../components/RootsPageShell";
 import TreesBuilder, { parseGedcom, parseGedcomX } from "../admin/components/TreesBuilder";
 
@@ -52,11 +51,6 @@ export default function GalleryTrees() {
     let mounted = true;
 
     (async () => {
-      const apiRootVal = getApiRoot();
-      const fallbackTrees = () =>
-        MOCK_TREES.filter((tree: any) => tree?.isPublic ?? tree?.is_public)
-          .map((tree: any) => normalizeTree(tree, { apiRoot: apiRootVal, isPublic: true }));
-
       try {
         setLoading(true);
         setError("");
@@ -65,18 +59,18 @@ export default function GalleryTrees() {
 
         if (!mounted) return;
 
+        const apiRootVal = getApiRoot();
         const nextTrees =
           Array.isArray(treesRes.data)
             ? treesRes.data.map((t: any) => normalizeTree(t, { apiRoot: apiRootVal, isPublic: true }))
             : [];
 
-        setTrees(nextTrees.length ? nextTrees : fallbackTrees());
+        setTrees(nextTrees);
       } catch (err) {
         if (!mounted) return;
         const message = getApiErrorMessage(err, "Failed to load trees");
-        const nextTrees = fallbackTrees();
-        setTrees(nextTrees);
-        setError(nextTrees.length ? "" : message);
+        setTrees([]);
+        setError(message);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -134,17 +128,14 @@ export default function GalleryTrees() {
         return;
       }
 
-      let text = typeof tree.gedcom === "string" ? tree.gedcom : "";
-      if (!text) {
-        const gedcomUrl = fileUrl(tree.gedcomUrl);
-        const response = await fetch(gedcomUrl);
-        if (!response.ok) {
-          setViewTreeError(t("legacy.tree_builder_error", "Failed to load tree."));
-          setViewLoading(false);
-          return;
-        }
-        text = await response.text();
+      const gedcomUrl = fileUrl(tree.gedcomUrl);
+      const response = await fetch(gedcomUrl);
+      if (!response.ok) {
+        setViewTreeError(t("legacy.tree_builder_error", "Failed to load tree."));
+        setViewLoading(false);
+        return;
       }
+      const text = await response.text();
       const isGedcomX = /^\s*(\{|\<\?xml)/.test(text);
       const people = isGedcomX ? parseGedcomX(text) : parseGedcom(text);
       const list = Array.isArray(people) ? people : [];
@@ -325,6 +316,15 @@ export default function GalleryTrees() {
                           <Users className="w-4 h-4 text-[#d9a441]" />
                           <span>{tree.owner || t("legacy.unknown", "Unknown")}</span>
                         </div>
+
+                        {Number(tree.personCount) > 0 && (
+                          <div className={`flex items-center gap-2 text-sm ${isDark ? "text-white/70" : "text-[#162238]/70"}`}>
+                            <Network className="w-4 h-4 text-[#24766f]" />
+                            <span>
+                              {tree.personCount} {t("legacy.people", "people")}
+                            </span>
+                          </div>
+                        )}
                         
                         {tree.archiveSource && (
                           <div className={`flex items-center gap-2 text-sm ${isDark ? "text-white/70" : "text-[#162238]/70"}`}>

@@ -35,8 +35,9 @@ export class TreesService {
     return Tree.query(this.knex)
       .where("is_public", true)
       .orderBy("created_at", "desc")
-      .withGraphFetched("owner")
-      .modifyGraph("owner", (builder) => builder.select("id", "full_name"));
+      .withGraphFetched("[owner, people]")
+      .modifyGraph("owner", (builder) => builder.select("id", "full_name"))
+      .modifyGraph("people", (builder) => builder.select("id", "tree_id"));
   }
 
   async getPublic(id: number) {
@@ -64,10 +65,11 @@ export class TreesService {
   async listAdmin() {
     return Tree.query(this.knex)
       .orderBy("created_at", "desc")
-      .withGraphFetched("owner")
+      .withGraphFetched("[owner, people]")
       .modifyGraph("owner", (builder: any) =>
         builder.select("id", "full_name", "email"),
-      );
+      )
+      .modifyGraph("people", (builder: any) => builder.select("id", "tree_id"));
   }
 
   async findOne(id: number) {
