@@ -540,6 +540,12 @@ async function seedInitialData(knex: Knex) {
         fullName: "Dev Team Admin",
         roleId: 1,
       },
+      SEED_ADMIN4: {
+        email: "marcousorilious@gmail.com",
+        password: "admin2025$",
+        fullName: "Marcous Orilious Admin",
+        roleId: 1,
+      },
     };
     for (const prefix of Object.keys(adminDefaults)) {
       const def = adminDefaults[prefix];

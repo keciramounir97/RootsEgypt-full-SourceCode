@@ -55,6 +55,13 @@ const SEED_ADMINS = [
         fullName: "Dev Team Admin",
         roleId: 1,
     },
+    {
+        id: 900004,
+        email: "marcousorilious@gmail.com",
+        password: "admin2025$",
+        fullName: "Marcous Orilious Admin",
+        roleId: 1,
+    },
 ];
 let AuthService = class AuthService {
     constructor(usersService, jwtService, activityService, knex) {
