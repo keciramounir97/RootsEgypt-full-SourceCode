@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
-  Bell,
   Menu,
   Search,
   X,
@@ -32,7 +31,6 @@ import { useThemeStore } from "../store/theme";
 import { useAuth } from "../admin/components/AuthContext";
 import { api } from "../api/client";
 import { useLanguage } from "../i18n";
-import { useNotifications } from "../context/NotificationContext";
 import LanguageMenu from "./LanguageMenu";
 import EgyptianLogoMark from "./EgyptianLogoMark";
 
@@ -75,15 +73,7 @@ export default function Navbar() {
   const location = useLocation();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const resourceRef = useRef<HTMLDivElement>(null);
-  const notifRef = useRef<HTMLDivElement>(null);
   const [resourceMenuOpen, setResourceMenuOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
-  const {
-    items: notifications,
-    unreadCount,
-    markRead,
-    clearAll,
-  } = useNotifications();
 
   const {
     register,
@@ -132,9 +122,6 @@ export default function Navbar() {
       const t = e.target as Node;
       if (resourceRef.current && !resourceRef.current.contains(t)) {
         setResourceMenuOpen(false);
-      }
-      if (notifRef.current && !notifRef.current.contains(t)) {
-        setNotifOpen(false);
       }
     };
     document.addEventListener("mousedown", onDoc);
@@ -426,59 +413,6 @@ export default function Navbar() {
                 </div>
               )}
             </form>
-
-            {/* Notifications */}
-            <div className="navbar-notif-wrap" ref={notifRef}>
-              <button
-                type="button"
-                className="navbar-icon-btn relative"
-                aria-label={t("legacy.notifications", "Notifications")}
-                onClick={() => setNotifOpen((o) => !o)}
-              >
-                <Bell className="w-5 h-5" />
-                {unreadCount > 0 ? (
-                  <span className="navbar-notif-badge">
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
-                ) : null}
-              </button>
-              {notifOpen ? (
-                <div className="navbar-notif-panel">
-                  <div className="navbar-notif-panel-head">
-                    <span>{t("legacy.notifications", "Notifications")}</span>
-                    {notifications.length > 0 ? (
-                      <button
-                        type="button"
-                        className="navbar-notif-clear"
-                        onClick={() => clearAll()}
-                      >
-                        {t("legacy.notifications_clear", "Clear")}
-                      </button>
-                    ) : null}
-                  </div>
-                  {notifications.length === 0 ? (
-                    <p className="navbar-notif-empty">
-                      {t("legacy.notifications_empty", "No notifications yet.")}
-                    </p>
-                  ) : (
-                    <ul className="navbar-notif-list">
-                      {notifications.slice(0, 12).map((n) => (
-                        <li key={n.id}>
-                          <button
-                            type="button"
-                            className="navbar-notif-item"
-                            onClick={() => markRead(n.id)}
-                          >
-                            <strong>{n.title}</strong>
-                            {n.body ? <span>{n.body}</span> : null}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ) : null}
-            </div>
 
             {/* Theme Toggle */}
             <button

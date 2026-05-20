@@ -169,15 +169,7 @@ export class TreesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin", "super_admin")
   async listAdmin() {
-    try {
-      return await this.treesService.listAdmin();
-    } catch (error) {
-      this.logger.error(
-        `listAdmin failed: ${error instanceof Error ? error.message : String(error)}`,
-        error instanceof Error ? error.stack : undefined,
-      );
-      return [];
-    }
+    return this.treesService.listAdmin();
   }
 
   @Get("admin/trees/:id")

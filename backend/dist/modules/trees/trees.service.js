@@ -27,6 +27,23 @@ let TreesService = class TreesService {
         this.knex = knex;
         this.activityService = activityService;
     }
+    async onModuleInit() {
+        try {
+            await this.ensureTreeSchema();
+        }
+        catch (err) {
+            console.warn(`Skipping tree schema startup check: ${(err === null || err === void 0 ? void 0 : err.message) || err}`);
+        }
+    }
+    async ensureTreeSchema() {
+        if (!(await this.knex.schema.hasTable("family_trees")))
+            return;
+        if (!(await this.knex.schema.hasColumn("family_trees", "category"))) {
+            await this.knex.schema.alterTable("family_trees", (table) => {
+                table.string("category", 255).nullable();
+            });
+        }
+    }
     parseBoolean(value, fallback = false) {
         if (value === undefined || value === null || value === "")
             return fallback;
@@ -46,14 +63,15 @@ let TreesService = class TreesService {
         return this.parseBoolean((_a = data === null || data === void 0 ? void 0 : data.isPublic) !== null && _a !== void 0 ? _a : data === null || data === void 0 ? void 0 : data.is_public, fallback);
     }
     async listPublic() {
+        await this.ensureTreeSchema();
         return Tree_1.Tree.query(this.knex)
             .where("is_public", true)
             .orderBy("created_at", "desc")
-            .withGraphFetched("[owner, people]")
-            .modifyGraph("owner", (builder) => builder.select("id", "full_name"))
-            .modifyGraph("people", (builder) => builder.select("id", "tree_id"));
+            .withGraphFetched("owner")
+            .modifyGraph("owner", (builder) => builder.select("id", "full_name"));
     }
     async getPublic(id) {
+        await this.ensureTreeSchema();
         const tree = await Tree_1.Tree.query(this.knex)
             .findById(id)
             .where("is_public", true)
@@ -64,6 +82,7 @@ let TreesService = class TreesService {
         return tree;
     }
     async listByUser(userId) {
+        await this.ensureTreeSchema();
         return Tree_1.Tree.query(this.knex)
             .where("user_id", userId)
             .orderBy("created_at", "desc")
@@ -72,13 +91,14 @@ let TreesService = class TreesService {
             .withGraphFetched("people");
     }
     async listAdmin() {
+        await this.ensureTreeSchema();
         return Tree_1.Tree.query(this.knex)
             .orderBy("created_at", "desc")
-            .withGraphFetched("[owner, people]")
-            .modifyGraph("owner", (builder) => builder.select("id", "full_name", "email"))
-            .modifyGraph("people", (builder) => builder.select("id", "tree_id"));
+            .withGraphFetched("owner")
+            .modifyGraph("owner", (builder) => builder.select("id", "full_name", "email"));
     }
     async findOne(id) {
+        await this.ensureTreeSchema();
         const tree = await Tree_1.Tree.query(this.knex)
             .findById(id)
             .withGraphFetched("owner");
@@ -88,6 +108,7 @@ let TreesService = class TreesService {
     }
     async create(data, userId, file) {
         var _a, _b;
+        await this.ensureTreeSchema();
         const title = (_a = data.title) !== null && _a !== void 0 ? _a : data.name;
         if (!title) {
             throw new common_1.BadRequestException("Title is required");
@@ -115,6 +136,7 @@ let TreesService = class TreesService {
         const newTree = await Tree_1.Tree.query(this.knex).insertAndFetch({
             title,
             description: data.description,
+            category: data.category,
             archive_source: data.archiveSource,
             document_code: data.documentCode,
             gedcom_path: gedcomPath,
@@ -143,6 +165,8 @@ let TreesService = class TreesService {
             updateData.title = title;
         if (data.description !== undefined)
             updateData.description = data.description;
+        if (data.category !== undefined)
+            updateData.category = data.category;
         if (data.archiveSource !== undefined)
             updateData.archive_source = data.archiveSource;
         if (data.documentCode !== undefined)
@@ -193,9 +217,7 @@ let TreesService = class TreesService {
         }
         await Tree_1.Tree.query(this.knex).patch(updateData).where("id", id);
         if (file || (gedcomPath && tree.is_public !== isPublic)) {
-            if (file) {
-                await this.rebuildPeople(id, gedcomPath);
-            }
+            await this.rebuildPeople(id, gedcomPath);
         }
         await this.activityService.log(userId, "trees", `Updated tree: ${tree.title}`);
         return { id };

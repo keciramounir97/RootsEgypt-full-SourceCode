@@ -97,13 +97,7 @@ let TreesController = TreesController_1 = class TreesController {
         res.download(filePath, safeName);
     }
     async listAdmin() {
-        try {
-            return await this.treesService.listAdmin();
-        }
-        catch (error) {
-            this.logger.error(`listAdmin failed: ${error instanceof Error ? error.message : String(error)}`, error instanceof Error ? error.stack : undefined);
-            return [];
-        }
+        return this.treesService.listAdmin();
     }
     async getAdmin(id) {
         return this.treesService.findOne(id);

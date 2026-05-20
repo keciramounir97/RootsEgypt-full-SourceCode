@@ -1,10 +1,13 @@
+import { OnModuleInit } from "@nestjs/common";
 import { Knex } from "knex";
-import { Tree } from '../../models/Tree';
-import { ActivityService } from '../activity/activity.service';
-export declare class TreesService {
+import { Tree } from "../../models/Tree";
+import { ActivityService } from "../activity/activity.service";
+export declare class TreesService implements OnModuleInit {
     private readonly knex;
     private readonly activityService;
     constructor(knex: Knex, activityService: ActivityService);
+    onModuleInit(): Promise<void>;
+    private ensureTreeSchema;
     private parseBoolean;
     private getPublicInput;
     listPublic(): Promise<Tree[]>;

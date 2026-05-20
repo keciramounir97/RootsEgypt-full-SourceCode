@@ -1,19 +1,55 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+  OnModuleInit,
+} from "@nestjs/common";
 import { Knex } from "knex";
-import { Tree } from '../../models/Tree';
-import { Person } from '../../models/Person';
-import { ActivityService } from '../activity/activity.service';
-import { resolveStoredFilePath, safeUnlink, safeMoveFile, PRIVATE_TREE_UPLOADS_DIR, TREE_UPLOADS_DIR } from '../../common/utils/file.utils';
-import { detectGedcomXFormat, parseGedcomXFromJson, parseGedcomXFromXml } from '../../common/utils/gedcomx.util';
-import * as path from 'path';
-import * as fs from 'fs';
+import { Tree } from "../../models/Tree";
+import { Person } from "../../models/Person";
+import { ActivityService } from "../activity/activity.service";
+import {
+  resolveStoredFilePath,
+  safeUnlink,
+  safeMoveFile,
+  PRIVATE_TREE_UPLOADS_DIR,
+  TREE_UPLOADS_DIR,
+} from "../../common/utils/file.utils";
+import {
+  detectGedcomXFormat,
+  parseGedcomXFromJson,
+  parseGedcomXFromXml,
+} from "../../common/utils/gedcomx.util";
+import * as path from "path";
+import * as fs from "fs";
 
 @Injectable()
-export class TreesService {
+export class TreesService implements OnModuleInit {
   constructor(
     @Inject("KnexConnection") private readonly knex: Knex,
     private readonly activityService: ActivityService,
   ) {}
+
+  async onModuleInit() {
+    try {
+      await this.ensureTreeSchema();
+    } catch (err: any) {
+      console.warn(
+        `Skipping tree schema startup check: ${err?.message || err}`,
+      );
+    }
+  }
+
+  private async ensureTreeSchema() {
+    if (!(await this.knex.schema.hasTable("family_trees"))) return;
+    if (!(await this.knex.schema.hasColumn("family_trees", "category"))) {
+      await this.knex.schema.alterTable("family_trees", (table) => {
+        table.string("category", 255).nullable();
+      });
+    }
+  }
 
   private parseBoolean(value: unknown, fallback = false) {
     if (value === undefined || value === null || value === "") return fallback;
@@ -32,15 +68,16 @@ export class TreesService {
   }
 
   async listPublic() {
+    await this.ensureTreeSchema();
     return Tree.query(this.knex)
       .where("is_public", true)
       .orderBy("created_at", "desc")
-      .withGraphFetched("[owner, people]")
-      .modifyGraph("owner", (builder) => builder.select("id", "full_name"))
-      .modifyGraph("people", (builder) => builder.select("id", "tree_id"));
+      .withGraphFetched("owner")
+      .modifyGraph("owner", (builder) => builder.select("id", "full_name"));
   }
 
   async getPublic(id: number) {
+    await this.ensureTreeSchema();
     const tree = await Tree.query(this.knex)
       .findById(id)
       .where("is_public", true)
@@ -52,6 +89,7 @@ export class TreesService {
   }
 
   async listByUser(userId: number) {
+    await this.ensureTreeSchema();
     return Tree.query(this.knex)
       .where("user_id", userId)
       .orderBy("created_at", "desc")
@@ -63,16 +101,17 @@ export class TreesService {
   }
 
   async listAdmin() {
+    await this.ensureTreeSchema();
     return Tree.query(this.knex)
       .orderBy("created_at", "desc")
-      .withGraphFetched("[owner, people]")
+      .withGraphFetched("owner")
       .modifyGraph("owner", (builder: any) =>
         builder.select("id", "full_name", "email"),
-      )
-      .modifyGraph("people", (builder: any) => builder.select("id", "tree_id"));
+      );
   }
 
   async findOne(id: number) {
+    await this.ensureTreeSchema();
     const tree = await Tree.query(this.knex)
       .findById(id)
       .withGraphFetched("owner");
@@ -81,6 +120,7 @@ export class TreesService {
   }
 
   async create(data: any, userId: number, file?: Express.Multer.File) {
+    await this.ensureTreeSchema();
     const title = data.title ?? data.name;
     if (!title) {
       throw new BadRequestException("Title is required");
@@ -113,6 +153,7 @@ export class TreesService {
     const newTree = await Tree.query(this.knex).insertAndFetch({
       title,
       description: data.description,
+      category: data.category,
       archive_source: data.archiveSource,
       document_code: data.documentCode,
       gedcom_path: gedcomPath,
@@ -150,6 +191,7 @@ export class TreesService {
     if (title) updateData.title = title;
     if (data.description !== undefined)
       updateData.description = data.description;
+    if (data.category !== undefined) updateData.category = data.category;
     if (data.archiveSource !== undefined)
       updateData.archive_source = data.archiveSource;
     if (data.documentCode !== undefined)
@@ -212,9 +254,7 @@ export class TreesService {
     await Tree.query(this.knex).patch(updateData).where("id", id);
 
     if (file || (gedcomPath && tree.is_public !== isPublic)) {
-      if (file) {
-        await this.rebuildPeople(id, gedcomPath);
-      }
+      await this.rebuildPeople(id, gedcomPath);
     }
 
     await this.activityService.log(

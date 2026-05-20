@@ -5,8 +5,9 @@ export declare class Tree extends BaseModel {
     user_id?: number;
     title: string;
     description?: string;
+    category?: string;
     gedcom_path?: string;
-    data_format?: 'gedcom' | 'gedcomx' | 'gedcom7';
+    data_format?: "gedcom" | "gedcomx" | "gedcom7";
     archive_source?: string;
     document_code?: string;
     is_public: boolean;
@@ -20,6 +21,10 @@ export declare class Tree extends BaseModel {
             title: {
                 type: string;
                 minLength: number;
+                maxLength: number;
+            };
+            category: {
+                type: string[];
                 maxLength: number;
             };
             is_public: {
