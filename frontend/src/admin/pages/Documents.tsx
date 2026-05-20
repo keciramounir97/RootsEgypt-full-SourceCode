@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { api } from "../../api/client";
 import {
   getApiErrorMessage,
@@ -37,7 +37,7 @@ interface Document {
 
 export default function AdminDocuments() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
   const apiRoot = useMemo(() => getApiRoot(), []);
 
@@ -72,11 +72,11 @@ export default function AdminDocuments() {
 
   const validateDocFile = (file: File) => {
     if (file.size > maxFileBytes) {
-      return t("file_too_large", "File is too large (max 25MB).");
+      return t("legacy.file_too_large", "File is too large (max 25MB).");
     }
     const ext = getExtension(file.name);
     if (!allowedDocExts.has(ext)) {
-      return t("invalid_doc_type", "Only PDF, DOC, DOCX, TXT, XLS, XLSX files are allowed.");
+      return t("legacy.invalid_doc_type", "Only PDF, DOC, DOCX, TXT, XLS, XLSX files are allowed.");
     }
     return "";
   };
@@ -127,7 +127,7 @@ export default function AdminDocuments() {
         [];
       setDocuments(list);
       if (notifyToast) {
-        notify(t("documents_loaded", "Documents loaded."));
+        notify(t("legacy.documents_loaded", "Documents loaded."));
       }
     } catch (error) {
       console.error("Failed to load documents:", error);
@@ -135,7 +135,7 @@ export default function AdminDocuments() {
       notify(
         getApiErrorMessage(
           error,
-          t("documents_load_failed", "Failed to load documents"),
+          t("legacy.documents_load_failed", "Failed to load documents"),
         ),
         "error",
       );
@@ -194,7 +194,7 @@ export default function AdminDocuments() {
     e.preventDefault();
 
     if (!form.title.trim()) {
-      notify(t("fill_required_fields", "Please fill all required fields"), "error");
+      notify(t("legacy.fill_required_fields", "Please fill all required fields"), "error");
       return;
     }
 
@@ -208,7 +208,7 @@ export default function AdminDocuments() {
       formData.append("document", selectedFile);
     }
     if (!editingId && !selectedFile) {
-      notify(t("file_required", "Please select a file"), "error");
+      notify(t("legacy.file_required", "Please select a file"), "error");
       return;
     }
     formData.append("title", form.title.trim());
@@ -236,27 +236,27 @@ export default function AdminDocuments() {
           ],
           shouldFallbackWrite
         );
-        notify(t("document_updated", "Document updated."));
+        notify(t("legacy.document_updated", "Document updated."));
       } else {
         await requestWithFallback(
           [() => api.post("/admin/documents", formData), () => api.post("/my/documents", formData)],
           shouldFallbackWrite
         );
-        notify(t("document_created", "Document uploaded."));
+        notify(t("legacy.document_created", "Document uploaded."));
       }
 
       resetForm();
       loadDocuments();
     } catch (error) {
       console.error("Operation failed:", error);
-      notify(getApiErrorMessage(error, t("operation_failed", "Operation failed")), "error");
+      notify(getApiErrorMessage(error, t("legacy.operation_failed", "Operation failed")), "error");
     } finally {
       setUploading(false);
     }
   };
 
   const handleDelete = async (id: number | string) => {
-    if (!window.confirm(t("confirm_delete", "Are you sure you want to delete this item?"))) {
+    if (!window.confirm(t("legacy.confirm_delete", "Are you sure you want to delete this item?"))) {
       return;
     }
 
@@ -274,10 +274,10 @@ export default function AdminDocuments() {
         shouldFallbackWrite
       );
       loadDocuments();
-      notify(t("document_deleted", "Document deleted."));
+      notify(t("legacy.document_deleted", "Document deleted."));
     } catch (error) {
       console.error("Delete failed:", error);
-      notify(getApiErrorMessage(error, t("delete_failed", "Failed to delete")), "error");
+      notify(getApiErrorMessage(error, t("legacy.delete_failed", "Failed to delete")), "error");
     }
   };
 
@@ -308,17 +308,17 @@ export default function AdminDocuments() {
         {/* Header */}
         <div className="mb-8" data-aos="fade-down">
           <h1 className={`text-4xl font-bold font-serif ${isDark ? "text-[#d9a441]" : "text-[#24766f]"} mb-2`}>
-            {t("document_management", "Documents Management")}
+            {t("legacy.document_management", "Documents Management")}
           </h1>
           <p className={`${textColor} opacity-70`}>
-            {t("document_desc", "Upload and manage vital records, certificates, and historical documents")}
+            {t("legacy.document_desc", "Upload and manage vital records, certificates, and historical documents")}
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-3 mb-6">
-          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("total", "Total")}</p><p className="text-xl font-bold">{docStats.total}</p></div>
-          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("public", "Public")}</p><p className="text-xl font-bold">{docStats.publicCount}</p></div>
-          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("coded", "Coded")}</p><p className="text-xl font-bold">{docStats.withCodes}</p></div>
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("legacy.total", "Total")}</p><p className="text-xl font-bold">{docStats.total}</p></div>
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("legacy.public", "Public")}</p><p className="text-xl font-bold">{docStats.publicCount}</p></div>
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("legacy.coded", "Coded")}</p><p className="text-xl font-bold">{docStats.withCodes}</p></div>
         </div>
 
         {/* Upload/Edit Form */}
@@ -328,12 +328,12 @@ export default function AdminDocuments() {
               {editingId ? (
                 <>
                   <Edit className="w-6 h-6" />
-                  {t("edit_document", "Edit Document")}
+                  {t("legacy.edit_document", "Edit Document")}
                 </>
               ) : (
                 <>
                   <Upload className="w-6 h-6" />
-                  {t("upload_new_document", "Upload New Document")}
+                  {t("legacy.upload_new_document", "Upload New Document")}
                 </>
               )}
             </h2>
@@ -343,7 +343,7 @@ export default function AdminDocuments() {
                 className={`${textColor} opacity-70 hover:opacity-100 flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-red-500/10 transition`}
               >
                 <X className="w-5 h-5" />
-                {t("cancel", "Cancel")}
+                {t("legacy.cancel", "Cancel")}
               </button>
             )}
           </div>
@@ -352,7 +352,7 @@ export default function AdminDocuments() {
             {/* File Input */}
             <div>
               <label className={`block text-sm font-semibold ${textColor} mb-2`}>
-                {t("select_file", "Select File")} {!editingId && <span className="text-red-500">*</span>}
+                {t("legacy.select_file", "Select File")} {!editingId && <span className="text-red-500">*</span>}
               </label>
               <div
                 className={`border-2 border-dashed ${border} rounded-lg p-6 text-center cursor-pointer transition hover:border-[#d9a441] hover:bg-[#d9a441]/5`}
@@ -367,9 +367,9 @@ export default function AdminDocuments() {
                 ) : (
                   <div className="py-8">
                     <FileText className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`} />
-                    <p className={`${textColor} opacity-50 text-lg`}>{t("click_to_upload_document", "Click to upload document")}</p>
+                    <p className={`${textColor} opacity-50 text-lg`}>{t("legacy.click_to_upload_document", "Click to upload document")}</p>
                     <p className={`${textColor} opacity-30 text-sm mt-2`}>
-                      {t("document_file_formats", "PDF, DOC, DOCX, TXT, XLS, XLSX (max 25MB)")}
+                      {t("legacy.document_file_formats", "PDF, DOC, DOCX, TXT, XLS, XLSX (max 25MB)")}
                     </p>
                   </div>
                 )}
@@ -386,7 +386,7 @@ export default function AdminDocuments() {
             {/* Title */}
             <div>
               <label className={`block text-sm font-semibold ${textColor} mb-2`}>
-                {t("title", "Title")} <span className="text-red-500">*</span>
+                {t("legacy.title", "Title")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -399,17 +399,17 @@ export default function AdminDocuments() {
             {/* Category & Archive Source */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className={`block text-sm font-semibold ${textColor} mb-2`}>{t("category", "Category")}</label>
+                <label className={`block text-sm font-semibold ${textColor} mb-2`}>{t("legacy.category", "Category")}</label>
                 <input
                   type="text"
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                   className={`w-full px-4 py-3 rounded-lg ${inputBg} border ${border} ${textColor} outline-none`}
-                  placeholder={t("custom_category_placeholder", "Name this category...")}
+                  placeholder={t("legacy.custom_category_placeholder", "Name this category...")}
                 />
               </div>
               <div>
-                <label className={`block text-sm font-semibold ${textColor} mb-2`}>{t("archive_source", "Archive Source")}</label>
+                <label className={`block text-sm font-semibold ${textColor} mb-2`}>{t("legacy.archive_source", "Archive Source")}</label>
                 <input
                   type="text"
                   value={form.archiveSource}
@@ -421,7 +421,7 @@ export default function AdminDocuments() {
 
             {/* Document Code */}
             <div>
-              <label className={`block text-sm font-semibold ${textColor} mb-2`}>{t("document_code", "Document Code")}</label>
+              <label className={`block text-sm font-semibold ${textColor} mb-2`}>{t("legacy.document_code", "Document Code")}</label>
               <input
                 type="text"
                 value={form.documentCode}
@@ -432,7 +432,7 @@ export default function AdminDocuments() {
 
             {/* Description */}
             <div>
-              <label className={`block text-sm font-semibold ${textColor} mb-2`}>{t("description", "Description")}</label>
+              <label className={`block text-sm font-semibold ${textColor} mb-2`}>{t("legacy.description", "Description")}</label>
               <textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -451,7 +451,7 @@ export default function AdminDocuments() {
                 className="w-5 h-5 rounded"
               />
               <label htmlFor="isPublicDoc" className={`${textColor} font-medium`}>
-                {t("make_public", "Make Public")}
+                {t("legacy.make_public", "Make Public")}
               </label>
             </div>
 
@@ -463,7 +463,7 @@ export default function AdminDocuments() {
                 uploading ? "bg-gray-400 cursor-not-allowed" : "bg-[#24766f] text-white hover:bg-[#24766f]/90"
               }`}
             >
-              {uploading ? t("uploading", "Uploading...") : editingId ? t("update", "Update") : t("upload", "Upload")}
+              {uploading ? t("legacy.uploading", "Uploading...") : editingId ? t("legacy.update", "Update") : t("legacy.upload", "Upload")}
             </button>
           </form>
         </div>
@@ -471,7 +471,7 @@ export default function AdminDocuments() {
         {/* Documents List */}
         <div className={`${cardBg} border ${border} rounded-xl p-6 shadow-lg`} data-aos="fade-up">
           <h2 className={`text-2xl font-bold font-serif ${isDark ? "text-[#d9a441]" : "text-[#24766f]"} mb-6`}>
-            {t("document_list", "Documents")} ({documents.length})
+            {t("legacy.document_list", "Documents")} ({documents.length})
           </h2>
 
           {loading ? (
@@ -481,7 +481,7 @@ export default function AdminDocuments() {
           ) : documents.length === 0 ? (
             <div className="text-center py-8">
               <FileText className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`} />
-              <p className={`${textColor} opacity-70`}>{t("no_documents", "No documents yet.")}</p>
+              <p className={`${textColor} opacity-70`}>{t("legacy.no_documents", "No documents yet.")}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -494,7 +494,7 @@ export default function AdminDocuments() {
                     <div className="text-3xl">{getFileIcon(doc.fileType)}</div>
                     <div className="flex-1 min-w-0">
                       <h3 className={`font-bold truncate ${textColor}`}>{doc.title}</h3>
-                      <p className="text-xs opacity-60">{doc.category || t("document", "Document")}</p>
+                      <p className="text-xs opacity-60">{doc.category || t("legacy.document", "Document")}</p>
                       {doc.documentCode && (
                         <p className="text-xs font-mono opacity-50">{doc.documentCode}</p>
                       )}
@@ -505,14 +505,14 @@ export default function AdminDocuments() {
                       <button
                         onClick={() => handleEdit(doc)}
                         className={`p-2 rounded-lg hover:bg-[#24766f]/20 transition ${textColor} opacity-70 hover:opacity-100`}
-                        title={t("edit", "Edit")}
+                        title={t("legacy.edit", "Edit")}
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(doc.id)}
                         className="p-2 rounded-lg hover:bg-red-500/20 text-red-500 transition"
-                        title={t("delete", "Delete")}
+                        title={t("legacy.delete", "Delete")}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -522,7 +522,7 @@ export default function AdminDocuments() {
                         href={resolveFileUrl(doc.filePath)}
                         download
                         className="p-2 rounded-lg hover:bg-[#d9a441]/20 text-[#d9a441] transition"
-                        title={t("download", "Download")}
+                        title={t("legacy.download", "Download")}
                       >
                         <Download className="w-4 h-4" />
                       </a>

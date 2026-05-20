@@ -1,24 +1,24 @@
 import { Link, useLocation } from "react-router-dom";
 import { ChevronRight, Home } from "lucide-react";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 
 const LABELS: Record<string, string> = {
-  admin: "Admin",
-  users: "Users",
-  books: "Books",
-  trees: "Family Trees",
-  gallery: "Gallery",
-  settings: "Settings",
-  activity: "Activity",
-  contact: "Contact",
-  audio: "Audio Library",
-  articles: "Articles",
-  audios: "Audios",
-  documents: "Documents",
-  suggestions: "Suggestions",
-  newsletter: "Newsletter",
-  "contact-messages": "Contact Messages",
+  admin: "admin",
+  users: "users",
+  books: "books",
+  trees: "trees",
+  gallery: "gallery",
+  settings: "settings",
+  activity: "activity",
+  contact: "contact",
+  audio: "audio_library",
+  articles: "articles",
+  audios: "audios",
+  documents: "documents",
+  suggestions: "suggestions",
+  newsletter: "newsletter",
+  "contact-messages": "contactMessages",
   "validation-approvals": "validation_approvals",
   "password-reset-requests": "password_reset_requests",
   "account-deletion-requests": "account_deletion_requests",
@@ -32,7 +32,7 @@ const LABELS: Record<string, string> = {
 export default function Breadcrumb() {
   const { pathname } = useLocation();
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
 
   const parts = pathname.split("/").filter(Boolean);
@@ -57,7 +57,7 @@ export default function Breadcrumb() {
             className={`inline-flex items-center gap-2 ${accent} hover:underline`}
           >
             <Home className="w-4 h-4" />
-            <span>{t("home", "Home")}</span>
+            <span>{t("legacy.home", "Home")}</span>
           </Link>
         </li>
 

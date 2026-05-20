@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { Home, Search, ArrowLeft } from "lucide-react";
 import RootsPageShell from "../components/RootsPageShell";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 
 export default function Error() {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   return (
     <RootsPageShell
       hero={
@@ -13,13 +13,13 @@ export default function Error() {
             <Search className="w-12 h-12 text-teal" />
           </div>
           <p className="text-sm uppercase tracking-[0.25em] text-terracotta font-semibold">
-            {t("page_not_found", "404 • Page Not Found")}
+            {t("legacy.page_not_found", "404 • Page Not Found")}
           </p>
           <h1 className="text-4xl sm:text-5xl font-bold text-primary-brown dark:text-white">
-            {t("lost_in_archives", "Lost in the Archives")}
+            {t("legacy.lost_in_archives", "Lost in the Archives")}
           </h1>
           <p className="max-w-xl mx-auto text-lg opacity-85">
-            {t("error_404_description", "The page you're looking for doesn't exist or has been moved. Return home to continue exploring your Egyptian heritage.")}
+            {t("legacy.error_404_description", "The page you're looking for doesn't exist or has been moved. Return home to continue exploring your Egyptian heritage.")}
           </p>
         </div>
       }
@@ -31,7 +31,7 @@ export default function Error() {
             className="roots-cta interactive-btn btn-neu btn-neu--primary inline-flex items-center justify-center gap-2 px-8 py-3 text-base"
           >
             <Home className="w-5 h-5" />
-            {t("go_to_home", "Go to Home")}
+            {t("legacy.go_to_home", "Go to Home")}
           </Link>
           <button
             type="button"
@@ -39,7 +39,7 @@ export default function Error() {
             className="interactive-btn btn-neu btn-neu--gold inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold"
           >
             <ArrowLeft className="w-5 h-5" />
-            {t("go_back", "Go Back")}
+            {t("legacy.go_back", "Go Back")}
           </button>
         </div>
       </section>

@@ -9,25 +9,27 @@ import {
 
 const STORAGE_KEY = "locale";
 
-interface TranslationContextType {
+interface DataI18nContextType {
   locale: SupportedLocale;
   dir: "rtl" | "ltr";
   locales: readonly string[];
   setLocale: (locale: string) => void;
   t: (key: string, fallback?: string) => string;
+  isLoading: boolean;
 }
 
-const TranslationContext = createContext<TranslationContextType | null>(null);
+const DataI18nContext = createContext<DataI18nContextType | null>(null);
 
-const FALLBACK_VALUE: TranslationContextType = {
+const FALLBACK_VALUE: DataI18nContextType = {
   locale: DEFAULT_LOCALE,
   dir: "ltr",
   locales: SUPPORTED_LOCALES,
   setLocale: () => {},
   t: (key: string, fallback?: string) => tForLocale(DEFAULT_LOCALE, key, fallback),
+  isLoading: false,
 };
 
-export function TranslationProvider({ children }: { children: ReactNode }) {
+export function DataI18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<SupportedLocale>(() => {
     if (typeof window === "undefined") return DEFAULT_LOCALE;
     const saved = window.localStorage.getItem(STORAGE_KEY);
@@ -36,13 +38,18 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
       : DEFAULT_LOCALE;
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const dir: "rtl" | "ltr" = isRtlLocale(locale) ? "rtl" : "ltr";
 
   const setLocale = (nextLocale: string) => {
+    setIsLoading(true);
     const normalized = SUPPORTED_LOCALES.includes(nextLocale as SupportedLocale)
       ? (nextLocale as SupportedLocale)
       : DEFAULT_LOCALE;
     setLocaleState(normalized);
+    // Simulate loading for smooth transition
+    setTimeout(() => setIsLoading(false), 100);
   };
 
   useEffect(() => {
@@ -66,19 +73,20 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
       locales: SUPPORTED_LOCALES,
       setLocale,
       t: (key: string, fallback?: string) => tForLocale(locale, key, fallback),
+      isLoading,
     }),
-    [locale, dir]
+    [locale, dir, isLoading]
   );
 
   return (
-    <TranslationContext.Provider value={value}>
+    <DataI18nContext.Provider value={value}>
       {children}
-    </TranslationContext.Provider>
+    </DataI18nContext.Provider>
   );
 }
 
-export function useTranslation(): TranslationContextType {
-  const ctx = useContext(TranslationContext);
+export function useDataI18n(): DataI18nContextType {
+  const ctx = useContext(DataI18nContext);
   if (!ctx) return FALLBACK_VALUE;
   return ctx;
 }

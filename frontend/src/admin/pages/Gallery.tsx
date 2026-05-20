@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { api } from "../../api/client";
 import {
   getApiErrorMessage,
@@ -59,7 +59,7 @@ interface GalleryItem {
 
 export default function AdminGallery() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
   const apiRoot = useMemo(() => getApiRoot(), []);
 
@@ -105,15 +105,15 @@ export default function AdminGallery() {
 
   const validateImageFile = (file, { required = false } = {}) => {
     if (!file) {
-      return required ? t("image_required", "Please select an image") : "";
+      return required ? t("legacy.image_required", "Please select an image") : "";
     }
     if (file.size > maxImageBytes) {
-      return t("file_too_large", "File is too large (max 10MB).");
+      return t("legacy.file_too_large", "File is too large (max 10MB).");
     }
     const ext = getExtension(file.name);
     const isImageType = file.type ? file.type.startsWith("image/") : false;
     if (!isImageType && ext && !allowedImageExts.has(ext)) {
-      return t("invalid_image_type", "Only image files are allowed.");
+      return t("legacy.invalid_image_type", "Only image files are allowed.");
     }
     return "";
   };
@@ -169,7 +169,7 @@ export default function AdminGallery() {
       const list = unwrapGalleryResponse(data).map(normalizeGalleryItem);
       setGallery(withLocalGalleryFallback(list));
       if (notifyToast) {
-        notify(t("gallery_loaded", "Images loaded."));
+        notify(t("legacy.gallery_loaded", "Images loaded."));
       }
     } catch (error) {
       console.error("Failed to load gallery:", error);
@@ -177,7 +177,7 @@ export default function AdminGallery() {
       notify(
         getApiErrorMessage(
           error,
-          t("gallery_load_failed", "Failed to load gallery"),
+          t("legacy.gallery_load_failed", "Failed to load gallery"),
         ),
         "error",
       );
@@ -233,8 +233,7 @@ export default function AdminGallery() {
   const handleEdit = (item) => {
     if (item.isLocalAsset) {
       notify(
-        t(
-          "gallery_assets_need_backend",
+        t("legacy.gallery_assets_need_backend",
           "Start the backend once to import bundled gallery images before editing them.",
         ),
         "error",
@@ -264,7 +263,7 @@ export default function AdminGallery() {
     e.preventDefault();
 
     if (!form.title.trim()) {
-      notify(t("fill_required_fields", "Please fill all required fields"), "error");
+      notify(t("legacy.fill_required_fields", "Please fill all required fields"), "error");
       return;
     }
 
@@ -306,18 +305,18 @@ export default function AdminGallery() {
           ],
           shouldFallbackWrite
         );
-        notify(t("gallery_updated", "Image updated."));
+        notify(t("legacy.gallery_updated", "Image updated."));
       } else {
         // Create new item
         if (!selectedImage) {
-          notify(t("image_required", "Please select an image"), "error");
+          notify(t("legacy.image_required", "Please select an image"), "error");
           return;
         }
         await requestWithFallback(
           [() => api.post("/admin/gallery", formData), () => api.post("/my/gallery", formData)],
           shouldFallbackWrite
         );
-        notify(t("gallery_created", "Image uploaded."));
+        notify(t("legacy.gallery_created", "Image uploaded."));
       }
 
       resetForm();
@@ -328,7 +327,7 @@ export default function AdminGallery() {
       notify(
         getApiErrorMessage(
           error,
-          t("operation_failed", "Operation failed")
+          t("legacy.operation_failed", "Operation failed")
         ),
         "error"
       );
@@ -340,8 +339,7 @@ export default function AdminGallery() {
   const handleDelete = async (id) => {
     if (typeof id === "string") {
       notify(
-        t(
-          "gallery_assets_need_backend",
+        t("legacy.gallery_assets_need_backend",
           "Start the backend once to import bundled gallery images before editing them.",
         ),
         "error",
@@ -350,7 +348,7 @@ export default function AdminGallery() {
     }
     if (
       !window.confirm(
-        t("confirm_delete", "Are you sure you want to delete this item?")
+        t("legacy.confirm_delete", "Are you sure you want to delete this item?")
       )
     ) {
       return;
@@ -371,10 +369,10 @@ export default function AdminGallery() {
       );
       await loadGallery();
       emitGalleryChanged({ id, action: "deleted" });
-      notify(t("gallery_deleted", "Image deleted."));
+      notify(t("legacy.gallery_deleted", "Image deleted."));
     } catch (error) {
       console.error("Delete failed:", error);
-      notify(getApiErrorMessage(error, t("delete_failed", "Failed to delete")), "error");
+      notify(getApiErrorMessage(error, t("legacy.delete_failed", "Failed to delete")), "error");
     }
   };
 
@@ -386,7 +384,7 @@ export default function AdminGallery() {
     ? resolveImageUrl(viewItem.image_path ?? viewItem.imagePath)
     : "";
   const imageNotFoundLabel = encodeURIComponent(
-    t("image_not_found", "Image not found"),
+    t("legacy.image_not_found", "Image not found"),
   );
 
   return (
@@ -402,11 +400,10 @@ export default function AdminGallery() {
               isDark ? "text-[#d9a441]" : "text-[#24766f]"
             } mb-2`}
           >
-            {t("gallery_management", "Gallery Management")}
+            {t("legacy.gallery_management", "Gallery Management")}
           </h1>
           <p className={`${textColor} opacity-70`}>
-            {t(
-              "gallery_desc",
+            {t("legacy.gallery_desc",
               "Upload and manage photos with archive metadata",
             )}
           </p>
@@ -414,15 +411,15 @@ export default function AdminGallery() {
 
         <div className="grid md:grid-cols-3 gap-3 mb-6">
           <div className={`${cardBg} border ${border} rounded-xl p-3`}>
-            <p className="text-xs opacity-70">{t("total", "Total")}</p>
+            <p className="text-xs opacity-70">{t("legacy.total", "Total")}</p>
             <p className="text-xl font-bold">{galleryStats.total}</p>
           </div>
           <div className={`${cardBg} border ${border} rounded-xl p-3`}>
-            <p className="text-xs opacity-70">{t("public", "Public")}</p>
+            <p className="text-xs opacity-70">{t("legacy.public", "Public")}</p>
             <p className="text-xl font-bold">{galleryStats.publicCount}</p>
           </div>
           <div className={`${cardBg} border ${border} rounded-xl p-3`}>
-            <p className="text-xs opacity-70">{t("archived", "Archived")}</p>
+            <p className="text-xs opacity-70">{t("legacy.archived", "Archived")}</p>
             <p className="text-xl font-bold">{galleryStats.withArchive}</p>
           </div>
         </div>
@@ -441,12 +438,12 @@ export default function AdminGallery() {
               {editingId ? (
                 <>
                   <Edit className="w-6 h-6" />
-                  {t("edit_photo", "Edit Photo")}
+                  {t("legacy.edit_photo", "Edit Photo")}
                 </>
               ) : (
                 <>
                   <Upload className="w-6 h-6" />
-                  {t("upload_new_photo", "Upload New Photo")}
+                  {t("legacy.upload_new_photo", "Upload New Photo")}
                 </>
               )}
             </h2>
@@ -456,7 +453,7 @@ export default function AdminGallery() {
                 className={`${textColor} opacity-70 hover:opacity-100 flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-red-500/10 transition`}
               >
                 <X className="w-5 h-5" />
-                {t("cancel", "Cancel")}
+                {t("legacy.cancel", "Cancel")}
               </button>
             )}
           </div>
@@ -467,7 +464,7 @@ export default function AdminGallery() {
               <label
                 className={`block text-sm font-semibold ${textColor} mb-2`}
               >
-                {t("select_image", "Select Image")}{" "}
+                {t("legacy.select_image", "Select Image")}{" "}
                 {!editingId && <span className="text-red-500">*</span>}
               </label>
               <div
@@ -478,12 +475,12 @@ export default function AdminGallery() {
                   <div className="space-y-3">
                     <img
                       src={previewUrl}
-                      alt={t("preview", "Preview")}
+                      alt={t("legacy.preview", "Preview")}
                       className="max-h-64 mx-auto object-contain rounded-lg shadow-md"
                     />
                     <p className={`${textColor} text-sm`}>
                       {selectedImage?.name ||
-                        t("current_image", "Current Image")}
+                        t("legacy.current_image", "Current Image")}
                     </p>
                   </div>
                 ) : (
@@ -492,10 +489,10 @@ export default function AdminGallery() {
                       className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`}
                     />
                     <p className={`${textColor} opacity-50 text-lg`}>
-                      {t("click_to_upload", "Click to upload image")}
+                      {t("legacy.click_to_upload", "Click to upload image")}
                     </p>
                     <p className={`${textColor} opacity-30 text-sm mt-2`}>
-                      {t("image_file_formats", "JPG, PNG, GIF, WEBP (max 10MB)")}
+                      {t("legacy.image_file_formats", "JPG, PNG, GIF, WEBP (max 10MB)")}
                     </p>
                   </div>
                 )}
@@ -515,14 +512,14 @@ export default function AdminGallery() {
                 <label
                   className={`block text-sm font-semibold ${textColor} mb-2`}
                 >
-                  {t("title", "Title")} <span className="text-red-500">*</span>
+                  {t("legacy.title", "Title")} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   className={`w-full px-4 py-3 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] transition`}
-                  placeholder={t("enter_title", "Enter photo title...")}
+                  placeholder={t("legacy.enter_title", "Enter photo title...")}
                   required
                 />
               </div>
@@ -531,7 +528,7 @@ export default function AdminGallery() {
                 <label
                   className={`block text-sm font-semibold ${textColor} mb-2`}
                 >
-                  {t("custom_category", "Custom Category")}
+                  {t("legacy.custom_category", "Custom Category")}
                 </label>
                 <input
                   type="text"
@@ -540,8 +537,7 @@ export default function AdminGallery() {
                     setForm({ ...form, category: e.target.value })
                   }
                   className={`w-full px-4 py-3 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] transition`}
-                  placeholder={t(
-                    "custom_category_placeholder",
+                  placeholder={t("legacy.custom_category_placeholder",
                     "Name this category...",
                   )}
                 />
@@ -561,7 +557,7 @@ export default function AdminGallery() {
                   htmlFor="isPublic"
                   className={`${textColor} cursor-pointer font-medium`}
                 >
-                  {t("make_public", "Make public (visible to all users)")}
+                  {t("legacy.make_public", "Make public (visible to all users)")}
                 </label>
               </div>
 
@@ -579,7 +575,7 @@ export default function AdminGallery() {
                   htmlFor="showDetails"
                   className={`${textColor} cursor-pointer font-medium`}
                 >
-                  {t("show_details", "Show details (archive metadata) in card")}
+                  {t("legacy.show_details", "Show details (archive metadata) in card")}
                 </label>
               </div>
             </div>
@@ -588,7 +584,7 @@ export default function AdminGallery() {
               <label
                 className={`block text-sm font-semibold ${textColor} mb-2`}
               >
-                {t("description", "Description")}
+                {t("legacy.description", "Description")}
               </label>
               <textarea
                 value={form.description}
@@ -596,7 +592,7 @@ export default function AdminGallery() {
                   setForm({ ...form, description: e.target.value })
                 }
                 className={`w-full px-4 py-3 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] transition`}
-                placeholder={t("enter_description", "Enter description...")}
+                placeholder={t("legacy.enter_description", "Enter description...")}
                 rows={3}
               />
             </div>
@@ -616,8 +612,8 @@ export default function AdminGallery() {
                     isDark ? "text-[#d9a441]" : "text-[#24766f]"
                   }`}
                 >
-                  {t("archive_metadata", "Archive Metadata")} (
-                  {t("optional", "Optional")})
+                  {t("legacy.archive_metadata", "Archive Metadata")} (
+                  {t("legacy.optional", "Optional")})
                 </h3>
               </div>
 
@@ -627,7 +623,7 @@ export default function AdminGallery() {
                     className={`block text-xs font-semibold ${textColor} opacity-80 mb-2 flex items-center gap-2`}
                   >
                     <Archive className="w-4 h-4" />
-                    {t("archive_source", "Archive Source")}
+                    {t("legacy.archive_source", "Archive Source")}
                   </label>
                   <input
                     type="text"
@@ -636,7 +632,7 @@ export default function AdminGallery() {
                       setForm({ ...form, archiveSource: e.target.value })
                     }
                     className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] text-sm`}
-                    placeholder={t("archive_source_placeholder", "e.g. National Archives of Algeria")}
+                    placeholder={t("legacy.archive_source_placeholder", "e.g. National Archives of Algeria")}
                   />
                 </div>
 
@@ -645,7 +641,7 @@ export default function AdminGallery() {
                     className={`block text-xs font-semibold ${textColor} opacity-80 mb-2 flex items-center gap-2`}
                   >
                     <FileText className="w-4 h-4" />
-                    {t("document_code", "Document Code")}
+                    {t("legacy.document_code", "Document Code")}
                   </label>
                   <input
                     type="text"
@@ -654,7 +650,7 @@ export default function AdminGallery() {
                       setForm({ ...form, documentCode: e.target.value })
                     }
                     className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] text-sm`}
-                    placeholder={t("document_code_placeholder", "e.g. ALG-1920-042")}
+                    placeholder={t("legacy.document_code_placeholder", "e.g. ALG-1920-042")}
                   />
                 </div>
               </div>
@@ -665,7 +661,7 @@ export default function AdminGallery() {
                     className={`block text-xs font-semibold ${textColor} opacity-80 mb-2 flex items-center gap-2`}
                   >
                     <MapPin className="w-4 h-4" />
-                    {t("location", "Location")}
+                    {t("legacy.location", "Location")}
                   </label>
                   <input
                     type="text"
@@ -674,7 +670,7 @@ export default function AdminGallery() {
                       setForm({ ...form, location: e.target.value })
                     }
                     className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] text-sm`}
-                    placeholder={t("location_placeholder", "e.g. Beirut")}
+                    placeholder={t("legacy.location_placeholder", "e.g. Beirut")}
                   />
                 </div>
 
@@ -683,14 +679,14 @@ export default function AdminGallery() {
                     className={`block text-xs font-semibold ${textColor} opacity-80 mb-2 flex items-center gap-2`}
                   >
                     <Calendar className="w-4 h-4" />
-                    {t("year", "Year")}
+                    {t("legacy.year", "Year")}
                   </label>
                   <input
                     type="text"
                     value={form.year}
                     onChange={(e) => setForm({ ...form, year: e.target.value })}
                     className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] text-sm`}
-                    placeholder={t("year_placeholder", "e.g. 1962")}
+                    placeholder={t("legacy.year_placeholder", "e.g. 1962")}
                   />
                 </div>
 
@@ -699,7 +695,7 @@ export default function AdminGallery() {
                     className={`block text-xs font-semibold ${textColor} opacity-80 mb-2 flex items-center gap-2`}
                   >
                     <Camera className="w-4 h-4" />
-                    {t("photographer", "Photographer")}
+                    {t("legacy.photographer", "Photographer")}
                   </label>
                   <input
                     type="text"
@@ -708,7 +704,7 @@ export default function AdminGallery() {
                       setForm({ ...form, photographer: e.target.value })
                     }
                     className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-[#d9a441] text-sm`}
-                    placeholder={t("photographer_placeholder", "e.g. Family archive")}
+                    placeholder={t("legacy.photographer_placeholder", "e.g. Family archive")}
                   />
                 </div>
               </div>
@@ -723,15 +719,15 @@ export default function AdminGallery() {
                 <>
                   <Save className="w-6 h-6" />
                   {uploading
-                    ? t("saving", "Saving...")
-                    : t("save_changes", "Save Changes")}
+                    ? t("legacy.saving", "Saving...")
+                    : t("legacy.save_changes", "Save Changes")}
                 </>
               ) : (
                 <>
                   <Upload className="w-6 h-6" />
                   {uploading
-                    ? t("uploading", "Uploading...")
-                    : t("upload", "Upload Photo")}
+                    ? t("legacy.uploading", "Uploading...")
+                    : t("legacy.upload", "Upload Photo")}
                 </>
               )}
             </button>
@@ -745,7 +741,7 @@ export default function AdminGallery() {
               isDark ? "text-[#d9a441]" : "text-[#24766f]"
             }`}
           >
-            {t("uploaded_photos", "Uploaded Photos")} ({gallery.length})
+            {t("legacy.uploaded_photos", "Uploaded Photos")} ({gallery.length})
           </h2>
         </div>
 
@@ -761,7 +757,7 @@ export default function AdminGallery() {
               className={`w-20 h-20 mx-auto ${textColor} opacity-20 mb-6`}
             />
             <p className={`${textColor} text-xl opacity-50`}>
-              {t("no_photos_yet", "No photos uploaded yet")}
+              {t("legacy.no_photos_yet", "No photos uploaded yet")}
             </p>
           </div>
         ) : (
@@ -790,7 +786,7 @@ export default function AdminGallery() {
                     className="absolute inset-0 bg-black/0 hover:bg-black/40 transition flex items-center justify-center cursor-pointer"
                   >
                     <span className="px-4 py-2 rounded-full border border-white/70 text-white text-xs uppercase tracking-[0.3em]">
-                      {t("edit", "Edit")}
+                      {t("legacy.edit", "Edit")}
                     </span>
                   </button>
                 </div>
@@ -876,14 +872,14 @@ export default function AdminGallery() {
                           <button
                             onClick={() => handleEdit(item)}
                             className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded-lg transition flex items-center gap-1"
-                            title={t("edit", "Edit")}
+                            title={t("legacy.edit", "Edit")}
                           >
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDelete(item.id)}
                             className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-lg transition flex items-center gap-1"
-                            title={t("delete", "Delete")}
+                            title={t("legacy.delete", "Delete")}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -906,11 +902,11 @@ export default function AdminGallery() {
               type="button"
               onClick={() => setViewItem(null)}
               className="absolute top-6 right-6 text-white hover:text-[#d9a441] transition z-10 bg-black/40 hover:bg-black/60 rounded-full p-3 flex items-center gap-2"
-              aria-label={t("close_image", "Close image")}
+              aria-label={t("legacy.close_image", "Close image")}
             >
               <X className="w-5 h-5" />
               <span className="text-xs uppercase tracking-[0.2em]">
-                {t("close_image", "Close image")}
+                {t("legacy.close_image", "Close image")}
               </span>
             </button>
             <div
@@ -921,7 +917,7 @@ export default function AdminGallery() {
                 {viewImageUrl ? (
                   <img
                     src={viewImageUrl}
-                    alt={viewItem.title || t("gallery", "Gallery")}
+                    alt={viewItem.title || t("legacy.gallery", "Gallery")}
                     className="w-full h-full object-contain rounded-xl"
                   />
                 ) : (

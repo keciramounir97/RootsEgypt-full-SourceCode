@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import LanguageMenu from "../../components/LanguageMenu";
 import { useAuth } from "./AuthContext";
 import {
@@ -84,7 +84,7 @@ export default function AdminSidebar({
 }) {
   const { theme } = useThemeStore();
   const { logout, user } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
   const granted = Array.isArray(user?.permissions) ? user.permissions : [];
   const isSuperAdmin = user?.role === 3;
@@ -167,7 +167,7 @@ export default function AdminSidebar({
                 ROOTS
               </span>
               <span className="text-[10px] tracking-[0.2em] text-[#d4a843]/70 uppercase font-medium">
-                {t("admin_brand_subtitle", "Egypt Admin")}
+                {t("legacy.admin_brand_subtitle", "Egypt Admin")}
               </span>
             </div>
           </div>
@@ -177,13 +177,13 @@ export default function AdminSidebar({
               className="hidden lg:flex p-2 rounded-lg hover:bg-[#d4a843]/10 text-[#d4a843]/60 hover:text-[#d4a843] transition-colors"
               aria-label={
                 open
-                  ? t("close_sidebar", "Close sidebar")
-                  : t("open_sidebar", "Open sidebar")
+                  ? t("legacy.close_sidebar", "Close sidebar")
+                  : t("legacy.open_sidebar", "Open sidebar")
               }
               title={
                 open
-                  ? t("close_sidebar", "Close sidebar")
-                  : t("open_sidebar", "Open sidebar")
+                  ? t("legacy.close_sidebar", "Close sidebar")
+                  : t("legacy.open_sidebar", "Open sidebar")
               }
             >
               <PanelLeftClose className="w-5 h-5" />
@@ -191,7 +191,7 @@ export default function AdminSidebar({
             <button
               onClick={onClose}
               className="lg:hidden p-2 rounded-lg hover:bg-[#d4a843]/10 text-[#d4a843]/60 hover:text-[#d4a843] transition-colors"
-              aria-label={t("close_sidebar", "Close sidebar")}
+              aria-label={t("legacy.close_sidebar", "Close sidebar")}
             >
               <X className="w-5 h-5" />
             </button>
@@ -202,7 +202,7 @@ export default function AdminSidebar({
         <nav className="relative flex-1 overflow-y-auto py-5 px-3 flex flex-col gap-1 scrollbar-thin">
           <div className="px-3 mb-3">
             <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#d4a843]/50">
-              {t("menu", "Main Menu")}
+              {t("legacy.menu", "Main Menu")}
             </span>
           </div>
 
@@ -281,7 +281,7 @@ export default function AdminSidebar({
             whileTap={{ scale: 0.98 }}
           >
             <LogOut className="w-4 h-4" />
-            <span>{t("logout", "Sign Out")}</span>
+            <span>{t("legacy.logout", "Sign Out")}</span>
           </motion.button>
         </div>
       </motion.aside>

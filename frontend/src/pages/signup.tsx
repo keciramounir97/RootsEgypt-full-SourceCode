@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../admin/components/AuthContext";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import EgyptianLogoMark from "../components/EgyptianLogoMark";
 
 const bgImage = "/assets/egypt-bg.jpeg";
@@ -21,7 +21,7 @@ const bgImage = "/assets/egypt-bg.jpeg";
 export default function Signup() {
   const { theme } = useThemeStore();
   const { signup } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -43,19 +43,19 @@ export default function Signup() {
     setSuccess("");
 
     if (!fullName.trim()) {
-      setError(t("full_name_required", "Full name is required"));
+      setError(t("legacy.full_name_required", "Full name is required"));
       return;
     }
     if (!emailPattern.test(email.trim().toLowerCase())) {
-      setError(t("invalid_email", "Please enter a valid email address"));
+      setError(t("legacy.invalid_email", "Please enter a valid email address"));
       return;
     }
     if (String(password).length < 8) {
-      setError(t("password_strength", "Password must be at least 8 characters long"));
+      setError(t("legacy.password_strength", "Password must be at least 8 characters long"));
       return;
     }
     if (password !== confirmPassword) {
-      setError(t("passwords_dont_match", "Passwords do not match"));
+      setError(t("legacy.passwords_dont_match", "Passwords do not match"));
       return;
     }
 
@@ -63,13 +63,12 @@ export default function Signup() {
     try {
       await signup(fullName.trim(), phone.trim(), email.trim().toLowerCase(), password);
       setSuccess(
-        t(
-          "signup_success_pending",
+        t("legacy.signup_success_pending",
           "Account created. A super admin will review and validate your account.",
         ),
       );
     } catch (err: any) {
-      setError(err.response?.data?.message || t("signup_failed", "Signup failed"));
+      setError(err.response?.data?.message || t("legacy.signup_failed", "Signup failed"));
     } finally {
       setLoading(false);
     }
@@ -96,8 +95,7 @@ export default function Signup() {
             RootsEgypt
           </h2>
           <p className="text-white/80 text-lg max-w-md leading-relaxed">
-            {t(
-              "signup_desc",
+            {t("legacy.signup_desc",
               "Join RootsEgypt to preserve Egyptian family stories, records, and relationships across generations.",
             )}
           </p>
@@ -119,12 +117,12 @@ export default function Signup() {
             <h1
               className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-[#0f2742]"}`}
             >
-              {t("create_account", "Create Account")}
+              {t("legacy.create_account", "Create Account")}
             </h1>
             <p
               className={`text-base ${isDark ? "text-white/60" : "text-[#162238]/60"}`}
             >
-              {t("signup_subtitle", "Fill in your details to get started")}
+              {t("legacy.signup_subtitle", "Fill in your details to get started")}
             </p>
           </div>
 
@@ -132,7 +130,7 @@ export default function Signup() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className={labelCls}>
-                  {t("full_name", "Full Name")}
+                  {t("legacy.full_name", "Full Name")}
                 </label>
                 <div className={inputCls}>
                   <User className="w-5 h-5 text-[#d9a441] shrink-0" />
@@ -141,21 +139,20 @@ export default function Signup() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder={t("full_name_placeholder", "Your name")}
+                    placeholder={t("legacy.full_name_placeholder", "Your name")}
                     className={inputTextCls}
                   />
                 </div>
               </div>
               <div>
-                <label className={labelCls}>{t("phone", "Phone")}</label>
+                <label className={labelCls}>{t("legacy.phone", "Phone")}</label>
                 <div className={inputCls}>
                   <Phone className="w-5 h-5 text-[#d9a441] shrink-0" />
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder={t(
-                      "phone_placeholder",
+                    placeholder={t("legacy.phone_placeholder",
                       "e.g. +20 100 123 4567",
                     )}
                     className={inputTextCls}
@@ -165,7 +162,7 @@ export default function Signup() {
             </div>
 
             <div>
-              <label className={labelCls}>{t("email", "Email")}</label>
+              <label className={labelCls}>{t("legacy.email", "Email")}</label>
               <div className={inputCls}>
                 <Mail className="w-5 h-5 text-[#d9a441] shrink-0" />
                 <input
@@ -173,7 +170,7 @@ export default function Signup() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t("email_placeholder", "example@email.com")}
+                  placeholder={t("legacy.email_placeholder", "example@email.com")}
                   className={inputTextCls}
                 />
               </div>
@@ -181,7 +178,7 @@ export default function Signup() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelCls}>{t("password", "Password")}</label>
+                <label className={labelCls}>{t("legacy.password", "Password")}</label>
                 <div className={inputCls}>
                   <Lock className="w-5 h-5 text-[#d9a441] shrink-0" />
                   <input
@@ -207,7 +204,7 @@ export default function Signup() {
               </div>
               <div>
                 <label className={labelCls}>
-                  {t("confirm_password", "Confirm")}
+                  {t("legacy.confirm_password", "Confirm")}
                 </label>
                 <div className={inputCls}>
                   <Lock className="w-5 h-5 text-[#d9a441] shrink-0" />
@@ -248,7 +245,7 @@ export default function Signup() {
                   <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-green-600 dark:text-green-400 text-sm font-medium">
-                      {t("account_created", "Account Created")}
+                      {t("legacy.account_created", "Account Created")}
                     </p>
                     <p className="text-green-600/60 dark:text-green-400/60 text-xs mt-1">
                       {success}
@@ -266,12 +263,12 @@ export default function Signup() {
               {loading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  {t("please_wait", "Please wait...")}
+                  {t("legacy.please_wait", "Please wait...")}
                 </>
               ) : (
                 <>
                   <UserPlus className="w-5 h-5" />
-                  {t("signup", "Sign Up")}
+                  {t("legacy.signup", "Sign Up")}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </>
               )}
@@ -280,12 +277,12 @@ export default function Signup() {
             <p
               className={`text-center text-sm pt-2 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}
             >
-              {t("already_have_account", "Already have an account?")}{" "}
+              {t("legacy.already_have_account", "Already have an account?")}{" "}
               <NavLink
                 to="/login"
                 className="text-[#24766f] font-bold hover:text-[#d9a441] transition-colors"
               >
-                {t("login", "Login")}
+                {t("legacy.login", "Login")}
               </NavLink>
             </p>
           </form>

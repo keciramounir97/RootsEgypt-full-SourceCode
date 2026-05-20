@@ -3,7 +3,7 @@ import { Check, Clock, Mail, RefreshCw, Trash2, User, X } from "lucide-react";
 import { api } from "../../api/client";
 import { getApiErrorMessage } from "../../api/helpers";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { notifyAdmin } from "../utils/notifications";
 
 type RequestStatus = "pending" | "approved" | "rejected" | "all";
@@ -23,7 +23,7 @@ const statusOptions: RequestStatus[] = ["pending", "approved", "rejected", "all"
 
 export default function AccountDeletionRequests() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
   const [status, setStatus] = useState<RequestStatus>("pending");
   const [requests, setRequests] = useState<AccountDeletionRequest[]>([]);
@@ -49,7 +49,7 @@ export default function AccountDeletionRequests() {
       const { data } = await api.get(`/admin/approvals/account-deletion?status=${status}`);
       setRequests(Array.isArray(data) ? data : []);
     } catch (err) {
-      setError(getApiErrorMessage(err, t("account_deletion_requests_failed", "Failed to load account deletion requests")));
+      setError(getApiErrorMessage(err, t("legacy.account_deletion_requests_failed", "Failed to load account deletion requests")));
     } finally {
       setLoading(false);
     }
@@ -62,8 +62,8 @@ export default function AccountDeletionRequests() {
   const decide = async (id: number, action: "approve" | "reject") => {
     const confirmation =
       action === "approve"
-        ? t("confirm_account_deletion_approval", "Approve this account deletion request? This will delete the user account.")
-        : t("confirm_account_deletion_rejection", "Reject this account deletion request?");
+        ? t("legacy.confirm_account_deletion_approval", "Approve this account deletion request? This will delete the user account.")
+        : t("legacy.confirm_account_deletion_rejection", "Reject this account deletion request?");
     if (!window.confirm(confirmation)) return;
 
     setActionId(id);
@@ -72,12 +72,12 @@ export default function AccountDeletionRequests() {
       notifyAdmin(
         data?.message ||
           (action === "approve"
-            ? t("account_deletion_approved", "Account deletion request approved.")
-            : t("account_deletion_rejected", "Account deletion request rejected.")),
+            ? t("legacy.account_deletion_approved", "Account deletion request approved.")
+            : t("legacy.account_deletion_rejected", "Account deletion request rejected.")),
       );
       await loadRequests();
     } catch (err) {
-      notifyAdmin(getApiErrorMessage(err, t("account_deletion_decision_failed", "Failed to update account deletion request")), "error");
+      notifyAdmin(getApiErrorMessage(err, t("legacy.account_deletion_decision_failed", "Failed to update account deletion request")), "error");
     } finally {
       setActionId(null);
     }
@@ -93,14 +93,13 @@ export default function AccountDeletionRequests() {
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-6">
         <div>
           <p className={`text-sm uppercase tracking-[0.2em] ${palette.accent}`}>
-            {t("approvals", "Approvals")}
+            {t("legacy.approvals", "Approvals")}
           </p>
           <h1 className="text-3xl font-bold mt-1">
-            {t("account_deletion_requests", "Account Deletion Requests")}
+            {t("legacy.account_deletion_requests", "Account Deletion Requests")}
           </h1>
           <p className={`mt-2 max-w-2xl ${palette.muted}`}>
-            {t(
-              "account_deletion_requests_desc",
+            {t("legacy.account_deletion_requests_desc",
               "Review account deletion requests and approve or reject them from one place.",
             )}
           </p>
@@ -111,7 +110,7 @@ export default function AccountDeletionRequests() {
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border ${palette.button}`}
         >
           <RefreshCw className="w-4 h-4" />
-          {t("refresh", "Refresh")}
+          {t("legacy.refresh", "Refresh")}
         </button>
       </div>
 
@@ -127,7 +126,7 @@ export default function AccountDeletionRequests() {
                 : palette.button
             }`}
           >
-            {t(`status_${option}`, option.charAt(0).toUpperCase() + option.slice(1))}
+            {t(`legacy.status_${option}`, option.charAt(0).toUpperCase() + option.slice(1))}
           </button>
         ))}
       </div>
@@ -136,11 +135,11 @@ export default function AccountDeletionRequests() {
 
       <div className={`rounded-xl border overflow-hidden ${palette.panel}`}>
         {loading ? (
-          <div className="p-10 text-center">{t("loading", "Loading...")}</div>
+          <div className="p-10 text-center">{t("legacy.loading", "Loading...")}</div>
         ) : requests.length === 0 ? (
           <div className="p-10 text-center">
             <Trash2 className={`w-10 h-10 mx-auto mb-3 ${palette.accent}`} />
-            <p className="font-semibold">{t("no_account_deletion_requests", "No account deletion requests")}</p>
+            <p className="font-semibold">{t("legacy.no_account_deletion_requests", "No account deletion requests")}</p>
           </div>
         ) : (
           <div className="divide-y divide-white/10">
@@ -150,7 +149,7 @@ export default function AccountDeletionRequests() {
                   <div className="flex flex-wrap items-center gap-3">
                     <span className="inline-flex items-center gap-2 font-semibold">
                       <User className="w-4 h-4 text-[#24766f]" />
-                      {request.userFullName || t("unknown_user", "Unknown user")}
+                      {request.userFullName || t("legacy.unknown_user", "Unknown user")}
                     </span>
                     <span className={`inline-flex items-center gap-2 text-sm ${palette.muted}`}>
                       <Mail className="w-4 h-4" />
@@ -160,14 +159,14 @@ export default function AccountDeletionRequests() {
                   <div className={`flex flex-wrap gap-4 text-sm ${palette.muted}`}>
                     <span className="inline-flex items-center gap-2">
                       <Clock className="w-4 h-4" />
-                      {t("requested", "Requested")}: {formatDate(request.requested_at)}
+                      {t("legacy.requested", "Requested")}: {formatDate(request.requested_at)}
                     </span>
-                    <span>{t("status", "Status")}: {request.status}</span>
-                    {request.processed_at ? <span>{t("processed", "Processed")}: {formatDate(request.processed_at)}</span> : null}
-                    {request.processorFullName ? <span>{t("by", "By")}: {request.processorFullName}</span> : null}
+                    <span>{t("legacy.status", "Status")}: {request.status}</span>
+                    {request.processed_at ? <span>{t("legacy.processed", "Processed")}: {formatDate(request.processed_at)}</span> : null}
+                    {request.processorFullName ? <span>{t("legacy.by", "By")}: {request.processorFullName}</span> : null}
                   </div>
                   <p className={`text-sm ${palette.muted}`}>
-                    {t("reason", "Reason")}: {request.reason || t("no_reason_provided", "No reason provided")}
+                    {t("legacy.reason", "Reason")}: {request.reason || t("legacy.no_reason_provided", "No reason provided")}
                   </p>
                 </div>
 
@@ -180,7 +179,7 @@ export default function AccountDeletionRequests() {
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600/15 text-green-500 hover:bg-green-600/25 disabled:opacity-50"
                     >
                       <Check className="w-4 h-4" />
-                      {t("approve", "Approve")}
+                      {t("legacy.approve", "Approve")}
                     </button>
                     <button
                       type="button"
@@ -189,7 +188,7 @@ export default function AccountDeletionRequests() {
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600/15 text-red-500 hover:bg-red-600/25 disabled:opacity-50"
                     >
                       <X className="w-4 h-4" />
-                      {t("reject", "Reject")}
+                      {t("legacy.reject", "Reject")}
                     </button>
                   </div>
                 ) : null}

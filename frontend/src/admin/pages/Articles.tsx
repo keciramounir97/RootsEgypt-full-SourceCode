@@ -1,6 +1,6 @@
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { api } from "../../api/client";
 import { getApiErrorMessage, getApiRoot, requestWithFallback, shouldFallbackRoute } from "../../api/helpers";
 import { Edit, Globe, Image as ImageIcon, Lock, MessageCircle, Play, Send, Trash2, Users, X } from "lucide-react";
@@ -72,7 +72,7 @@ const normalizeArticle = (item: any, apiRoot: string): Article => {
 
 export default function AdminArticles() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
   const apiRoot = useMemo(() => getApiRoot(), []);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -115,7 +115,7 @@ export default function AdminArticles() {
     } catch (err) {
       setArticles([]);
       notify(
-        getApiErrorMessage(err, t("posts_load_failed", "Failed to load posts")),
+        getApiErrorMessage(err, t("legacy.posts_load_failed", "Failed to load posts")),
         "error",
       );
     } finally {
@@ -147,7 +147,7 @@ export default function AdminArticles() {
   const saveArticle = async (e: FormEvent) => {
     e.preventDefault();
     if (!form.content.trim()) {
-      notify(t("content_required", "Please enter content"), "error");
+      notify(t("legacy.content_required", "Please enter content"), "error");
       return;
     }
 
@@ -165,16 +165,16 @@ export default function AdminArticles() {
       const shouldFallback = (err: any) => shouldFallbackRoute(err) || [401, 403, 500].includes(err?.response?.status);
       if (editingId) {
         await requestWithFallback([() => api.put(`/admin/articles/${editingId}`, payload), () => api.put(`/my/articles/${editingId}`, payload)], shouldFallback);
-        notify(t("article_updated", "Post updated."));
+        notify(t("legacy.article_updated", "Post updated."));
       } else {
         await requestWithFallback([() => api.post("/admin/articles", payload), () => api.post("/my/articles", payload)], shouldFallback);
-        notify(t("article_created", "Post published."));
+        notify(t("legacy.article_created", "Post published."));
       }
       resetForm();
       await loadArticles();
     } catch (err) {
       notify(
-        getApiErrorMessage(err, t("post_save_failed", "Failed to save post")),
+        getApiErrorMessage(err, t("legacy.post_save_failed", "Failed to save post")),
         "error",
       );
     } finally {
@@ -183,15 +183,15 @@ export default function AdminArticles() {
   };
 
   const deleteArticle = async (id: number | string) => {
-    if (!window.confirm(t("confirm_delete", "Are you sure you want to delete this item?"))) return;
+    if (!window.confirm(t("legacy.confirm_delete", "Are you sure you want to delete this item?"))) return;
     try {
       const shouldFallback = (err: any) => shouldFallbackRoute(err) || [401, 403, 500].includes(err?.response?.status);
       await requestWithFallback([() => api.delete(`/admin/articles/${id}`), () => api.delete(`/my/articles/${id}`)], shouldFallback);
-      notify(t("article_deleted", "Post deleted."));
+      notify(t("legacy.article_deleted", "Post deleted."));
       await loadArticles();
     } catch (err) {
       notify(
-        getApiErrorMessage(err, t("post_delete_failed", "Failed to delete post")),
+        getApiErrorMessage(err, t("legacy.post_delete_failed", "Failed to delete post")),
         "error",
       );
     }
@@ -228,12 +228,12 @@ export default function AdminArticles() {
       <Toast message={toast.message} tone={toast.tone} />
       <div className="max-w-6xl mx-auto space-y-6">
         <section className={`${card} border ${border} rounded-2xl p-6`}>
-          <h1 className={`text-3xl font-bold ${text}`}>{t("article_management", "Genealogy Social Feed")}</h1>
-          <p className={`${text} opacity-70 mt-1`}>{t("article_desc", "Publish discoveries, stories, and media-rich family updates.")}</p>
+          <h1 className={`text-3xl font-bold ${text}`}>{t("legacy.article_management", "Genealogy Social Feed")}</h1>
+          <p className={`${text} opacity-70 mt-1`}>{t("legacy.article_desc", "Publish discoveries, stories, and media-rich family updates.")}</p>
           <div className="grid md:grid-cols-3 gap-3 mt-4">
-            <div className="rounded-xl p-3 bg-[#24766f]/10"><p className="text-xs opacity-70">{t("posts", "Posts")}</p><p className="text-xl font-bold">{stats.total}</p></div>
-            <div className="rounded-xl p-3 bg-[#d9a441]/10"><p className="text-xs opacity-70">{t("with_media", "With Media")}</p><p className="text-xl font-bold">{stats.media}</p></div>
-            <div className="rounded-xl p-3 bg-[#0f2742]/10"><p className="text-xs opacity-70">{t("community", "Community")}</p><p className="text-xl font-bold">{stats.community}</p></div>
+            <div className="rounded-xl p-3 bg-[#24766f]/10"><p className="text-xs opacity-70">{t("legacy.posts", "Posts")}</p><p className="text-xl font-bold">{stats.total}</p></div>
+            <div className="rounded-xl p-3 bg-[#d9a441]/10"><p className="text-xs opacity-70">{t("legacy.with_media", "With Media")}</p><p className="text-xl font-bold">{stats.media}</p></div>
+            <div className="rounded-xl p-3 bg-[#0f2742]/10"><p className="text-xs opacity-70">{t("legacy.community", "Community")}</p><p className="text-xl font-bold">{stats.community}</p></div>
           </div>
         </section>
 
@@ -242,31 +242,31 @@ export default function AdminArticles() {
             <input
               value={form.title}
               onChange={(e) => setForm((s) => ({ ...s, title: e.target.value }))}
-              placeholder={t("post_title", "Post title")}
+              placeholder={t("legacy.post_title", "Post title")}
               className={`w-full rounded-xl border ${border} ${inputBg} ${text} px-4 py-3 outline-none`}
             />
             <input
               value={form.category}
               onChange={(e) => setForm((s) => ({ ...s, category: e.target.value }))}
-              placeholder={t("custom_category_placeholder", "Name this category...")}
+              placeholder={t("legacy.custom_category_placeholder", "Name this category...")}
               className={`w-full rounded-xl border ${border} ${inputBg} ${text} px-4 py-3 outline-none`}
             />
             <textarea
               rows={5}
               value={form.content}
               onChange={(e) => setForm((s) => ({ ...s, content: e.target.value }))}
-              placeholder={t("share_story_placeholder", "Share a family discovery, migration story, or archival finding...")}
+              placeholder={t("legacy.share_story_placeholder", "Share a family discovery, migration story, or archival finding...")}
               className={`w-full rounded-xl border ${border} ${inputBg} ${text} p-4 outline-none`}
             />
 
             <div className="grid md:grid-cols-2 gap-3">
               <div className="flex gap-2">
-                <input value={imageInput} onChange={(e) => setImageInput(e.target.value)} placeholder={t("image_url", "Image URL")} className={`flex-1 rounded-lg border ${border} ${inputBg} px-3 py-2`} />
-                <button type="button" onClick={() => { addMedia("images", imageInput); setImageInput(""); }} className="px-3 rounded-lg border inline-flex items-center gap-1"><ImageIcon className="w-4 h-4" />{t("add", "Add")}</button>
+                <input value={imageInput} onChange={(e) => setImageInput(e.target.value)} placeholder={t("legacy.image_url", "Image URL")} className={`flex-1 rounded-lg border ${border} ${inputBg} px-3 py-2`} />
+                <button type="button" onClick={() => { addMedia("images", imageInput); setImageInput(""); }} className="px-3 rounded-lg border inline-flex items-center gap-1"><ImageIcon className="w-4 h-4" />{t("legacy.add", "Add")}</button>
               </div>
               <div className="flex gap-2">
-                <input value={videoInput} onChange={(e) => setVideoInput(e.target.value)} placeholder={t("video_url", "Video URL")} className={`flex-1 rounded-lg border ${border} ${inputBg} px-3 py-2`} />
-                <button type="button" onClick={() => { addMedia("videos", videoInput); setVideoInput(""); }} className="px-3 rounded-lg border inline-flex items-center gap-1"><Play className="w-4 h-4" />{t("add", "Add")}</button>
+                <input value={videoInput} onChange={(e) => setVideoInput(e.target.value)} placeholder={t("legacy.video_url", "Video URL")} className={`flex-1 rounded-lg border ${border} ${inputBg} px-3 py-2`} />
+                <button type="button" onClick={() => { addMedia("videos", videoInput); setVideoInput(""); }} className="px-3 rounded-lg border inline-flex items-center gap-1"><Play className="w-4 h-4" />{t("legacy.add", "Add")}</button>
               </div>
             </div>
 
@@ -293,24 +293,24 @@ export default function AdminArticles() {
 
             <div className="flex flex-wrap items-center gap-3">
               <select value={form.visibility} onChange={(e) => setForm((s) => ({ ...s, visibility: e.target.value as any }))} className={`rounded-lg border ${border} ${inputBg} px-3 py-2`}>
-                <option value="public">{t("public", "Public")}</option>
-                <option value="community">{t("community", "Community")}</option>
-                <option value="private">{t("private", "Private")}</option>
+                <option value="public">{t("legacy.public", "Public")}</option>
+                <option value="community">{t("legacy.community", "Community")}</option>
+                <option value="private">{t("legacy.private", "Private")}</option>
               </select>
               <button disabled={saving} className="px-4 py-2 rounded-lg bg-[#24766f] text-white inline-flex items-center gap-2">
                 <Send className="w-4 h-4" />
-                {saving ? t("posting", "Posting...") : editingId ? t("update", "Update") : t("post", "Post")}
+                {saving ? t("legacy.posting", "Posting...") : editingId ? t("legacy.update", "Update") : t("legacy.post", "Post")}
               </button>
-              {editingId ? <button type="button" onClick={resetForm} className="px-4 py-2 rounded-lg border inline-flex items-center gap-2"><X className="w-4 h-4" />{t("cancel", "Cancel")}</button> : null}
+              {editingId ? <button type="button" onClick={resetForm} className="px-4 py-2 rounded-lg border inline-flex items-center gap-2"><X className="w-4 h-4" />{t("legacy.cancel", "Cancel")}</button> : null}
             </div>
           </form>
         </section>
 
         <section className={`${card} border ${border} rounded-2xl p-6`}>
           {loading ? (
-            <div className="py-12 text-center opacity-60">{t("loading", "Loading...")}</div>
+            <div className="py-12 text-center opacity-60">{t("legacy.loading", "Loading...")}</div>
           ) : articles.length === 0 ? (
-            <div className="py-12 text-center opacity-60">{t("no_articles", "No posts yet.")}</div>
+            <div className="py-12 text-center opacity-60">{t("legacy.no_articles", "No posts yet.")}</div>
           ) : (
             <div className="space-y-4">
               {articles.map((article) => (
@@ -319,7 +319,7 @@ export default function AdminArticles() {
                     <a href={(article.images || [])[0]} target="_blank" rel="noreferrer" className="block">
                       <img
                         src={(article.images || [])[0]}
-                        alt={article.title || t("article_image", "Article image")}
+                        alt={article.title || t("legacy.article_image", "Article image")}
                         onError={(event) => {
                           event.currentTarget.src = articleFallbackImage;
                         }}
@@ -331,10 +331,10 @@ export default function AdminArticles() {
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#24766f] to-[#d9a441] text-white grid place-items-center text-xs font-bold">
-                        {(article.userName || t("user", "User")).charAt(0)}
+                        {(article.userName || t("legacy.user", "User")).charAt(0)}
                       </div>
                       <div>
-                        <p className="font-semibold">{article.userName || t("user", "User")}</p>
+                        <p className="font-semibold">{article.userName || t("legacy.user", "User")}</p>
                         <p className="text-xs opacity-60">{article.createdAt ? new Date(article.createdAt).toLocaleString() : "-"}</p>
                       </div>
                     </div>
@@ -356,7 +356,7 @@ export default function AdminArticles() {
                         <a key={url} href={url} target="_blank" rel="noreferrer" className="rounded-lg border overflow-hidden block">
                           <img
                             src={url}
-                            alt={article.title || t("article_image", "Article image")}
+                            alt={article.title || t("legacy.article_image", "Article image")}
                             onError={(event) => {
                               event.currentTarget.src = articleFallbackImage;
                             }}
@@ -374,7 +374,7 @@ export default function AdminArticles() {
                     </span>
                     <span className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-white/10">
                       <MessageCircle className="w-3 h-3" />
-                      {article.likes || 0} {t("likes", "likes")}
+                      {article.likes || 0} {t("legacy.likes", "likes")}
                     </span>
                   </div>
                   </div>

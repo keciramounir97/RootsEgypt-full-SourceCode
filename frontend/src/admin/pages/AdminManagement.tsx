@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { useAuth } from "../components/AuthContext";
 import { api } from "../../api/client";
 import {
@@ -61,7 +61,7 @@ const PRIVILEGE_OPTIONS = [
 
 export default function AdminManagement() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { user } = useAuth();
   const isDark = theme === "dark";
   const isSuperAdmin = user?.role === 3;
@@ -168,17 +168,17 @@ export default function AdminManagement() {
     e.preventDefault();
 
     if (!form.fullName.trim() || !form.email.trim()) {
-      notify(t("fill_required_fields", "Please fill all required fields"), "error");
+      notify(t("legacy.fill_required_fields", "Please fill all required fields"), "error");
       return;
     }
 
     if (!editingAdmin && !form.password.trim()) {
-      notify(t("password_required", "Password is required for new admin"), "error");
+      notify(t("legacy.password_required", "Password is required for new admin"), "error");
       return;
     }
 
     if (!editingAdmin && form.password !== form.confirmPassword) {
-      notify(t("passwords_dont_match", "Passwords do not match"), "error");
+      notify(t("legacy.passwords_dont_match", "Passwords do not match"), "error");
       return;
     }
 
@@ -207,7 +207,7 @@ export default function AdminManagement() {
         setAdmins((prev) =>
           prev.map((a) => (a.id === editingAdmin.id ? { ...a, ...payload } : a))
         );
-        notify(t("admin_updated", "Admin updated successfully!"));
+        notify(t("legacy.admin_updated", "Admin updated successfully!"));
       } else {
         const { data } = await requestWithFallback(
           [
@@ -223,7 +223,7 @@ export default function AdminManagement() {
           createdBy: user?.fullName || "Super Admin",
         };
         setAdmins((prev) => [...prev, newAdmin]);
-        notify(t("admin_created", "Admin created successfully!"));
+        notify(t("legacy.admin_created", "Admin created successfully!"));
       }
 
       resetForm();
@@ -236,11 +236,11 @@ export default function AdminManagement() {
 
   const handleDelete = async (id: number | string) => {
     if (id === user?.id) {
-      notify(t("cannot_delete_self", "You cannot delete your own account"), "error");
+      notify(t("legacy.cannot_delete_self", "You cannot delete your own account"), "error");
       return;
     }
 
-    if (!window.confirm(t("confirm_delete_admin", "Are you sure you want to delete this admin?"))) {
+    if (!window.confirm(t("legacy.confirm_delete_admin", "Are you sure you want to delete this admin?"))) {
       return;
     }
 
@@ -258,7 +258,7 @@ export default function AdminManagement() {
       );
 
       setAdmins((prev) => prev.filter((a) => a.id !== id));
-      notify(t("admin_deleted", "Admin deleted successfully."));
+      notify(t("legacy.admin_deleted", "Admin deleted successfully."));
     } catch (error) {
       notify(getApiErrorMessage(error, "Failed to delete admin"), "error");
     }
@@ -283,8 +283,8 @@ export default function AdminManagement() {
         <div className="max-w-7xl mx-auto">
           <div className={`${cardBg} border ${border} rounded-xl p-8 text-center`}>
             <Shield className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`} />
-            <h2 className={`text-2xl font-bold ${textColor} mb-2`}>{t("access_denied", "Access Denied")}</h2>
-            <p className={`${textColor} opacity-70`}>{t("super_admin_only", "Only Super Admin can access this page.")}</p>
+            <h2 className={`text-2xl font-bold ${textColor} mb-2`}>{t("legacy.access_denied", "Access Denied")}</h2>
+            <p className={`${textColor} opacity-70`}>{t("legacy.super_admin_only", "Only Super Admin can access this page.")}</p>
           </div>
         </div>
       </div>
@@ -301,10 +301,10 @@ export default function AdminManagement() {
             <Shield className={`w-8 h-8 ${isDark ? "text-[#d9a441]" : "text-[#24766f]"}`} />
             <div>
               <h1 className={`text-4xl font-bold font-serif ${isDark ? "text-[#d9a441]" : "text-[#24766f]"} mb-1`}>
-                {t("admin_management", "Admin Management")}
+                {t("legacy.admin_management", "Admin Management")}
               </h1>
               <p className={`${textColor} opacity-70`}>
-                {t("admin_management_desc", "Create and manage admin accounts with custom privileges")}
+                {t("legacy.admin_management_desc", "Create and manage admin accounts with custom privileges")}
               </p>
             </div>
           </div>
@@ -313,7 +313,7 @@ export default function AdminManagement() {
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#24766f] text-white hover:bg-[#24766f]/90 transition"
           >
             <Plus className="w-5 h-5" />
-            {t("create_admin", "Create Admin")}
+            {t("legacy.create_admin", "Create Admin")}
           </button>
         </div>
 
@@ -321,15 +321,15 @@ export default function AdminManagement() {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6" data-aos="fade-up">
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-[#d9a441]">{admins.filter((a) => a.role === 3).length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("super_admins", "Super Admins")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.super_admins", "Super Admins")}</p>
           </div>
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-[#24766f]">{admins.filter((a) => a.role === 1).length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("admins", "Admins")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.admins", "Admins")}</p>
           </div>
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-green-500">{admins.length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("total", "Total")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.total", "Total")}</p>
           </div>
         </div>
 
@@ -338,23 +338,23 @@ export default function AdminManagement() {
           {loading ? (
             <div className="text-center py-12">
               <div className="w-12 h-12 border-4 border-[#d9a441] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-              <p className={textColor}>{t("loading", "Loading...")}</p>
+              <p className={textColor}>{t("legacy.loading", "Loading...")}</p>
             </div>
           ) : admins.length === 0 ? (
             <div className="text-center py-12">
               <Shield className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`} />
-              <p className={`${textColor} opacity-70`}>{t("no_admins", "No admins found.")}</p>
+              <p className={`${textColor} opacity-70`}>{t("legacy.no_admins", "No admins found.")}</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className={`${isDark ? "bg-white/5" : "bg-black/5"}`}>
                   <tr>
-                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("admin", "Admin")}</th>
-                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("role", "Role")}</th>
-                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("privileges", "Privileges")}</th>
-                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("created", "Created")}</th>
-                    <th className={`px-4 py-3 text-center text-sm font-semibold ${textColor}`}>{t("actions", "Actions")}</th>
+                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("legacy.admin", "Admin")}</th>
+                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("legacy.role", "Role")}</th>
+                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("legacy.privileges", "Privileges")}</th>
+                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("legacy.created", "Created")}</th>
+                    <th className={`px-4 py-3 text-center text-sm font-semibold ${textColor}`}>{t("legacy.actions", "Actions")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y ${border}">
@@ -381,8 +381,8 @@ export default function AdminManagement() {
                         }`}>
                           <Shield className="w-3 h-3" />
                           {admin.role === 3
-                            ? t("super_admin", "Super Admin")
-                            : t("admin", "Admin")}
+                            ? t("legacy.super_admin", "Super Admin")
+                            : t("legacy.admin", "Admin")}
                         </span>
                       </td>
                       <td className="px-4 py-4">
@@ -394,7 +394,7 @@ export default function AdminManagement() {
                           ))}
                           {admin.privileges?.length > 4 && (
                             <span className={`text-xs px-2 py-0.5 rounded ${isDark ? "bg-white/10" : "bg-black/10"}`}>
-                              +{admin.privileges.length - 4} {t("more", "more")}
+                              +{admin.privileges.length - 4} {t("legacy.more", "more")}
                             </span>
                           )}
                         </div>
@@ -403,7 +403,7 @@ export default function AdminManagement() {
                         <p className={`text-sm ${textColor} opacity-70`}>{formatDate(admin.createdAt)}</p>
                         {admin.createdBy && (
                           <p className="text-xs opacity-50">
-                            {t("by", "by")} {admin.createdBy}
+                            {t("legacy.by", "by")} {admin.createdBy}
                           </p>
                         )}
                       </td>
@@ -414,14 +414,14 @@ export default function AdminManagement() {
                               <button
                                 onClick={() => handleEdit(admin)}
                                 className={`p-2 rounded-lg hover:bg-[#24766f]/20 transition ${textColor} opacity-70 hover:opacity-100`}
-                                title={t("edit", "Edit")}
+                                title={t("legacy.edit", "Edit")}
                               >
                                 <Edit className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => handleDelete(admin.id)}
                                 className="p-2 rounded-lg hover:bg-red-500/20 text-red-500 transition"
-                                title={t("delete", "Delete")}
+                                title={t("legacy.delete", "Delete")}
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -450,7 +450,7 @@ export default function AdminManagement() {
           >
             <div className="p-6 border-b ${border} flex items-center justify-between">
               <h3 className={`text-xl font-bold ${textColor}`}>
-                {editingAdmin ? t("edit_admin", "Edit Admin") : t("create_new_admin", "Create New Admin")}
+                {editingAdmin ? t("legacy.edit_admin", "Edit Admin") : t("legacy.create_new_admin", "Create New Admin")}
               </h3>
               <button onClick={resetForm} className="p-2 rounded-lg hover:bg-white/10 transition">
                 <X className="w-5 h-5" />
@@ -461,14 +461,14 @@ export default function AdminManagement() {
               {/* Full Name */}
               <div>
                 <label className={`block text-sm font-semibold ${textColor} mb-2`}>
-                  {t("full_name", "Full Name")} <span className="text-red-500">*</span>
+                  {t("legacy.full_name", "Full Name")} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={form.fullName}
                   onChange={(e) => setForm({ ...form, fullName: e.target.value })}
                   className={`w-full px-4 py-3 rounded-lg ${inputBg} border ${border} ${textColor} outline-none focus:border-[#d9a441]`}
-                  placeholder={t("full_name_placeholder", "Enter full name")}
+                  placeholder={t("legacy.full_name_placeholder", "Enter full name")}
                 />
               </div>
 
@@ -476,18 +476,18 @@ export default function AdminManagement() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className={`block text-sm font-semibold ${textColor} mb-2`}>
-                    {t("email", "Email")} <span className="text-red-500">*</span>
+                    {t("legacy.email", "Email")} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     className={`w-full px-4 py-3 rounded-lg ${inputBg} border ${border} ${textColor} outline-none focus:border-[#d9a441]`}
-                    placeholder={t("email_placeholder", "admin@example.com")}
+                    placeholder={t("legacy.email_placeholder", "admin@example.com")}
                   />
                 </div>
                 <div>
-                  <label className={`block text-sm font-semibold ${textColor} mb-2`}>{t("phone", "Phone")}</label>
+                  <label className={`block text-sm font-semibold ${textColor} mb-2`}>{t("legacy.phone", "Phone")}</label>
                   <input
                     type="tel"
                     value={form.phone}
@@ -503,7 +503,7 @@ export default function AdminManagement() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className={`block text-sm font-semibold ${textColor} mb-2`}>
-                      {t("password", "Password")} <span className="text-red-500">*</span>
+                      {t("legacy.password", "Password")} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="password"
@@ -514,7 +514,7 @@ export default function AdminManagement() {
                   </div>
                   <div>
                     <label className={`block text-sm font-semibold ${textColor} mb-2`}>
-                      {t("confirm_password", "Confirm Password")} <span className="text-red-500">*</span>
+                      {t("legacy.confirm_password", "Confirm Password")} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="password"
@@ -529,10 +529,10 @@ export default function AdminManagement() {
               {/* Privileges */}
               <div>
                 <label className={`block text-sm font-semibold ${textColor} mb-3`}>
-                  {t("privileges", "Admin Privileges")} <span className="text-red-500">*</span>
+                  {t("legacy.privileges", "Admin Privileges")} <span className="text-red-500">*</span>
                 </label>
                 <p className={`text-xs ${textColor} opacity-60 mb-3`}>
-                  {t("privileges_desc", "Select which pages this admin can access")}
+                  {t("legacy.privileges_desc", "Select which pages this admin can access")}
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {PRIVILEGE_OPTIONS.map(({ key, label, Icon }) => (
@@ -571,7 +571,7 @@ export default function AdminManagement() {
                   onClick={resetForm}
                   className={`flex-1 py-3 rounded-lg border ${border} ${textColor} hover:bg-white/5 transition`}
                 >
-                  {t("cancel", "Cancel")}
+                  {t("legacy.cancel", "Cancel")}
                 </button>
                 <button
                   type="submit"
@@ -581,7 +581,7 @@ export default function AdminManagement() {
                   }`}
                 >
                   <Save className="w-4 h-4" />
-                  {saving ? t("saving", "Saving...") : t("save", "Save")}
+                  {saving ? t("legacy.saving", "Saving...") : t("legacy.save", "Save")}
                 </button>
               </div>
             </form>

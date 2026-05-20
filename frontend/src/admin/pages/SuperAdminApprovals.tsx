@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Check, X, Shield } from "lucide-react";
 import { api } from "../../api/client";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import Toast from "../../components/Toast";
 
 type Req = {
@@ -16,7 +16,7 @@ type Req = {
 
 export default function SuperAdminApprovals() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
 
   const pageBg = isDark ? "bg-[#0d1b2a]" : "bg-[#f5f1e8]";
@@ -64,7 +64,7 @@ export default function SuperAdminApprovals() {
   const handlePasswordAction = async (id: number, action: "approve" | "reject") => {
     try {
       await api.post(`/admin/approvals/password-reset/${id}/${action}`);
-      notify(action === "approve" ? t("requestApproved", "Request approved") : t("requestRejected", "Request rejected"));
+      notify(action === "approve" ? t("legacy.requestApproved", "Request approved") : t("legacy.requestRejected", "Request rejected"));
       loadAll();
     } catch (err: unknown) {
       notify("Action failed", "error");
@@ -74,7 +74,7 @@ export default function SuperAdminApprovals() {
   const handleDeletionAction = async (id: number, action: "approve" | "reject") => {
     try {
       await api.post(`/admin/approvals/account-deletion/${id}/${action}`);
-      notify(action === "approve" ? t("requestApproved", "Request approved") : t("requestRejected", "Request rejected"));
+      notify(action === "approve" ? t("legacy.requestApproved", "Request approved") : t("legacy.requestRejected", "Request rejected"));
       loadAll();
     } catch (err: unknown) {
       notify("Action failed", "error");
@@ -114,7 +114,7 @@ export default function SuperAdminApprovals() {
       <div className="max-w-6xl mx-auto">
         <h1 className="text-2xl font-cinzel font-bold mb-6 flex items-center gap-3">
           <Shield className="w-7 h-7 text-teal" />
-          {t("superAdminApprovals", "Super Admin Approvals")}
+          {t("legacy.superAdminApprovals", "Super Admin Approvals")}
         </h1>
 
         {loading ? (
@@ -124,9 +124,9 @@ export default function SuperAdminApprovals() {
         ) : (
           <div className="space-y-8">
             <section>
-              <h2 className="text-xl font-semibold mb-4">{t("passwordResetRequests", "Password Reset Requests")} ({passwordRequests.length})</h2>
+              <h2 className="text-xl font-semibold mb-4">{t("legacy.passwordResetRequests", "Password Reset Requests")} ({passwordRequests.length})</h2>
               {passwordRequests.length === 0 ? (
-                <p className={`${muted} text-center py-6`}>{t("noPendingRequests", "No pending requests")}</p>
+                <p className={`${muted} text-center py-6`}>{t("legacy.noPendingRequests", "No pending requests")}</p>
               ) : (
                 <div className="space-y-3">
                   {passwordRequests.map((req) => <RequestCard key={req.id} req={req} type="password" />)}
@@ -135,9 +135,9 @@ export default function SuperAdminApprovals() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold mb-4">{t("accountDeletionRequests", "Account Deletion Requests")} ({deletionRequests.length})</h2>
+              <h2 className="text-xl font-semibold mb-4">{t("legacy.accountDeletionRequests", "Account Deletion Requests")} ({deletionRequests.length})</h2>
               {deletionRequests.length === 0 ? (
-                <p className={`${muted} text-center py-6`}>{t("noPendingRequests", "No pending requests")}</p>
+                <p className={`${muted} text-center py-6`}>{t("legacy.noPendingRequests", "No pending requests")}</p>
               ) : (
                 <div className="space-y-3">
                   {deletionRequests.map((req) => <RequestCard key={req.id} req={req} type="deletion" />)}
@@ -146,17 +146,17 @@ export default function SuperAdminApprovals() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold mb-4">{t("allUsers", "All Users")} ({users.length})</h2>
+              <h2 className="text-xl font-semibold mb-4">{t("legacy.allUsers", "All Users")} ({users.length})</h2>
               {users.length === 0 ? (
-                <p className={`${muted} text-center py-6`}>{t("noUsers", "No users")}</p>
+                <p className={`${muted} text-center py-6`}>{t("legacy.noUsers", "No users")}</p>
               ) : (
                 <div className={`${card} border ${border} rounded-xl overflow-hidden`}>
                   <table className="w-full text-sm">
                     <thead>
                       <tr className={isDark ? "bg-white/5" : "bg-black/5"}>
-                        <th className="text-left px-4 py-3">{t("name", "Name")}</th>
-                        <th className="text-left px-4 py-3">{t("email", "Email")}</th>
-                        <th className="text-left px-4 py-3">{t("role", "Role")}</th>
+                        <th className="text-left px-4 py-3">{t("legacy.name", "Name")}</th>
+                        <th className="text-left px-4 py-3">{t("legacy.email", "Email")}</th>
+                        <th className="text-left px-4 py-3">{t("legacy.role", "Role")}</th>
                       </tr>
                     </thead>
                     <tbody>

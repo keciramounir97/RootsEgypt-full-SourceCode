@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { api } from "../api/client";
 import { getApiErrorMessage, getApiRoot } from "../api/helpers";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
 
 interface Book {
@@ -54,7 +54,7 @@ const sortByDateDesc = (items: Book[]) =>
 
 export default function GalleryBooks() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
@@ -111,7 +111,7 @@ export default function GalleryBooks() {
         if (!mounted) return;
         const message = getApiErrorMessage(
           err,
-          t("books_load_failed", "Failed to load books"),
+          t("legacy.books_load_failed", "Failed to load books"),
         );
         setError(message);
         setBooks([]);
@@ -194,7 +194,7 @@ export default function GalleryBooks() {
     const comment: Comment = {
       id: Date.now(),
       userId: "user",
-      userName: t("you", "You"),
+      userName: t("legacy.you", "You"),
       text: newComment,
       createdAt: new Date().toISOString(),
     };
@@ -248,14 +248,13 @@ export default function GalleryBooks() {
             <BookOpen className="w-12 h-12 text-[#d9a441]" />
           </div>
           <p className="text-sm uppercase tracking-[0.3em] text-[#d9a441]">
-            {t("family_collections", "Family Collections")}
+            {t("legacy.family_collections", "Family Collections")}
           </p>
           <h1 className="text-5xl font-bold">
-            {t("books", "Books Library")}
+            {t("legacy.books", "Books Library")}
           </h1>
           <p className="max-w-4xl mx-auto text-lg opacity-90">
-            {t(
-              "books_intro",
+            {t("legacy.books_intro",
               "Explore yizkor books, family histories, and genealogical publications. Upload, share, and connect through written heritage.",
             )}
           </p>
@@ -271,7 +270,7 @@ export default function GalleryBooks() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={t("search_books_placeholder", "Search books, authors, topics...")}
+              placeholder={t("legacy.search_books_placeholder", "Search books, authors, topics...")}
               className={`w-full pl-10 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441] transition-colors ${
                 isDark ? "text-white placeholder-white/50" : "text-[#162238] placeholder-[#162238]/50"
               }`}
@@ -287,7 +286,7 @@ export default function GalleryBooks() {
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
-                  {cat === "all" ? t("all_categories", "All Categories") : cat}
+                  {cat === "all" ? t("legacy.all_categories", "All Categories") : cat}
                 </option>
               ))}
             </select>
@@ -296,7 +295,7 @@ export default function GalleryBooks() {
               className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#24766f] text-white font-semibold hover:bg-[#24766f]/90 transition-colors shadow-lg"
             >
               <Upload className="w-5 h-5" />
-              {t("upload_book", "Upload Book")}
+              {t("legacy.upload_book", "Upload Book")}
             </button>
           </div>
         </div>
@@ -306,7 +305,7 @@ export default function GalleryBooks() {
         <section className="roots-section">
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-16 h-16 border-4 border-[#d9a441] border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="text-lg opacity-70">{t("loading", "Loading...")}</p>
+            <p className="text-lg opacity-70">{t("legacy.loading", "Loading...")}</p>
           </div>
         </section>
       ) : error ? (
@@ -316,13 +315,13 @@ export default function GalleryBooks() {
       ) : (
         <section className="roots-section" data-aos="fade-up">
           <h2 className="text-3xl font-bold border-l-8 border-[#d9a441] pl-4 mb-8">
-            {t("books", "Books")} <span className="text-[#24766f]">({filteredBooks.length})</span>
+            {t("legacy.books", "Books")} <span className="text-[#24766f]">({filteredBooks.length})</span>
           </h2>
 
           {filteredBooks.length === 0 ? (
             <div className={`${cardBg} p-12 rounded-2xl shadow-xl border ${borderColor} text-center`}>
               <BookOpen className="w-16 h-16 mx-auto text-[#24766f]/50 mb-4" />
-              <p className="text-xl opacity-70">{t("no_books_found", "No books found.")}</p>
+              <p className="text-xl opacity-70">{t("legacy.no_books_found", "No books found.")}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -345,7 +344,7 @@ export default function GalleryBooks() {
                     ) : (
                       <div className="text-center">
                         <BookOpen className="w-16 h-16 text-[#d9a441]/50 mx-auto mb-2" />
-                        <p className="text-sm opacity-50">{book.category || t("book", "Book")}</p>
+                        <p className="text-sm opacity-50">{book.category || t("legacy.book", "Book")}</p>
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -453,18 +452,18 @@ export default function GalleryBooks() {
               <div className="grid grid-cols-3 gap-3">
                 {selectedBook.year && (
                   <div className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
-                    <p className="text-xs uppercase opacity-60 mb-1">{t("year", "Year")}</p>
+                    <p className="text-xs uppercase opacity-60 mb-1">{t("legacy.year", "Year")}</p>
                     <p className="font-medium">{selectedBook.year}</p>
                   </div>
                 )}
                 {selectedBook.pages && (
                   <div className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
-                    <p className="text-xs uppercase opacity-60 mb-1">{t("pages", "Pages")}</p>
+                    <p className="text-xs uppercase opacity-60 mb-1">{t("legacy.pages", "Pages")}</p>
                     <p className="font-medium">{selectedBook.pages}</p>
                   </div>
                 )}
                 <div className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
-                  <p className="text-xs uppercase opacity-60 mb-1">{t("likes", "Likes")}</p>
+                  <p className="text-xs uppercase opacity-60 mb-1">{t("legacy.likes", "Likes")}</p>
                   <p className="font-medium">{selectedBook.likes || 0}</p>
                 </div>
               </div>
@@ -484,11 +483,11 @@ export default function GalleryBooks() {
                 </button>
                 <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                   <Share2 className="w-5 h-5" />
-                  {t("share", "Share")}
+                  {t("legacy.share", "Share")}
                 </button>
                 <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                   <Bookmark className="w-5 h-5" />
-                  {t("save", "Save")}
+                  {t("legacy.save", "Save")}
                 </button>
                 {selectedBook.filePath && (
                   <a
@@ -497,14 +496,14 @@ export default function GalleryBooks() {
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#24766f] text-white hover:bg-[#24766f]/90 transition-colors"
                   >
                     <Download className="w-5 h-5" />
-                    {t("download", "Download")}
+                    {t("legacy.download", "Download")}
                   </a>
                 )}
               </div>
 
               {/* Comments */}
               <div className="space-y-3">
-                <h4 className="font-semibold">{t("comments", "Comments")}</h4>
+                <h4 className="font-semibold">{t("legacy.comments", "Comments")}</h4>
                 <div className="space-y-2 max-h-40 overflow-auto">
                   {(selectedBook.comments || []).map((comment) => (
                     <div key={comment.id} className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
@@ -513,7 +512,7 @@ export default function GalleryBooks() {
                     </div>
                   ))}
                   {(!selectedBook.comments || selectedBook.comments.length === 0) && (
-                    <p className="text-sm opacity-50">{t("no_comments", "No comments yet.")}</p>
+                    <p className="text-sm opacity-50">{t("legacy.no_comments", "No comments yet.")}</p>
                   )}
                 </div>
               </div>
@@ -526,7 +525,7 @@ export default function GalleryBooks() {
                   type="text"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  placeholder={t("write_comment", "Write a comment...")}
+                  placeholder={t("legacy.write_comment", "Write a comment...")}
                   className={`flex-1 px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441] transition-colors`}
                   onKeyDown={(e) => e.key === "Enter" && handleComment(selectedBook.id)}
                 />
@@ -553,7 +552,7 @@ export default function GalleryBooks() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold">{t("upload_book", "Upload Book")}</h3>
+              <h3 className="text-xl font-bold">{t("legacy.upload_book", "Upload Book")}</h3>
               <button
                 onClick={() => setShowUploadModal(false)}
                 className="p-2 rounded-lg hover:bg-white/10 transition-colors"
@@ -564,14 +563,14 @@ export default function GalleryBooks() {
             <div className="space-y-4">
               <input
                 type="text"
-                placeholder={t("title", "Title")}
+                placeholder={t("legacy.title", "Title")}
                 value={uploadForm.title}
                 onChange={(e) => setUploadForm({ ...uploadForm, title: e.target.value })}
                 className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
               />
               <input
                 type="text"
-                placeholder={t("author", "Author")}
+                placeholder={t("legacy.author", "Author")}
                 value={uploadForm.author}
                 onChange={(e) => setUploadForm({ ...uploadForm, author: e.target.value })}
                 className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
@@ -580,18 +579,18 @@ export default function GalleryBooks() {
                 type="text"
                 value={uploadForm.category}
                 onChange={(e) => setUploadForm({ ...uploadForm, category: e.target.value })}
-                placeholder={t("custom_category_placeholder", "Name this category...")}
+                placeholder={t("legacy.custom_category_placeholder", "Name this category...")}
                 className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
               />
               <input
                 type="number"
-                placeholder={t("year", "Year")}
+                placeholder={t("legacy.year", "Year")}
                 value={uploadForm.year}
                 onChange={(e) => setUploadForm({ ...uploadForm, year: e.target.value })}
                 className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
               />
               <textarea
-                placeholder={t("description", "Description")}
+                placeholder={t("legacy.description", "Description")}
                 value={uploadForm.description}
                 onChange={(e) => setUploadForm({ ...uploadForm, description: e.target.value })}
                 rows={3}
@@ -600,7 +599,7 @@ export default function GalleryBooks() {
               <div className={`border-2 border-dashed ${borderColor} rounded-xl p-6 text-center`}>
                 <Upload className="w-8 h-8 mx-auto text-[#24766f] mb-2" />
                 <p className="text-sm opacity-70">
-                  {t("upload_book_file", "Upload PDF or eBook file")}
+                  {t("legacy.upload_book_file", "Upload PDF or eBook file")}
                 </p>
                 <input type="file" accept=".pdf,.epub,.mobi" className="hidden" />
               </div>
@@ -608,7 +607,7 @@ export default function GalleryBooks() {
                 onClick={handleUpload}
                 className="w-full py-3 rounded-xl bg-[#24766f] text-white font-semibold hover:bg-[#24766f]/90 transition-colors"
               >
-                {t("upload", "Upload")}
+                {t("legacy.upload", "Upload")}
               </button>
             </div>
           </div>

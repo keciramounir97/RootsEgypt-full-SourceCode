@@ -10,7 +10,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { motion, useScroll, useTransform, type Variants } from "framer-motion";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import { api } from "../api/client";
 import RootsPageShell from "../components/RootsPageShell";
 import ScrollReveal from "../components/motion/ScrollReveal";
@@ -134,7 +134,7 @@ const fieldVariants: Variants = {
 
 export default function ContactUs() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
 
   const [form, setForm] = useState({
@@ -168,7 +168,7 @@ export default function ContactUs() {
       });
       setStatus({
         type: "success",
-        msg: t("message_sent_success", "Message sent successfully!"),
+        msg: t("legacy.message_sent_success", "Message sent successfully!"),
       });
       setForm({ name: "", email: "", subject: "", message: "" });
     } catch (err: any) {
@@ -176,7 +176,7 @@ export default function ContactUs() {
         type: "error",
         msg:
           err.response?.data?.message ||
-          t("message_send_failed", "Failed to send message."),
+          t("legacy.message_send_failed", "Failed to send message."),
       });
     } finally {
       setLoading(false);
@@ -214,8 +214,8 @@ export default function ContactUs() {
   const contactItems = [
     {
       icon: Phone,
-      label: t("call_us", "Call Us"),
-      value: t("contact_phone_primary", "+961 36 26 082"),
+      label: t("legacy.call_us", "Call Us"),
+      value: t("legacy.contact_phone_primary", "+961 36 26 082"),
       gradient: isDark
         ? "linear-gradient(135deg, rgba(13,148,136,0.15), rgba(12,74,110,0.25))"
         : "linear-gradient(135deg, rgba(13,148,136,0.08), rgba(12,74,110,0.12))",
@@ -223,8 +223,8 @@ export default function ContactUs() {
     },
     {
       icon: Mail,
-      label: t("email", "Email"),
-      value: "contact@rootsegypt.org",
+      label: t("legacy.email", "Email"),
+      value: "marcousorilious@gmail.com",
       gradient: isDark
         ? "linear-gradient(135deg, rgba(196,92,62,0.15), rgba(212,168,67,0.2))"
         : "linear-gradient(135deg, rgba(196,92,62,0.08), rgba(212,168,67,0.1))",
@@ -232,8 +232,8 @@ export default function ContactUs() {
     },
     {
       icon: MapPin,
-      label: t("visit_us", "Visit Us"),
-      value: t("location_opening_soon", "Location opening soon"),
+      label: t("legacy.visit_us", "Visit Us"),
+      value: t("legacy.location_opening_soon", "Location opening soon"),
       gradient: isDark
         ? "linear-gradient(135deg, rgba(90,124,58,0.15), rgba(92,133,112,0.2))"
         : "linear-gradient(135deg, rgba(90,124,58,0.08), rgba(92,133,112,0.1))",
@@ -241,11 +241,8 @@ export default function ContactUs() {
     },
     {
       icon: Clock,
-      label: t("opening_hours", "Opening Hours"),
-      value: t(
-        "contact_hours_week",
-        "Lun-Ven: 9h-17h",
-      ),
+      label: t("legacy.opening_hours", "Opening Hours"),
+      value: t("legacy.contact_hours_week", "Lun-Ven: 9h-17h"),
       gradient: isDark
         ? "linear-gradient(135deg, rgba(212,168,67,0.15), rgba(201,168,138,0.2))"
         : "linear-gradient(135deg, rgba(212,168,67,0.08), rgba(201,168,138,0.1))",
@@ -258,11 +255,10 @@ export default function ContactUs() {
       hero={
         <div className="space-y-5">
           <h1 className="text-4xl md:text-5xl font-bold drop-shadow">
-            {t("contact_us", "Contact Us")}
+            {t("legacy.contact_us", "Contact Us")}
           </h1>
           <p className="max-w-3xl mx-auto text-lg opacity-90">
-            {t(
-              "contact_hero_para",
+            {t("legacy.contact_hero_para",
               "We\u2019re ready to assist you with your Egyptian genealogical research, archive queries, and story preservation. Drop us a line and our team will get back within 24 hours.",
             )}
           </p>
@@ -456,15 +452,14 @@ export default function ContactUs() {
                   className="text-2xl sm:text-3xl font-bold font-cinzel tracking-wide"
                   style={{ color: textPrimary }}
                 >
-                  {t("send_us_message", "Send us a Message")}
+                  {t("legacy.send_us_message", "Send us a Message")}
                 </h2>
                 <LotusDivider className="mt-4 mb-2" />
                 <p
                   className="text-sm mt-3 leading-relaxed"
                   style={{ color: textSecondary }}
                 >
-                  {t(
-                    "contact_form_subtitle",
+                  {t("legacy.contact_form_subtitle",
                     "Share your inquiry and we will respond within 24 hours",
                   )}
                 </p>
@@ -511,14 +506,14 @@ export default function ContactUs() {
                     className="text-xs font-semibold uppercase tracking-widest"
                     style={{ color: textSecondary }}
                   >
-                    {t("full_name", "Full Name")}
+                    {t("legacy.full_name", "Full Name")}
                   </label>
                   <input
                     type="text"
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder={t("full_name_placeholder", "Your name")}
+                    placeholder={t("legacy.full_name_placeholder", "Your name")}
                     className={inputCls}
                     style={{
                       background: inputBg,
@@ -539,7 +534,7 @@ export default function ContactUs() {
                     className="text-xs font-semibold uppercase tracking-widest"
                     style={{ color: textSecondary }}
                   >
-                    {t("email", "Email")}
+                    {t("legacy.email", "Email")}
                   </label>
                   <input
                     type="email"
@@ -548,8 +543,7 @@ export default function ContactUs() {
                     onChange={(e) =>
                       setForm({ ...form, email: e.target.value })
                     }
-                    placeholder={t(
-                      "email_placeholder_example",
+                    placeholder={t("legacy.email_placeholder_example",
                       "example@email.com",
                     )}
                     className={inputCls}
@@ -571,7 +565,7 @@ export default function ContactUs() {
                     className="text-xs font-semibold uppercase tracking-widest"
                     style={{ color: textSecondary }}
                   >
-                    {t("subject", "Subject")}
+                    {t("legacy.subject", "Subject")}
                   </label>
                   <input
                     type="text"
@@ -580,8 +574,7 @@ export default function ContactUs() {
                     onChange={(e) =>
                       setForm({ ...form, subject: e.target.value })
                     }
-                    placeholder={t(
-                      "subject_placeholder",
+                    placeholder={t("legacy.subject_placeholder",
                       "What is this about?",
                     )}
                     className={inputCls}
@@ -603,7 +596,7 @@ export default function ContactUs() {
                     className="text-xs font-semibold uppercase tracking-widest"
                     style={{ color: textSecondary }}
                   >
-                    {t("your_message", "Your Message")}
+                    {t("legacy.your_message", "Your Message")}
                   </label>
                   <textarea
                     rows={5}
@@ -612,8 +605,7 @@ export default function ContactUs() {
                     onChange={(e) =>
                       setForm({ ...form, message: e.target.value })
                     }
-                    placeholder={t(
-                      "message_placeholder",
+                    placeholder={t("legacy.message_placeholder",
                       "How can we help you?",
                     )}
                     className={`${inputCls} resize-none`}
@@ -648,12 +640,12 @@ export default function ContactUs() {
                           }}
                           className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
                         />
-                        {t("sending", "Sending...")}
+                        {t("legacy.sending", "Sending...")}
                       </span>
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        {t("send_message", "Send Message")}
+                        {t("legacy.send_message", "Send Message")}
                       </>
                     )}
                   </MagneticButton>
@@ -684,15 +676,14 @@ export default function ContactUs() {
               className="text-3xl sm:text-4xl font-bold font-cinzel tracking-wide"
               style={{ color: isDark ? "#e8c96a" : "#0c4a6e" }}
             >
-              {t("get_in_touch", "Get in Touch")}
+              {t("legacy.get_in_touch", "Get in Touch")}
             </h2>
             <LotusDivider className="mt-5 mb-3" />
             <p
               className="mt-3 max-w-lg mx-auto text-base leading-relaxed"
               style={{ color: textSecondary }}
             >
-              {t(
-                "contact_reach_out",
+              {t("legacy.contact_reach_out",
                 "Reach out through any of the channels below. We are here to help with your genealogical journey.",
               )}
             </p>
@@ -788,15 +779,14 @@ export default function ContactUs() {
               className="text-2xl sm:text-3xl font-bold font-cinzel tracking-wide mb-3"
               style={{ color: isDark ? "#e8c96a" : "#0c4a6e" }}
             >
-              {t("connect_with_us", "Connect With Us")}
+              {t("legacy.connect_with_us", "Connect With Us")}
             </h2>
             <LotusDivider className="mb-6" />
             <p
               className="max-w-md mx-auto mb-8 text-base leading-relaxed"
               style={{ color: textSecondary }}
             >
-              {t(
-                "social_description",
+              {t("legacy.social_description",
                 "Follow us on social media to stay updated with the latest discoveries and community stories.",
               )}
             </p>
@@ -895,7 +885,7 @@ export default function ContactUs() {
               className="text-2xl sm:text-3xl font-bold font-cinzel tracking-wide"
               style={{ color: isDark ? "#e8c96a" : "#0c4a6e" }}
             >
-              {t("our_location", "Our Location")}
+              {t("legacy.our_location", "Our Location")}
             </h2>
             <LotusDivider className="mt-4" />
           </div>
@@ -929,10 +919,10 @@ export default function ContactUs() {
               className="text-lg font-bold font-cinzel"
               style={{ color: textPrimary, opacity: 0.8 }}
             >
-              {t("location_opening_soon", "Location opening soon")}
+              {t("legacy.location_opening_soon", "Location opening soon")}
             </p>
             <p className="text-sm" style={{ color: textSecondary }}>
-              {t("stay_tuned", "Stay tuned for our grand opening!")}
+              {t("legacy.stay_tuned", "Stay tuned for our grand opening!")}
             </p>
           </div>
         </section>

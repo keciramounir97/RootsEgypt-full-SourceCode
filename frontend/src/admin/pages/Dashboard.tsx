@@ -5,7 +5,7 @@ import { fetchStats, fetchRecentActivity } from "../utils/api";
 import { formatDate } from "../utils/helpers";
 import { Users, BookOpen, Network, UserRound, Activity } from "lucide-react";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { useAuth } from "../components/AuthContext";
 import { api } from "../../api/client";
 
@@ -50,7 +50,7 @@ function StatCard({ title, value, color, Icon, isDark }: StatCardProps) {
 /* -------------------- DASHBOARD -------------------- */
 export default function Dashboard() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { user } = useAuth();
   const isDark = theme === "dark";
   const isAdmin = user?.role === 1 || user?.role === 3;
@@ -131,7 +131,7 @@ export default function Dashboard() {
         const message =
           err?.response?.data?.message ||
           err?.userMessage ||
-          t("dashboard_load_failed", "Failed to load dashboard data.");
+          t("legacy.dashboard_load_failed", "Failed to load dashboard data.");
         setError(message);
       } finally {
         if (!mounted) return;
@@ -148,16 +148,16 @@ export default function Dashboard() {
     () =>
       isAdmin
         ? [
-            { title: t("total_users", "Total Users"), value: stats.users, color: "#0c4a6e", Icon: Users },
-            { title: t("total_books", "Total Books"), value: stats.books, color: "#0d9488", Icon: BookOpen },
-            { title: t("family_trees", "Family Trees"), value: stats.trees, color: "#556b2f", Icon: Network },
-            { title: t("total_people", "Total People"), value: stats.people, color: "#556b2f", Icon: UserRound },
+            { title: t("legacy.total_users", "Total Users"), value: stats.users, color: "#0c4a6e", Icon: Users },
+            { title: t("legacy.total_books", "Total Books"), value: stats.books, color: "#0d9488", Icon: BookOpen },
+            { title: t("legacy.family_trees", "Family Trees"), value: stats.trees, color: "#556b2f", Icon: Network },
+            { title: t("legacy.total_people", "Total People"), value: stats.people, color: "#556b2f", Icon: UserRound },
           ]
         : [
-            { title: t("my_trees", "My Trees"), value: stats.myTrees, color: "#0c4a6e", Icon: Network },
-            { title: t("public_trees", "Public Trees"), value: stats.publicTrees, color: "#556b2f", Icon: Network },
-            { title: t("public_books", "Public Books"), value: stats.publicBooks, color: "#c45c3e", Icon: BookOpen },
-            { title: t("my_activity", "My Activity"), value: stats.events, color: "#556b2f", Icon: Activity },
+            { title: t("legacy.my_trees", "My Trees"), value: stats.myTrees, color: "#0c4a6e", Icon: Network },
+            { title: t("legacy.public_trees", "Public Trees"), value: stats.publicTrees, color: "#556b2f", Icon: Network },
+            { title: t("legacy.public_books", "Public Books"), value: stats.publicBooks, color: "#c45c3e", Icon: BookOpen },
+            { title: t("legacy.my_activity", "My Activity"), value: stats.events, color: "#556b2f", Icon: Activity },
           ],
     [stats, t, isAdmin]
   );
@@ -178,13 +178,13 @@ export default function Dashboard() {
           <div>
             <div className="text-xl font-bold">
               {isAdmin
-                ? t("admin_overview", "Admin Overview")
-                : t("my_dashboard", "My Dashboard")}
+                ? t("legacy.admin_overview", "Admin Overview")
+                : t("legacy.my_dashboard", "My Dashboard")}
             </div>
             <div className="text-sm opacity-70">
               {isAdmin
-                ? t("stats_latest_actions", "Stats & latest actions across the platform")
-                : t("my_dashboard_subtitle", "Your content & recent activity")}
+                ? t("legacy.stats_latest_actions", "Stats & latest actions across the platform")
+                : t("legacy.my_dashboard_subtitle", "Your content & recent activity")}
             </div>
           </div>
         </div>
@@ -200,23 +200,23 @@ export default function Dashboard() {
       {/* RECENT ACTIVITY */}
       <div className={`rounded-2xl shadow-md p-4 sm:p-6 border ${border} ${card} heritage-panel overflow-hidden`}>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xl font-semibold">{t("recent_activity", "Recent Activity")}</h3>
+          <h3 className="text-xl font-semibold">{t("legacy.recent_activity", "Recent Activity")}</h3>
           <button
             className="interactive-btn btn-neu btn-neu--primary px-4 py-2 text-xs"
             onClick={() => window.location.reload()}
             type="button"
           >
-            {t("refresh", "Refresh")}
+            {t("legacy.refresh", "Refresh")}
           </button>
         </div>
 
         {loading ? (
-          <div className="py-10 text-center opacity-70">{t("loading", "Loading...")}</div>
+          <div className="py-10 text-center opacity-70">{t("legacy.loading", "Loading...")}</div>
         ) : error ? (
           <div className="py-10 text-center">
             <div className="text-[#a0552a] font-semibold">{error}</div>
             <div className="opacity-70 text-sm mt-1">
-              {t("check_api_endpoints", "Check your API endpoints and try again.")}
+              {t("legacy.check_api_endpoints", "Check your API endpoints and try again.")}
             </div>
           </div>
         ) : (
@@ -224,17 +224,17 @@ export default function Dashboard() {
             <table className="heritage-table w-full text-sm">
               <thead className={subtle}>
                 <tr className={`text-start border-b ${border}`}>
-                  <th className="py-3 px-2 text-start">{t("type", "Type")}</th>
-                  <th className="py-3 px-2 text-start">{t("description", "Description")}</th>
-                  <th className="py-3 px-2 text-start">{t("user", "User")}</th>
-                  <th className="py-3 px-2 text-start">{t("date", "Date")}</th>
+                  <th className="py-3 px-2 text-start">{t("legacy.type", "Type")}</th>
+                  <th className="py-3 px-2 text-start">{t("legacy.description", "Description")}</th>
+                  <th className="py-3 px-2 text-start">{t("legacy.user", "User")}</th>
+                  <th className="py-3 px-2 text-start">{t("legacy.date", "Date")}</th>
                 </tr>
               </thead>
               <tbody>
                 {activity.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="py-8 text-center opacity-60">
-                      {t("no_activity_yet", "No activity yet.")}
+                      {t("legacy.no_activity_yet", "No activity yet.")}
                     </td>
                   </tr>
                 ) : (

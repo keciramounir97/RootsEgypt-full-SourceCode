@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 import { useThemeStore } from "../store/theme";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
 import ScrollReveal from "../components/motion/ScrollReveal";
 import {
@@ -39,7 +39,7 @@ interface ArchiveCard {
 
 export default function SourcesAndArchives() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
 
   const [query, setQuery] = useState("");
@@ -52,112 +52,105 @@ export default function SourcesAndArchives() {
         id: "dar-al-wathaeq",
         family: "state",
         icon: Archive,
-        title: t("sources_roots_card_archives_title", "Dar al-Wathaeq al-Qawmiyya"),
-        subtitle: t("sources_roots_card_archives_subtitle", "Egypt's core national archive"),
-        description: t(
-          "sources_roots_card_archives_desc",
+        title: t("legacy.sources_roots_card_archives_title", "Dar al-Wathaeq al-Qawmiyya"),
+        subtitle: t("legacy.sources_roots_card_archives_subtitle", "Egypt's core national archive"),
+        description: t("legacy.sources_roots_card_archives_desc",
           "The strongest starting point for families working from Ottoman, khedival, royal, and republican state documentation."
         ),
         bullets: [
-          t("sources_roots_card_archives_b1", "Administrative series, censuses, land files, and court-adjacent references"),
-          t("sources_roots_card_archives_b2", "Useful when oral history points to a governorate, district, or official post"),
-          t("sources_roots_card_archives_b3", "Best paired with exact dates, family names, and village-level clues"),
+          t("legacy.sources_roots_card_archives_b1", "Administrative series, censuses, land files, and court-adjacent references"),
+          t("legacy.sources_roots_card_archives_b2", "Useful when oral history points to a governorate, district, or official post"),
+          t("legacy.sources_roots_card_archives_b3", "Best paired with exact dates, family names, and village-level clues"),
         ],
       },
       {
         id: "civil-status",
         family: "state",
         icon: FileBadge2,
-        title: t("sources_roots_card_civil_title", "Civil Status Offices"),
-        subtitle: t("sources_roots_card_civil_subtitle", "Birth, marriage, death, and household continuity"),
-        description: t(
-          "sources_roots_card_civil_desc",
+        title: t("legacy.sources_roots_card_civil_title", "Civil Status Offices"),
+        subtitle: t("legacy.sources_roots_card_civil_subtitle", "Birth, marriage, death, and household continuity"),
+        description: t("legacy.sources_roots_card_civil_desc",
           "Modern civil records bridge living families to earlier generations and usually anchor the first verified steps of the tree."
         ),
         bullets: [
-          t("sources_roots_card_civil_b1", "Birth, marriage, and death extracts"),
-          t("sources_roots_card_civil_b2", "Family registration details and identity-document connections"),
-          t("sources_roots_card_civil_b3", "Most powerful when combined with neighborhood, village, and mother/father names"),
+          t("legacy.sources_roots_card_civil_b1", "Birth, marriage, and death extracts"),
+          t("legacy.sources_roots_card_civil_b2", "Family registration details and identity-document connections"),
+          t("legacy.sources_roots_card_civil_b3", "Most powerful when combined with neighborhood, village, and mother/father names"),
         ],
       },
       {
         id: "sharia-awqaf",
         family: "legal",
         icon: Scale,
-        title: t("sources_roots_card_courts_title", "Sharia Courts and Awqaf Records"),
-        subtitle: t("sources_roots_card_courts_subtitle", "Marriage, inheritance, guardianship, and endowments"),
-        description: t(
-          "sources_roots_card_courts_desc",
+        title: t("legacy.sources_roots_card_courts_title", "Sharia Courts and Awqaf Records"),
+        subtitle: t("legacy.sources_roots_card_courts_subtitle", "Marriage, inheritance, guardianship, and endowments"),
+        description: t("legacy.sources_roots_card_courts_desc",
           "These records often reveal kinship structures that civil extracts do not: spouses, guardians, heirs, properties, and family obligations."
         ),
         bullets: [
-          t("sources_roots_card_courts_b1", "Marriage contracts, inheritance settlements, guardianship cases"),
-          t("sources_roots_card_courts_b2", "Awqaf deeds that preserve lineage, place, and social role"),
-          t("sources_roots_card_courts_b3", "Excellent for rebuilding missing branches and confirming relationships"),
+          t("legacy.sources_roots_card_courts_b1", "Marriage contracts, inheritance settlements, guardianship cases"),
+          t("legacy.sources_roots_card_courts_b2", "Awqaf deeds that preserve lineage, place, and social role"),
+          t("legacy.sources_roots_card_courts_b3", "Excellent for rebuilding missing branches and confirming relationships"),
         ],
       },
       {
         id: "al-azhar",
         family: "religious",
         icon: Library,
-        title: t("sources_roots_card_azhar_title", "Al-Azhar and Scholarly Registers"),
-        subtitle: t("sources_roots_card_azhar_subtitle", "Families of scholars, judges, teachers, and students"),
-        description: t(
-          "sources_roots_card_azhar_desc",
+        title: t("legacy.sources_roots_card_azhar_title", "Al-Azhar and Scholarly Registers"),
+        subtitle: t("legacy.sources_roots_card_azhar_subtitle", "Families of scholars, judges, teachers, and students"),
+        description: t("legacy.sources_roots_card_azhar_desc",
           "For lineages tied to religious education, scholarship, or judicial circles, Al-Azhar-related records can reveal generational continuity."
         ),
         bullets: [
-          t("sources_roots_card_azhar_b1", "Study circles, appointments, ijazat, and biographical references"),
-          t("sources_roots_card_azhar_b2", "Particularly useful for urban scholarly families in Cairo and beyond"),
-          t("sources_roots_card_azhar_b3", "Works best with nisba names, titles, and place associations"),
+          t("legacy.sources_roots_card_azhar_b1", "Study circles, appointments, ijazat, and biographical references"),
+          t("legacy.sources_roots_card_azhar_b2", "Particularly useful for urban scholarly families in Cairo and beyond"),
+          t("legacy.sources_roots_card_azhar_b3", "Works best with nisba names, titles, and place associations"),
         ],
       },
       {
         id: "coptic-registers",
         family: "religious",
         icon: BookOpen,
-        title: t("sources_roots_card_coptic_title", "Coptic Church Registers"),
-        subtitle: t("sources_roots_card_coptic_subtitle", "Baptism, marriage, burial, and parish continuity"),
-        description: t(
-          "sources_roots_card_coptic_desc",
+        title: t("legacy.sources_roots_card_coptic_title", "Coptic Church Registers"),
+        subtitle: t("legacy.sources_roots_card_coptic_subtitle", "Baptism, marriage, burial, and parish continuity"),
+        description: t("legacy.sources_roots_card_coptic_desc",
           "For Coptic families, parish records often preserve the most continuous thread of identity across generations."
         ),
         bullets: [
-          t("sources_roots_card_coptic_b1", "Sacramental records linked to parish life"),
-          t("sources_roots_card_coptic_b2", "Can clarify naming patterns, godparents, and family clusters"),
-          t("sources_roots_card_coptic_b3", "Especially useful when civil records are late or incomplete"),
+          t("legacy.sources_roots_card_coptic_b1", "Sacramental records linked to parish life"),
+          t("legacy.sources_roots_card_coptic_b2", "Can clarify naming patterns, godparents, and family clusters"),
+          t("legacy.sources_roots_card_coptic_b3", "Especially useful when civil records are late or incomplete"),
         ],
       },
       {
         id: "community-private",
         family: "community",
         icon: Building2,
-        title: t("sources_roots_card_private_title", "Community and Private Collections"),
-        subtitle: t("sources_roots_card_private_subtitle", "Family notebooks, deeds, letters, studio portraits"),
-        description: t(
-          "sources_roots_card_private_desc",
+        title: t("legacy.sources_roots_card_private_title", "Community and Private Collections"),
+        subtitle: t("legacy.sources_roots_card_private_subtitle", "Family notebooks, deeds, letters, studio portraits"),
+        description: t("legacy.sources_roots_card_private_desc",
           "Some of the most precise family evidence never enters a formal archive. Roots Egypt should treat private collections as first-class sources."
         ),
         bullets: [
-          t("sources_roots_card_private_b1", "Sale deeds, waqf copies, memorial cards, letters, notebooks"),
-          t("sources_roots_card_private_b2", "Helps decode nicknames, branch names, and migration stories"),
-          t("sources_roots_card_private_b3", "Always record provenance before copying details into the tree"),
+          t("legacy.sources_roots_card_private_b1", "Sale deeds, waqf copies, memorial cards, letters, notebooks"),
+          t("legacy.sources_roots_card_private_b2", "Helps decode nicknames, branch names, and migration stories"),
+          t("legacy.sources_roots_card_private_b3", "Always record provenance before copying details into the tree"),
         ],
       },
       {
         id: "regional-maps",
         family: "community",
         icon: MapPinned,
-        title: t("sources_roots_card_maps_title", "Regional Maps and Local Gazetteers"),
-        subtitle: t("sources_roots_card_maps_subtitle", "Villages, quarters, hamlets, and migration routes"),
-        description: t(
-          "sources_roots_card_maps_desc",
+        title: t("legacy.sources_roots_card_maps_title", "Regional Maps and Local Gazetteers"),
+        subtitle: t("legacy.sources_roots_card_maps_subtitle", "Villages, quarters, hamlets, and migration routes"),
+        description: t("legacy.sources_roots_card_maps_desc",
           "Place names shift over time. Mapping old and current administrative names is often what unlocks the next archive request."
         ),
         bullets: [
-          t("sources_roots_card_maps_b1", "Use district names, village variants, and old quarter references"),
-          t("sources_roots_card_maps_b2", "Track movement between Cairo, Delta, Upper Egypt, canal cities, and diaspora"),
-          t("sources_roots_card_maps_b3", "Essential when a family keeps the memory of origin but not the exact modern spelling"),
+          t("legacy.sources_roots_card_maps_b1", "Use district names, village variants, and old quarter references"),
+          t("legacy.sources_roots_card_maps_b2", "Track movement between Cairo, Delta, Upper Egypt, canal cities, and diaspora"),
+          t("legacy.sources_roots_card_maps_b3", "Essential when a family keeps the memory of origin but not the exact modern spelling"),
         ],
       },
     ],
@@ -166,11 +159,11 @@ export default function SourcesAndArchives() {
 
   const archiveFamilies = useMemo(
     () => [
-      { id: "all" as const, label: t("sources_filter_all", "All repositories") },
-      { id: "state" as const, label: t("sources_filter_state", "State archives") },
-      { id: "legal" as const, label: t("sources_filter_legal", "Courts and deeds") },
-      { id: "religious" as const, label: t("sources_filter_religious", "Religious records") },
-      { id: "community" as const, label: t("sources_filter_community", "Community collections") },
+      { id: "all" as const, label: t("legacy.sources_filter_all", "All repositories") },
+      { id: "state" as const, label: t("legacy.sources_filter_state", "State archives") },
+      { id: "legal" as const, label: t("legacy.sources_filter_legal", "Courts and deeds") },
+      { id: "religious" as const, label: t("legacy.sources_filter_religious", "Religious records") },
+      { id: "community" as const, label: t("legacy.sources_filter_community", "Community collections") },
     ],
     [t]
   );
@@ -179,25 +172,22 @@ export default function SourcesAndArchives() {
     () => [
       {
         icon: Search,
-        title: t("sources_lane_1_title", "Start with what the family already knows"),
-        text: t(
-          "sources_lane_1_text",
+        title: t("legacy.sources_lane_1_title", "Start with what the family already knows"),
+        text: t("legacy.sources_lane_1_text",
           "Collect names in Arabic, nicknames, branch names, occupations, village memories, and migration stories before you request a single document."
         ),
       },
       {
         icon: Landmark,
-        title: t("sources_lane_2_title", "Anchor the line with official records"),
-        text: t(
-          "sources_lane_2_text",
+        title: t("legacy.sources_lane_2_title", "Anchor the line with official records"),
+        text: t("legacy.sources_lane_2_text",
           "Move from living civil records toward court, waqf, parish, and archival material until names repeat across independent sources."
         ),
       },
       {
         icon: ShieldCheck,
-        title: t("sources_lane_3_title", "Record provenance at every step"),
-        text: t(
-          "sources_lane_3_text",
+        title: t("legacy.sources_lane_3_title", "Record provenance at every step"),
+        text: t("legacy.sources_lane_3_text",
           "Every date, relationship, and title should keep its source note so the tree remains defensible when the family returns to review it."
         ),
       },
@@ -207,10 +197,10 @@ export default function SourcesAndArchives() {
 
   const verificationSteps = useMemo(
     () => [
-      t("sources_verify_1", "Match people through at least two independent record families whenever possible."),
-      t("sources_verify_2", "Preserve variant spellings rather than forcing one modern spelling too early."),
-      t("sources_verify_3", "Separate what is documented, inferred, and still oral-only."),
-      t("sources_verify_4", "Note archive shelfmarks, office names, parish names, and retrieval dates."),
+      t("legacy.sources_verify_1", "Match people through at least two independent record families whenever possible."),
+      t("legacy.sources_verify_2", "Preserve variant spellings rather than forcing one modern spelling too early."),
+      t("legacy.sources_verify_3", "Separate what is documented, inferred, and still oral-only."),
+      t("legacy.sources_verify_4", "Note archive shelfmarks, office names, parish names, and retrieval dates."),
     ],
     [t]
   );
@@ -219,33 +209,29 @@ export default function SourcesAndArchives() {
     () => [
       {
         range: "3100 BC - 641 AD",
-        title: t("periods_title_ancient_new", "Pharaonic, Ptolemaic, and Roman Egypt"),
-        text: t(
-          "periods_summary_ancient_new",
+        title: t("legacy.periods_title_ancient_new", "Pharaonic, Ptolemaic, and Roman Egypt"),
+        text: t("legacy.periods_summary_ancient_new",
           "Use inscriptions, papyri, temple references, Greek and Roman documents, and place context for rare named evidence."
         ),
       },
       {
         range: "641 - 1517",
-        title: t("periods_title_early_islamic_new", "Early Islamic, Fatimid, Ayyubid, and Mamluk Egypt"),
-        text: t(
-          "periods_summary_fatimid_ayyubid_new",
+        title: t("legacy.periods_title_early_islamic_new", "Early Islamic, Fatimid, Ayyubid, and Mamluk Egypt"),
+        text: t("legacy.periods_summary_fatimid_ayyubid_new",
           "Arabic administration, courts, waqf, scholarship, urban quarters, guilds, and religious institutions begin to shape stronger family clues."
         ),
       },
       {
         range: "1517 - 1882",
-        title: t("periods_title_ottoman_new_2", "Ottoman and Khedival Egypt"),
-        text: t(
-          "periods_summary_ottoman_new_2",
+        title: t("legacy.periods_title_ottoman_new_2", "Ottoman and Khedival Egypt"),
+        text: t("legacy.periods_summary_ottoman_new_2",
           "Court registers, land, taxation, provincial administration, and waqf chains make this the deepest practical archive period for many families."
         ),
       },
       {
         range: "1882 - Present",
-        title: t("periods_title_colonial_new", "Modern Civil, Colonial, Royal, and Republican Egypt"),
-        text: t(
-          "periods_summary_colonial_new",
+        title: t("legacy.periods_title_colonial_new", "Modern Civil, Colonial, Royal, and Republican Egypt"),
+        text: t("legacy.periods_summary_colonial_new",
           "Civil status, municipal records, cadastral surveys, schools, photographs, identity papers, migration, and oral testimony connect archives to living memory."
         ),
       },
@@ -274,12 +260,11 @@ export default function SourcesAndArchives() {
       hero={
         <div className="space-y-4">
           <p className="text-sm uppercase tracking-[0.28em] text-[#d4a843]">
-            {t("sources_archives_eyebrow", "Research Resources")}
+            {t("legacy.sources_archives_eyebrow", "Research Resources")}
           </p>
-          <h1>{t("sources_archives_title", "Sources and Periods for Roots Egypt")}</h1>
+          <h1>{t("legacy.sources_archives_title", "Sources and Periods for Roots Egypt")}</h1>
           <p className="text-lg opacity-90">
-            {t(
-              "sources_archives_intro_new",
+            {t("legacy.sources_archives_intro_new",
               "A cleaner route through Egypt's civil, court, religious, and community records - built to help families move from memory to evidence with confidence."
             )}
           </p>
@@ -306,14 +291,13 @@ export default function SourcesAndArchives() {
         <section className="roots-section roots-section-alt">
           <div className="mb-8 max-w-4xl">
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.28em] text-[#d4a843]">
-              {t("periods_eyebrow_new", "Egyptian Historical Timeline")}
+              {t("legacy.periods_eyebrow_new", "Egyptian Historical Timeline")}
             </p>
             <h2 className="roots-heading">
-              {t("periods_hero_title_new", "Egyptian Periods for Family Research")}
+              {t("legacy.periods_hero_title_new", "Egyptian Periods for Family Research")}
             </h2>
             <p className="text-base leading-7 opacity-85">
-              {t(
-                "periods_hero_intro_new",
+              {t("legacy.periods_hero_intro_new",
                 "Use this timeline to understand what records survive, how names and places were written, and which sources can support each era of an Egyptian family tree."
               )}
             </p>
@@ -345,11 +329,10 @@ export default function SourcesAndArchives() {
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h2 className="roots-heading">
-              {t("sources_archive_hubs_title", "Archive Hubs and Evidence Families")}
+              {t("legacy.sources_archive_hubs_title", "Archive Hubs and Evidence Families")}
             </h2>
             <p className="max-w-3xl opacity-85">
-              {t(
-                "sources_archive_hubs_intro",
+              {t("legacy.sources_archive_hubs_intro",
                 "Filter the repository types below, then open a card to see when that source is strong and what kind of genealogical proof it usually gives you."
               )}
             </p>
@@ -359,7 +342,7 @@ export default function SourcesAndArchives() {
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder={t("sources_search_placeholder_new", "Search archive types, document families, and workflows...")}
+              placeholder={t("legacy.sources_search_placeholder_new", "Search archive types, document families, and workflows...")}
               className="w-full bg-transparent text-sm outline-none"
             />
           </div>
@@ -446,7 +429,7 @@ export default function SourcesAndArchives() {
 
         {visibleCards.length === 0 ? (
           <div className="mt-6 rounded-2xl border border-dashed border-[#d4a843]/30 px-6 py-10 text-center opacity-80">
-            {t("sources_no_results", "No archive groups matched that search. Try a broader family name, office type, or record category.")}
+            {t("legacy.sources_no_results", "No archive groups matched that search. Try a broader family name, office type, or record category.")}
           </div>
         ) : null}
       </section>
@@ -456,13 +439,13 @@ export default function SourcesAndArchives() {
           <div className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr]">
             <div className="roots-card p-7">
               <h2 className="roots-heading">
-                {t("sources_workflow_title", "A Strong Roots Egypt Workflow")}
+                {t("legacy.sources_workflow_title", "A Strong Roots Egypt Workflow")}
               </h2>
               <div className="space-y-4">
                 {verificationSteps.map((step, index) => (
                   <div key={step} className={`rounded-2xl border p-4 ${surfaceClass}`}>
                     <p className="mb-1 text-xs font-semibold uppercase tracking-[0.25em] text-[#d4a843]">
-                      {t("sources_step_label", "Step")} {index + 1}
+                      {t("legacy.sources_step_label", "Step")} {index + 1}
                     </p>
                     <p className="text-sm leading-6 opacity-90">{step}</p>
                   </div>
@@ -472,24 +455,24 @@ export default function SourcesAndArchives() {
 
             <div className="roots-card p-7">
               <h2 className="roots-heading">
-                {t("sources_checklist_title", "Before You Request a Record")}
+                {t("legacy.sources_checklist_title", "Before You Request a Record")}
               </h2>
               <div className="space-y-4">
                 {[
                   {
                     icon: FileSearch,
-                    title: t("sources_checklist_1_title", "Normalize names"),
-                    text: t("sources_checklist_1_text", "Write Arabic spellings, common Latin spellings, branch names, and honorifics together."),
+                    title: t("legacy.sources_checklist_1_title", "Normalize names"),
+                    text: t("legacy.sources_checklist_1_text", "Write Arabic spellings, common Latin spellings, branch names, and honorifics together."),
                   },
                   {
                     icon: MapPinned,
-                    title: t("sources_checklist_2_title", "Lock the place"),
-                    text: t("sources_checklist_2_text", "List governorate, district, village, quarter, and any older local name you have heard in the family."),
+                    title: t("legacy.sources_checklist_2_title", "Lock the place"),
+                    text: t("legacy.sources_checklist_2_text", "List governorate, district, village, quarter, and any older local name you have heard in the family."),
                   },
                   {
                     icon: ShieldCheck,
-                    title: t("sources_checklist_3_title", "Define the proof you need"),
-                    text: t("sources_checklist_3_text", "Know whether you are proving identity, marriage, parentage, inheritance, or migration before searching."),
+                    title: t("legacy.sources_checklist_3_title", "Define the proof you need"),
+                    text: t("legacy.sources_checklist_3_text", "Know whether you are proving identity, marriage, parentage, inheritance, or migration before searching."),
                   },
                 ].map((item) => (
                   <div key={item.title} className="flex gap-4 rounded-2xl border p-4">

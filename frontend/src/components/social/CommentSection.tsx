@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, Send, ChevronDown, ChevronUp, CornerDownRight, Trash2 } from "lucide-react";
 import { api } from "../../api/client";
 import { useThemeStore } from "../../store/theme";
+import { useLanguage } from "../../i18n";
 
 interface Comment {
   id: string;
@@ -29,6 +30,7 @@ export default function CommentSection({
 }: CommentSectionProps) {
   const { theme } = useThemeStore();
   const isDark = theme === "dark";
+  const { t } = useLanguage();
 
   const [isOpen, setIsOpen] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -134,25 +136,31 @@ export default function CommentSection({
       className={`${isReply ? "ml-8 pl-4 border-l-2 border-teal/20" : ""}`}
     >
       <div className="flex items-start gap-3 py-3">
-        <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-xs font-bold ${
-          isDark ? "bg-teal/20 text-teal" : "bg-[#0c4a6e]/10 text-[#0c4a6e]"
-        }`}>
+        <div
+          className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-xs font-bold ${
+            isDark ? "bg-teal/20 text-teal" : "bg-[#0c4a6e]/10 text-[#0c4a6e]"
+          }`}
+        >
           {comment.userName.charAt(0).toUpperCase()}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold">{comment.userName}</span>
-            <span className="text-xs opacity-40">{timeAgo(comment.createdAt)}</span>
+            <span className="text-xs opacity-40">
+              {timeAgo(comment.createdAt)}
+            </span>
           </div>
           <p className="text-sm opacity-80 mt-0.5">{comment.body}</p>
           <div className="flex items-center gap-3 mt-1">
             {!isReply && (
               <button
-                onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+                onClick={() =>
+                  setReplyingTo(replyingTo === comment.id ? null : comment.id)
+                }
                 className="text-xs opacity-50 hover:opacity-100 hover:text-teal transition flex items-center gap-1"
               >
                 <CornerDownRight className="w-3 h-3" />
-                Reply
+                {t("legacy.reply", "Reply")}
               </button>
             )}
             <button
@@ -176,8 +184,10 @@ export default function CommentSection({
                     type="text"
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && submitComment(comment.id)}
-                    placeholder="Write a reply..."
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && submitComment(comment.id)
+                    }
+                    placeholder={t("legacy.reply_placeholder", "Write a reply...")}
                     className={`flex-1 px-3 py-2 rounded-lg text-sm bg-transparent border ${borderColor} outline-none focus:border-teal transition`}
                     autoFocus
                   />
@@ -209,7 +219,11 @@ export default function CommentSection({
       >
         <MessageCircle className="w-5 h-5" />
         {count > 0 && <span className="text-xs font-medium">{count}</span>}
-        {isOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+        {isOpen ? (
+          <ChevronUp className="w-3 h-3" />
+        ) : (
+          <ChevronDown className="w-3 h-3" />
+        )}
       </button>
 
       {/* Comment section */}
@@ -224,11 +238,17 @@ export default function CommentSection({
           >
             <div className={`mt-3 pt-3 border-t ${borderColor} space-y-1`}>
               {loading ? (
-                <div className="py-4 text-center opacity-50 text-sm">Loading comments...</div>
+                <div className="py-4 text-center opacity-50 text-sm">
+                  {t("legacy.loading_comments", "Loading comments...")}
+                </div>
               ) : comments.length === 0 ? (
-                <div className="py-4 text-center opacity-40 text-sm">No comments yet. Be the first!</div>
+                <div className="py-4 text-center opacity-40 text-sm">
+                  {t("legacy.no_comments_yet", "No comments yet. Be the first!")}
+                </div>
               ) : (
-                <div className={`divide-y ${isDark ? "divide-white/5" : "divide-black/5"}`}>
+                <div
+                  className={`divide-y ${isDark ? "divide-white/5" : "divide-black/5"}`}
+                >
                   {comments.map((c) => renderComment(c))}
                 </div>
               )}
@@ -241,7 +261,7 @@ export default function CommentSection({
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && submitComment()}
-                  placeholder="Write a comment..."
+                  placeholder={t("legacy.comment_placeholder", "Write a comment...")}
                   className={`flex-1 px-4 py-2.5 rounded-xl text-sm bg-transparent border ${borderColor} outline-none focus:border-teal transition`}
                 />
                 <motion.button

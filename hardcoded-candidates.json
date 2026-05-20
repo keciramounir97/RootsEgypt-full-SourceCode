@@ -1,0 +1,129 @@
+[
+  {
+    "file": "admin\\components\\AuthContext.tsx",
+    "count": 6,
+    "samples": [
+      "jsx-text: Promise",
+      "jsx-text: Promise",
+      "jsx-text: Promise",
+      "jsx-text: Promise"
+    ]
+  },
+  {
+    "file": "components\\articles\\ArticlePostCard.tsx",
+    "count": 5,
+    "samples": [
+      "placeholder: Write a comment…",
+      "placeholder: Write a reply…",
+      "aria-label: Close menu",
+      "jsx-text: Copy link"
+    ]
+  },
+  {
+    "file": "components\\articles\\CreatePostCard.tsx",
+    "count": 4,
+    "samples": [
+      "aria-label: Collapse",
+      "alert: Image too large (max ~1.2MB)",
+      "jsx-text: Remove image",
+      "jsx-text: Categories"
+    ]
+  },
+  {
+    "file": "components\\MaghrebTribesMap.tsx",
+    "count": 4,
+    "samples": [
+      "jsx-text: Loading Map...",
+      "jsx-text: OpenStreetMap",
+      "jsx-text: Tribes of Western Sahara",
+      "jsx-text: Major Cities"
+    ]
+  },
+  {
+    "file": "components\\social\\CommentSection.tsx",
+    "count": 4,
+    "samples": [
+      "placeholder: Write a reply...",
+      "placeholder: Write a comment...",
+      "jsx-text: Loading comments...",
+      "jsx-text: No comments yet. Be the first!"
+    ]
+  },
+  {
+    "file": "admin\\components\\TreesBuilder.tsx",
+    "count": 3,
+    "samples": [
+      "placeholder: e.g. Cairo, Egypt",
+      "jsx-text: GEDCOM 7.0",
+      "jsx-text: No other people available"
+    ]
+  },
+  {
+    "file": "components\\articles\\ShareArticleModal.tsx",
+    "count": 3,
+    "samples": [
+      "jsx-text: Facebook",
+      "jsx-text: WhatsApp",
+      "jsx-text: Telegram"
+    ]
+  },
+  {
+    "file": "pages\\login.tsx",
+    "count": 2,
+    "samples": [
+      "jsx-text: RootsEgypt",
+      "jsx-text: RootsEgypt"
+    ]
+  },
+  {
+    "file": "pages\\resetpassword.tsx",
+    "count": 2,
+    "samples": [
+      "jsx-text: RootsEgypt",
+      "jsx-text: RootsEgypt"
+    ]
+  },
+  {
+    "file": "pages\\signup.tsx",
+    "count": 2,
+    "samples": [
+      "jsx-text: RootsEgypt",
+      "jsx-text: RootsEgypt"
+    ]
+  },
+  {
+    "file": "admin\\pages\\FooterSettings.tsx",
+    "count": 1,
+    "samples": [
+      "jsx-text: RootsEgypt"
+    ]
+  },
+  {
+    "file": "components\\EgyptMap.tsx",
+    "count": 1,
+    "samples": [
+      "jsx-text: OpenStreetMap"
+    ]
+  },
+  {
+    "file": "components\\ErrorBoundary.tsx",
+    "count": 1,
+    "samples": [
+      "jsx-text: Something went wrong."
+    ]
+  },
+  {
+    "file": "components\\social\\ShareButton.tsx",
+    "count": 1,
+    "samples": [
+      "aria-label: Share"
+    ]
+  },
+  {
+    "file": "context\\NotificationContext.tsx",
+    "count": 1,
+    "samples": [
+      "jsx-text: Promise"
+    ]
+  }
+]

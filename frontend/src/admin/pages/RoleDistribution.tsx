@@ -3,7 +3,7 @@ import { CheckSquare, RefreshCw, Save, Shield, UserCog } from "lucide-react";
 import { api } from "../../api/client";
 import { getApiErrorMessage } from "../../api/helpers";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { notifyAdmin } from "../utils/notifications";
 
 type AdminUser = {
@@ -27,7 +27,7 @@ type PagePermission = {
 
 export default function RoleDistribution() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -72,7 +72,7 @@ export default function RoleDistribution() {
         setSelectedPages(Array.isArray(first.permissions) ? first.permissions : []);
       }
     } catch (err) {
-      setError(getApiErrorMessage(err, t("role_distribution_failed", "Failed to load role distribution")));
+      setError(getApiErrorMessage(err, t("legacy.role_distribution_failed", "Failed to load role distribution")));
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ export default function RoleDistribution() {
 
   const saveDistribution = async () => {
     if (!selectedUserId || !selectedRoleId) {
-      notifyAdmin(t("select_user_and_role", "Select a user and role first."), "error");
+      notifyAdmin(t("legacy.select_user_and_role", "Select a user and role first."), "error");
       return;
     }
 
@@ -110,10 +110,10 @@ export default function RoleDistribution() {
         roleId: selectedRoleId,
         privileges: selectedPages,
       });
-      notifyAdmin(data?.message || t("role_distribution_saved", "Role distribution updated."));
+      notifyAdmin(data?.message || t("legacy.role_distribution_saved", "Role distribution updated."));
       await loadDistribution();
     } catch (err) {
-      notifyAdmin(getApiErrorMessage(err, t("role_distribution_save_failed", "Failed to save role distribution")), "error");
+      notifyAdmin(getApiErrorMessage(err, t("legacy.role_distribution_save_failed", "Failed to save role distribution")), "error");
     } finally {
       setSaving(false);
     }
@@ -124,14 +124,13 @@ export default function RoleDistribution() {
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-6">
         <div>
           <p className={`text-sm uppercase tracking-[0.2em] ${palette.accent}`}>
-            {t("roles", "Roles")}
+            {t("legacy.roles", "Roles")}
           </p>
           <h1 className="text-3xl font-bold mt-1">
-            {t("role_distribution", "Role Distribution")}
+            {t("legacy.role_distribution", "Role Distribution")}
           </h1>
           <p className={`mt-2 max-w-2xl ${palette.muted}`}>
-            {t(
-              "role_distribution_desc",
+            {t("legacy.role_distribution_desc",
               "Select a user, assign a role, and choose which admin pages they can see and manage.",
             )}
           </p>
@@ -142,7 +141,7 @@ export default function RoleDistribution() {
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border ${palette.button}`}
         >
           <RefreshCw className="w-4 h-4" />
-          {t("refresh", "Refresh")}
+          {t("legacy.refresh", "Refresh")}
         </button>
       </div>
 
@@ -150,21 +149,21 @@ export default function RoleDistribution() {
 
       <div className={`rounded-xl border p-5 ${palette.panel}`}>
         {loading ? (
-          <div className="p-10 text-center">{t("loading", "Loading...")}</div>
+          <div className="p-10 text-center">{t("legacy.loading", "Loading...")}</div>
         ) : (
           <div className="grid gap-6">
             <div className="grid md:grid-cols-2 gap-4">
               <label className="grid gap-2">
                 <span className="text-sm font-semibold inline-flex items-center gap-2">
                   <UserCog className="w-4 h-4 text-[#24766f]" />
-                  {t("select_user", "Select User")}
+                  {t("legacy.select_user", "Select User")}
                 </span>
                 <select
                   value={selectedUserId}
                   onChange={(event) => handleUserChange(event.target.value)}
                   className={`px-4 py-3 rounded-lg border ${palette.input}`}
                 >
-                  <option value="">{t("select_user", "Select User")}</option>
+                  <option value="">{t("legacy.select_user", "Select User")}</option>
                   {users.map((user) => (
                     <option key={user.id} value={user.id}>
                       {user.fullName || user.email} - {user.email}
@@ -176,14 +175,14 @@ export default function RoleDistribution() {
               <label className="grid gap-2">
                 <span className="text-sm font-semibold inline-flex items-center gap-2">
                   <Shield className="w-4 h-4 text-[#24766f]" />
-                  {t("select_role", "Select Role")}
+                  {t("legacy.select_role", "Select Role")}
                 </span>
                 <select
                   value={selectedRoleId}
                   onChange={(event) => setSelectedRoleId(Number(event.target.value) || "")}
                   className={`px-4 py-3 rounded-lg border ${palette.input}`}
                 >
-                  <option value="">{t("select_role", "Select Role")}</option>
+                  <option value="">{t("legacy.select_role", "Select Role")}</option>
                   {roles.map((role) => (
                     <option key={role.id} value={role.id}>
                       {role.name}
@@ -197,7 +196,7 @@ export default function RoleDistribution() {
               <div className={`rounded-lg border p-4 ${isDark ? "border-white/10 bg-black/15" : "border-[#d8e2ea] bg-[#f8fafc]"}`}>
                 <p className="font-semibold">{selectedUser.fullName || selectedUser.email}</p>
                 <p className={`text-sm ${palette.muted}`}>
-                  {selectedUser.email} · {t("current_role", "Current role")}: {selectedUser.roleName || selectedUser.roleId || "-"}
+                  {selectedUser.email} · {t("legacy.current_role", "Current role")}: {selectedUser.roleName || selectedUser.roleId || "-"}
                 </p>
               </div>
             ) : null}
@@ -205,7 +204,7 @@ export default function RoleDistribution() {
             <div>
               <h2 className="text-lg font-semibold inline-flex items-center gap-2 mb-3">
                 <CheckSquare className="w-5 h-5 text-[#24766f]" />
-                {t("page_permissions", "Page Permissions")}
+                {t("legacy.page_permissions", "Page Permissions")}
               </h2>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {pages.map((page) => (
@@ -232,7 +231,7 @@ export default function RoleDistribution() {
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-[#24766f] text-white font-semibold hover:bg-[#1d625d] disabled:opacity-60"
             >
               <Save className="w-4 h-4" />
-              {saving ? t("saving", "Saving...") : t("save_changes", "Save Changes")}
+              {saving ? t("legacy.saving", "Saving...") : t("legacy.save_changes", "Save Changes")}
             </button>
           </div>
         )}

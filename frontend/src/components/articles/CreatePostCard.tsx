@@ -4,6 +4,7 @@ import { ImagePlus, Send, X } from "lucide-react";
 import MagneticButton from "../motion/MagneticButton";
 import type { User } from "../../admin/components/AuthContext";
 import { EGYPTIAN_CATEGORIES } from "./articleStorage";
+import { useLanguage } from "../../i18n";
 
 interface CreatePostCardProps {
   theme: "light" | "dark";
@@ -40,6 +41,7 @@ export default function CreatePostCard({
   postLabel,
   onPublish,
 }: CreatePostCardProps) {
+  const { t } = useLanguage();
   const reduce = useReducedMotion();
   const [expanded, setExpanded] = useState(false);
   const [title, setTitle] = useState("");
@@ -64,7 +66,7 @@ export default function CreatePostCard({
     const f = e.target.files?.[0];
     if (!f || !f.type.startsWith("image/")) return;
     if (f.size > 1_200_000) {
-      alert("Image too large (max ~1.2MB)");
+      alert(t("legacy.image_too_large", "Image too large (max ~1.2MB)"));
       return;
     }
     const reader = new FileReader();
@@ -134,7 +136,7 @@ export default function CreatePostCard({
                   type="button"
                   onClick={() => setExpanded(false)}
                   className="rounded-full p-1.5 hover:bg-black/5 dark:hover:bg-white/10"
-                  aria-label="Collapse"
+                  aria-label={t("legacy.collapse", "Collapse")}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -154,13 +156,23 @@ export default function CreatePostCard({
                 className="w-full px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 bg-transparent resize-y min-h-[180px] text-[var(--text-color)]"
               />
 
-              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={onFile}
+              />
               <div
                 onClick={() => fileRef.current?.click()}
                 className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-teal/35 py-8 cursor-pointer hover:bg-teal/5 transition-colors"
               >
                 {coverImage ? (
-                  <img src={coverImage} alt="" className="max-h-40 rounded-lg object-contain" />
+                  <img
+                    src={coverImage}
+                    alt=""
+                    className="max-h-40 rounded-lg object-contain"
+                  />
                 ) : (
                   <>
                     <ImagePlus className="w-8 h-8 text-teal opacity-80" />
@@ -174,13 +186,13 @@ export default function CreatePostCard({
                   onClick={() => setCoverImage(null)}
                   className="text-xs text-terracotta underline"
                 >
-                  Remove image
+                  {t("legacy.remove_image", "Remove image")}
                 </button>
               ) : null}
 
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider opacity-60 mb-2">
-                  Categories
+                  {t("legacy.categories", "Categories")}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {EGYPTIAN_CATEGORIES.map((c) => {

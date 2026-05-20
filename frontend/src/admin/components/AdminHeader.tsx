@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useThemeStore } from "../../store/theme";
 import { api } from "../../api/client";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { useAuth } from "./AuthContext";
 
 export default function AdminHeader({
@@ -22,7 +22,7 @@ export default function AdminHeader({
   onToggleSidebar: () => void;
 }) {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { user, logout } = useAuth();
   const [search, setSearch] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -92,7 +92,7 @@ export default function AdminHeader({
         if (latestQueryRef.current !== q) return;
         setSuggestError(
           err.response?.data?.message ||
-            t("suggestions_load_failed", "Failed to load suggestions"),
+            t("legacy.suggestions_load_failed", "Failed to load suggestions"),
         );
         setSuggestions({ trees: [], people: [] });
       } finally {
@@ -155,13 +155,13 @@ export default function AdminHeader({
             className={`admin-icon-btn p-2 rounded-xl transition-all ${isDark ? "hover:bg-white/10 text-white" : "hover:bg-[#0c4a6e]/10 text-[#0d1b2a]"}`}
             aria-label={
               sidebarOpen
-                ? t("close_sidebar", "Close sidebar")
-                : t("open_sidebar", "Open sidebar")
+                ? t("legacy.close_sidebar", "Close sidebar")
+                : t("legacy.open_sidebar", "Open sidebar")
             }
             title={
               sidebarOpen
-                ? t("close_sidebar", "Close sidebar")
-                : t("open_sidebar", "Open sidebar")
+                ? t("legacy.close_sidebar", "Close sidebar")
+                : t("legacy.open_sidebar", "Open sidebar")
             }
           >
             <Menu className="w-6 h-6" />
@@ -172,11 +172,11 @@ export default function AdminHeader({
             <span
               className={`text-xs uppercase tracking-widest font-bold opacity-50 ${isDark ? "text-gray-400" : "text-[#0c4a6e]"}`}
             >
-              {t("dashboard", "Dashboard")}
+              {t("legacy.dashboard", "Dashboard")}
             </span>
             <span className={`text-sm font-medium ${textColor}`}>
-              {t("welcome_back_prefix", "Welcome back")},{" "}
-              {user?.fullName?.split(" ")[0] || t("user", "User")}
+              {t("legacy.welcome_back_prefix", "Welcome back")},{" "}
+              {user?.fullName?.split(" ")[0] || t("legacy.user", "User")}
             </span>
           </div>
         </div>
@@ -196,8 +196,7 @@ export default function AdminHeader({
               onFocus={handleSuggestFocus}
               onBlur={handleSuggestBlur}
               className={`w-full bg-transparent border-none outline-none py-3 pl-12 pr-4 text-sm rounded-full transition-colors ${searchInputText}`}
-              placeholder={t(
-                "search_placeholder",
+              placeholder={t("legacy.search_placeholder",
                 "Search archives, families, or books...",
               )}
             />
@@ -211,7 +210,7 @@ export default function AdminHeader({
               {/* Search Results */}
               {suggestLoading ? (
                 <div className="p-4 text-sm opacity-50 text-center">
-                  {t("loading", "Loading...")}
+                  {t("legacy.loading", "Loading...")}
                 </div>
               ) : suggestError ? (
                 <div className="p-4 text-sm text-red-500 text-center">
@@ -223,7 +222,7 @@ export default function AdminHeader({
                     <div
                       className={`px-4 py-2 text-[10px] uppercase tracking-wider font-bold opacity-50 ${isDark ? "bg-white/5" : "bg-gray-50"}`}
                     >
-                      {t("suggest_trees_heading", "Trees")}
+                      {t("legacy.suggest_trees_heading", "Trees")}
                     </div>
                   )}
                   {suggestions.trees.map((item: any) => (
@@ -242,7 +241,7 @@ export default function AdminHeader({
                     <div
                       className={`px-4 py-2 text-[10px] uppercase tracking-wider font-bold opacity-50 ${isDark ? "bg-white/5" : "bg-gray-50"}`}
                     >
-                      {t("suggest_people_heading", "People")}
+                      {t("legacy.suggest_people_heading", "People")}
                     </div>
                   )}
                   {suggestions.people.map((item: any) => (
@@ -252,12 +251,12 @@ export default function AdminHeader({
                       className={`w-full text-left px-4 py-3 flex flex-col transition-colors border-b last:border-0 ${isDark ? "hover:bg-white/5 border-white/5 text-gray-200" : "hover:bg-[#0c4a6e]/5 border-[#0c4a6e]/5 text-[#0d1b2a]"}`}
                     >
                       <span className="font-medium text-sm group-hover:text-teal transition-colors">
-                        {item.name || t("unknown", "Unknown")}
+                        {item.name || t("legacy.unknown", "Unknown")}
                       </span>
                       <span className="text-xs opacity-50 mt-0.5">
                         {item.tree_title
-                          ? `${t("in_prefix", "In")} ${item.tree_title}`
-                          : t("person_record", "Person record")}
+                          ? `${t("legacy.in_prefix", "In")} ${item.tree_title}`
+                          : t("legacy.person_record", "Person record")}
                       </span>
                     </button>
                   ))}
@@ -265,7 +264,7 @@ export default function AdminHeader({
               ) : (
                 <div className="p-6 text-sm opacity-50 text-center flex flex-col items-center">
                   <Search className="w-8 h-8 mb-2 opacity-20" />
-                  {t("no_results_found", "No results found")}
+                  {t("legacy.no_results_found", "No results found")}
                 </div>
               )}
             </div>
@@ -279,7 +278,7 @@ export default function AdminHeader({
             target="_blank"
             className={`hidden lg:flex items-center gap-2 text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-full transition-all ${isDark ? "hover:bg-white/10 text-gray-400 hover:text-white" : "hover:bg-[#0c4a6e]/5 text-[#0c4a6e]/70 hover:text-[#0d1b2a]"}`}
           >
-            <span>{t("live_site", "Live Site")}</span>
+            <span>{t("legacy.live_site", "Live Site")}</span>
             <ExternalLink className="w-3 h-3 mb-0.5" />
           </Link>
 
@@ -323,7 +322,7 @@ export default function AdminHeader({
                   className={`flex items-center gap-2 px-4 py-2.5 text-sm transition-colors ${isDark ? "hover:bg-white/10 text-gray-200" : "hover:bg-[#0c4a6e]/5 text-[#0d1b2a]"}`}
                 >
                   <Settings className="w-4 h-4" />
-                  {t("settings", "Settings")}
+                  {t("legacy.settings", "Settings")}
                 </Link>
                 <button
                   type="button"
@@ -331,7 +330,7 @@ export default function AdminHeader({
                   className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 transition-colors ${isDark ? "hover:bg-white/10" : "hover:bg-red-50"}`}
                 >
                   <LogOut className="w-4 h-4" />
-                  {t("logout", "Log out")}
+                  {t("legacy.logout", "Log out")}
                 </button>
               </div>
             )}

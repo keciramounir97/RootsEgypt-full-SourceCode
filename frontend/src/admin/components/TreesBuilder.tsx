@@ -19,7 +19,7 @@ import {
 
 import { useThemeStore } from "../../store/theme";
 
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 
 const CARD_W = 220;
 
@@ -586,7 +586,7 @@ export const buildGedcom = (people, locale, t, gedcomVersion = "5.5.1") => {
       names?.fr ||
       names?.ar ||
       names?.es ||
-      t("unknown", "Unknown");
+      t("legacy.unknown", "Unknown");
 
     return normalizeSpaces(String(raw).replace(/\r?\n/g, " "));
   };
@@ -858,7 +858,7 @@ export const buildGedcom = (people, locale, t, gedcomVersion = "5.5.1") => {
       ? `${nameParts.given} /${nameParts.surname}/`.trim()
       : nameParts.full;
 
-    lines.push(`1 NAME ${nameLine || t("unknown", "Unknown")}`);
+    lines.push(`1 NAME ${nameLine || t("legacy.unknown", "Unknown")}`);
 
     if (nameParts.given) lines.push(`1 GIVN ${nameParts.given}`);
 
@@ -1211,7 +1211,7 @@ export function parseGedcomXFromXml(text) {
 export function buildGedcomXJson(people, locale, t) {
   const safeName = (p) => {
     const names = p?.names || {};
-    const raw = names?.[locale] || names?.en || names?.fr || names?.ar || names?.es || t?.("unknown", "Unknown") || "Unknown";
+    const raw = names?.[locale] || names?.en || names?.fr || names?.ar || names?.es || t?.("legacy.unknown", "Unknown") || "Unknown";
     return normalizeSpaces(String(raw).replace(/\r?\n/g, " "));
   };
   const byId = new Map();
@@ -1261,7 +1261,7 @@ export function buildGedcomXXml(people, locale, t) {
   };
   const safeName = (p) => {
     const names = p?.names || {};
-    const raw = names?.[locale] || names?.en || names?.fr || names?.ar || names?.es || t?.("unknown", "Unknown") || "Unknown";
+    const raw = names?.[locale] || names?.en || names?.fr || names?.ar || names?.es || t?.("legacy.unknown", "Unknown") || "Unknown";
     return normalizeSpaces(String(raw).replace(/\r?\n/g, " "));
   };
   const byId = new Map();
@@ -1339,7 +1339,7 @@ export default function TreesBuilder({
 }: any) {
   const { theme } = useThemeStore();
 
-  const { locale, dir, t } = useTranslation();
+  const { language: locale, dir, t } = useLanguage();
 
   const people = useMemo(
     () => (Array.isArray(rawPeople) ? rawPeople : []),
@@ -1404,7 +1404,7 @@ export default function TreesBuilder({
   const applyPeopleUpdate = (updater) => {
     if (!canMutatePeople || readOnly) {
       setPersonStatus({
-        message: t("tree_builder_read_only", "Tree builder is read-only."),
+        message: t("legacy.tree_builder_read_only", "Tree builder is read-only."),
         type: "error",
       });
       return;
@@ -1458,7 +1458,7 @@ export default function TreesBuilder({
 
   const nameOf = useCallback(
     (p) => {
-      if (!p) return t("unknown", "Unknown");
+      if (!p) return t("legacy.unknown", "Unknown");
       const fromNames =
         p.names?.[locale] ||
         p.names?.en ||
@@ -1467,7 +1467,7 @@ export default function TreesBuilder({
         p.names?.es;
       if (fromNames && String(fromNames).trim()) return String(fromNames).trim();
       const givenSurname = [p.given, p.surname].filter(Boolean).map((s) => String(s).trim()).join(" ").trim();
-      return givenSurname || t("unknown", "Unknown");
+      return givenSurname || t("legacy.unknown", "Unknown");
     },
     [locale, t]
   );
@@ -1493,8 +1493,8 @@ export default function TreesBuilder({
   const displayGender = useCallback(
     (value) => {
       const normalized = normalizeGenderValue(value);
-      if (normalized === "M") return t("male", "Male");
-      if (normalized === "F") return t("female", "Female");
+      if (normalized === "M") return t("legacy.male", "Male");
+      if (normalized === "F") return t("legacy.female", "Female");
       const raw = String(value || "").trim();
       return raw || "-";
     },
@@ -1855,7 +1855,7 @@ export default function TreesBuilder({
             const targetName = nameOf(d.target);
             tooltip
               .style("visibility", "visible")
-              .html(`<div class="text-sm font-bold">${t("parent_relationship", "Parent Relationship")}</div><div class="text-xs mt-1">${sourceName} ↔ ${targetName}</div><div class="text-xs opacity-70 mt-1">${t("parents_connected", "Parents connected")}</div>`)
+              .html(`<div class="text-sm font-bold">${t("legacy.parent_relationship", "Parent Relationship")}</div><div class="text-xs mt-1">${sourceName} ↔ ${targetName}</div><div class="text-xs opacity-70 mt-1">${t("legacy.parents_connected", "Parents connected")}</div>`)
               .style("top", `${e.pageY + 15}px`)
               .style("left", `${e.pageX + 15}px`);
           })
@@ -1902,11 +1902,11 @@ export default function TreesBuilder({
             // Determine relationship type
             const isParentChild = d.source.gen < d.target.gen;
             const relationshipType = isParentChild
-              ? t("parent_to_child", "Parent to Child")
-              : t("descendant_relationship", "Descendant Relationship");
+              ? t("legacy.parent_to_child", "Parent to Child")
+              : t("legacy.descendant_relationship", "Descendant Relationship");
             tooltip
               .style("visibility", "visible")
-              .html(`<div class="text-sm font-bold">${relationshipType}</div><div class="text-xs mt-1">${sourceName} → ${targetName}</div><div class="text-xs opacity-70 mt-1">${isParentChild ? t("parent_children", "Parent-Child") : t("parent_descendant", "Parent-Descendant")}</div>`)
+              .html(`<div class="text-sm font-bold">${relationshipType}</div><div class="text-xs mt-1">${sourceName} → ${targetName}</div><div class="text-xs opacity-70 mt-1">${isParentChild ? t("legacy.parent_children", "Parent-Child") : t("legacy.parent_descendant", "Parent-Descendant")}</div>`)
               .style("top", `${e.pageY + 15}px`)
               .style("left", `${e.pageX + 15}px`);
           })
@@ -2060,15 +2060,15 @@ export default function TreesBuilder({
               );
             };
 
-            addRow(t("gender", "Gender"), displayGender(d.gender));
-            addRow(t("born", "Born"), birthDate);
-            addRow(t("birth_place", "Birth place"), birthPlace);
-            addRow(t("died", "Died"), deathDate);
-            addRow(t("death_place", "Death place"), deathPlace);
-            addRow(t("profession", "Profession"), profession);
-            addRow(t("spouse", "Spouse"), spouseName);
-            addRow(t("father", "Father"), fatherName);
-            addRow(t("mother", "Mother"), motherName);
+            addRow(t("legacy.gender", "Gender"), displayGender(d.gender));
+            addRow(t("legacy.born", "Born"), birthDate);
+            addRow(t("legacy.birth_place", "Birth place"), birthPlace);
+            addRow(t("legacy.died", "Died"), deathDate);
+            addRow(t("legacy.death_place", "Death place"), deathPlace);
+            addRow(t("legacy.profession", "Profession"), profession);
+            addRow(t("legacy.spouse", "Spouse"), spouseName);
+            addRow(t("legacy.father", "Father"), fatherName);
+            addRow(t("legacy.mother", "Mother"), motherName);
 
             const detailsHtml = details
               ? `<div class="mt-2 text-[10px] opacity-80 border-t pt-1 whitespace-pre-line">${details}</div>`
@@ -2077,24 +2077,21 @@ export default function TreesBuilder({
             const sourceRows = [];
             if (archiveSource) {
               sourceRows.push(
-                `<div class="flex justify-between gap-4"><span class="opacity-70">${t(
-                  "archive_source",
+                `<div class="flex justify-between gap-4"><span class="opacity-70">${t("legacy.archive_source",
                   "Archive Source"
                 )}:</span><span>${archiveSource}</span></div>`
               );
             }
             if (documentCode) {
               sourceRows.push(
-                `<div class="flex justify-between gap-4"><span class="opacity-70">${t(
-                  "document_code",
+                `<div class="flex justify-between gap-4"><span class="opacity-70">${t("legacy.document_code",
                   "Document Code"
                 )}:</span><span>${documentCode}</span></div>`
               );
             }
             if (reliability) {
               sourceRows.push(
-                `<div class="flex justify-between gap-4"><span class="opacity-70">${t(
-                  "reliability",
+                `<div class="flex justify-between gap-4"><span class="opacity-70">${t("legacy.reliability",
                   "Reliability"
                 )}:</span><span>${reliability}</span></div>`
               );
@@ -2108,8 +2105,7 @@ export default function TreesBuilder({
             const infoHtml = rows.join("");
             const emptyHtml =
               !infoHtml && !detailsHtml && !sourcesHtml
-                ? `<div class="opacity-60">${t(
-                  "no_details",
+                ? `<div class="opacity-60">${t("legacy.no_details",
                   "No details"
                 )}</div>`
                 : "";
@@ -2332,7 +2328,7 @@ export default function TreesBuilder({
         };
       } catch (err) {
         notifyError(
-          err?.message || t("tree_render_failed", "Failed to render tree")
+          err?.message || t("legacy.tree_render_failed", "Failed to render tree")
         );
       }
     };
@@ -2468,8 +2464,7 @@ export default function TreesBuilder({
       const ext = getFileExtension(file.name);
       if (!GEDCOM_EXTENSIONS.has(ext)) {
         notifyError(
-          t(
-            "invalid_gedcom_type",
+          t("legacy.invalid_gedcom_type",
             "Unsupported file type. Use .ged or .gedcom."
           )
         );
@@ -2477,7 +2472,7 @@ export default function TreesBuilder({
       }
 
       if (file.size > MAX_GEDCOM_BYTES) {
-        notifyError(t("file_too_large", "File is too large (max 50MB)."));
+        notifyError(t("legacy.file_too_large", "File is too large (max 50MB)."));
         return;
       }
 
@@ -2495,27 +2490,27 @@ export default function TreesBuilder({
       }
       const trimmed = String(text || "").trim();
       if (!trimmed) {
-        notifyError(t("gedcom_empty", "GEDCOM file is empty."));
+        notifyError(t("legacy.gedcom_empty", "GEDCOM file is empty."));
         return;
       }
 
       if (!hasGedcomIndividuals(text)) {
-        notifyError(t("gedcom_no_people", "No individuals found in GEDCOM."));
+        notifyError(t("legacy.gedcom_no_people", "No individuals found in GEDCOM."));
         return;
       }
 
       const parsed = parseGedcom(text);
       if (!Array.isArray(parsed) || parsed.length === 0) {
-        notifyError(t("gedcom_no_people", "No individuals found in GEDCOM."));
+        notifyError(t("legacy.gedcom_no_people", "No individuals found in GEDCOM."));
         return;
       }
 
       applyPeopleUpdate(parsed);
       const is70 = importGedcomFormatRef.current === "7.0";
-      notifyPerson(is70 ? t("gedcom7_imported", "GEDCOM 7.0 imported.") : t("gedcom_imported", "GEDCOM imported."));
+      notifyPerson(is70 ? t("legacy.gedcom7_imported", "GEDCOM 7.0 imported.") : t("legacy.gedcom_imported", "GEDCOM imported."));
     } catch (err) {
       notifyError(
-        err?.message || t("import_gedcom_failed", "Failed to import GEDCOM")
+        err?.message || t("legacy.import_gedcom_failed", "Failed to import GEDCOM")
       );
     }
   };
@@ -2526,15 +2521,14 @@ export default function TreesBuilder({
       const ext = getFileExtension(file.name).toLowerCase();
       if (!GEDCOM_X_EXTENSIONS.has(ext)) {
         notifyError(
-          t(
-            "invalid_gedcomx_type",
+          t("legacy.invalid_gedcomx_type",
             "Unsupported file type. Use .gedx, .xml, or .json."
           )
         );
         return;
       }
       if (file.size > MAX_GEDCOM_BYTES) {
-        notifyError(t("file_too_large", "File is too large (max 50MB)."));
+        notifyError(t("legacy.file_too_large", "File is too large (max 50MB)."));
         return;
       }
       let text = "";
@@ -2551,7 +2545,7 @@ export default function TreesBuilder({
       }
       const trimmed = String(text || "").trim();
       if (!trimmed) {
-        notifyError(t("gedcom_empty", "GEDCOM X file is empty."));
+        notifyError(t("legacy.gedcom_empty", "GEDCOM X file is empty."));
         return;
       }
       const chosenFormat = gedcomXImportFormatRef.current || "xml";
@@ -2565,7 +2559,7 @@ export default function TreesBuilder({
         try {
           data = JSON.parse(trimmed);
         } catch {
-          notifyError(t("gedcomx_invalid_json", "Invalid GEDCOM X JSON."));
+          notifyError(t("legacy.gedcomx_invalid_json", "Invalid GEDCOM X JSON."));
           return;
         }
         parsed = parseGedcomXFromJson(data);
@@ -2573,15 +2567,15 @@ export default function TreesBuilder({
         parsed = parseGedcomXFromXml(trimmed);
       }
       if (!Array.isArray(parsed) || parsed.length === 0) {
-        notifyError(t("gedcom_no_people", "No individuals found in GEDCOM X."));
+        notifyError(t("legacy.gedcom_no_people", "No individuals found in GEDCOM X."));
         return;
       }
       applyPeopleUpdate(parsed);
-      notifyPerson(t("gedcomx_imported", "GEDCOM X imported."));
+      notifyPerson(t("legacy.gedcomx_imported", "GEDCOM X imported."));
     } catch (err) {
       notifyError(
         err?.message ||
-          t("import_gedcomx_failed", "Failed to import GEDCOM X.")
+          t("legacy.import_gedcomx_failed", "Failed to import GEDCOM X.")
       );
     }
   };
@@ -2603,7 +2597,7 @@ export default function TreesBuilder({
       }
     } catch (err) {
       notifyError(
-        err?.message || t("gedcomx_build_failed", "Failed to build GEDCOM X.")
+        err?.message || t("legacy.gedcomx_build_failed", "Failed to build GEDCOM X.")
       );
       return;
     }
@@ -2624,7 +2618,7 @@ export default function TreesBuilder({
     const name = addForm.name.trim();
 
     if (!name) {
-      notifyError(t("name_required", "Name is required"));
+      notifyError(t("legacy.name_required", "Name is required"));
 
       return;
     }
@@ -2637,7 +2631,7 @@ export default function TreesBuilder({
 
     if (nextFatherRaw && nextMotherRaw && nextFatherRaw === nextMotherRaw) {
       notifyError(
-        t("parents_conflict", "Father and mother cannot be the same person.")
+        t("legacy.parents_conflict", "Father and mother cannot be the same person.")
       );
 
       return;
@@ -2652,8 +2646,7 @@ export default function TreesBuilder({
         nextSpouseRaw === editId
       ) {
         notifyError(
-          t(
-            "invalid_relation_self",
+          t("legacy.invalid_relation_self",
 
             "A person cannot be their own parent, spouse, or child."
           )
@@ -2665,7 +2658,7 @@ export default function TreesBuilder({
       const existing = people.find((p) => String(p.id) === editId);
 
       if (!existing) {
-        notifyError(t("person_not_found", "Person not found."));
+        notifyError(t("legacy.person_not_found", "Person not found."));
 
         return;
       }
@@ -2846,7 +2839,7 @@ export default function TreesBuilder({
 
       setSelectedPerson(null);
 
-      notifyPerson(t("person_updated", "Person updated."));
+      notifyPerson(t("legacy.person_updated", "Person updated."));
 
       return;
     }
@@ -2930,7 +2923,7 @@ export default function TreesBuilder({
 
     resetAddForm();
 
-    notifyPerson(t("person_added", "Person added."));
+    notifyPerson(t("legacy.person_added", "Person added."));
   };
 
   const deletePerson = (id) => {
@@ -2938,8 +2931,7 @@ export default function TreesBuilder({
 
     if (
       !window.confirm(
-        t(
-          "delete_person_confirm",
+        t("legacy.delete_person_confirm",
 
           "Are you sure you want to delete this person?"
         )
@@ -2973,7 +2965,7 @@ export default function TreesBuilder({
 
     if (selectedPerson?.id === id) setSelectedPerson(null);
 
-    notifyPerson(t("person_deleted", "Person deleted."));
+    notifyPerson(t("legacy.person_deleted", "Person deleted."));
   };
 
   /** ===== EXPORTS ===== */
@@ -2984,7 +2976,7 @@ export default function TreesBuilder({
       gedcom = buildGedcom(people, locale, t);
     } catch (err) {
       notifyError(
-        err?.message || t("gedcom_build_failed", "Failed to build GEDCOM")
+        err?.message || t("legacy.gedcom_build_failed", "Failed to build GEDCOM")
       );
       return;
     }
@@ -3014,7 +3006,7 @@ export default function TreesBuilder({
       gedcom = buildGedcom7(people, locale, t);
     } catch (err) {
       notifyError(
-        err?.message || t("gedcom7_build_failed", "Failed to build GEDCOM 7.0.")
+        err?.message || t("legacy.gedcom7_build_failed", "Failed to build GEDCOM 7.0.")
       );
       return;
     }
@@ -3125,10 +3117,11 @@ export default function TreesBuilder({
     <div dir={dir} className="relative">
       {personStatus.message ? (
         <div
-          className={`fixed top-24 z-[60] rtl:left-6 rtl:right-auto ltr:right-6 rounded-lg border px-4 py-3 shadow-xl ${personStatus.type === "error"
+          className={`fixed top-24 z-[60] rtl:left-6 rtl:right-auto ltr:right-6 rounded-lg border px-4 py-3 shadow-xl ${
+            personStatus.type === "error"
               ? "border-red-500/40 bg-red-600/90 text-white"
               : "border-emerald-500/40 bg-emerald-600/90 text-white"
-            }`}
+          }`}
           role="status"
           aria-live="polite"
         >
@@ -3164,7 +3157,7 @@ export default function TreesBuilder({
         {/* TOOLBAR */}
         <div
           className={`flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b ${border} 
-          ${isDark ? 'bg-[#0d1b2a]/50' : 'bg-[#f8f5ef]/50'} z-20 rounded-t-xl`}
+          ${isDark ? "bg-[#0d1b2a]/50" : "bg-[#f8f5ef]/50"} z-20 rounded-t-xl`}
         >
           <div className="flex items-center gap-2">
             <button
@@ -3174,9 +3167,9 @@ export default function TreesBuilder({
                     .transition()
                     .call(zoomRef.current.scaleBy, 1.3);
               }}
-              className={`p-2 rounded-lg ${isDark ? 'bg-white/10 hover:bg-white/15 text-white' : 'bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]'} 
+              className={`p-2 rounded-lg ${isDark ? "bg-white/10 hover:bg-white/15 text-white" : "bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]"} 
               border ${border} transition-all shadow-sm hover:shadow-md`}
-              title={t("zoom_in", "Zoom In")}
+              title={t("legacy.zoom_in", "Zoom In")}
             >
               <Plus className="w-4 h-4" />
             </button>
@@ -3187,26 +3180,28 @@ export default function TreesBuilder({
                     .transition()
                     .call(zoomRef.current.scaleBy, 0.7);
               }}
-              className={`p-2 rounded-lg ${isDark ? 'bg-white/10 hover:bg-white/15 text-white' : 'bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]'} 
+              className={`p-2 rounded-lg ${isDark ? "bg-white/10 hover:bg-white/15 text-white" : "bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]"} 
               border ${border} transition-all shadow-sm hover:shadow-md flex items-center justify-center`}
-              title={t("zoom_out", "Zoom Out")}
+              title={t("legacy.zoom_out", "Zoom Out")}
             >
               <div className="w-4 h-0.5 bg-current" />
             </button>
             <button
               type="button"
               className={`px-4 py-2 rounded-lg border ${border} 
-              ${isDark ? 'bg-[#0c4a6e]/30 hover:bg-[#0c4a6e]/40 text-white' : 'bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]'} 
+              ${isDark ? "bg-[#0c4a6e]/30 hover:bg-[#0c4a6e]/40 text-white" : "bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]"} 
               inline-flex items-center gap-2 text-sm font-semibold shadow-sm hover:shadow-md transition-all ml-2`}
               onClick={centerTree}
             >
               <LocateFixed className="w-4 h-4" />
-              {t("center", "Center")}
+              {t("legacy.center", "Center")}
             </button>
             {dataFormat === "gedcomx" ? (
               <span
                 className="ml-2 px-3 py-1.5 rounded-lg border border-[#0c4a6e]/40 bg-[#0c4a6e]/10 text-[#0c4a6e] dark:text-[#0d9488] dark:border-[#0d9488]/40 dark:bg-[#0d9488]/10 text-xs font-semibold uppercase tracking-wide"
-                title={t("tree_saved_gedcomx", "This tree is saved in GEDCOM X format.")}
+                title={t("legacy.tree_saved_gedcomx",
+                  "This tree is saved in GEDCOM X format.",
+                )}
               >
                 GEDCOM X
               </span>
@@ -3214,7 +3209,9 @@ export default function TreesBuilder({
             {dataFormat === "gedcom7" ? (
               <span
                 className="ml-2 px-3 py-1.5 rounded-lg border border-[#0c4a6e]/40 bg-[#0c4a6e]/10 text-[#0c4a6e] dark:text-[#0d9488] dark:border-[#0d9488]/40 dark:bg-[#0d9488]/10 text-xs font-semibold uppercase tracking-wide"
-                title={t("tree_saved_gedcom7", "This tree is saved in GEDCOM 7.0 format.")}
+                title={t("legacy.tree_saved_gedcom7",
+                  "This tree is saved in GEDCOM 7.0 format.",
+                )}
               >
                 GEDCOM 7.0
               </span>
@@ -3231,11 +3228,13 @@ export default function TreesBuilder({
                   setGedcomXExportOpen(false);
                 }}
                 className={`w-full min-w-0 px-3 py-2.5 rounded-lg border ${border} 
-                ${isDark ? 'bg-white/10 hover:bg-white/15 text-white' : 'bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]'} 
+                ${isDark ? "bg-white/10 hover:bg-white/15 text-white" : "bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]"} 
                 flex items-center justify-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md`}
               >
                 <Upload className="w-4 h-4 shrink-0" />
-                <span className="truncate">{t("import_gedcom", "Import GEDCOM")}</span>
+                <span className="truncate">
+                  {t("legacy.import_gedcom", "Import GEDCOM")}
+                </span>
                 <ChevronDown className="w-4 h-4 shrink-0" />
               </button>
               {gedcomImportOpen ? (
@@ -3253,7 +3252,7 @@ export default function TreesBuilder({
                     }}
                     className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
                   >
-                    {t("gedcom_format_551", "GEDCOM 5.5.1")}
+                    {t("legacy.gedcom_format_551", "GEDCOM 5.5.1")}
                   </button>
                   <button
                     type="button"
@@ -3265,7 +3264,7 @@ export default function TreesBuilder({
                     }}
                     className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
                   >
-                    {t("format_gedcom7", "GEDCOM 7.0")}
+                    {t("legacy.format_gedcom7", "GEDCOM 7.0")}
                   </button>
                 </div>
               ) : null}
@@ -3279,11 +3278,13 @@ export default function TreesBuilder({
                   setGedcomXExportOpen(false);
                 }}
                 className={`w-full min-w-0 px-3 py-2.5 rounded-lg border ${border} 
-                ${isDark ? 'bg-[#0c4a6e]/30 hover:bg-[#0c4a6e]/40 text-white' : 'bg-[#0c4a6e] hover:bg-[#0c4a6e]/90 text-white'} 
+                ${isDark ? "bg-[#0c4a6e]/30 hover:bg-[#0c4a6e]/40 text-white" : "bg-[#0c4a6e] hover:bg-[#0c4a6e]/90 text-white"} 
                 flex items-center justify-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md`}
               >
                 <FileCode2 className="w-4 h-4 shrink-0" />
-                <span className="truncate">{t("export_gedcom", "Export GEDCOM")}</span>
+                <span className="truncate">
+                  {t("legacy.export_gedcom", "Export GEDCOM")}
+                </span>
                 <ChevronDown className="w-4 h-4 shrink-0" />
               </button>
               {gedcomExportOpen ? (
@@ -3300,7 +3301,7 @@ export default function TreesBuilder({
                     }}
                     className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
                   >
-                    {t("gedcom_format_551", "GEDCOM 5.5.1")}
+                    {t("legacy.gedcom_format_551", "GEDCOM 5.5.1")}
                   </button>
                   <button
                     type="button"
@@ -3311,7 +3312,7 @@ export default function TreesBuilder({
                     }}
                     className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
                   >
-                    {t("format_gedcom7", "GEDCOM 7.0")}
+                    {t("legacy.format_gedcom7", "GEDCOM 7.0")}
                   </button>
                 </div>
               ) : null}
@@ -3323,11 +3324,13 @@ export default function TreesBuilder({
                   setGedcomXExportOpen(false);
                 }}
                 className={`w-full min-w-0 px-3 py-2.5 rounded-lg border ${border} 
-                ${isDark ? 'bg-white/10 hover:bg-white/15 text-white' : 'bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]'} 
+                ${isDark ? "bg-white/10 hover:bg-white/15 text-white" : "bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]"} 
                 flex items-center justify-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md`}
               >
                 <Upload className="w-4 h-4 shrink-0" />
-                <span className="truncate">{t("import_gedcomx", "Import GEDCOM X")}</span>
+                <span className="truncate">
+                  {t("legacy.import_gedcomx", "Import GEDCOM X")}
+                </span>
                 <ChevronDown className="w-4 h-4 shrink-0" />
               </button>
               {gedcomXImportOpen ? (
@@ -3345,7 +3348,7 @@ export default function TreesBuilder({
                     }}
                     className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
                   >
-                    {t("gedcomx_format_xml", "XML format")}
+                    {t("legacy.gedcomx_format_xml", "XML format")}
                   </button>
                   <button
                     type="button"
@@ -3357,7 +3360,7 @@ export default function TreesBuilder({
                     }}
                     className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
                   >
-                    {t("gedcomx_format_json", "JSON format")}
+                    {t("legacy.gedcomx_format_json", "JSON format")}
                   </button>
                   <button
                     type="button"
@@ -3369,7 +3372,7 @@ export default function TreesBuilder({
                     }}
                     className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
                   >
-                    {t("gedcomx_format_gedx", ".gedx file")}
+                    {t("legacy.gedcomx_format_gedx", ".gedx file")}
                   </button>
                 </div>
               ) : null}
@@ -3381,11 +3384,13 @@ export default function TreesBuilder({
                   setGedcomXImportOpen(false);
                 }}
                 className={`w-full min-w-0 px-3 py-2.5 rounded-lg border ${border} 
-                ${isDark ? 'bg-[#0c4a6e]/30 hover:bg-[#0c4a6e]/40 text-white' : 'bg-[#0c4a6e] hover:bg-[#0c4a6e]/90 text-white'} 
+                ${isDark ? "bg-[#0c4a6e]/30 hover:bg-[#0c4a6e]/40 text-white" : "bg-[#0c4a6e] hover:bg-[#0c4a6e]/90 text-white"} 
                 flex items-center justify-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md`}
               >
                 <FileCode2 className="w-4 h-4 shrink-0" />
-                <span className="truncate">{t("export_gedcomx", "Export GEDCOM X")}</span>
+                <span className="truncate">
+                  {t("legacy.export_gedcomx", "Export GEDCOM X")}
+                </span>
                 <ChevronDown className="w-4 h-4 shrink-0" />
               </button>
               {gedcomXExportOpen ? (
@@ -3399,7 +3404,7 @@ export default function TreesBuilder({
                     onClick={() => exportGedcomXFile("xml")}
                     className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
                   >
-                    {t("gedcomx_format_xml", "XML format")}
+                    {t("legacy.gedcomx_format_xml", "XML format")}
                   </button>
                   <button
                     type="button"
@@ -3407,7 +3412,7 @@ export default function TreesBuilder({
                     onClick={() => exportGedcomXFile("json")}
                     className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
                   >
-                    {t("gedcomx_format_json", "JSON format")}
+                    {t("legacy.gedcomx_format_json", "JSON format")}
                   </button>
                   <button
                     type="button"
@@ -3415,7 +3420,7 @@ export default function TreesBuilder({
                     onClick={() => exportGedcomXFile("gedx")}
                     className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
                   >
-                    {t("gedcomx_format_gedx", ".gedx file")}
+                    {t("legacy.gedcomx_format_gedx", ".gedx file")}
                   </button>
                 </div>
               ) : null}
@@ -3429,7 +3434,7 @@ export default function TreesBuilder({
             ref={wrapRef}
             data-format={dataFormat}
             className={`relative h-[70vh] min-h-[400px] w-full border-b ${border} overflow-hidden shrink-0
-            ${isDark ? 'bg-[#0d1b2a]/30' : 'bg-[#f8f5ef]/30'}
+            ${isDark ? "bg-[#0d1b2a]/30" : "bg-[#f8f5ef]/30"}
             ${dataFormat === "gedcomx" || dataFormat === "gedcom7" ? "ring-1 ring-inset ring-[#0c4a6e]/30 dark:ring-[#0d9488]/30" : ""}`}
           >
             {/* SVG will be here */}
@@ -3445,22 +3450,19 @@ export default function TreesBuilder({
                 >
                   <div className="text-lg font-semibold">
                     {readOnly
-                      ? t("tree_empty", "No people to display yet.")
-                      : t(
-                        "tree_empty_prompt",
-                        "Start building your family tree."
-                      )}
+                      ? t("legacy.tree_empty", "No people to display yet.")
+                      : t("legacy.tree_empty_prompt",
+                          "Start building your family tree.",
+                        )}
                   </div>
                   <p className="text-sm opacity-70 mt-2">
                     {readOnly
-                      ? t(
-                        "tree_empty_readonly_hint",
-                        "There is no GEDCOM data for this tree yet."
-                      )
-                      : t(
-                        "tree_empty_hint",
-                        "Add a person manually or import a GEDCOM file."
-                      )}
+                      ? t("legacy.tree_empty_readonly_hint",
+                          "There is no GEDCOM data for this tree yet.",
+                        )
+                      : t("legacy.tree_empty_hint",
+                          "Add a person manually or import a GEDCOM file.",
+                        )}
                   </p>
                   {!readOnly ? (
                     <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
@@ -3472,14 +3474,14 @@ export default function TreesBuilder({
                           setPanelTab("add");
                         }}
                       >
-                        {t("add_person", "Add Person")}
+                        {t("legacy.add_person", "Add Person")}
                       </button>
                       <button
                         type="button"
                         className={`px-4 py-2 rounded-md border ${border} text-sm font-semibold`}
                         onClick={() => importGedcomRef.current?.click()}
                       >
-                        {t("import_gedcom", "Import GEDCOM")}
+                        {t("legacy.import_gedcom", "Import GEDCOM")}
                       </button>
                       <button
                         type="button"
@@ -3489,7 +3491,7 @@ export default function TreesBuilder({
                           importGedcomXRef.current?.click();
                         }}
                       >
-                        {t("import_gedcomx", "Import GEDCOM X")}
+                        {t("legacy.import_gedcomx", "Import GEDCOM X")}
                       </button>
                     </div>
                   ) : null}
@@ -3507,44 +3509,48 @@ export default function TreesBuilder({
 
                 <div className="mt-1 text-xs opacity-70">
                   {selectedPerson.birthYear
-                    ? `${t("birth_year", "Birth Year")}: ${selectedPerson.birthYear
-                    }`
-                    : `${t("birth_year", "Birth Year")}: -`}
+                    ? `${t("legacy.birth_year", "Birth Year")}: ${
+                        selectedPerson.birthYear
+                      }`
+                    : `${t("legacy.birth_year", "Birth Year")}: -`}
                 </div>
 
                 <div className="text-xs opacity-70">
                   {selectedPerson.birthPlace
-                    ? `${t("birth_place", "Birth Place")}: ${selectedPerson.birthPlace
-                    }`
-                    : `${t("birth_place", "Birth Place")}: -`}
+                    ? `${t("legacy.birth_place", "Birth Place")}: ${
+                        selectedPerson.birthPlace
+                      }`
+                    : `${t("legacy.birth_place", "Birth Place")}: -`}
                 </div>
 
                 <div className="text-xs opacity-70">
                   {selectedPerson.deathDate
-                    ? `${t("death_date", "Death Date")}: ${selectedPerson.deathDate
-                    }`
-                    : `${t("death_date", "Death Date")}: -`}
+                    ? `${t("legacy.death_date", "Death Date")}: ${
+                        selectedPerson.deathDate
+                      }`
+                    : `${t("legacy.death_date", "Death Date")}: -`}
                 </div>
 
                 <div className="text-xs opacity-70">
                   {selectedPerson.deathPlace
-                    ? `${t("death_place", "Death Place")}: ${selectedPerson.deathPlace
-                    }`
-                    : `${t("death_place", "Death Place")}: -`}
+                    ? `${t("legacy.death_place", "Death Place")}: ${
+                        selectedPerson.deathPlace
+                      }`
+                    : `${t("legacy.death_place", "Death Place")}: -`}
                 </div>
 
                 <div className="text-xs opacity-70">
-                  {`${t("gender", "Gender")}: ${displayGender(
-                    selectedPerson.gender
+                  {`${t("legacy.gender", "Gender")}: ${displayGender(
+                    selectedPerson.gender,
                   )}`}
                 </div>
 
                 <div className="text-xs opacity-70">
-                  {t("spouse", "Spouse")}: {relationName(selectedPerson.spouse)}
+                  {t("legacy.spouse", "Spouse")}: {relationName(selectedPerson.spouse)}
                 </div>
 
                 <div className="text-xs opacity-70">
-                  {t("children", "Children")}:{" "}
+                  {t("legacy.children", "Children")}:{" "}
                   {selectedChildren.length
                     ? selectedChildren.map((c) => nameOf(c)).join(", ")
                     : "-"}
@@ -3553,19 +3559,23 @@ export default function TreesBuilder({
             ) : null}
           </div>
 
-          <div
-            className={`w-full border-t ${border} p-4 ${inputText}`}
-          >
+          <div className={`w-full border-t ${border} p-4 ${inputText}`}>
             {/* Sidebar/Editor Content - theme-aware colors */}
             <div className="flex flex-col md:flex-row gap-6 h-[600px]">
               {/* Search / List Column */}
-              <div className={`w-full md:w-1/3 flex flex-col gap-4 border-r pr-4 ${isDark ? "border-[#0d9488]/20" : "border-[#0d9488]/30"}`}>
-                <div className={`flex items-center justify-between pb-2 border-b ${isDark ? "border-[#0d9488]/20" : "border-[#0d9488]/30"}`}>
-                  <span className={`font-cinzel font-bold text-lg ${isDark ? "text-[#0d9488]" : "text-[#0c4a6e]"}`}>
-                    {t("people_list", "People List")}
+              <div
+                className={`w-full md:w-1/3 flex flex-col gap-4 border-r pr-4 ${isDark ? "border-[#0d9488]/20" : "border-[#0d9488]/30"}`}
+              >
+                <div
+                  className={`flex items-center justify-between pb-2 border-b ${isDark ? "border-[#0d9488]/20" : "border-[#0d9488]/30"}`}
+                >
+                  <span
+                    className={`font-cinzel font-bold text-lg ${isDark ? "text-[#0d9488]" : "text-[#0c4a6e]"}`}
+                  >
+                    {t("legacy.people_list", "People List")}
                   </span>
                   <div className="text-xs opacity-60 font-serif italic">
-                    {people.length} {t("records", "records")}
+                    {people.length} {t("legacy.records", "records")}
                   </div>
                 </div>
 
@@ -3574,7 +3584,7 @@ export default function TreesBuilder({
                   <input
                     value={peopleQuery}
                     onChange={(e) => setPeopleQuery(e.target.value)}
-                    placeholder={t("search_people", "Search people...")}
+                    placeholder={t("legacy.search_people", "Search people...")}
                     className={`w-full pl-9 pr-3 py-2 rounded-md border ${border} ${inputBg} ${inputText} focus:ring-2 focus:ring-[#0d9488]/50 focus:border-[#0d9488] transition-all`}
                   />
                 </div>
@@ -3585,14 +3595,17 @@ export default function TreesBuilder({
                       <PersonListItem
                         key={item.id}
                         item={item}
-                        active={selectedPerson && String(selectedPerson.id) === String(item.id)}
+                        active={
+                          selectedPerson &&
+                          String(selectedPerson.id) === String(item.id)
+                        }
                         onClick={() => setSelectedPerson(item.person)}
                         inputText={inputText}
                       />
                     ))
                   ) : (
                     <div className="text-center py-8 opacity-50 italic font-serif">
-                      {t("no_results", "No results found")}
+                      {t("legacy.no_results", "No results found")}
                     </div>
                   )}
                 </div>
@@ -3608,23 +3621,26 @@ export default function TreesBuilder({
                           resetAddForm();
                           setPanelTab("add");
                         }}
-                        className={`px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-md transition-all ${panelTab === "add"
+                        className={`px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-md transition-all ${
+                          panelTab === "add"
                             ? "bg-[#0c4a6e] text-white shadow-sm"
                             : "text-[#0c4a6e] dark:text-[#0d9488] hover:bg-black/5 dark:hover:bg-white/5"
-                          }`}
+                        }`}
                       >
-                        {t("add_person", "Add Person")}
+                        {t("legacy.add_person", "Add Person")}
                       </button>
                       <button
                         onClick={() => startEdit(selectedPerson)}
                         disabled={!selectedPerson}
-                        className={`px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-md transition-all ${panelTab === "editor"
+                        className={`px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-md transition-all ${
+                          panelTab === "editor"
                             ? "bg-[#0c4a6e] text-white shadow-sm"
                             : "text-[#0c4a6e] dark:text-[#0d9488] hover:bg-black/5 dark:hover:bg-white/5"
-                          } ${!selectedPerson ? "cursor-not-allowed opacity-30" : ""
-                          }`}
+                        } ${
+                          !selectedPerson ? "cursor-not-allowed opacity-30" : ""
+                        }`}
                       >
-                        {t("edit_person", "Edit Person")}
+                        {t("legacy.edit_person", "Edit Person")}
                       </button>
                     </div>
 
@@ -3635,13 +3651,13 @@ export default function TreesBuilder({
                         <div className="space-y-4">
                           <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#0c4a6e] dark:text-[#0d9488] border-b border-[#0d9488]/30 pb-1">
                             <UserRound className="w-4 h-4" />
-                            {t("personal_info", "Personal Info")}
+                            {t("legacy.personal_info", "Personal Info")}
                           </label>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="col-span-2">
                               <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] mb-1 block">
-                                {t("full_name", "Full Name")}
+                                {t("legacy.full_name", "Full Name")}
                               </label>
                               <input
                                 value={addForm.name}
@@ -3651,14 +3667,16 @@ export default function TreesBuilder({
                                     name: e.target.value,
                                   }))
                                 }
-                                placeholder={t("name_placeholder", "e.g. Ahmed Ben Mohamed")}
+                                placeholder={t("legacy.name_placeholder",
+                                  "e.g. Ahmed Ben Mohamed",
+                                )}
                                 className={`w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText} focus:ring-2 focus:ring-[#0d9488]/40`}
                               />
                             </div>
 
                             <div>
                               <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] mb-1 block">
-                                {t("gender", "Gender")}
+                                {t("legacy.gender", "Gender")}
                               </label>
                               <select
                                 value={addForm.gender}
@@ -3670,17 +3688,23 @@ export default function TreesBuilder({
                                 }
                                 className={`w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText} appearance-none cursor-pointer`}
                               >
-                                <option value="">{t("select_gender", "Select...")}</option>
-                                <option value="M">{t("male", "Male")}</option>
-                                <option value="F">{t("female", "Female")}</option>
+                                <option value="">
+                                  {t("legacy.select_gender", "Select...")}
+                                </option>
+                                <option value="M">{t("legacy.male", "Male")}</option>
+                                <option value="F">
+                                  {t("legacy.female", "Female")}
+                                </option>
                               </select>
                             </div>
 
                             <div className="col-span-2">
                               <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] mb-2 block">
-                                {t("select_color", "Select a Color:")}
+                                {t("legacy.select_color", "Select a Color:")}
                               </label>
-                              <div className={`flex gap-3 items-center p-3 rounded-lg border ${border} ${isDark ? "bg-white/5" : "bg-[#0c4a6e]/5"}`}>
+                              <div
+                                className={`flex gap-3 items-center p-3 rounded-lg border ${border} ${isDark ? "bg-white/5" : "bg-[#0c4a6e]/5"}`}
+                              >
                                 <input
                                   type="color"
                                   value={addForm.color || "#f5f1e8"}
@@ -3693,11 +3717,17 @@ export default function TreesBuilder({
                                   className="w-12 h-12 p-0.5 rounded-lg border-2 border-[#0d9488]/40 cursor-pointer shadow-md hover:scale-105 transition-transform"
                                 />
                                 <div className="flex-1">
-                                  <div className={`text-xs font-semibold ${inputText}`}>
+                                  <div
+                                    className={`text-xs font-semibold ${inputText}`}
+                                  >
                                     {addForm.color || "#f5f1e8"}
                                   </div>
-                                  <div className={`text-[10px] opacity-60 mt-0.5 ${inputText}`}>
-                                    {t("color_on_tree_hint", "This color will appear on the family tree card")}
+                                  <div
+                                    className={`text-[10px] opacity-60 mt-0.5 ${inputText}`}
+                                  >
+                                    {t("legacy.color_on_tree_hint",
+                                      "This color will appear on the family tree card",
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -3705,7 +3735,7 @@ export default function TreesBuilder({
 
                             <div className="col-span-2">
                               <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] mb-1 block">
-                                {t("details", "Details / Biography")}
+                                {t("legacy.details", "Details / Biography")}
                               </label>
                               <textarea
                                 value={addForm.details}
@@ -3715,7 +3745,9 @@ export default function TreesBuilder({
                                     details: e.target.value,
                                   }))
                                 }
-                                placeholder={t("details_placeholder", "Additional notes...")}
+                                placeholder={t("legacy.details_placeholder",
+                                  "Additional notes...",
+                                )}
                                 rows={3}
                                 className={`w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText} focus:ring-2 focus:ring-[#0d9488]/40`}
                               />
@@ -3723,7 +3755,7 @@ export default function TreesBuilder({
 
                             <div className="col-span-2">
                               <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] mb-1 block">
-                                {t("profession", "Profession")}
+                                {t("legacy.profession", "Profession")}
                               </label>
                               <input
                                 value={addForm.profession}
@@ -3733,7 +3765,9 @@ export default function TreesBuilder({
                                     profession: e.target.value,
                                   }))
                                 }
-                                placeholder={t("profession_placeholder", "e.g. Doctor, Teacher, Engineer...")}
+                                placeholder={t("legacy.profession_placeholder",
+                                  "e.g. Doctor, Teacher, Engineer...",
+                                )}
                                 className={`w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText} focus:ring-2 focus:ring-[#0d9488]/40`}
                               />
                             </div>
@@ -3741,7 +3775,7 @@ export default function TreesBuilder({
                             <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div className="space-y-1">
                                 <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] block">
-                                  {t("archive_source", "Archive Source")}
+                                  {t("legacy.archive_source", "Archive Source")}
                                 </label>
                                 <div className="flex items-center gap-2">
                                   <Archive className="w-4 h-4 text-[#0d9488]" />
@@ -3753,9 +3787,8 @@ export default function TreesBuilder({
                                         archiveSource: e.target.value,
                                       }))
                                     }
-                                    placeholder={t(
-                                      "archive_source_placeholder",
-                                      "e.g. National Archives"
+                                    placeholder={t("legacy.archive_source_placeholder",
+                                      "e.g. National Archives",
                                     )}
                                     className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${inputText}`}
                                   />
@@ -3764,7 +3797,7 @@ export default function TreesBuilder({
 
                               <div className="space-y-1">
                                 <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] block">
-                                  {t("document_code", "Document Code")}
+                                  {t("legacy.document_code", "Document Code")}
                                 </label>
                                 <div className="flex items-center gap-2">
                                   <FileText className="w-4 h-4 text-[#0d9488]" />
@@ -3776,9 +3809,8 @@ export default function TreesBuilder({
                                         documentCode: e.target.value,
                                       }))
                                     }
-                                    placeholder={t(
-                                      "document_code_placeholder",
-                                      "e.g. ALG-1920-042"
+                                    placeholder={t("legacy.document_code_placeholder",
+                                      "e.g. ALG-1920-042",
                                     )}
                                     className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${inputText} font-mono`}
                                   />
@@ -3794,13 +3826,13 @@ export default function TreesBuilder({
                             <span className="w-4 h-4 text-center font-serif italic">
                               i
                             </span>
-                            {t("dates_places", "Dates & Places")}
+                            {t("legacy.dates_places", "Dates & Places")}
                           </label>
 
                           <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1">
                               <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] block">
-                                {t("year_of_birth", "Year of Birth")}
+                                {t("legacy.year_of_birth", "Year of Birth")}
                               </label>
                               <input
                                 value={addForm.birthYear}
@@ -3816,9 +3848,8 @@ export default function TreesBuilder({
                             </div>
                             <div className="space-y-1">
                               <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] block">
-                                {t(
-                                  "city_country",
-                                  "City or Country (Optional)"
+                                {t("legacy.city_country",
+                                  "City or Country (Optional)",
                                 )}
                               </label>
                               <input
@@ -3829,13 +3860,15 @@ export default function TreesBuilder({
                                     birthPlace: e.target.value,
                                   }))
                                 }
-                                placeholder="e.g. Cairo, Egypt"
+                                placeholder={t("legacy.example_location",
+                                  "e.g. Cairo, Egypt",
+                                )}
                                 className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${inputText}`}
                               />
                             </div>
                             <div className="space-y-1">
                               <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] block">
-                                {t("year_of_death", "Year of Death (Optional)")}
+                                {t("legacy.year_of_death", "Year of Death (Optional)")}
                               </label>
                               <input
                                 value={addForm.deathDate}
@@ -3856,7 +3889,7 @@ export default function TreesBuilder({
                         <div className="space-y-4">
                           <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#0c4a6e] dark:text-[#0d9488] border-b border-[#0d9488]/30 pb-1">
                             <Network className="w-4 h-4" />
-                            {t("relations", "Family Relations")}
+                            {t("legacy.relations", "Family Relations")}
                           </label>
 
                           <div className="grid grid-cols-1 gap-4">
@@ -3864,7 +3897,7 @@ export default function TreesBuilder({
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                               <div className="space-y-1">
                                 <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] block">
-                                  {t("father", "Father")}
+                                  {t("legacy.father", "Father")}
                                 </label>
                                 <select
                                   value={addForm.father || ""}
@@ -3876,10 +3909,11 @@ export default function TreesBuilder({
                                   }
                                   className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${inputText} text-sm`}
                                 >
-                                  <option value="">{t("none", "None")}</option>
+                                  <option value="">{t("legacy.none", "None")}</option>
                                   {people
                                     .filter(
-                                      (p) => String(p.id) !== String(addForm.id)
+                                      (p) =>
+                                        String(p.id) !== String(addForm.id),
                                     )
                                     .map((p) => (
                                       <option key={p.id} value={p.id}>
@@ -3890,7 +3924,7 @@ export default function TreesBuilder({
                               </div>
                               <div className="space-y-1">
                                 <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] block">
-                                  {t("mother", "Mother")}
+                                  {t("legacy.mother", "Mother")}
                                 </label>
                                 <select
                                   value={addForm.mother || ""}
@@ -3902,10 +3936,11 @@ export default function TreesBuilder({
                                   }
                                   className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${inputText} text-sm`}
                                 >
-                                  <option value="">{t("none", "None")}</option>
+                                  <option value="">{t("legacy.none", "None")}</option>
                                   {people
                                     .filter(
-                                      (p) => String(p.id) !== String(addForm.id)
+                                      (p) =>
+                                        String(p.id) !== String(addForm.id),
                                     )
                                     .map((p) => (
                                       <option key={p.id} value={p.id}>
@@ -3916,7 +3951,7 @@ export default function TreesBuilder({
                               </div>
                               <div className="space-y-1">
                                 <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] block">
-                                  {t("spouse", "Spouse")}
+                                  {t("legacy.spouse", "Spouse")}
                                 </label>
                                 <select
                                   value={addForm.spouse || ""}
@@ -3928,10 +3963,11 @@ export default function TreesBuilder({
                                   }
                                   className={`w-full px-3 py-2 rounded-lg border ${border} ${inputBg} ${inputText} text-sm`}
                                 >
-                                  <option value="">{t("none", "None")}</option>
+                                  <option value="">{t("legacy.none", "None")}</option>
                                   {people
                                     .filter(
-                                      (p) => String(p.id) !== String(addForm.id)
+                                      (p) =>
+                                        String(p.id) !== String(addForm.id),
                                     )
                                     .map((p) => (
                                       <option key={p.id} value={p.id}>
@@ -3945,29 +3981,33 @@ export default function TreesBuilder({
                             {/* CHILDREN SELECT */}
                             <div className="space-y-2">
                               <label className="text-xs font-bold text-[#0c4a6e] dark:text-[#0d9488] block">
-                                {t("children", "Children")}
+                                {t("legacy.children", "Children")}
                                 <span className="text-[10px] opacity-70 font-normal ml-2 lowercase normal-case">
-                                  (Click to select only one.
-                                  Ctrl+Click/Cmd+Click to toggle multiple)
+                                  ({t("legacy.children_select_hint",
+                                    "Click to select only one. Ctrl+Click/Cmd+Click to toggle multiple.",
+                                  )})
                                 </span>
                               </label>
                               <div
                                 className={`border ${border} rounded-lg h-48 overflow-y-auto p-2 bg-white/50 dark:bg-black/20 custom-scrollbar`}
                               >
                                 {people.filter(
-                                  (p) => String(p.id) !== String(addForm.id)
+                                  (p) => String(p.id) !== String(addForm.id),
                                 ).length === 0 && (
-                                    <div className="text-xs opacity-50 italic text-center py-4">
-                                      No other people available
-                                    </div>
-                                  )}
+                                  <div className="text-xs opacity-50 italic text-center py-4">
+                                    {t("legacy.no_other_people_available",
+                                      "No other people available",
+                                    )}
+                                  </div>
+                                )}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                   {people
                                     .filter(
-                                      (p) => String(p.id) !== String(addForm.id)
+                                      (p) =>
+                                        String(p.id) !== String(addForm.id),
                                     )
                                     .sort((a, b) =>
-                                      nameOf(a).localeCompare(nameOf(b))
+                                      nameOf(a).localeCompare(nameOf(b)),
                                     )
                                     .map((p) => {
                                       const isSelected = (
@@ -3982,7 +4022,7 @@ export default function TreesBuilder({
                                             const pid = String(p.id);
                                             setAddForm((s) => {
                                               const current = new Set(
-                                                (s.children || []).map(String)
+                                                (s.children || []).map(String),
                                               );
                                               const isMulti =
                                                 e.ctrlKey || e.metaKey;
@@ -4012,10 +4052,11 @@ export default function TreesBuilder({
                                               };
                                             });
                                           }}
-                                          className={`text-left text-sm px-3 py-2 rounded-md transition-all flex items-center gap-2 ${isSelected
+                                          className={`text-left text-sm px-3 py-2 rounded-md transition-all flex items-center gap-2 ${
+                                            isSelected
                                               ? "bg-[#0c4a6e] text-white shadow-sm"
                                               : "hover:bg-[#0c4a6e]/10 text-[#0c4a6e] dark:text-[#0d9488]"
-                                            }`}
+                                          }`}
                                         >
                                           <div
                                             className={`w-3 h-3 rounded-full border border-current flex items-center justify-center`}
@@ -4046,7 +4087,7 @@ export default function TreesBuilder({
                               onClick={() => deletePerson(addForm.id)}
                               className="mr-auto px-4 py-2 text-red-600 hover:bg-red-50 rounded text-sm font-bold uppercase tracking-wider transition"
                             >
-                              {t("delete", "Delete")}
+                              {t("legacy.delete", "Delete")}
                             </button>
                           )}
                           <button
@@ -4054,8 +4095,8 @@ export default function TreesBuilder({
                             className="px-8 py-3 bg-[#0c4a6e] text-white font-cinzel font-bold text-sm uppercase tracking-widest rounded shadow-lg hover:bg-[#4a322c] hover:translate-y-[-1px] transition-all"
                           >
                             {panelTab === "add"
-                              ? t("add_person", "Add Person")
-                              : t("update_person", "Update Person")}
+                              ? t("legacy.add_person", "Add Person")
+                              : t("legacy.update_person", "Update Person")}
                           </button>
                         </div>
                       </form>
@@ -4067,7 +4108,7 @@ export default function TreesBuilder({
                       <UserRound className="w-8 h-8 text-[#0c4a6e]" />
                     </div>
                     <div className="text-lg font-serif italic">
-                      {t("read_only_mode", "View Only Mode - Sign in to Edit")}
+                      {t("legacy.read_only_mode", "View Only Mode - Sign in to Edit")}
                     </div>
                   </div>
                 )}

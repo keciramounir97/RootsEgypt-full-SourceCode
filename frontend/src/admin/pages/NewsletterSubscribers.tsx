@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Mail } from "lucide-react";
 import { api } from "../../api/client";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import Toast from "../../components/Toast";
 
 interface Subscriber {
@@ -14,7 +14,7 @@ interface Subscriber {
 
 export default function NewsletterSubscribers() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
 
   const pageBg = isDark ? "bg-[#0d1b2a]" : "bg-[#f5f1e8]";
@@ -61,7 +61,7 @@ export default function NewsletterSubscribers() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-cinzel font-bold mb-6 flex items-center gap-3">
           <Mail className="w-7 h-7 text-teal" />
-          {t("newsletterSubscribers", "Newsletter Subscribers")}
+          {t("legacy.newsletterSubscribers", "Newsletter Subscribers")}
         </h1>
 
         {loading ? (
@@ -71,15 +71,15 @@ export default function NewsletterSubscribers() {
         ) : error ? (
           <p className="text-red-400 text-center py-12">{error}</p>
         ) : rows.length === 0 ? (
-          <p className={`${muted} text-center py-12`}>{t("noSubscribers", "No subscribers yet")}</p>
+          <p className={`${muted} text-center py-12`}>{t("legacy.noSubscribers", "No subscribers yet")}</p>
         ) : (
           <div className={`${card} border ${border} rounded-xl overflow-hidden`}>
             <table className="w-full text-sm">
               <thead>
                 <tr className={isDark ? "bg-white/5" : "bg-black/5"}>
                   <th className="text-left px-4 py-3">#</th>
-                  <th className="text-left px-4 py-3">{t("email", "Email")}</th>
-                  <th className="text-left px-4 py-3">{t("subscribedAt", "Subscribed At")}</th>
+                  <th className="text-left px-4 py-3">{t("legacy.email", "Email")}</th>
+                  <th className="text-left px-4 py-3">{t("legacy.subscribedAt", "Subscribed At")}</th>
                 </tr>
               </thead>
               <tbody>

@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { api } from "../api/client";
 import { getApiErrorMessage, getApiRoot } from "../api/helpers";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import { useFavorites } from "../context/FavoritesContext";
 import RootsPageShell from "../components/RootsPageShell";
 import ScrollReveal from "../components/motion/ScrollReveal";
@@ -133,7 +133,7 @@ function GalleryCard({
   const category =
     item.category ||
     item.archiveSource ||
-    t("images", "Images");
+    t("legacy.images", "Images");
 
   const date = formatDate(item.createdAt ?? item.created_at);
 
@@ -211,7 +211,7 @@ function GalleryCard({
                 : "bg-black/30 hover:bg-black/50 text-white/90"
             }
           `}
-          aria-label={t("add_to_favorites", "Save to favorites")}
+          aria-label={t("legacy.add_to_favorites", "Save to favorites")}
           onClick={(e) => {
             e.stopPropagation();
             onToggleFav(e);
@@ -235,7 +235,7 @@ function GalleryCard({
             bg-black/30 hover:bg-black/50 text-white/90
             backdrop-blur-md
           "
-          aria-label={t("share", "Share")}
+          aria-label={t("legacy.share", "Share")}
           onClick={(e) => {
             e.stopPropagation();
             onShare(e);
@@ -259,7 +259,7 @@ function GalleryCard({
             </span>
           )}
           <h3 className="text-white font-bold text-sm leading-snug line-clamp-2 drop-shadow-md">
-            {item.title || t("untitled", "Untitled")}
+            {item.title || t("legacy.untitled", "Untitled")}
           </h3>
           {date && <p className="text-white/60 text-[11px] mt-1">{date}</p>}
         </div>
@@ -303,7 +303,7 @@ function Lightbox({
   });
 
   const category =
-    item.category || item.archiveSource || t("images", "Images");
+    item.category || item.archiveSource || t("legacy.images", "Images");
   const date = formatDate(item.createdAt ?? item.created_at);
 
   return (
@@ -335,7 +335,7 @@ function Lightbox({
           backdrop-blur-md border border-white/10
           transition-all duration-200 hover:scale-110
         "
-        aria-label={t("previous", "Previous")}
+        aria-label={t("legacy.previous", "Previous")}
       >
         <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
       </button>
@@ -352,7 +352,7 @@ function Lightbox({
           backdrop-blur-md border border-white/10
           transition-all duration-200 hover:scale-110
         "
-        aria-label={t("next", "Next")}
+        aria-label={t("legacy.next", "Next")}
       >
         <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
       </button>
@@ -368,7 +368,7 @@ function Lightbox({
           backdrop-blur-md border border-white/10
           transition-all duration-200 hover:scale-110
         "
-        aria-label={t("close", "Close")}
+        aria-label={t("legacy.close", "Close")}
       >
         <X className="w-5 h-5" />
       </button>
@@ -435,7 +435,7 @@ function Lightbox({
                 isDark ? "text-white" : "text-[#091326]"
               }`}
             >
-              {item.title || t("untitled", "Untitled")}
+              {item.title || t("legacy.untitled", "Untitled")}
             </h3>
 
             {date && (
@@ -468,7 +468,7 @@ function Lightbox({
                 {item.archiveSource && (
                   <div className={`${metaPanel} border rounded-xl p-3`}>
                     <p className="text-[10px] uppercase opacity-50 mb-1 tracking-wider">
-                      {t("archive_source", "Archive Source")}
+                      {t("legacy.archive_source", "Archive Source")}
                     </p>
                     <p className="text-xs font-semibold flex items-start gap-2">
                       <Archive className="w-3.5 h-3.5 text-terracotta shrink-0 mt-0.5" />
@@ -479,7 +479,7 @@ function Lightbox({
                 {item.documentCode && (
                   <div className={`${metaPanel} border rounded-xl p-3`}>
                     <p className="text-[10px] uppercase opacity-50 mb-1 tracking-wider">
-                      {t("document_code", "Document Code")}
+                      {t("legacy.document_code", "Document Code")}
                     </p>
                     <p className="text-xs font-semibold font-mono flex items-start gap-2">
                       <FileText className="w-3.5 h-3.5 text-teal shrink-0 mt-0.5" />
@@ -521,7 +521,7 @@ function Lightbox({
                 <Heart
                   className={`w-4 h-4 ${isFav ? "fill-current" : ""}`}
                 />
-                {isFav ? t("saved", "Saved") : t("save", "Save")}
+                {isFav ? t("legacy.saved", "Saved") : t("legacy.save", "Save")}
               </button>
 
               <button
@@ -540,7 +540,7 @@ function Lightbox({
                 `}
               >
                 <Share2 className="w-4 h-4" />
-                {t("share", "Share")}
+                {t("legacy.share", "Share")}
               </button>
             </div>
           </div>
@@ -556,7 +556,7 @@ function Lightbox({
 
 export default function GalleryPage() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const location = useLocation();
   const { isFavorite, toggleFavorite } = useFavorites();
 
@@ -625,7 +625,7 @@ export default function GalleryPage() {
       } catch (err) {
         if (!mounted) return;
         setError(
-          getApiErrorMessage(err, t("gallery_load_failed", "Could not load images."))
+          getApiErrorMessage(err, t("legacy.gallery_load_failed", "Could not load images."))
         );
         setGallery([]);
       } finally {
@@ -801,14 +801,13 @@ export default function GalleryPage() {
       hero={
         <div className="space-y-4">
           <p className="text-sm uppercase tracking-[0.3em] text-teal">
-            {t("gallery", "Gallery")}
+            {t("legacy.gallery", "Gallery")}
           </p>
           <h1 className="text-5xl font-bold">
-            {t("gallery_title", "Roots Egypt Photo Gallery")}
+            {t("legacy.gallery_title", "Roots Egypt Photo Gallery")}
           </h1>
           <p className="max-w-4xl mx-auto text-lg opacity-90">
-            {t(
-              "gallery_intro_images_only",
+            {t("legacy.gallery_intro_images_only",
               "Explore the Roots Egypt photo collection, a curated mix of heritage portraits, archival visuals, and cultural imagery shaped for family-history storytelling."
             )}
           </p>
@@ -832,8 +831,7 @@ export default function GalleryPage() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder={t(
-                  "search_images_placeholder",
+                placeholder={t("legacy.search_images_placeholder",
                   "Search by title, location, archive reference..."
                 )}
                 className={`
@@ -863,7 +861,7 @@ export default function GalleryPage() {
                 {categories.map((cat) => {
                   const isActive = activeCategory === cat;
                   const label =
-                    cat === "all" ? t("all", "All") : cat;
+                    cat === "all" ? t("legacy.all", "All") : cat;
                   return (
                     <motion.button
                       key={cat}
@@ -913,8 +911,8 @@ export default function GalleryPage() {
                 >
                   {filteredGallery.length}{" "}
                   {filteredGallery.length === 1
-                    ? t("image", "image")
-                    : t("images_count", "images")}
+                    ? t("legacy.image", "image")
+                    : t("legacy.images_count", "images")}
                 </span>
                 <div className={`flex-1 h-px ${isDark ? "bg-white/10" : "bg-[#d8c7b0]/30"}`} />
               </div>
@@ -931,7 +929,7 @@ export default function GalleryPage() {
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <Loader2 className="w-8 h-8 text-teal animate-spin" />
             <p className={`text-sm ${isDark ? "text-white/50" : "text-gray-400"}`}>
-              {t("loading_gallery", "Loading gallery...")}
+              {t("legacy.loading_gallery", "Loading gallery...")}
             </p>
           </div>
         </section>
@@ -956,13 +954,12 @@ export default function GalleryPage() {
               <p
                 className={`text-lg font-medium ${isDark ? "text-white/40" : "text-gray-400"}`}
               >
-                {t("no_images_found", "No images found.")}
+                {t("legacy.no_images_found", "No images found.")}
               </p>
               <p
                 className={`text-sm max-w-md text-center ${isDark ? "text-white/25" : "text-gray-300"}`}
               >
-                {t(
-                  "try_different_search",
+                {t("legacy.try_different_search",
                   "Try adjusting your search or selecting a different category."
                 )}
               </p>
@@ -1010,7 +1007,7 @@ export default function GalleryPage() {
                       <span
                         className={`text-sm ${isDark ? "text-white/40" : "text-gray-400"}`}
                       >
-                        {t("loading_more", "Loading more...")}
+                        {t("legacy.loading_more", "Loading more...")}
                       </span>
                     </div>
                   ) : (
@@ -1027,8 +1024,8 @@ export default function GalleryPage() {
                         }
                       `}
                     >
-                      {t("load_more", "Load More")} ({filteredGallery.length - visibleCount}{" "}
-                      {t("remaining", "remaining")})
+                      {t("legacy.load_more", "Load More")} ({filteredGallery.length - visibleCount}{" "}
+                      {t("legacy.remaining", "remaining")})
                     </button>
                   )}
                 </div>

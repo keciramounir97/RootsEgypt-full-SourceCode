@@ -3,7 +3,7 @@ import { Save, Shield, Globe, Bell, Database, UserCircle2 } from "lucide-react";
 import { useThemeStore } from "../../store/theme";
 import { api } from "../../api/client";
 import { useAuth } from "../components/AuthContext";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { notifyAdmin, notifyAdminSaved } from "../utils/notifications";
 
 const LANGUAGES = [
@@ -16,7 +16,7 @@ const LANGUAGES = [
 export default function Settings() {
   const { theme } = useThemeStore();
   const { user, refreshMe } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
   const isAdmin = user?.role === 1 || user?.role === 3;
 
@@ -77,7 +77,7 @@ export default function Settings() {
         setError(
           err?.response?.data?.message ||
             err?.userMessage ||
-            t("settings_load_failed", "Failed to load settings")
+            t("legacy.settings_load_failed", "Failed to load settings")
         );
       } finally {
         if (!mounted) return;
@@ -111,13 +111,13 @@ export default function Settings() {
         notifyAdmins: !!settings.notifyAdmins,
         activityRetentionDays: Number(settings.activityRetentionDays) || 90,
       });
-      setSuccess(t("settings_saved", "Settings saved."));
-      notifyAdminSaved(t("settings_saved", "Settings saved."));
+      setSuccess(t("legacy.settings_saved", "Settings saved."));
+      notifyAdminSaved(t("legacy.settings_saved", "Settings saved."));
     } catch (err: any) {
       const message =
         err?.response?.data?.message ||
           err?.userMessage ||
-          t("save_settings_failed", "Save settings failed");
+          t("legacy.save_settings_failed", "Save settings failed");
       setError(message);
       notifyAdmin(message, "error");
     } finally {
@@ -135,13 +135,13 @@ export default function Settings() {
         phone: profile.phone.trim(),
       });
       await refreshMe?.();
-      setSuccess(t("profile_updated", "Profile updated."));
-      notifyAdminSaved(t("profile_saved", "Profile saved."));
+      setSuccess(t("legacy.profile_updated", "Profile updated."));
+      notifyAdminSaved(t("legacy.profile_saved", "Profile saved."));
     } catch (err: any) {
       const message =
         err?.response?.data?.message ||
           err?.userMessage ||
-          t("update_profile_failed", "Update profile failed");
+          t("legacy.update_profile_failed", "Update profile failed");
       setError(message);
       notifyAdmin(message, "error");
     } finally {
@@ -155,10 +155,9 @@ export default function Settings() {
         className={`rounded-lg p-5 mb-6 border ${border}
         bg-gradient-to-r from-[#556b2f]/12 to-[#0c4a6e]/10 heritage-panel heritage-panel--accent`}
       >
-        <h3 className="text-2xl font-bold">{t("settings", "Settings")}</h3>
+        <h3 className="text-2xl font-bold">{t("legacy.settings", "Settings")}</h3>
         <p className="opacity-70">
-          {t(
-            "settings_desc",
+          {t("legacy.settings_desc",
             "Control security, notifications, and platform preferences.",
           )}
         </p>
@@ -166,7 +165,7 @@ export default function Settings() {
 
       {loading ? (
         <div className="py-10 text-center opacity-70">
-          {t("loading", "Loading...")}
+          {t("legacy.loading", "Loading...")}
         </div>
       ) : null}
 
@@ -196,14 +195,14 @@ export default function Settings() {
                 <Shield className={`w-5 h-5 ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`} />
               </div>
               <div>
-                <div className="font-bold text-lg">{t("security", "Security")}</div>
-                <div className="text-sm opacity-70">{t("manage_signup_rules", "Manage sign-up rules")}</div>
+                <div className="font-bold text-lg">{t("legacy.security", "Security")}</div>
+                <div className="text-sm opacity-70">{t("legacy.manage_signup_rules", "Manage sign-up rules")}</div>
               </div>
             </div>
 
             <label className="flex items-center justify-between gap-3">
               <span className="font-medium">
-                {t("allow_registration", "Allow Registration")}
+                {t("legacy.allow_registration", "Allow Registration")}
               </span>
               <input
                 type="checkbox"
@@ -230,14 +229,14 @@ export default function Settings() {
                 <Globe className="w-5 h-5 text-teal" />
               </div>
               <div>
-                <div className="font-bold text-lg">{t("localization", "Localization")}</div>
-                <div className="text-sm opacity-70">{t("default_language", "Default language")}</div>
+                <div className="font-bold text-lg">{t("legacy.localization", "Localization")}</div>
+                <div className="text-sm opacity-70">{t("legacy.default_language", "Default language")}</div>
               </div>
             </div>
 
             <label className="block">
               <span className="font-medium">
-                {t("default_language", "Default Language")}
+                {t("legacy.default_language", "Default Language")}
               </span>
               <select
                 value={settings.defaultLanguage}
@@ -270,14 +269,14 @@ export default function Settings() {
                 <Bell className={`w-5 h-5 ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`} />
               </div>
               <div>
-                <div className="font-bold text-lg">{t("notifications", "Notifications")}</div>
-                <div className="text-sm opacity-70">{t("admin_alerts", "Admin alerts")}</div>
+                <div className="font-bold text-lg">{t("legacy.notifications", "Notifications")}</div>
+                <div className="text-sm opacity-70">{t("legacy.admin_alerts", "Admin alerts")}</div>
               </div>
             </div>
 
             <label className="flex items-center justify-between gap-3">
               <span className="font-medium">
-                {t("notify_admins", "Notify admins on critical actions")}
+                {t("legacy.notify_admins", "Notify admins on critical actions")}
               </span>
               <input
                 type="checkbox"
@@ -304,16 +303,16 @@ export default function Settings() {
                 <Database className="w-5 h-5 text-[#556b2f]" />
               </div>
               <div>
-                <div className="font-bold text-lg">{t("logs_retention", "Logs & Retention")}</div>
+                <div className="font-bold text-lg">{t("legacy.logs_retention", "Logs & Retention")}</div>
                 <div className="text-sm opacity-70">
-                  {t("activity_storage_duration", "How long activity stays stored")}
+                  {t("legacy.activity_storage_duration", "How long activity stays stored")}
                 </div>
               </div>
             </div>
 
             <label className="block">
               <span className="font-medium">
-                {t("activity_retention_days", "Activity retention (days)")}
+                {t("legacy.activity_retention_days", "Activity retention (days)")}
               </span>
               <input
                 type="number"
@@ -344,16 +343,16 @@ export default function Settings() {
               <UserCircle2 className={`w-5 h-5 ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`} />
             </div>
             <div>
-              <div className="font-bold text-lg">{t("my_profile", "My Profile")}</div>
+              <div className="font-bold text-lg">{t("legacy.my_profile", "My Profile")}</div>
               <div className="text-sm opacity-70">
-                {t("update_account_info", "Update your own account info")}
+                {t("legacy.update_account_info", "Update your own account info")}
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
             <label className="block">
-              <span className="font-medium">{t("email", "Email")}</span>
+              <span className="font-medium">{t("legacy.email", "Email")}</span>
               <input
                 value={user?.email || ""}
                 disabled
@@ -363,7 +362,7 @@ export default function Settings() {
             </label>
 
             <label className="block">
-              <span className="font-medium">{t("full_name", "Full Name")}</span>
+              <span className="font-medium">{t("legacy.full_name", "Full Name")}</span>
               <input
                 value={profile.fullName}
                 onChange={(e) =>
@@ -376,7 +375,7 @@ export default function Settings() {
             </label>
 
             <label className="block">
-              <span className="font-medium">{t("phone", "Phone")}</span>
+              <span className="font-medium">{t("legacy.phone", "Phone")}</span>
               <input
                 value={profile.phone}
                 onChange={(e) =>
@@ -397,8 +396,8 @@ export default function Settings() {
               >
                 <Save className="w-4 h-4" />
                 {savingProfile
-                  ? t("saving", "Saving...")
-                  : t("save_profile", "Save Profile")}
+                  ? t("legacy.saving", "Saving...")
+                  : t("legacy.save_profile", "Save Profile")}
               </button>
             </div>
             <div className="pt-2 grid md:grid-cols-2 gap-2">
@@ -410,8 +409,7 @@ export default function Settings() {
                   setSuccess("");
                   try {
                     await api.post("/user/requests/password-reset");
-                    const message = t(
-                      "password_reset_request_submitted",
+                    const message = t("legacy.password_reset_request_submitted",
                       "Password reset request submitted for super-admin approval.",
                     );
                     setSuccess(message);
@@ -420,8 +418,7 @@ export default function Settings() {
                     const message =
                       err?.response?.data?.message ||
                       err?.userMessage ||
-                      t(
-                        "password_reset_request_failed",
+                      t("legacy.password_reset_request_failed",
                         "Failed to submit password reset request",
                       );
                     setError(message);
@@ -429,7 +426,7 @@ export default function Settings() {
                   }
                 }}
               >
-                {t("request_password_reset", "Request Password Reset")}
+                {t("legacy.request_password_reset", "Request Password Reset")}
               </button>
               <button
                 type="button"
@@ -439,13 +436,11 @@ export default function Settings() {
                   setSuccess("");
                   try {
                     await api.post("/user/requests/account-deletion", {
-                      reason: t(
-                        "requested_from_profile_settings",
+                      reason: t("legacy.requested_from_profile_settings",
                         "Requested from my profile settings",
                       ),
                     });
-                    const message = t(
-                      "account_deletion_request_submitted",
+                    const message = t("legacy.account_deletion_request_submitted",
                       "Account deletion request sent to super admin.",
                     );
                     setSuccess(message);
@@ -454,8 +449,7 @@ export default function Settings() {
                     const message =
                       err?.response?.data?.message ||
                       err?.userMessage ||
-                      t(
-                        "account_deletion_request_failed",
+                      t("legacy.account_deletion_request_failed",
                         "Failed to submit account deletion request",
                       );
                     setError(message);
@@ -463,7 +457,7 @@ export default function Settings() {
                   }
                 }}
               >
-                {t("request_account_deletion", "Request Account Deletion")}
+                {t("legacy.request_account_deletion", "Request Account Deletion")}
               </button>
             </div>
           </div>
@@ -480,8 +474,8 @@ export default function Settings() {
           >
             <Save className="w-5 h-5" />
             {savingSettings
-              ? t("saving", "Saving...")
-              : t("save_settings", "Save Settings")}
+              ? t("legacy.saving", "Saving...")
+              : t("legacy.save_settings", "Save Settings")}
           </button>
         </div>
       ) : null}

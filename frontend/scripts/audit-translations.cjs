@@ -5,6 +5,7 @@ const ts = require("typescript");
 const root = path.join(__dirname, "..", "src");
 const translationsPath = path.join(root, "utils", "translations.ts");
 const generatedPath = path.join(root, "utils", "generatedTranslations.ts");
+const sourceFallbackPath = path.join(root, "utils", "sourceFallbackTranslations.ts");
 
 const JSX_ATTRIBUTE_IGNORELIST = new Set([
   "accept",
@@ -146,7 +147,9 @@ const collectStaticTranslationCalls = () => {
       ) {
         const keyArg = node.arguments[0];
         if (isStringLiteral(keyArg)) {
-          const key = keyArg.text;
+          const key = keyArg.text.startsWith("legacy.")
+            ? keyArg.text.slice("legacy.".length)
+            : keyArg.text;
           const files = calls.get(key) || new Set();
           files.add(path.relative(process.cwd(), file).replace(/\\/g, "/"));
           calls.set(key, files);
@@ -255,6 +258,35 @@ const collectTranslationObject = (filePath, variableName) => {
   return dictionaries;
 };
 
+const collectFlatTranslationObject = (filePath, variableName) => {
+  if (!fs.existsSync(filePath)) return {};
+
+  const source = fs.readFileSync(filePath, "utf8");
+  const sf = ts.createSourceFile(filePath, source, ts.ScriptTarget.Latest, true);
+  const dictionary = {};
+
+  const visit = (node) => {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      node.name.text === variableName &&
+      ts.isObjectLiteralExpression(node.initializer)
+    ) {
+      for (const entry of node.initializer.properties) {
+        if (!ts.isPropertyAssignment(entry)) continue;
+        const key = propName(entry.name);
+        if (key && isStringLiteral(entry.initializer)) {
+          dictionary[key] = entry.initializer.text;
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+
+  visit(sf);
+  return dictionary;
+};
+
 const hasTargetScript = (locale, value) => {
   if (locale === "ar") return /[\u0600-\u06ff]/.test(value);
   return true;
@@ -287,6 +319,9 @@ const { calls, dynamicCallCount } = collectStaticTranslationCalls();
 const hardcodedJsx = collectHardcodedJsxLiterals();
 const curated = collectTranslationObject(translationsPath, "translations");
 const generated = collectTranslationObject(generatedPath, "AUTO_TRANSLATIONS");
+const sourceFallback = collectTranslationObject(sourceFallbackPath, "SOURCE_FALLBACK_TRANSLATIONS");
+const required = collectTranslationObject(translationsPath, "requiredI18nTranslations");
+const overrides = collectFlatTranslationObject(translationsPath, "contentOverrides");
 const keys = [...calls.keys()].sort();
 
 let hasFailure = false;
@@ -295,7 +330,10 @@ console.log(`Translation audit: ${keys.length} static keys, ${dynamicCallCount} 
 for (const locale of supportedLocales) {
   const effective = {
     ...(generated[locale] || {}),
+    ...(sourceFallback[locale] || {}),
     ...(curated[locale] || {}),
+    ...(required[locale] || {}),
+    ...(locale === "en" ? overrides : {}),
   };
   const missing = keys.filter((key) => !effective[key]);
   const suspicious = Object.entries(effective).filter(([, value]) =>

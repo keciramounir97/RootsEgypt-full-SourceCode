@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { api } from "../../api/client";
 import {
   getApiErrorMessage,
@@ -35,7 +35,7 @@ interface Audio {
 
 export default function AdminAudios() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
   const apiRoot = useMemo(() => getApiRoot(), []);
 
@@ -70,15 +70,15 @@ export default function AdminAudios() {
 
   const validateAudioFile = (file: File, { required = false } = {}) => {
     if (!file) {
-      return required ? t("audio_required", "Please select an audio file") : "";
+      return required ? t("legacy.audio_required", "Please select an audio file") : "";
     }
     if (file.size > maxAudioBytes) {
-      return t("file_too_large", "File is too large (max 50MB).");
+      return t("legacy.file_too_large", "File is too large (max 50MB).");
     }
     const ext = getExtension(file.name);
     const isAudioType = file.type ? file.type.startsWith("audio/") : false;
     if (!isAudioType && ext && !allowedAudioExts.has(ext)) {
-      return t("invalid_audio_type", "Only audio files are allowed.");
+      return t("legacy.invalid_audio_type", "Only audio files are allowed.");
     }
     return "";
   };
@@ -129,7 +129,7 @@ export default function AdminAudios() {
         [];
       setAudios(list);
       if (notifyToast) {
-        notify(t("audios_loaded", "Audio archives loaded."));
+        notify(t("legacy.audios_loaded", "Audio archives loaded."));
       }
     } catch (error) {
       console.error("Failed to load audios:", error);
@@ -137,7 +137,7 @@ export default function AdminAudios() {
       notify(
         getApiErrorMessage(
           error,
-          t("audios_load_failed", "Failed to load audios"),
+          t("legacy.audios_load_failed", "Failed to load audios"),
         ),
         "error",
       );
@@ -192,12 +192,12 @@ export default function AdminAudios() {
     e.preventDefault();
 
     if (!form.title.trim()) {
-      notify(t("fill_required_fields", "Please fill all required fields"), "error");
+      notify(t("legacy.fill_required_fields", "Please fill all required fields"), "error");
       return;
     }
 
     const formData = new FormData();
-    const audioError = selectedFile ? validateAudioFile(selectedFile) : (editingId ? "" : t("audio_required", "Please select an audio file"));
+    const audioError = selectedFile ? validateAudioFile(selectedFile) : (editingId ? "" : t("legacy.audio_required", "Please select an audio file"));
     if (audioError) {
       notify(audioError, "error");
       return;
@@ -226,27 +226,27 @@ export default function AdminAudios() {
           ],
           shouldFallbackWrite
         );
-        notify(t("audio_updated", "Audio updated."));
+        notify(t("legacy.audio_updated", "Audio updated."));
       } else {
         await requestWithFallback(
           [() => api.post("/admin/audios", formData), () => api.post("/my/audios", formData)],
           shouldFallbackWrite
         );
-        notify(t("audio_created", "Audio uploaded."));
+        notify(t("legacy.audio_created", "Audio uploaded."));
       }
 
       resetForm();
       loadAudios();
     } catch (error) {
       console.error("Operation failed:", error);
-      notify(getApiErrorMessage(error, t("operation_failed", "Operation failed")), "error");
+      notify(getApiErrorMessage(error, t("legacy.operation_failed", "Operation failed")), "error");
     } finally {
       setUploading(false);
     }
   };
 
   const handleDelete = async (id: number | string) => {
-    if (!window.confirm(t("confirm_delete", "Are you sure you want to delete this item?"))) {
+    if (!window.confirm(t("legacy.confirm_delete", "Are you sure you want to delete this item?"))) {
       return;
     }
 
@@ -264,10 +264,10 @@ export default function AdminAudios() {
         shouldFallbackWrite
       );
       loadAudios();
-      notify(t("audio_deleted", "Audio deleted."));
+      notify(t("legacy.audio_deleted", "Audio deleted."));
     } catch (error) {
       console.error("Delete failed:", error);
-      notify(getApiErrorMessage(error, t("delete_failed", "Failed to delete")), "error");
+      notify(getApiErrorMessage(error, t("legacy.delete_failed", "Failed to delete")), "error");
     }
   };
 
@@ -308,17 +308,17 @@ export default function AdminAudios() {
         {/* Header */}
         <div className="mb-8" data-aos="fade-down">
           <h1 className={`text-4xl font-bold font-serif ${isDark ? "text-[#d9a441]" : "text-[#24766f]"} mb-2`}>
-            {t("audio_management", "Audio Archives Management")}
+            {t("legacy.audio_management", "Audio Archives Management")}
           </h1>
           <p className={`${textColor} opacity-70`}>
-            {t("audio_desc", "Upload and manage oral histories, songs, and audio recordings")}
+            {t("legacy.audio_desc", "Upload and manage oral histories, songs, and audio recordings")}
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-3 mb-6">
-          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("total", "Total")}</p><p className="text-xl font-bold">{audioStats.total}</p></div>
-          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("public", "Public")}</p><p className="text-xl font-bold">{audioStats.publicCount}</p></div>
-          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("timed", "Timed")}</p><p className="text-xl font-bold">{audioStats.withDuration}</p></div>
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("legacy.total", "Total")}</p><p className="text-xl font-bold">{audioStats.total}</p></div>
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("legacy.public", "Public")}</p><p className="text-xl font-bold">{audioStats.publicCount}</p></div>
+          <div className={`${cardBg} border ${border} rounded-xl p-3`}><p className="text-xs opacity-70">{t("legacy.timed", "Timed")}</p><p className="text-xl font-bold">{audioStats.withDuration}</p></div>
         </div>
 
         {/* Upload/Edit Form */}
@@ -328,12 +328,12 @@ export default function AdminAudios() {
               {editingId ? (
                 <>
                   <Edit className="w-6 h-6" />
-                  {t("edit_audio", "Edit Audio")}
+                  {t("legacy.edit_audio", "Edit Audio")}
                 </>
               ) : (
                 <>
                   <Upload className="w-6 h-6" />
-                  {t("upload_new_audio", "Upload New Audio")}
+                  {t("legacy.upload_new_audio", "Upload New Audio")}
                 </>
               )}
             </h2>
@@ -343,7 +343,7 @@ export default function AdminAudios() {
                 className={`${textColor} opacity-70 hover:opacity-100 flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-red-500/10 transition`}
               >
                 <X className="w-5 h-5" />
-                {t("cancel", "Cancel")}
+                {t("legacy.cancel", "Cancel")}
               </button>
             )}
           </div>
@@ -352,7 +352,7 @@ export default function AdminAudios() {
             {/* File Input */}
             <div>
               <label className={`block text-sm font-semibold ${textColor} mb-2`}>
-                {t("select_audio", "Select Audio File")} {!editingId && <span className="text-red-500">*</span>}
+                {t("legacy.select_audio", "Select Audio File")} {!editingId && <span className="text-red-500">*</span>}
               </label>
               <div
                 className={`border-2 border-dashed ${border} rounded-lg p-6 text-center cursor-pointer transition hover:border-[#d9a441] hover:bg-[#d9a441]/5`}
@@ -367,9 +367,9 @@ export default function AdminAudios() {
                 ) : (
                   <div className="py-8">
                     <Music className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`} />
-                    <p className={`${textColor} opacity-50 text-lg`}>{t("click_to_upload_audio", "Click to upload audio")}</p>
+                    <p className={`${textColor} opacity-50 text-lg`}>{t("legacy.click_to_upload_audio", "Click to upload audio")}</p>
                     <p className={`${textColor} opacity-30 text-sm mt-2`}>
-                      {t("audio_file_formats", "MP3, WAV, M4A, OGG (max 50MB)")}
+                      {t("legacy.audio_file_formats", "MP3, WAV, M4A, OGG (max 50MB)")}
                     </p>
                   </div>
                 )}
@@ -386,42 +386,42 @@ export default function AdminAudios() {
             {/* Title */}
             <div>
               <label className={`block text-sm font-semibold ${textColor} mb-2`}>
-                {t("title", "Title")} <span className="text-red-500">*</span>
+                {t("legacy.title", "Title")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 className={`w-full px-4 py-3 rounded-lg ${inputBg} border ${border} ${textColor} outline-none focus:border-[#d9a441]`}
-                placeholder={t("title_placeholder", "Audio title")}
+                placeholder={t("legacy.title_placeholder", "Audio title")}
               />
             </div>
 
             {/* Category */}
             <div>
               <label className={`block text-sm font-semibold ${textColor} mb-2`}>
-                {t("category", "Category")}
+                {t("legacy.category", "Category")}
               </label>
               <input
                 type="text"
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
                 className={`w-full px-4 py-3 rounded-lg ${inputBg} border ${border} ${textColor} outline-none`}
-                placeholder={t("custom_category_placeholder", "Name this category...")}
+                placeholder={t("legacy.custom_category_placeholder", "Name this category...")}
               />
             </div>
 
             {/* Description */}
             <div>
               <label className={`block text-sm font-semibold ${textColor} mb-2`}>
-                {t("description", "Description")}
+                {t("legacy.description", "Description")}
               </label>
               <textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 rows={3}
                 className={`w-full px-4 py-3 rounded-lg ${inputBg} border ${border} ${textColor} outline-none focus:border-[#d9a441] resize-none`}
-                placeholder={t("description_placeholder", "Description")}
+                placeholder={t("legacy.description_placeholder", "Description")}
               />
             </div>
 
@@ -435,7 +435,7 @@ export default function AdminAudios() {
                 className="w-5 h-5 rounded"
               />
               <label htmlFor="isPublic" className={`${textColor} font-medium`}>
-                {t("make_public", "Make Public")}
+                {t("legacy.make_public", "Make Public")}
               </label>
             </div>
 
@@ -449,7 +449,7 @@ export default function AdminAudios() {
                   : "bg-[#24766f] text-white hover:bg-[#24766f]/90"
               }`}
             >
-              {uploading ? t("uploading", "Uploading...") : editingId ? t("update", "Update") : t("upload", "Upload")}
+              {uploading ? t("legacy.uploading", "Uploading...") : editingId ? t("legacy.update", "Update") : t("legacy.upload", "Upload")}
             </button>
           </form>
         </div>
@@ -457,18 +457,18 @@ export default function AdminAudios() {
         {/* Audio List */}
         <div className={`${cardBg} border ${border} rounded-xl p-6 shadow-lg`} data-aos="fade-up">
           <h2 className={`text-2xl font-bold font-serif ${isDark ? "text-[#d9a441]" : "text-[#24766f]"} mb-6`}>
-            {t("audio_list", "Audio Archives")} ({audios.length})
+            {t("legacy.audio_list", "Audio Archives")} ({audios.length})
           </h2>
 
           {loading ? (
             <div className="text-center py-8">
               <div className="w-12 h-12 border-4 border-[#d9a441] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-              <p className={textColor}>{t("loading", "Loading...")}</p>
+              <p className={textColor}>{t("legacy.loading", "Loading...")}</p>
             </div>
           ) : audios.length === 0 ? (
             <div className="text-center py-8">
               <Music className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`} />
-              <p className={`${textColor} opacity-70`}>{t("no_audios", "No audio archives yet.")}</p>
+              <p className={`${textColor} opacity-70`}>{t("legacy.no_audios", "No audio archives yet.")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -514,14 +514,14 @@ export default function AdminAudios() {
                     <button
                       onClick={() => handleEdit(audio)}
                       className={`p-2 rounded-lg hover:bg-[#24766f]/20 transition ${textColor} opacity-70 hover:opacity-100`}
-                      title={t("edit", "Edit")}
+                      title={t("legacy.edit", "Edit")}
                     >
                       <Edit className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => handleDelete(audio.id)}
                       className="p-2 rounded-lg hover:bg-red-500/20 text-red-500 transition"
-                      title={t("delete", "Delete")}
+                      title={t("legacy.delete", "Delete")}
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>

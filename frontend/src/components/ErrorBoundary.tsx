@@ -1,4 +1,5 @@
 import { Component, ReactNode, ErrorInfo } from "react";
+import { tForLocale, DEFAULT_LOCALE } from "../utils/translations";
 
 interface ErrorBoundaryProps {
   children?: ReactNode;
@@ -46,13 +47,19 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
       }
       return (
         <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-          <div className="font-semibold">Something went wrong.</div>
+          <div className="font-semibold">
+            {tForLocale(
+              DEFAULT_LOCALE,
+              "something_went_wrong",
+              "Something went wrong.",
+            )}
+          </div>
           <button
             type="button"
             onClick={this.handleReset}
             className="mt-2 inline-flex items-center rounded-md border border-red-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-700"
           >
-            Retry
+            {tForLocale(DEFAULT_LOCALE, "retry", "Retry")}
           </button>
         </div>
       );

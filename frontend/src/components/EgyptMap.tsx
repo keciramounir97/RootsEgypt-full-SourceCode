@@ -9,7 +9,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import { useState, useEffect, useMemo } from "react";
 import L from "leaflet";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 
 // @ts-ignore
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -165,7 +165,7 @@ function escapeHtml(s: string) {
 }
 
 export default function EgyptMap() {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [mounted, setMounted] = useState(false);
 
   const egyptianRegions = useMemo(
@@ -196,7 +196,7 @@ export default function EgyptMap() {
     return (
       <div className="w-full h-full bg-[#faf6ed]/10 flex items-center justify-center animate-pulse">
         <span className="text-white/20 text-xs uppercase tracking-widest">
-          {t("map_loading", "Loading map…")}
+          {t("legacy.map_loading", "Loading map…")}
         </span>
       </div>
     );
@@ -256,7 +256,7 @@ export default function EgyptMap() {
                       {zone.name}
                     </h4>
                     <p>
-                      <strong>{t("map_population_label", "Population")}:</strong> {zone.population}
+                      <strong>{t("legacy.map_population_label", "Population")}:</strong> {zone.population}
                     </p>
                   </div>
                 </Popup>

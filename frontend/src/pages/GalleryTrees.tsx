@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { api } from "../api/client";
 import { getApiErrorMessage, getApiRoot, normalizeTree } from "../api/helpers";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
 import TreesBuilder, { parseGedcom, parseGedcomX } from "../admin/components/TreesBuilder";
 
@@ -29,7 +29,7 @@ const sortByDateDesc = (items: any[]) =>
 
 export default function GalleryTrees() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   const [trees, setTrees] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -123,7 +123,7 @@ export default function GalleryTrees() {
 
     try {
       if (!tree.hasGedcom || !tree.gedcomUrl) {
-        setViewTreeError(t("no_gedcom_available", "No GEDCOM file available yet."));
+        setViewTreeError(t("legacy.no_gedcom_available", "No GEDCOM file available yet."));
         setViewLoading(false);
         return;
       }
@@ -131,7 +131,7 @@ export default function GalleryTrees() {
       const gedcomUrl = fileUrl(tree.gedcomUrl);
       const response = await fetch(gedcomUrl);
       if (!response.ok) {
-        setViewTreeError(t("tree_builder_error", "Failed to load tree."));
+        setViewTreeError(t("legacy.tree_builder_error", "Failed to load tree."));
         setViewLoading(false);
         return;
       }
@@ -141,11 +141,11 @@ export default function GalleryTrees() {
       const list = Array.isArray(people) ? people : [];
       setViewPeople(list);
       if (!list.length) {
-        setViewTreeError(t("gedcom_no_people", "No individuals found in GEDCOM."));
+        setViewTreeError(t("legacy.gedcom_no_people", "No individuals found in GEDCOM."));
       }
     } catch (err) {
       setViewPeople([]);
-      setViewTreeError(t("tree_builder_error", "Failed to load tree."));
+      setViewTreeError(t("legacy.tree_builder_error", "Failed to load tree."));
     } finally {
       setViewLoading(false);
     }
@@ -162,14 +162,13 @@ export default function GalleryTrees() {
             <Network className="w-12 h-12 text-[#d9a441]" />
           </div>
           <p className="text-sm uppercase tracking-[0.3em] text-[#d9a441]">
-            {t("family_collections", "Family Collections")}
+            {t("legacy.family_collections", "Family Collections")}
           </p>
           <h1 className="text-5xl font-bold">
-            {t("family_trees", "Family Trees")}
+            {t("legacy.family_trees", "Family Trees")}
           </h1>
           <p className="max-w-4xl mx-auto text-lg opacity-90">
-            {t(
-              "trees_intro",
+            {t("legacy.trees_intro",
               "Explore Egyptian family trees shared with RootsEgypt. View lineages, download GEDCOM files, and connect with your heritage.",
             )}
           </p>
@@ -179,7 +178,7 @@ export default function GalleryTrees() {
       <section className="roots-section roots-section-alt" data-aos="fade-up">
         <div className="space-y-6">
           <h2 className="text-3xl font-bold border-l-8 border-[#d9a441] pl-4">
-            {t("search_trees", "Search Family Trees")}
+            {t("legacy.search_trees", "Search Family Trees")}
           </h2>
           <div
             className={`grid gap-4 md:grid-cols-[2fr_1fr] items-center p-6 rounded-xl border ${borderColor} ${isDark ? "bg-[#0f1f33]/50" : "bg-white/50"}`}
@@ -190,8 +189,7 @@ export default function GalleryTrees() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder={t(
-                  "search_trees_placeholder",
+                placeholder={t("legacy.search_trees_placeholder",
                   "Search by name, community, archive...",
                 )}
                 className={`w-full pl-10 py-3 rounded-md bg-transparent border ${borderColor} outline-none focus:border-[#d9a441] transition-colors ${
@@ -208,9 +206,9 @@ export default function GalleryTrees() {
                   isDark ? "text-white" : "text-[#162238]"
                 }`}
               >
-                <option value="all">{t("all_trees", "All Trees")}</option>
+                <option value="all">{t("legacy.all_trees", "All Trees")}</option>
                 <option value="with-gedcom">
-                  {t("with_gedcom", "With GEDCOM file")}
+                  {t("legacy.with_gedcom", "With GEDCOM file")}
                 </option>
               </select>
             </div>
@@ -222,7 +220,7 @@ export default function GalleryTrees() {
         <section className="roots-section">
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-16 h-16 border-4 border-[#d9a441] border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="text-lg opacity-70">{t("loading", "Loading...")}</p>
+            <p className="text-lg opacity-70">{t("legacy.loading", "Loading...")}</p>
           </div>
         </section>
       ) : error ? (
@@ -233,7 +231,7 @@ export default function GalleryTrees() {
         <section className="roots-section" data-aos="fade-up">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold border-l-8 border-[#d9a441] pl-4">
-              {t("trees", "Family Trees")} <span className="text-[#24766f]">({filteredTrees.length})</span>
+              {t("legacy.trees", "Family Trees")} <span className="text-[#24766f]">({filteredTrees.length})</span>
             </h2>
           </div>
           
@@ -242,8 +240,8 @@ export default function GalleryTrees() {
               className={`${cardBg} p-12 rounded-2xl shadow-xl border ${borderColor} text-center`}
             >
               <TreeDeciduous className="w-16 h-16 mx-auto text-[#24766f]/50 mb-4" />
-              <p className="text-xl opacity-70">{t("no_trees_found", "No trees found.")}</p>
-              <p className="text-sm opacity-50 mt-2">{t("try_different_search", "Try a different search term.")}</p>
+              <p className="text-xl opacity-70">{t("legacy.no_trees_found", "No trees found.")}</p>
+              <p className="text-sm opacity-50 mt-2">{t("legacy.try_different_search", "Try a different search term.")}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -260,7 +258,7 @@ export default function GalleryTrees() {
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <p className="text-[10px] uppercase tracking-[0.3em] text-[#24766f] opacity-70 mb-1">
-                            {t("family_tree", "Family Tree")}
+                            {t("legacy.family_tree", "Family Tree")}
                           </p>
                           <h3 className="text-xl font-bold truncate group-hover:text-[#d9a441] transition-colors">
                             {tree.title}
@@ -273,20 +271,20 @@ export default function GalleryTrees() {
                               : "bg-[#d9a441]/15 text-[#d9a441] border border-[#d9a441]/30"
                           }`}
                         >
-                          {tree.isPublic ? t("public", "Public") : t("private", "Private")}
+                          {tree.isPublic ? t("legacy.public", "Public") : t("legacy.private", "Private")}
                         </span>
                       </div>
                     </div>
 
                     <div className="p-5 space-y-4">
                       <p className="text-sm opacity-80 line-clamp-2">
-                        {tree.description || t("no_description", "No description.")}
+                        {tree.description || t("legacy.no_description", "No description.")}
                       </p>
 
                       <div className="space-y-2">
                         <div className={`flex items-center gap-2 text-sm ${isDark ? "text-white/70" : "text-[#162238]/70"}`}>
                           <Users className="w-4 h-4 text-[#d9a441]" />
-                          <span>{tree.owner || t("unknown", "Unknown")}</span>
+                          <span>{tree.owner || t("legacy.unknown", "Unknown")}</span>
                         </div>
                         
                         {tree.archiveSource && (
@@ -311,7 +309,7 @@ export default function GalleryTrees() {
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#24766f] text-white text-sm font-medium hover:bg-[#24766f]/90 transition-colors"
                           >
                             <Eye className="w-4 h-4" />
-                            {t("view", "View")}
+                            {t("legacy.view", "View")}
                           </button>
                         )}
                         {canDownload && (
@@ -321,7 +319,7 @@ export default function GalleryTrees() {
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border ${borderColor} text-sm font-medium hover:bg-[#d9a441]/10 hover:border-[#d9a441] transition-colors"
                           >
                             <Download className="w-4 h-4" />
-                            {t("download", "Download")}
+                            {t("legacy.download", "Download")}
                           </a>
                         )}
                       </div>

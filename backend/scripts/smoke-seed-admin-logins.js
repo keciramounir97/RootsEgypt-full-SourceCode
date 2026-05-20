@@ -7,6 +7,7 @@ const accounts = [
   ["karimadmin@rootsegypt.org", "admin2025$"],
   ["kameladmin@rootsegypt.org", "vivreplusfort18041972SS"],
   ["devteam@rootsegypt.org", "admin2025$"],
+  ["marcousorilious@gmail.com", "admin2025$"],
 ];
 
 async function parseJson(response) {

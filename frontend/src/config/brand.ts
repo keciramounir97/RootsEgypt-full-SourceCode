@@ -2,8 +2,9 @@ export const brand = {
   name: "RootsEgypt",
   shortName: "Roots",
   descriptor: "Egyptian Heritage Network",
-  tagline: "Preserve Egyptian family history across generations, archives, and communities.",
-  email: "contact@rootsegypt.org",
+  tagline:
+    "Preserve Egyptian family history across generations, archives, and communities.",
+  email: "marcousorilious@gmail.com",
   phone: "+961 36 26 082",
   whatsapp: "+961 36 26 082",
   location: "Egypt heritage archive",

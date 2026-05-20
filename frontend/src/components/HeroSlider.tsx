@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import {
   resolveSiteImageUrl,
   type SiteImageRecord,
@@ -49,7 +49,7 @@ export default function HeroSlider({
   showCaptions = true,
   className = "",
 }: HeroSliderProps) {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   const effective: SiteImageRecord[] =
     slides && slides.length > 0
@@ -156,7 +156,7 @@ export default function HeroSlider({
           <button
             type="button"
             onClick={prev}
-            aria-label={t("slider_prev", "Previous slide")}
+            aria-label={t("legacy.slider_prev", "Previous slide")}
             className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/30 hover:bg-black/55 border border-white/20 flex items-center justify-center text-white transition backdrop-blur-sm"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -164,7 +164,7 @@ export default function HeroSlider({
           <button
             type="button"
             onClick={next}
-            aria-label={t("slider_next", "Next slide")}
+            aria-label={t("legacy.slider_next", "Next slide")}
             className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/30 hover:bg-black/55 border border-white/20 flex items-center justify-center text-white transition backdrop-blur-sm"
           >
             <ChevronRight className="w-5 h-5" />
@@ -183,7 +183,7 @@ export default function HeroSlider({
                 goTo(i);
                 resetTimer();
               }}
-              aria-label={t("slider_goto", `Go to slide ${i + 1}`)}
+              aria-label={t("legacy.slider_goto", `Go to slide ${i + 1}`)}
               className={`transition-all duration-300 rounded-full ${
                 i === current
                   ? "w-6 h-2 bg-[#d4a843]"

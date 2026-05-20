@@ -34,7 +34,7 @@ import {
   VolumeX,
   X,
 } from "lucide-react";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import { useFavorites } from "../context/FavoritesContext";
 import { dispatchAppNotification } from "../context/NotificationContext";
 import RootsPageShell from "../components/RootsPageShell";
@@ -199,7 +199,7 @@ function EqualizerBars() {
 /* ================================================================== */
 export default function AudioPage() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { isFavorite, toggleFavorite } = useFavorites();
   const isDark = theme === "dark";
 
@@ -319,7 +319,7 @@ export default function AudioPage() {
           const file = fileList[i];
           if (!file.type.startsWith("audio/")) continue;
           if (file.size > MAX_BYTES) {
-            dispatchAppNotification(t("audio_file_too_large", "File too large (max 10MB)"), file.name);
+            dispatchAppNotification(t("legacy.audio_file_too_large", "File too large (max 10MB)"), file.name);
             continue;
           }
           const dataUrl = await new Promise<string>((resolve, reject) => {
@@ -333,7 +333,7 @@ export default function AudioPage() {
           added.push({
             id,
             title: (fileList.length === 1 && uploadTitle.trim()) ? uploadTitle.trim() : defaultName,
-            artist: uploadArtist.trim() || t("unknown_artist", "Unknown Artist"),
+            artist: uploadArtist.trim() || t("legacy.unknown_artist", "Unknown Artist"),
             name: file.name,
             mime: file.type || "audio/mpeg",
             dataUrl,
@@ -354,7 +354,7 @@ export default function AudioPage() {
         setUploadTitle("");
         setUploadArtist("");
         setShowUpload(false);
-        dispatchAppNotification(t("audio_added", "Audio added to library"));
+        dispatchAppNotification(t("legacy.audio_added", "Audio added to library"));
       } finally {
         setBusy(false);
       }
@@ -539,7 +539,7 @@ export default function AudioPage() {
             transition={{ delay: 0.1 }}
             className="text-sm uppercase tracking-[0.3em] text-teal"
           >
-            {t("audio_library", "Audio Library")}
+            {t("legacy.audio_library", "Audio Library")}
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -547,7 +547,7 @@ export default function AudioPage() {
             transition={{ delay: 0.2 }}
             className="text-5xl font-bold"
           >
-            {t("audio_library_title", "Voices & Oral Histories")}
+            {t("legacy.audio_library_title", "Voices & Oral Histories")}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -555,8 +555,7 @@ export default function AudioPage() {
             transition={{ delay: 0.3 }}
             className="max-w-3xl mx-auto text-lg opacity-90"
           >
-            {t(
-              "audio_intro",
+            {t("legacy.audio_intro",
               "Listen to interviews, poetry, recitations and family stories from Egypt's heritage."
             )}
           </motion.p>
@@ -573,7 +572,7 @@ export default function AudioPage() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder={t("search_audio", "Search audio...")}
+                placeholder={t("legacy.search_audio", "Search audio...")}
                 className={`w-full pl-12 pr-4 py-3.5 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-teal transition ${
                   isDark ? "text-white placeholder-white/40" : "text-[#091326] placeholder-black/40"
                 }`}
@@ -585,7 +584,7 @@ export default function AudioPage() {
               className="px-6 py-3.5 rounded-xl font-semibold bg-gradient-to-r from-teal to-[#0c4a6e] text-white flex items-center gap-2 shadow-lg shadow-teal/20"
             >
               <Upload className="w-5 h-5" />
-              {t("upload", "Upload")}
+              {t("legacy.upload", "Upload")}
             </motion.button>
           </div>
 
@@ -629,7 +628,7 @@ export default function AudioPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs uppercase tracking-widest text-teal mb-1">
-                          {t("featured", "Featured")}
+                          {t("legacy.featured", "Featured")}
                         </p>
                         <h3 className="text-xl font-bold truncate">{track.title}</h3>
                         <p className="text-sm opacity-60 truncate">{track.artist}</p>
@@ -648,7 +647,7 @@ export default function AudioPage() {
       {!queryLower && genreFilter === "All" && (
         <section className="roots-section space-y-8">
           <AudioShelf
-            title={t("recently_added", "Recently Added")}
+            title={t("legacy.recently_added", "Recently Added")}
             icon={<Mic className="w-5 h-5 text-teal" />}
             tracks={recent}
             onPlay={playTrack}
@@ -657,7 +656,7 @@ export default function AudioPage() {
             renderCard={renderAudioCard}
           />
           <AudioShelf
-            title={t("most_played", "Most Played")}
+            title={t("legacy.most_played", "Most Played")}
             icon={<ListMusic className="w-5 h-5 text-[#d4a843]" />}
             tracks={popular}
             onPlay={playTrack}
@@ -674,14 +673,14 @@ export default function AudioPage() {
           <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
             <Music className="w-6 h-6 text-teal" />
             {queryLower || genreFilter !== "All"
-              ? `${t("results", "Results")} (${filtered.length})`
-              : `${t("all_tracks", "All Tracks")} (${tracks.length})`}
+              ? `${t("legacy.results", "Results")} (${filtered.length})`
+              : `${t("legacy.all_tracks", "All Tracks")} (${tracks.length})`}
           </h2>
           {filtered.length === 0 ? (
             <div className={`${cardBg} p-10 rounded-2xl border ${borderColor} text-center opacity-70`}>
               {tracks.length === 0
-                ? t("audio_empty", "No audio yet — upload a file to get started.")
-                : t("no_results", "No matching tracks.")}
+                ? t("legacy.audio_empty", "No audio yet — upload a file to get started.")
+                : t("legacy.no_results", "No matching tracks.")}
             </div>
           ) : (
             <div className={`${cardBg} rounded-2xl border ${borderColor} overflow-hidden divide-y ${
@@ -721,7 +720,7 @@ export default function AudioPage() {
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal to-[#0c4a6e] flex items-center justify-center">
                   <Upload className="w-5 h-5 text-white" />
                 </div>
-                <h2 className="text-xl font-bold">{t("upload_audio", "Upload Audio")}</h2>
+                <h2 className="text-xl font-bold">{t("legacy.upload_audio", "Upload Audio")}</h2>
               </div>
 
               <div className="space-y-4">
@@ -729,14 +728,14 @@ export default function AudioPage() {
                   type="text"
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
-                  placeholder={t("title", "Title")}
+                  placeholder={t("legacy.title", "Title")}
                   className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-teal transition`}
                 />
                 <input
                   type="text"
                   value={uploadArtist}
                   onChange={(e) => setUploadArtist(e.target.value)}
-                  placeholder={t("artist", "Artist")}
+                  placeholder={t("legacy.artist", "Artist")}
                   className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-teal transition`}
                 />
                 <select
@@ -752,9 +751,9 @@ export default function AudioPage() {
                 <label className="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-teal/40 rounded-2xl py-10 cursor-pointer hover:border-teal/70 transition">
                   <Mic className="w-10 h-10 text-teal" />
                   <span className="text-sm font-semibold uppercase tracking-widest">
-                    {t("audio_tap_to_upload", "Choose or record audio")}
+                    {t("legacy.audio_tap_to_upload", "Choose or record audio")}
                   </span>
-                  <span className="text-xs opacity-50">{t("max_10mb", "Max 10MB per file")}</span>
+                  <span className="text-xs opacity-50">{t("legacy.max_10mb", "Max 10MB per file")}</span>
                   <input
                     type="file"
                     accept="audio/*"

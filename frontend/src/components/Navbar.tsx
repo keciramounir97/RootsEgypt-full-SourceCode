@@ -31,7 +31,7 @@ import { z } from "zod";
 import { useThemeStore } from "../store/theme";
 import { useAuth } from "../admin/components/AuthContext";
 import { api } from "../api/client";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import { useNotifications } from "../context/NotificationContext";
 import LanguageMenu from "./LanguageMenu";
 import EgyptianLogoMark from "./EgyptianLogoMark";
@@ -53,11 +53,11 @@ interface SuggestionsState {
 export default function Navbar() {
   const { theme, toggleTheme } = useThemeStore();
   const { user, logout } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const searchSchema = useMemo(
     () =>
       z.object({
-        query: z.string().min(1, t("search_empty", "Search cannot be empty")),
+        query: z.string().min(1, t("legacy.search_empty", "Search cannot be empty")),
       }),
     [t],
   );
@@ -174,7 +174,7 @@ export default function Navbar() {
         if (latestQueryRef.current !== q) return;
         setSuggestError(
           err.response?.data?.message ||
-            t("suggestions_load_failed", "Failed to load suggestions"),
+            t("legacy.suggestions_load_failed", "Failed to load suggestions"),
         );
         setSuggestions({ trees: [], people: [] });
       } finally {
@@ -209,28 +209,28 @@ export default function Navbar() {
   };
 
   const resourceSub = [
-    { to: "/gallery", label: t("gallery", "Gallery"), icon: Image },
+    { to: "/gallery", label: t("legacy.gallery", "Gallery"), icon: Image },
     {
       to: "/genealogy-gallery",
-      label: t("genealogy_gallery", "Genealogy Gallery"),
+      label: t("legacy.genealogy_gallery", "Genealogy Gallery"),
       icon: Trees,
     },
-    { to: "/library", label: t("library", "Library"), icon: Library },
+    { to: "/library", label: t("legacy.library", "Library"), icon: Library },
     {
       to: "/audio",
-      label: t("audio_library", "Audio Library"),
+      label: t("legacy.audio_library", "Audio Library"),
       icon: Headphones,
     },
-    { to: "/articles", label: t("articles", "Articles"), icon: Newspaper },
+    { to: "/articles", label: t("legacy.articles", "Articles"), icon: Newspaper },
   ];
 
   const secondaryNav = [
     {
       to: "/sources-and-periods",
-      label: t("sources_and_archives", "Sources & Periods"),
+      label: t("legacy.sources_and_archives", "Sources & Periods"),
       icon: Archive,
     },
-    { to: "/periods", label: t("periods", "Periods"), icon: Clock },
+    { to: "/periods", label: t("legacy.periods", "Periods"), icon: Clock },
   ];
 
   const resourcePaths = [
@@ -259,7 +259,7 @@ export default function Navbar() {
               type="button"
               className="navbar-hamburger"
               onClick={() => setSidebarOpen(true)}
-              aria-label={t("menu", "Menu")}
+              aria-label={t("legacy.menu", "Menu")}
             >
               <Menu className="w-6 h-6" />
             </button>
@@ -268,7 +268,7 @@ export default function Navbar() {
             <Link
               to="/"
               className="navbar-logo"
-              aria-label={`RootsEgypt — ${t("home", "Home")}`}
+              aria-label={`RootsEgypt — ${t("legacy.home", "Home")}`}
             >
               <div className="navbar-logo-icon" aria-hidden>
                 <EgyptianLogoMark
@@ -288,7 +288,7 @@ export default function Navbar() {
           {/* Center: Desktop Navigation (hidden on mobile) */}
           <nav
             className="navbar-nav"
-            aria-label={t("primary_navigation", "Primary navigation")}
+            aria-label={t("legacy.primary_navigation", "Primary navigation")}
           >
             <NavLink
               to="/"
@@ -296,7 +296,7 @@ export default function Navbar() {
                 `navbar-link${isActive ? " active" : ""}`
               }
             >
-              {t("home", "Home")}
+              {t("legacy.home", "Home")}
             </NavLink>
 
             <div className="navbar-dropdown" ref={resourceRef}>
@@ -308,7 +308,7 @@ export default function Navbar() {
                 aria-expanded={resourceMenuOpen}
                 onClick={() => setResourceMenuOpen((o) => !o)}
               >
-                {t("resources", "Resources")}
+                {t("legacy.resources", "Resources")}
                 <ChevronDown
                   className={`navbar-dropdown-chevron${resourceMenuOpen ? " open" : ""}`}
                 />
@@ -354,8 +354,8 @@ export default function Navbar() {
                 }
               >
                 {user?.role === 1 || user?.role === 3
-                  ? t("admin", "Admin")
-                  : t("dashboard", "Dashboard")}
+                  ? t("legacy.admin", "Admin")
+                  : t("legacy.dashboard", "Dashboard")}
               </NavLink>
             )}
           </nav>
@@ -368,17 +368,17 @@ export default function Navbar() {
               <input
                 {...searchField}
                 type="search"
-                placeholder={t("search", "Search...")}
+                placeholder={t("legacy.search", "Search...")}
                 onFocus={handleSuggestFocus}
                 onBlur={handleSuggestBlur}
-                aria-label={t("search", "Search")}
+                aria-label={t("legacy.search", "Search")}
                 className="navbar-search-input"
               />
               {suggestOpen && (
                 <div className="navbar-suggestions">
                   {suggestLoading ? (
                     <p className="navbar-suggest-item">
-                      {t("loading", "Loading...")}
+                      {t("legacy.loading", "Loading...")}
                     </p>
                   ) : suggestError ? (
                     <p className="navbar-suggest-item text-red-500">
@@ -394,7 +394,7 @@ export default function Navbar() {
                           onMouseDown={() => handlePickSuggestion(item.title)}
                         >
                           <strong>{item.title}</strong>
-                          <span>{t("suggest_trees_heading", "Trees")}</span>
+                          <span>{t("legacy.suggest_trees_heading", "Trees")}</span>
                         </button>
                       ))}
                       {suggestions.people.map((item) => (
@@ -407,19 +407,19 @@ export default function Navbar() {
                           }
                         >
                           <strong>
-                            {item.name || t("unknown", "Unknown")}
+                            {item.name || t("legacy.unknown", "Unknown")}
                           </strong>
                           <span>
                             {item.tree_title
-                              ? `${t("tree_prefix_colon", "Tree:")} ${item.tree_title}`
-                              : t("person_singular", "Person")}
+                              ? `${t("legacy.tree_prefix_colon", "Tree:")} ${item.tree_title}`
+                              : t("legacy.person_singular", "Person")}
                           </span>
                         </button>
                       ))}
                     </>
                   ) : (
                     <p className="navbar-suggest-item">
-                      {t("no_results", "No suggestions")}
+                      {t("legacy.no_results", "No suggestions")}
                     </p>
                   )}
                 </div>
@@ -431,7 +431,7 @@ export default function Navbar() {
               <button
                 type="button"
                 className="navbar-icon-btn relative"
-                aria-label={t("notifications", "Notifications")}
+                aria-label={t("legacy.notifications", "Notifications")}
                 onClick={() => setNotifOpen((o) => !o)}
               >
                 <Bell className="w-5 h-5" />
@@ -444,20 +444,20 @@ export default function Navbar() {
               {notifOpen ? (
                 <div className="navbar-notif-panel">
                   <div className="navbar-notif-panel-head">
-                    <span>{t("notifications", "Notifications")}</span>
+                    <span>{t("legacy.notifications", "Notifications")}</span>
                     {notifications.length > 0 ? (
                       <button
                         type="button"
                         className="navbar-notif-clear"
                         onClick={() => clearAll()}
                       >
-                        {t("notifications_clear", "Clear")}
+                        {t("legacy.notifications_clear", "Clear")}
                       </button>
                     ) : null}
                   </div>
                   {notifications.length === 0 ? (
                     <p className="navbar-notif-empty">
-                      {t("notifications_empty", "No notifications yet.")}
+                      {t("legacy.notifications_empty", "No notifications yet.")}
                     </p>
                   ) : (
                     <ul className="navbar-notif-list">
@@ -484,7 +484,7 @@ export default function Navbar() {
               type="button"
               onClick={toggleTheme}
               className="navbar-icon-btn"
-              aria-label={t("toggle_theme", "Toggle color theme")}
+              aria-label={t("legacy.toggle_theme", "Toggle color theme")}
             >
               {theme === "dark" ? (
                 <Sun className="w-5 h-5" />
@@ -499,8 +499,8 @@ export default function Navbar() {
             <Link
               to="/contact"
               className="navbar-icon-btn"
-              aria-label={t("contact", "Contact")}
-              title={t("contact", "Contact")}
+              aria-label={t("legacy.contact", "Contact")}
+              title={t("legacy.contact", "Contact")}
             >
               <Phone className="w-5 h-5" />
             </Link>
@@ -514,12 +514,12 @@ export default function Navbar() {
                   className="navbar-logout-btn"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>{t("logout", "Logout")}</span>
+                  <span>{t("legacy.logout", "Logout")}</span>
                 </button>
               ) : (
                 <Link to="/login" className="navbar-login-btn">
                   <User className="w-4 h-4" />
-                  <span>{t("login", "Login")}</span>
+                  <span>{t("legacy.login", "Login")}</span>
                 </Link>
               )}
             </div>
@@ -538,7 +538,7 @@ export default function Navbar() {
       <aside
         ref={sidebarRef}
         className={`sidebar ${sidebarOpen ? "open" : ""}`}
-        aria-label={t("navigation_sidebar", "Side menu")}
+        aria-label={t("legacy.navigation_sidebar", "Side menu")}
       >
         {/* Sidebar Header */}
         <div className="sidebar-header">
@@ -553,7 +553,7 @@ export default function Navbar() {
             type="button"
             className="sidebar-close"
             onClick={closeSidebar}
-            aria-label={t("close_menu", "Close menu")}
+            aria-label={t("legacy.close_menu", "Close menu")}
           >
             <X className="w-6 h-6" />
           </button>
@@ -565,14 +565,14 @@ export default function Navbar() {
           <input
             {...searchField}
             type="search"
-            placeholder={t("search", "Search...")}
+            placeholder={t("legacy.search", "Search...")}
             className="sidebar-search-input"
           />
         </form>
 
         {/* Sidebar Navigation */}
         <nav className="sidebar-nav">
-          <div className="sidebar-nav-label">{t("menu", "Menu")}</div>
+          <div className="sidebar-nav-label">{t("legacy.menu", "Menu")}</div>
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -581,11 +581,11 @@ export default function Navbar() {
             onClick={closeSidebar}
           >
             <Home className="sidebar-link-icon" />
-            <span>{t("home", "Home")}</span>
+            <span>{t("legacy.home", "Home")}</span>
             <ChevronRight className="sidebar-link-arrow" />
           </NavLink>
 
-          <div className="sidebar-nav-label">{t("resources", "Resources")}</div>
+          <div className="sidebar-nav-label">{t("legacy.resources", "Resources")}</div>
           {resourceSub.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
@@ -626,8 +626,8 @@ export default function Navbar() {
               <LayoutDashboard className="sidebar-link-icon" />
               <span>
                 {user?.role === 1 || user?.role === 3
-                  ? t("admin", "Admin Panel")
-                  : t("dashboard", "My Dashboard")}
+                  ? t("legacy.admin", "Admin Panel")
+                  : t("legacy.dashboard", "My Dashboard")}
               </span>
               <ChevronRight className="sidebar-link-arrow" />
             </NavLink>
@@ -636,7 +636,7 @@ export default function Navbar() {
 
         {/* Sidebar Actions */}
         <div className="sidebar-actions">
-          <div className="sidebar-nav-label">{t("settings", "Settings")}</div>
+          <div className="sidebar-nav-label">{t("legacy.settings", "Settings")}</div>
 
           {/* Theme Toggle */}
           <button
@@ -653,8 +653,8 @@ export default function Navbar() {
             )}
             <span>
               {theme === "dark"
-                ? t("light_mode", "Light Mode")
-                : t("dark_mode", "Dark Mode")}
+                ? t("legacy.light_mode", "Light Mode")
+                : t("legacy.dark_mode", "Dark Mode")}
             </span>
           </button>
 
@@ -670,7 +670,7 @@ export default function Navbar() {
             onClick={closeSidebar}
           >
             <Phone className="sidebar-link-icon" />
-            <span>{t("contact", "Contact")}</span>
+            <span>{t("legacy.contact", "Contact")}</span>
           </Link>
         </div>
 
@@ -686,12 +686,12 @@ export default function Navbar() {
               className="sidebar-logout"
             >
               <LogOut className="w-5 h-5" />
-              <span>{t("logout", "Logout")}</span>
+              <span>{t("legacy.logout", "Logout")}</span>
             </button>
           ) : (
             <Link to="/login" className="sidebar-login" onClick={closeSidebar}>
               <User className="w-5 h-5" />
-              <span>{t("login", "Login")}</span>
+              <span>{t("legacy.login", "Login")}</span>
             </Link>
           )}
         </div>

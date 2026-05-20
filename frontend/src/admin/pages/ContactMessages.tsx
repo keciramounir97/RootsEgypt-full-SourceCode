@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { MessageSquare } from "lucide-react";
 import { api } from "../../api/client";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import Toast from "../../components/Toast";
 
 interface ContactMessage {
@@ -16,7 +16,7 @@ interface ContactMessage {
 
 export default function ContactMessages() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
 
   const pageBg = isDark ? "bg-[#0d1b2a]" : "bg-[#f5f1e8]";
@@ -63,7 +63,7 @@ export default function ContactMessages() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-cinzel font-bold mb-6 flex items-center gap-3">
           <MessageSquare className="w-7 h-7 text-teal" />
-          {t("contactMessages", "Contact Messages")}
+          {t("legacy.contactMessages", "Contact Messages")}
         </h1>
 
         {loading ? (
@@ -73,7 +73,7 @@ export default function ContactMessages() {
         ) : error ? (
           <p className="text-red-400 text-center py-12">{error}</p>
         ) : rows.length === 0 ? (
-          <p className={`${muted} text-center py-12`}>{t("noMessages", "No messages yet")}</p>
+          <p className={`${muted} text-center py-12`}>{t("legacy.noMessages", "No messages yet")}</p>
         ) : (
           <div className="space-y-4">
             {rows.map((row) => (

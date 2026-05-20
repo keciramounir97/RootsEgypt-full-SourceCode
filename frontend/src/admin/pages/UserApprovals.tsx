@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { useAuth } from "../components/AuthContext";
 import { api } from "../../api/client";
 import {
@@ -35,7 +35,7 @@ interface PendingUser {
 
 export default function AdminUserApprovals() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { user } = useAuth();
   const isDark = theme === "dark";
   const isSuperAdmin = user?.role === 3;
@@ -136,7 +136,7 @@ export default function AdminUserApprovals() {
 
   const handleApprove = async (id: number | string) => {
     if (!isSuperAdmin) {
-      notify(t("only_super_admin", "Only super admin can approve users"), "error");
+      notify(t("legacy.only_super_admin", "Only super admin can approve users"), "error");
       return;
     }
 
@@ -157,19 +157,19 @@ export default function AdminUserApprovals() {
       setPendingUsers((prev) =>
         prev.map((u) => (u.id === id ? { ...u, status: "approved", validatedAt: new Date().toISOString() } : u))
       );
-      notify(t("user_approved", "User approved! They now have a validated badge."));
+      notify(t("legacy.user_approved", "User approved! They now have a validated badge."));
     } catch (error) {
       // Optimistic update for demo
       setPendingUsers((prev) =>
         prev.map((u) => (u.id === id ? { ...u, status: "approved", validatedAt: new Date().toISOString() } : u))
       );
-      notify(t("user_approved", "User approved! They now have a validated badge."));
+      notify(t("legacy.user_approved", "User approved! They now have a validated badge."));
     }
   };
 
   const handleReject = async (id: number | string) => {
     if (!isSuperAdmin) {
-      notify(t("only_super_admin", "Only super admin can reject users"), "error");
+      notify(t("legacy.only_super_admin", "Only super admin can reject users"), "error");
       return;
     }
 
@@ -190,13 +190,13 @@ export default function AdminUserApprovals() {
       setPendingUsers((prev) =>
         prev.map((u) => (u.id === id ? { ...u, status: "rejected" } : u))
       );
-      notify(t("user_rejected", "User registration rejected."));
+      notify(t("legacy.user_rejected", "User registration rejected."));
     } catch (error) {
       // Optimistic update for demo
       setPendingUsers((prev) =>
         prev.map((u) => (u.id === id ? { ...u, status: "rejected" } : u))
       );
-      notify(t("user_rejected", "User registration rejected."));
+      notify(t("legacy.user_rejected", "User registration rejected."));
     }
   };
 
@@ -229,16 +229,16 @@ export default function AdminUserApprovals() {
             <Shield className={`w-8 h-8 ${isDark ? "text-[#d9a441]" : "text-[#24766f]"}`} />
             <div>
               <h1 className={`text-4xl font-bold font-serif ${isDark ? "text-[#d9a441]" : "text-[#24766f]"} mb-1`}>
-                {t("user_approvals", "User Approvals")}
+                {t("legacy.user_approvals", "User Approvals")}
               </h1>
               <p className={`${textColor} opacity-70`}>
-                {t("user_approvals_desc", "Review and approve new user registrations. Approved users receive a validated badge.")}
+                {t("legacy.user_approvals_desc", "Review and approve new user registrations. Approved users receive a validated badge.")}
               </p>
             </div>
           </div>
           {!isSuperAdmin && (
             <div className={`mt-4 p-4 rounded-lg ${isDark ? "bg-amber-500/20" : "bg-amber-100"} text-amber-600`}>
-              <p className="text-sm font-medium">{t("super_admin_only_notice", "Only Super Admin can approve or reject users.")}</p>
+              <p className="text-sm font-medium">{t("legacy.super_admin_only_notice", "Only Super Admin can approve or reject users.")}</p>
             </div>
           )}
         </div>
@@ -247,19 +247,19 @@ export default function AdminUserApprovals() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-[#d9a441]">{pendingUsers.filter((u) => u.status === "pending").length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("pending", "Pending")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.pending", "Pending")}</p>
           </div>
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-green-500">{pendingUsers.filter((u) => u.status === "approved").length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("validated", "Validated")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.validated", "Validated")}</p>
           </div>
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-red-500">{pendingUsers.filter((u) => u.status === "rejected").length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("rejected", "Rejected")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.rejected", "Rejected")}</p>
           </div>
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-[#24766f]">{pendingUsers.length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("total_signups", "Total Signups")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.total_signups", "Total Signups")}</p>
           </div>
         </div>
 
@@ -267,7 +267,7 @@ export default function AdminUserApprovals() {
         <div className={`${cardBg} border ${border} rounded-xl p-4 mb-6 flex flex-wrap gap-4`} data-aos="fade-up">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 opacity-50" />
-            <span className={`text-sm font-medium ${textColor}`}>{t("status", "Status")}:</span>
+            <span className={`text-sm font-medium ${textColor}`}>{t("legacy.status", "Status")}:</span>
           </div>
           <div className="flex gap-2">
             {(["all", "pending", "approved", "rejected"] as const).map((f) => (
@@ -293,12 +293,12 @@ export default function AdminUserApprovals() {
           {loading ? (
             <div className="text-center py-12">
               <div className="w-12 h-12 border-4 border-[#d9a441] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-              <p className={textColor}>{t("loading", "Loading...")}</p>
+              <p className={textColor}>{t("legacy.loading", "Loading...")}</p>
             </div>
           ) : filteredUsers.length === 0 ? (
             <div className="text-center py-12">
               <UserCheck className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`} />
-              <p className={`${textColor} opacity-70`}>{t("no_pending_users", "No users found.")}</p>
+              <p className={`${textColor} opacity-70`}>{t("legacy.no_pending_users", "No users found.")}</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -308,28 +308,28 @@ export default function AdminUserApprovals() {
                     <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>
                       <div className="flex items-center gap-2">
                         <UserCheck className="w-4 h-4" />
-                        {t("full_name", "Full Name")}
+                        {t("legacy.full_name", "Full Name")}
                       </div>
                     </th>
                     <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>
                       <div className="flex items-center gap-2">
                         <Mail className="w-4 h-4" />
-                        {t("email", "Email")}
+                        {t("legacy.email", "Email")}
                       </div>
                     </th>
                     <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>
                       <div className="flex items-center gap-2">
                         <Phone className="w-4 h-4" />
-                        {t("phone", "Phone")}
+                        {t("legacy.phone", "Phone")}
                       </div>
                     </th>
                     <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
-                        {t("signed_up", "Signed Up")}
+                        {t("legacy.signed_up", "Signed Up")}
                       </div>
                     </th>
-                    <th className={`px-4 py-3 text-center text-sm font-semibold ${textColor}`}>{t("validation", "Validation")}</th>
+                    <th className={`px-4 py-3 text-center text-sm font-semibold ${textColor}`}>{t("legacy.validation", "Validation")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y ${border}">
@@ -344,7 +344,7 @@ export default function AdminUserApprovals() {
                           {pendingUser.status === "approved" && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 text-green-500 text-xs">
                               <Check className="w-3 h-3" />
-                              {t("validated", "Validated")}
+                              {t("legacy.validated", "Validated")}
                             </span>
                           )}
                         </div>
@@ -366,30 +366,30 @@ export default function AdminUserApprovals() {
                                 <button
                                   onClick={() => handleApprove(pendingUser.id)}
                                   className="p-2 rounded-lg bg-green-500/20 text-green-500 hover:bg-green-500/30 transition"
-                                  title={t("approve_validate", "Approve & Validate")}
+                                  title={t("legacy.approve_validate", "Approve & Validate")}
                                 >
                                   <Check className="w-5 h-5" />
                                 </button>
                                 <button
                                   onClick={() => handleReject(pendingUser.id)}
                                   className="p-2 rounded-lg bg-red-500/20 text-red-500 hover:bg-red-500/30 transition"
-                                  title={t("reject", "Reject")}
+                                  title={t("legacy.reject", "Reject")}
                                 >
                                   <X className="w-5 h-5" />
                                 </button>
                               </>
                             ) : (
-                              <span className="text-xs opacity-50">{t("pending_approval", "Pending Approval")}</span>
+                              <span className="text-xs opacity-50">{t("legacy.pending_approval", "Pending Approval")}</span>
                             )
                           ) : pendingUser.status === "approved" ? (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-500/20 text-green-500 text-sm">
                               <Check className="w-4 h-4" />
-                              {t("validated", "Validated")}
+                              {t("legacy.validated", "Validated")}
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-500/20 text-red-500 text-sm">
                               <X className="w-4 h-4" />
-                              {t("rejected", "Rejected")}
+                              {t("legacy.rejected", "Rejected")}
                             </span>
                           )}
                         </div>

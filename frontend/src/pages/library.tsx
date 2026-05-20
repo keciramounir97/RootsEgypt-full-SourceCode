@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { api } from "../api/client";
 import { getApiErrorMessage, getApiRoot } from "../api/helpers";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import { useFavorites } from "../context/FavoritesContext";
 import RootsPageShell from "../components/RootsPageShell";
 import ScrollReveal from "../components/motion/ScrollReveal";
@@ -249,10 +249,10 @@ function BookDetailModal({
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           <div className="absolute bottom-4 left-6 right-6">
             <span className="text-xs uppercase tracking-[0.3em] text-[#d4a843]">
-              {kind === "document" ? t("documents", "Documents") : t("books", "Books")}
+              {kind === "document" ? t("legacy.documents", "Documents") : t("legacy.books", "Books")}
             </span>
             <h2 className="text-2xl font-bold text-white mt-1">{book.title}</h2>
-            <p className="text-white/80 text-sm mt-1">{book.author || t("unknown", "Unknown")}</p>
+            <p className="text-white/80 text-sm mt-1">{book.author || t("legacy.unknown", "Unknown")}</p>
           </div>
         </div>
 
@@ -260,7 +260,7 @@ function BookDetailModal({
         <div className="p-6 space-y-5">
           <div className="flex items-center gap-4">
             <StarRating rating={book.rating || Math.floor(Math.random() * 2) + 3} />
-            <span className="text-xs opacity-60">{book.category || t("uncategorized", "Uncategorized")}</span>
+            <span className="text-xs opacity-60">{book.category || t("legacy.uncategorized", "Uncategorized")}</span>
           </div>
 
           <div className="flex gap-3">
@@ -276,7 +276,7 @@ function BookDetailModal({
               }`}
             >
               <Heart className={`w-5 h-5 ${isFavorite(kind, book.id) ? "fill-current" : ""}`} />
-              {isFavorite(kind, book.id) ? t("saved", "Saved") : t("save", "Save")}
+              {isFavorite(kind, book.id) ? t("legacy.saved", "Saved") : t("legacy.save", "Save")}
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
@@ -286,20 +286,20 @@ function BookDetailModal({
               }`}
             >
               <Share2 className="w-5 h-5" />
-              {t("share", "Share")}
+              {t("legacy.share", "Share")}
             </motion.button>
           </div>
 
           <div className={`p-4 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
             <p className="text-sm leading-relaxed opacity-85">
-              {book.description || t("no_description", "No description available.")}
+              {book.description || t("legacy.no_description", "No description available.")}
             </p>
           </div>
 
           {book.fileSize && (
             <p className="text-xs opacity-60">
-              {t("file_label", "File")}: {formatBytes(book.fileSize)}
-              {typeof book.downloads === "number" && ` · ${book.downloads} ${t("downloads_label", "downloads")}`}
+              {t("legacy.file_label", "File")}: {formatBytes(book.fileSize)}
+              {typeof book.downloads === "number" && ` · ${book.downloads} ${t("legacy.downloads_label", "downloads")}`}
             </p>
           )}
 
@@ -312,7 +312,7 @@ function BookDetailModal({
                 rel="noreferrer"
               >
                 <Download className="w-5 h-5" />
-                {t("download", "Download")}
+                {t("legacy.download", "Download")}
               </a>
             )}
             {(book.fileUrl || book.file_path || book.filePath) && (
@@ -325,7 +325,7 @@ function BookDetailModal({
                 } transition`}
               >
                 <ExternalLink className="w-5 h-5" />
-                {t("open", "Open")}
+                {t("legacy.open", "Open")}
               </button>
             )}
           </div>
@@ -340,7 +340,7 @@ function BookDetailModal({
 /* ================================================================== */
 export default function Library() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const location = useLocation();
   const { isFavorite, toggleFavorite } = useFavorites();
   const isDark = theme === "dark";
@@ -372,7 +372,7 @@ export default function Library() {
         const bookList = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
         if (mounted) setBooks(bookList);
       } catch (err) {
-        if (mounted) setError(getApiErrorMessage(err, t("library_load_failed", "Could not load library.")));
+        if (mounted) setError(getApiErrorMessage(err, t("legacy.library_load_failed", "Could not load library.")));
       } finally {
         if (mounted) setLoading(false);
       }
@@ -426,7 +426,7 @@ export default function Library() {
 
   const shareItem = (title: string) => {
     const url = `${window.location.origin}/library`;
-    const text = `${title} — ${t("library", "Library")} · Roots Egypt`;
+    const text = `${title} — ${t("legacy.library", "Library")} · Roots Egypt`;
     if (navigator.share) navigator.share({ title, text, url }).catch(() => {});
     else void navigator.clipboard.writeText(url);
   };
@@ -500,13 +500,13 @@ export default function Library() {
           </div>
           {/* Free badge */}
           <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#d4a843] text-white uppercase tracking-wider">
-            {t("free", "Free")}
+            {t("legacy.free", "Free")}
           </div>
         </div>
         {/* Info */}
         <div className="mt-3 space-y-1 px-0.5">
           <h3 className="text-sm font-semibold line-clamp-2 leading-tight">{book.title}</h3>
-          <p className="text-xs opacity-60 truncate">{book.author || t("unknown", "Unknown")}</p>
+          <p className="text-xs opacity-60 truncate">{book.author || t("legacy.unknown", "Unknown")}</p>
           <StarRating rating={book.rating || 4} />
         </div>
       </motion.div>
@@ -542,12 +542,12 @@ export default function Library() {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition" />
           <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#d4a843] text-white uppercase">
-            {t("free", "Free")}
+            {t("legacy.free", "Free")}
           </div>
         </div>
         <div className="p-4 space-y-2">
           <h3 className="font-semibold line-clamp-2 text-sm">{book.title}</h3>
-          <p className="text-xs opacity-60 truncate">{book.author || t("unknown", "Unknown")}</p>
+          <p className="text-xs opacity-60 truncate">{book.author || t("legacy.unknown", "Unknown")}</p>
           <StarRating rating={book.rating || 4} />
           <div className="flex gap-2 pt-1">
             <button
@@ -578,7 +578,7 @@ export default function Library() {
             transition={{ delay: 0.1 }}
             className="text-sm uppercase tracking-[0.3em] text-[#d4a843]"
           >
-            {t("library", "Library")}
+            {t("legacy.library", "Library")}
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -586,7 +586,7 @@ export default function Library() {
             transition={{ delay: 0.2 }}
             className="text-5xl font-bold"
           >
-            {t("library_title", "Egyptian Genealogy Library")}
+            {t("legacy.library_title", "Egyptian Genealogy Library")}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -594,8 +594,7 @@ export default function Library() {
             transition={{ delay: 0.3 }}
             className="max-w-4xl mx-auto text-lg opacity-90"
           >
-            {t(
-              "library_intro_books_docs",
+            {t("legacy.library_intro_books_docs",
               "Books and archival documents — civil registers, manuscripts, family papers, and digitized records from Egypt and the diaspora."
             )}
           </motion.p>
@@ -629,20 +628,20 @@ export default function Library() {
                 </div>
                 <div className="flex-1 text-center md:text-left space-y-3">
                   <span className="text-xs uppercase tracking-[0.3em] text-[#d4a843] font-semibold">
-                    {t("featured", "Featured")}
+                    {t("legacy.featured", "Featured")}
                   </span>
                   <h2 className="text-3xl font-bold">{featuredBook.title}</h2>
-                  <p className="opacity-70">{featuredBook.author || t("unknown", "Unknown")}</p>
+                  <p className="opacity-70">{featuredBook.author || t("legacy.unknown", "Unknown")}</p>
                   <StarRating rating={4} />
                   <p className="text-sm opacity-80 line-clamp-3 max-w-xl">
-                    {featuredBook.description || t("no_description", "No description.")}
+                    {featuredBook.description || t("legacy.no_description", "No description.")}
                   </p>
                   <div className="flex flex-wrap gap-3 justify-center md:justify-start pt-2">
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       className="px-6 py-2.5 rounded-xl font-semibold bg-gradient-to-r from-teal to-[#0c4a6e] text-white shadow-lg shadow-teal/20"
                     >
-                      {t("read_now", "Read Now")}
+                      {t("legacy.read_now", "Read Now")}
                     </motion.button>
                     <motion.button
                       whileTap={{ scale: 0.95 }}
@@ -655,7 +654,7 @@ export default function Library() {
                       } transition flex items-center gap-2`}
                     >
                       <Heart className={`w-4 h-4 ${isFavorite("book", featuredBook.id) ? "fill-pink-500 text-pink-500" : ""}`} />
-                      {t("add_to_library", "Add to Library")}
+                      {t("legacy.add_to_library", "Add to Library")}
                     </motion.button>
                   </div>
                 </div>
@@ -683,7 +682,7 @@ export default function Library() {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={t("search_library_books_docs", "Search books and documents...")}
+                  placeholder={t("legacy.search_library_books_docs", "Search books and documents...")}
                   className={`w-full pl-12 pr-4 py-3.5 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-teal transition ${
                     isDark ? "text-white placeholder-white/40" : "text-[#091326] placeholder-black/40"
                   }`}
@@ -696,7 +695,7 @@ export default function Library() {
                   isDark ? "text-white" : "text-[#091326]"
                 }`}
               >
-                <option value="all">{t("all_categories", "All Categories")}</option>
+                <option value="all">{t("legacy.all_categories", "All Categories")}</option>
                 {categories.map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
@@ -746,7 +745,7 @@ export default function Library() {
             <section className="roots-section space-y-10">
               {/* Recently Added Shelf */}
               <BookShelf
-                title={t("recently_added", "Recently Added")}
+                title={t("legacy.recently_added", "Recently Added")}
                 icon={<BookOpen className="w-6 h-6 text-teal" />}
                 items={recentBooks}
                 onBookClick={setSelectedBook}
@@ -756,7 +755,7 @@ export default function Library() {
 
               {/* Popular Shelf */}
               <BookShelf
-                title={t("most_popular", "Most Popular")}
+                title={t("legacy.most_popular", "Most Popular")}
                 icon={<Star className="w-6 h-6 text-[#d4a843]" />}
                 items={popularBooks}
                 onBookClick={setSelectedBook}
@@ -767,7 +766,7 @@ export default function Library() {
               {/* Books Shelf */}
               {bookItems.length > 0 && (
                 <BookShelf
-                  title={`${t("books", "Books")} (${bookItems.length})`}
+                  title={`${t("legacy.books", "Books")} (${bookItems.length})`}
                   icon={<BookOpen className="w-6 h-6 text-terracotta" />}
                   items={bookItems}
                   onBookClick={setSelectedBook}
@@ -779,7 +778,7 @@ export default function Library() {
               {/* Documents Shelf */}
               {documentItems.length > 0 && (
                 <BookShelf
-                  title={`${t("documents", "Documents")} (${documentItems.length})`}
+                  title={`${t("legacy.documents", "Documents")} (${documentItems.length})`}
                   icon={<FileText className="w-6 h-6 text-teal" />}
                   items={documentItems}
                   onBookClick={setSelectedBook}
@@ -801,7 +800,7 @@ export default function Library() {
               </StaggerContainer>
               {filtered.length === 0 && (
                 <div className={`${cardBg} p-10 rounded-2xl border ${borderColor} text-center opacity-70 mt-8`}>
-                  {t("no_books_found", "No books found.")}
+                  {t("legacy.no_books_found", "No books found.")}
                 </div>
               )}
             </section>

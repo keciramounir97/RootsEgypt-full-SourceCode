@@ -22,7 +22,7 @@ import {
   requestWithFallback,
   shouldFallbackRoute,
 } from "../api/helpers";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
 import { useAuth } from "../admin/components/AuthContext";
 import {
@@ -51,7 +51,7 @@ const sortByDateDesc = (items: GalleryItem[]) =>
 
 export default function GalleryImages() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { user } = useAuth();
 
   const [images, setImages] = useState<GalleryItem[]>([]);
@@ -162,13 +162,13 @@ export default function GalleryImages() {
   const maxImageBytes = 10 * 1024 * 1024;
   const validateImageFile = (file: File | null, required = false) => {
     if (!file) {
-      return required ? t("image_required", "Please select an image") : "";
+      return required ? t("legacy.image_required", "Please select an image") : "";
     }
     if (file.size > maxImageBytes) {
-      return t("file_too_large", "File is too large (max 10MB).");
+      return t("legacy.file_too_large", "File is too large (max 10MB).");
     }
     if (!file.type.startsWith("image/")) {
-      return t("invalid_image_type", "Only image files are allowed.");
+      return t("legacy.invalid_image_type", "Only image files are allowed.");
     }
     return "";
   };
@@ -180,11 +180,11 @@ export default function GalleryImages() {
 
   const handleUpload = async () => {
     if (!user) {
-      setUploadError(t("please_login_upload", "Please log in to upload images."));
+      setUploadError(t("legacy.please_login_upload", "Please log in to upload images."));
       return;
     }
     if (!uploadForm.title.trim()) {
-      setUploadError(t("fill_required_fields", "Please fill all required fields"));
+      setUploadError(t("legacy.fill_required_fields", "Please fill all required fields"));
       return;
     }
     const fileError = validateImageFile(uploadForm.file, true);
@@ -237,7 +237,7 @@ export default function GalleryImages() {
       setShowUploadModal(false);
       resetUploadForm();
     } catch (err) {
-      setUploadError(getApiErrorMessage(err, t("upload_failed", "Upload failed")));
+      setUploadError(getApiErrorMessage(err, t("legacy.upload_failed", "Upload failed")));
     } finally {
       setUploading(false);
     }
@@ -312,14 +312,13 @@ export default function GalleryImages() {
             <ImageIcon className="w-12 h-12 text-[#d9a441]" />
           </div>
           <p className="text-sm uppercase tracking-[0.3em] text-[#d9a441]">
-            {t("family_collections", "Family Collections")}
+            {t("legacy.family_collections", "Family Collections")}
           </p>
           <h1 className="text-5xl font-bold">
-            {t("images", "Images Gallery")}
+            {t("legacy.images", "Images Gallery")}
           </h1>
           <p className="max-w-4xl mx-auto text-lg opacity-90">
-            {t(
-              "images_intro",
+            {t("legacy.images_intro",
               "Explore historical photographs, documents, and family portraits. Like, comment, and share your favorite finds.",
             )}
           </p>
@@ -334,7 +333,7 @@ export default function GalleryImages() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={t("search_images_placeholder", "Search images...")}
+              placeholder={t("legacy.search_images_placeholder", "Search images...")}
               className={`w-full pl-10 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441] transition-colors ${
                 isDark
                   ? "text-white placeholder-white/50"
@@ -347,7 +346,7 @@ export default function GalleryImages() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#24766f] text-white font-semibold hover:bg-[#24766f]/90 transition-colors shadow-lg"
           >
             <Upload className="w-5 h-5" />
-            {t("upload_image", "Upload Image")}
+            {t("legacy.upload_image", "Upload Image")}
           </button>
         </div>
       </section>
@@ -356,7 +355,7 @@ export default function GalleryImages() {
         <section className="roots-section">
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-16 h-16 border-4 border-[#d9a441] border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="text-lg opacity-70">{t("loading", "Loading...")}</p>
+            <p className="text-lg opacity-70">{t("legacy.loading", "Loading...")}</p>
           </div>
         </section>
       ) : (
@@ -364,11 +363,11 @@ export default function GalleryImages() {
           {error ? (
             <div className="mb-5 rounded-xl border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-600 dark:text-amber-300">
               {error} -{" "}
-              {t("showing_local_assets", "Showing local asset images.")}
+              {t("legacy.showing_local_assets", "Showing local asset images.")}
             </div>
           ) : null}
           <h2 className="text-3xl font-bold border-l-8 border-[#d9a441] pl-4 mb-8">
-            {t("images", "Images")}{" "}
+            {t("legacy.images", "Images")}{" "}
             <span className="text-[#24766f]">({filteredImages.length})</span>
           </h2>
 
@@ -378,7 +377,7 @@ export default function GalleryImages() {
             >
               <ImageIcon className="w-16 h-16 mx-auto text-[#24766f]/50 mb-4" />
               <p className="text-xl opacity-70">
-                {t("no_images_found", "No images found.")}
+                {t("legacy.no_images_found", "No images found.")}
               </p>
             </div>
           ) : (
@@ -549,7 +548,7 @@ export default function GalleryImages() {
                       className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}
                     >
                       <p className="text-xs uppercase opacity-60 mb-1">
-                        {t("location", "Location")}
+                        {t("legacy.location", "Location")}
                       </p>
                       <p className="font-medium flex items-center gap-1">
                         <MapPin className="w-4 h-4 text-[#24766f]" />
@@ -562,7 +561,7 @@ export default function GalleryImages() {
                       className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}
                     >
                       <p className="text-xs uppercase opacity-60 mb-1">
-                        {t("date", "Date")}
+                        {t("legacy.date", "Date")}
                       </p>
                       <p className="font-medium flex items-center gap-1">
                         <Archive className="w-4 h-4 text-[#24766f]" />
@@ -591,7 +590,7 @@ export default function GalleryImages() {
                   </button>
                   <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                     <Share2 className="w-5 h-5" />
-                    {t("share", "Share")}
+                    {t("legacy.share", "Share")}
                   </button>
                   <a
                     href={fileUrl(selectedImage.imagePath)}
@@ -604,7 +603,7 @@ export default function GalleryImages() {
 
                 {/* Comments */}
                 <div className="space-y-3">
-                  <h4 className="font-semibold">{t("comments", "Comments")}</h4>
+                  <h4 className="font-semibold">{t("legacy.comments", "Comments")}</h4>
                   <div className="space-y-2 max-h-40 overflow-auto">
                     {(selectedImage.comments || []).map((comment) => (
                       <div
@@ -620,7 +619,7 @@ export default function GalleryImages() {
                     {(!selectedImage.comments ||
                       selectedImage.comments.length === 0) && (
                       <p className="text-sm opacity-50">
-                        {t("no_comments", "No comments yet.")}
+                        {t("legacy.no_comments", "No comments yet.")}
                       </p>
                     )}
                   </div>
@@ -634,7 +633,7 @@ export default function GalleryImages() {
                     type="text"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    placeholder={t("write_comment", "Write a comment...")}
+                    placeholder={t("legacy.write_comment", "Write a comment...")}
                     className={`flex-1 px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441] transition-colors ${
                       isDark
                         ? "text-white placeholder-white/50"
@@ -672,7 +671,7 @@ export default function GalleryImages() {
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold">
-                {t("upload_image", "Upload Image")}
+                {t("legacy.upload_image", "Upload Image")}
               </h3>
               <button
                 onClick={() => {
@@ -689,10 +688,10 @@ export default function GalleryImages() {
             >
               <Upload className="w-12 h-12 mx-auto text-[#24766f] mb-4" />
               <p className="opacity-70 mb-2">
-                {t("drag_drop_image", "Drag and drop an image here")}
+                {t("legacy.drag_drop_image", "Drag and drop an image here")}
               </p>
               <p className="text-sm opacity-50">
-                {t("or_click_to_browse", "or click to browse")}
+                {t("legacy.or_click_to_browse", "or click to browse")}
               </p>
               <input
                 type="file"
@@ -721,7 +720,7 @@ export default function GalleryImages() {
                 onChange={(e) =>
                   setUploadForm((prev) => ({ ...prev, title: e.target.value }))
                 }
-                placeholder={t("title", "Title")}
+                placeholder={t("legacy.title", "Title")}
                 className={`w-full px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
               />
               <input
@@ -733,7 +732,7 @@ export default function GalleryImages() {
                     category: e.target.value,
                   }))
                 }
-                placeholder={t("custom_category_placeholder", "Name this category...")}
+                placeholder={t("legacy.custom_category_placeholder", "Name this category...")}
                 className={`w-full px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
               />
               <textarea
@@ -744,7 +743,7 @@ export default function GalleryImages() {
                     description: e.target.value,
                   }))
                 }
-                placeholder={t("description", "Description")}
+                placeholder={t("legacy.description", "Description")}
                 rows={3}
                 className={`w-full px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441] resize-none`}
               />
@@ -757,8 +756,8 @@ export default function GalleryImages() {
                 className="w-full py-3 rounded-xl bg-[#24766f] text-white font-semibold hover:bg-[#24766f]/90 transition-colors disabled:opacity-60"
               >
                 {uploading
-                  ? t("uploading", "Uploading...")
-                  : t("upload", "Upload")}
+                  ? t("legacy.uploading", "Uploading...")
+                  : t("legacy.upload", "Upload")}
               </button>
             </div>
           </div>

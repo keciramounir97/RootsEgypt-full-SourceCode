@@ -18,7 +18,7 @@ import {
   shouldFallbackRoute,
 } from "../../api/helpers";
 import { useAuth } from "../components/AuthContext";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import Toast from "../../components/Toast";
 
 interface UserItem {
@@ -42,7 +42,7 @@ interface RoleItem {
 export default function UsersPage() {
   const { theme } = useThemeStore();
   const { user: currentUser } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
 
   const pageBg = isDark ? "bg-[#0d1b2a]" : "bg-[#f5f1e8]";
@@ -100,7 +100,7 @@ export default function UsersPage() {
         );
         setUsers(Array.isArray(data) ? data : []);
         if (notifyToast) {
-          notify(t("users_loaded", "Users loaded."));
+          notify(t("legacy.users_loaded", "Users loaded."));
         }
       } catch (err) {
         setUsers([]);
@@ -193,7 +193,7 @@ export default function UsersPage() {
       const { data } = await api.post("/admin/users", payload);
       setUsers((prev) => [data, ...prev]);
       setShowAdd(false);
-      notify(t("user_created", "User created."));
+      notify(t("legacy.user_created", "User created."));
     } catch (err) {
       const message = getApiErrorMessage(err, "Create user failed");
       setError(message);
@@ -235,7 +235,7 @@ export default function UsersPage() {
       );
       setShowEdit(false);
       setEditTarget(null);
-      notify(t("user_updated", "User updated."));
+      notify(t("legacy.user_updated", "User updated."));
     } catch (err) {
       const message = getApiErrorMessage(err, "Update user failed");
       setError(message);
@@ -248,13 +248,12 @@ export default function UsersPage() {
   const deleteUser = async (userToDelete: UserItem) => {
     if (!userToDelete?.id) return;
     if (Number(userToDelete.id) === Number(currentUser?.id)) {
-      notify(t("cannot_delete_self", "You cannot delete your own account."), "error");
+      notify(t("legacy.cannot_delete_self", "You cannot delete your own account."), "error");
       return;
     }
 
     const ok = window.confirm(
-      t(
-        "confirm_delete_user",
+      t("legacy.confirm_delete_user",
         `Delete ${userToDelete.fullName || userToDelete.email || "this user"}?`
       )
     );
@@ -265,7 +264,7 @@ export default function UsersPage() {
     try {
       await api.delete(`/admin/users/${userToDelete.id}`);
       setUsers((prev) => prev.filter((u) => u.id !== userToDelete.id));
-      notify(t("user_deleted", "User deleted."));
+      notify(t("legacy.user_deleted", "User deleted."));
     } catch (err) {
       const message = getApiErrorMessage(err, "Delete user failed");
       setError(message);
@@ -285,11 +284,10 @@ export default function UsersPage() {
       >
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h3 className="text-2xl font-bold">{t("users", "Users")}</h3>
+            <h3 className="text-2xl font-bold">{t("legacy.users", "Users")}</h3>
             <p className="opacity-70">
-              {t(
-                "users_desc",
-                t("users_page_desc", "Registered users (name, email, phone) - passwords are never shown.")
+              {t("legacy.users_desc",
+                t("legacy.users_page_desc", "Registered users (name, email, phone) - passwords are never shown.")
               )}
             </p>
           </div>
@@ -304,11 +302,11 @@ export default function UsersPage() {
             onClick={openAdd}
             disabled={currentUser?.role !== 1}
             title={
-              currentUser?.role !== 1 ? t("admin_only", "Admin only") : t("add_user_hint", "Add a new user")
+              currentUser?.role !== 1 ? t("legacy.admin_only", "Admin only") : t("legacy.add_user_hint", "Add a new user")
             }
           >
             <UserPlus className="w-5 h-5" />
-            {t("add_user", "Add User")}
+            {t("legacy.add_user", "Add User")}
           </button>
         </div>
 
@@ -320,7 +318,7 @@ export default function UsersPage() {
             className={`heritage-input w-full ltr:pl-9 ltr:pr-3 rtl:pr-9 rtl:pl-3 py-2.5 rounded-lg border
             focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25 focus:border-[#0c4a6e]/50 transition-all
             ${inputBg} ${inputText} ${border}`}
-            placeholder={t("search_users", "Search users...")}
+            placeholder={t("legacy.search_users", "Search users...")}
           />
         </div>
       </div>
@@ -329,7 +327,7 @@ export default function UsersPage() {
         {loading ? (
           <div className="p-12 text-center opacity-60">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#0c4a6e]"></div>
-            <p className="mt-4">{t("loading", "Loading...")}</p>
+            <p className="mt-4">{t("legacy.loading", "Loading...")}</p>
           </div>
         ) : error ? (
           <div className="p-10 text-center">
@@ -338,7 +336,7 @@ export default function UsersPage() {
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center opacity-60">
             <User className="w-12 h-12 mx-auto mb-4 opacity-40" />
-            <p>{t("no_results", "No results.")}</p>
+            <p>{t("legacy.no_results", "No results.")}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -346,23 +344,23 @@ export default function UsersPage() {
               <thead className={`${subtle} ${isDark ? 'bg-[#0d1b2a]/50' : 'bg-[#f8f5ef]'}`}>
                 <tr className={`text-start border-b ${border}`}>
                   <th className={`py-4 px-5 text-start font-semibold ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`}>
-                    {t("full_name", "Full Name")}
+                    {t("legacy.full_name", "Full Name")}
                   </th>
                   <th className={`py-4 px-5 text-start font-semibold ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`}>
-                    {t("email", "Email")}
+                    {t("legacy.email", "Email")}
                   </th>
                   <th className={`py-4 px-5 text-start font-semibold ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`}>
-                    {t("phone", "Phone")}
+                    {t("legacy.phone", "Phone")}
                   </th>
                   <th className={`py-4 px-5 text-start font-semibold ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`}>
-                    {t("role", "Role")}
+                    {t("legacy.role", "Role")}
                   </th>
                   <th className={`py-4 px-5 text-start font-semibold ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`}>
-                    {t("status", "Status")}
+                    {t("legacy.status", "Status")}
                   </th>
                   {currentUser?.role === 1 ? (
                     <th className={`py-4 px-5 text-end font-semibold ${isDark ? 'text-teal' : 'text-[#0c4a6e]'}`}>
-                      {t("actions", "Actions")}
+                      {t("legacy.actions", "Actions")}
                     </th>
                   ) : null}
                 </tr>
@@ -436,7 +434,7 @@ export default function UsersPage() {
                             disabled={saving}
                           >
                             <Pencil className="w-4 h-4" />
-                            {t("edit", "Edit")}
+                            {t("legacy.edit", "Edit")}
                           </button>
                           <button
                             type="button"
@@ -450,7 +448,7 @@ export default function UsersPage() {
                             disabled={saving}
                           >
                             <Trash2 className="w-4 h-4" />
-                            {t("delete", "Delete")}
+                            {t("legacy.delete", "Delete")}
                           </button>
                         </div>
                       </td>
@@ -475,9 +473,9 @@ export default function UsersPage() {
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h4 className="text-xl font-bold">{t("add_user", "Add User")}</h4>
+                <h4 className="text-xl font-bold">{t("legacy.add_user", "Add User")}</h4>
                 <p className="text-sm opacity-70">
-                  {t("add_user_email_hint", "We will email them a password-reset code to set their password.")}
+                  {t("legacy.add_user_email_hint", "We will email them a password-reset code to set their password.")}
                 </p>
               </div>
               <button
@@ -493,7 +491,7 @@ export default function UsersPage() {
             <form className="mt-5 space-y-4" onSubmit={submitAdd}>
               <label className="block">
                 <span className={`block text-sm font-semibold mb-2 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                  {t("full_name", "Full Name")} <span className="text-red-500">*</span>
+                  {t("legacy.full_name", "Full Name")} <span className="text-red-500">*</span>
                 </span>
                 <input
                   value={form.fullName}
@@ -503,14 +501,14 @@ export default function UsersPage() {
                   required
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${inputBg} ${inputText} ${border}
                   focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25 focus:border-[#0c4a6e]/50 transition-all`}
-                  placeholder={t("full_name_placeholder", "Full name")}
+                  placeholder={t("legacy.full_name_placeholder", "Full name")}
                   disabled={saving}
                 />
               </label>
 
               <label className="block">
                 <span className={`block text-sm font-semibold mb-2 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                  {t("email", "Email")} <span className="text-red-500">*</span>
+                  {t("legacy.email", "Email")} <span className="text-red-500">*</span>
                 </span>
                 <input
                   value={form.email}
@@ -521,14 +519,14 @@ export default function UsersPage() {
                   type="email"
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${inputBg} ${inputText} ${border}
                   focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25 focus:border-[#0c4a6e]/50 transition-all`}
-                  placeholder={t("email_placeholder_example", "email@example.com")}
+                  placeholder={t("legacy.email_placeholder_example", "email@example.com")}
                   disabled={saving}
                 />
               </label>
 
               <label className="block">
                 <span className={`block text-sm font-semibold mb-2 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                  {t("phone", "Phone")} <span className="text-xs opacity-60">({t("optional", "Optional")})</span>
+                  {t("legacy.phone", "Phone")} <span className="text-xs opacity-60">({t("legacy.optional", "Optional")})</span>
                 </span>
                 <input
                   value={form.phone}
@@ -544,7 +542,7 @@ export default function UsersPage() {
 
               <label className="block">
                 <span className={`block text-sm font-semibold mb-2 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                  {t("role", "Role")}
+                  {t("legacy.role", "Role")}
                 </span>
                 <select
                   value={form.roleId}
@@ -582,7 +580,7 @@ export default function UsersPage() {
                   onClick={() => setShowAdd(false)}
                   disabled={saving}
                 >
-                  {t("cancel", "Cancel")}
+                  {t("legacy.cancel", "Cancel")}
                 </button>
                 <button
                   type="submit"
@@ -593,7 +591,7 @@ export default function UsersPage() {
                   }`}
                   disabled={saving}
                 >
-                  {saving ? t("creating", "Creating...") : t("create_user", "Create User")}
+                  {saving ? t("legacy.creating", "Creating...") : t("legacy.create_user", "Create User")}
                 </button>
               </div>
             </form>
@@ -613,7 +611,7 @@ export default function UsersPage() {
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h4 className="text-xl font-bold">{t("edit_user", "Edit User")}</h4>
+                <h4 className="text-xl font-bold">{t("legacy.edit_user", "Edit User")}</h4>
                 <p className="text-sm opacity-70">
                   {editTarget?.email || ""}
                 </p>
@@ -631,7 +629,7 @@ export default function UsersPage() {
             <form className="mt-5 space-y-4" onSubmit={submitEdit}>
               <label className="block">
                 <span className={`block text-sm font-semibold mb-2 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                  {t("full_name", "Full Name")} <span className="text-red-500">*</span>
+                  {t("legacy.full_name", "Full Name")} <span className="text-red-500">*</span>
                 </span>
                 <input
                   value={editForm.fullName}
@@ -647,7 +645,7 @@ export default function UsersPage() {
 
               <label className="block">
                 <span className={`block text-sm font-semibold mb-2 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                  {t("phone", "Phone")} <span className="text-xs opacity-60">({t("optional", "Optional")})</span>
+                  {t("legacy.phone", "Phone")} <span className="text-xs opacity-60">({t("legacy.optional", "Optional")})</span>
                 </span>
                 <input
                   value={editForm.phone}
@@ -663,7 +661,7 @@ export default function UsersPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <label className="block">
                   <span className={`block text-sm font-semibold mb-2 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                    {t("role", "Role")}
+                    {t("legacy.role", "Role")}
                   </span>
                    <select
                      value={editForm.roleId}
@@ -686,7 +684,7 @@ export default function UsersPage() {
 
                 <label className="block">
                   <span className={`block text-sm font-semibold mb-2 ${isDark ? 'text-[#e8dfca]' : 'text-[#0c4a6e]'}`}>
-                    {t("status", "Status")}
+                    {t("legacy.status", "Status")}
                   </span>
                    <select
                      value={editForm.status}
@@ -697,8 +695,8 @@ export default function UsersPage() {
                      focus:outline-none focus:ring-2 focus:ring-[#0c4a6e]/25 focus:border-[#0c4a6e]/50 transition-all`}
                      disabled={saving}
                    >
-                    <option value="active">{t("active", "Active")}</option>
-                    <option value="disabled">{t("disabled", "Disabled")}</option>
+                    <option value="active">{t("legacy.active", "Active")}</option>
+                    <option value="disabled">{t("legacy.disabled", "Disabled")}</option>
                   </select>
                 </label>
               </div>
@@ -720,7 +718,7 @@ export default function UsersPage() {
                   onClick={() => setShowEdit(false)}
                   disabled={saving}
                 >
-                  {t("cancel", "Cancel")}
+                  {t("legacy.cancel", "Cancel")}
                 </button>
                 <button
                   type="submit"
@@ -731,7 +729,7 @@ export default function UsersPage() {
                   }`}
                   disabled={saving}
                 >
-                  {saving ? t("saving", "Saving...") : t("save", "Save")}
+                  {saving ? t("legacy.saving", "Saving...") : t("legacy.save", "Save")}
                 </button>
               </div>
             </form>

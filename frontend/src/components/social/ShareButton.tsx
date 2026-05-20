@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Share2, Copy, Check, X } from "lucide-react";
 import { api } from "../../api/client";
 import { useThemeStore } from "../../store/theme";
+import { useLanguage } from "../../i18n";
 
 interface ShareButtonProps {
   targetType: string;
@@ -52,6 +53,7 @@ export default function ShareButton({
 }: ShareButtonProps) {
   const { theme } = useThemeStore();
   const isDark = theme === "dark";
+  const { t } = useLanguage();
   const [showModal, setShowModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -109,7 +111,7 @@ export default function ShareButton({
         whileTap={{ scale: 0.85 }}
         onClick={handleNativeShare}
         className={`${btnPad} rounded-full opacity-60 hover:opacity-100 hover:bg-teal/10 transition ${className}`}
-        aria-label="Share"
+        aria-label={t("legacy.share", "Share")}
       >
         <Share2 className={iconSize} />
       </motion.button>
@@ -143,7 +145,7 @@ export default function ShareButton({
                 <X className="w-4 h-4" />
               </button>
 
-              <h3 className="text-lg font-bold mb-1">Share</h3>
+              <h3 className="text-lg font-bold mb-1">{t("legacy.share", "Share")}</h3>
               <p className="text-sm opacity-50 mb-5 truncate">{title}</p>
 
               {/* Copy link */}
@@ -159,7 +161,9 @@ export default function ShareButton({
                   <Copy className="w-5 h-5 opacity-50" />
                 )}
                 <span className="text-sm font-medium">
-                  {copied ? "Link copied!" : "Copy link"}
+                  {copied
+                    ? t("legacy.link_copied", "Link copied!")
+                    : t("legacy.copy_link", "Copy link")}
                 </span>
               </button>
 

@@ -1,7 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Suspense, memo } from "react";
 import { AnimatePresence } from "framer-motion";
-import { useTranslation } from "./context/TranslationContext";
+import { useLanguage } from "./i18n";
 
 // ===== EAGERLY LOADED (Critical Path) =====
 import Navbar from "./components/Navbar";
@@ -76,7 +76,7 @@ import RoleDistribution from "./admin/pages/RoleDistribution";
  * Loading Fallback Component
  */
 const LoadingFallback = memo(function LoadingFallback() {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen flex items-center justify-center bg-light-beige dark:bg-[#060e1c]">
       <div className="text-center">
@@ -89,7 +89,7 @@ const LoadingFallback = memo(function LoadingFallback() {
           />
         </div>
         <p className="text-primary-brown dark:text-teal font-cinzel text-lg tracking-widest">
-          {t("loading", "Loading...")}
+          {t("legacy.loading", "Loading...")}
         </p>
       </div>
     </div>

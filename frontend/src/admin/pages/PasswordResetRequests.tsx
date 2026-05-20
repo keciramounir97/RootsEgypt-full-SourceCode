@@ -3,7 +3,7 @@ import { Check, Clock, KeyRound, Mail, RefreshCw, User, X } from "lucide-react";
 import { api } from "../../api/client";
 import { getApiErrorMessage } from "../../api/helpers";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { notifyAdmin } from "../utils/notifications";
 
 type RequestStatus = "pending" | "approved" | "completed" | "rejected" | "all";
@@ -29,7 +29,7 @@ const statusOptions: RequestStatus[] = [
 
 export default function PasswordResetRequests() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
   const [status, setStatus] = useState<RequestStatus>("pending");
   const [requests, setRequests] = useState<PasswordResetRequest[]>([]);
@@ -55,7 +55,7 @@ export default function PasswordResetRequests() {
       const { data } = await api.get(`/admin/approvals/password-reset?status=${status}`);
       setRequests(Array.isArray(data) ? data : []);
     } catch (err) {
-      setError(getApiErrorMessage(err, t("password_reset_requests_failed", "Failed to load password reset requests")));
+      setError(getApiErrorMessage(err, t("legacy.password_reset_requests_failed", "Failed to load password reset requests")));
     } finally {
       setLoading(false);
     }
@@ -72,12 +72,12 @@ export default function PasswordResetRequests() {
       notifyAdmin(
         data?.message ||
           (action === "approve"
-            ? t("password_reset_approved", "Password reset approved. A 24-hour OTP email was sent.")
-            : t("password_reset_rejected", "Password reset request rejected.")),
+            ? t("legacy.password_reset_approved", "Password reset approved. A 24-hour OTP email was sent.")
+            : t("legacy.password_reset_rejected", "Password reset request rejected.")),
       );
       await loadRequests();
     } catch (err) {
-      notifyAdmin(getApiErrorMessage(err, t("password_reset_decision_failed", "Failed to update password reset request")), "error");
+      notifyAdmin(getApiErrorMessage(err, t("legacy.password_reset_decision_failed", "Failed to update password reset request")), "error");
     } finally {
       setActionId(null);
     }
@@ -93,14 +93,13 @@ export default function PasswordResetRequests() {
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-6">
         <div>
           <p className={`text-sm uppercase tracking-[0.2em] ${palette.accent}`}>
-            {t("approvals", "Approvals")}
+            {t("legacy.approvals", "Approvals")}
           </p>
           <h1 className="text-3xl font-bold mt-1">
-            {t("password_reset_requests", "Password Reset Requests")}
+            {t("legacy.password_reset_requests", "Password Reset Requests")}
           </h1>
           <p className={`mt-2 max-w-2xl ${palette.muted}`}>
-            {t(
-              "password_reset_requests_desc",
+            {t("legacy.password_reset_requests_desc",
               "Review password reset requests. Approving sends the user a 24-hour one-time code by email.",
             )}
           </p>
@@ -111,7 +110,7 @@ export default function PasswordResetRequests() {
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border ${palette.button}`}
         >
           <RefreshCw className="w-4 h-4" />
-          {t("refresh", "Refresh")}
+          {t("legacy.refresh", "Refresh")}
         </button>
       </div>
 
@@ -127,7 +126,7 @@ export default function PasswordResetRequests() {
                 : palette.button
             }`}
           >
-            {t(`status_${option}`, option.charAt(0).toUpperCase() + option.slice(1))}
+            {t(`legacy.status_${option}`, option.charAt(0).toUpperCase() + option.slice(1))}
           </button>
         ))}
       </div>
@@ -136,11 +135,11 @@ export default function PasswordResetRequests() {
 
       <div className={`rounded-xl border overflow-hidden ${palette.panel}`}>
         {loading ? (
-          <div className="p-10 text-center">{t("loading", "Loading...")}</div>
+          <div className="p-10 text-center">{t("legacy.loading", "Loading...")}</div>
         ) : requests.length === 0 ? (
           <div className="p-10 text-center">
             <KeyRound className={`w-10 h-10 mx-auto mb-3 ${palette.accent}`} />
-            <p className="font-semibold">{t("no_password_reset_requests", "No password reset requests")}</p>
+            <p className="font-semibold">{t("legacy.no_password_reset_requests", "No password reset requests")}</p>
           </div>
         ) : (
           <div className="divide-y divide-white/10">
@@ -150,7 +149,7 @@ export default function PasswordResetRequests() {
                   <div className="flex flex-wrap items-center gap-3">
                     <span className="inline-flex items-center gap-2 font-semibold">
                       <User className="w-4 h-4 text-[#24766f]" />
-                      {request.userFullName || t("unknown_user", "Unknown user")}
+                      {request.userFullName || t("legacy.unknown_user", "Unknown user")}
                     </span>
                     <span className={`inline-flex items-center gap-2 text-sm ${palette.muted}`}>
                       <Mail className="w-4 h-4" />
@@ -160,13 +159,13 @@ export default function PasswordResetRequests() {
                   <div className={`flex flex-wrap gap-4 text-sm ${palette.muted}`}>
                     <span className="inline-flex items-center gap-2">
                       <Clock className="w-4 h-4" />
-                      {t("requested", "Requested")}: {formatDate(request.requested_at)}
+                      {t("legacy.requested", "Requested")}: {formatDate(request.requested_at)}
                     </span>
-                    <span>{t("status", "Status")}: {request.status}</span>
-                    {request.processed_at ? <span>{t("processed", "Processed")}: {formatDate(request.processed_at)}</span> : null}
-                    {request.processorFullName ? <span>{t("by", "By")}: {request.processorFullName}</span> : null}
+                    <span>{t("legacy.status", "Status")}: {request.status}</span>
+                    {request.processed_at ? <span>{t("legacy.processed", "Processed")}: {formatDate(request.processed_at)}</span> : null}
+                    {request.processorFullName ? <span>{t("legacy.by", "By")}: {request.processorFullName}</span> : null}
                     {request.token_expires_at && request.status === "approved" ? (
-                      <span>{t("expires", "Expires")}: {formatDate(request.token_expires_at)}</span>
+                      <span>{t("legacy.expires", "Expires")}: {formatDate(request.token_expires_at)}</span>
                     ) : null}
                   </div>
                 </div>
@@ -180,7 +179,7 @@ export default function PasswordResetRequests() {
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600/15 text-green-500 hover:bg-green-600/25 disabled:opacity-50"
                     >
                       <Check className="w-4 h-4" />
-                      {t("approve", "Approve")}
+                      {t("legacy.approve", "Approve")}
                     </button>
                     <button
                       type="button"
@@ -189,7 +188,7 @@ export default function PasswordResetRequests() {
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600/15 text-red-500 hover:bg-red-600/25 disabled:opacity-50"
                     >
                       <X className="w-4 h-4" />
-                      {t("reject", "Reject")}
+                      {t("legacy.reject", "Reject")}
                     </button>
                   </div>
                 ) : null}

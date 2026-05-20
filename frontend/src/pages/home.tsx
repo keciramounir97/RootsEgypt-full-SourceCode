@@ -26,7 +26,7 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../api/client";
@@ -178,7 +178,7 @@ interface Person {
 
 export default function Home() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
   const { settings } = useSiteImages();
 
@@ -222,7 +222,7 @@ export default function Home() {
       } catch (err: any) {
         if (mounted)
           setTreesError(
-            err?.response?.data?.message || t("featured_trees_error"),
+            err?.response?.data?.message || t("legacy.featured_trees_error"),
           );
       } finally {
         if (mounted) setTreesLoading(false);
@@ -242,7 +242,7 @@ export default function Home() {
     try {
       if (!tree.hasGedcom) {
         setViewTreeError(
-          t("no_gedcom_available", "No GEDCOM file available yet."),
+          t("legacy.no_gedcom_available", "No GEDCOM file available yet."),
         );
         setViewLoading(false);
         return;
@@ -262,12 +262,12 @@ export default function Home() {
       setViewPeople(list);
       if (!list.length)
         setViewTreeError(
-          t("gedcom_no_people", "No individuals found in GEDCOM."),
+          t("legacy.gedcom_no_people", "No individuals found in GEDCOM."),
         );
     } catch (err: any) {
       setViewPeople([]);
       setViewTreeError(
-        err?.response?.data?.message || err?.message || t("tree_builder_error"),
+        err?.response?.data?.message || err?.message || t("legacy.tree_builder_error"),
       );
     } finally {
       setViewLoading(false);
@@ -341,7 +341,7 @@ export default function Home() {
             style={{ color: "#ffffff" }}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
           >
-            {t("home_hero_title", "Egyptian Sources, Archives, and Family Timelines")}
+            {t("legacy.home_hero_title", "Egyptian Sources, Archives, and Family Timelines")}
           </motion.h1>
 
           <motion.p
@@ -350,8 +350,7 @@ export default function Home() {
             transition={{ delay: 0.6, duration: 0.7 }}
             className="text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed text-white/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]"
           >
-            {t(
-              "home_hero_subtitle",
+            {t("legacy.home_hero_subtitle",
               "Explore Egypt's civil records, court registers, waqf deeds, church and mosque records, family photographs, oral memory, and historical periods in one research-ready heritage platform.",
             )}
           </motion.p>
@@ -367,7 +366,7 @@ export default function Home() {
               to="/sources-and-periods"
               className="px-8 py-4 rounded-xl font-semibold text-[#0a1220] bg-gradient-to-r from-[#d4a843] to-[#c45c3e] shadow-lg shadow-[#d4a843]/30 hover:shadow-xl hover:shadow-[#d4a843]/40 transition-all hover:-translate-y-0.5 flex items-center gap-2 backdrop-blur-sm"
             >
-              {t("start_exploring", "Explore Sources & Periods")}
+              {t("legacy.start_exploring", "Explore Sources & Periods")}
               <ArrowRight className="w-5 h-5" />
             </NavLink>
             <NavLink
@@ -375,7 +374,7 @@ export default function Home() {
               className="px-8 py-4 rounded-xl font-semibold border-2 border-[#d4a843]/50 text-[#d4a843] hover:bg-[#d4a843]/15 transition-all hover:-translate-y-0.5 flex items-center gap-2 backdrop-blur-sm bg-black/20"
             >
               <TreePine className="w-5 h-5" />
-              {t("browse_trees", "Browse Family Trees")}
+              {t("legacy.browse_trees", "Browse Family Trees")}
             </NavLink>
           </motion.div>
 
@@ -415,28 +414,28 @@ export default function Home() {
                   {
                     value: 5000,
                     suffix: "+",
-                    label: t("home_stat_years", "Years of History"),
+                    label: t("legacy.home_stat_years", "Years of History"),
                     icon: Scroll,
                     color: "text-[#d4a843]",
                   },
                   {
                     value: 50,
                     suffix: "+",
-                    label: t("home_stat_archives", "Archive Sources"),
+                    label: t("legacy.home_stat_archives", "Archive Sources"),
                     icon: Archive,
                     color: "text-teal",
                   },
                   {
                     value: 27,
                     suffix: "",
-                    label: t("home_stat_regions", "Egyptian Governorates"),
+                    label: t("legacy.home_stat_regions", "Egyptian Governorates"),
                     icon: Map,
                     color: "text-terracotta",
                   },
                   {
                     value: 10,
                     suffix: "+",
-                    label: t("home_stat_periods", "Historical Periods"),
+                    label: t("legacy.home_stat_periods", "Historical Periods"),
                     icon: Layers,
                     color: "text-[#d4a843]",
                   },
@@ -477,24 +476,21 @@ export default function Home() {
             <div className="space-y-6 text-left">
               <div>
                 <p className="text-sm uppercase tracking-[0.3em] text-[#d4a843] font-semibold mb-3">
-                  {t("home_editorial_label", "Why Roots Egypt")}
+                  {t("legacy.home_editorial_label", "Why Roots Egypt")}
                 </p>
                 <h2 className="roots-heading">
-                  {t(
-                    "home_editorial_title",
+                  {t("legacy.home_editorial_title",
                     "A modern Egyptian heritage platform with the depth of an archive",
                   )}
                 </h2>
               </div>
               <p className="text-lg leading-8 opacity-90">
-                {t(
-                  "home_editorial_paragraph_1",
+                {t("legacy.home_editorial_paragraph_1",
                   "Roots Egypt is built for families who do not want to lose meaning while they organize evidence. It is not only a tree builder. It is a place to hold lineage, migration, photographs, court references, civil extracts, and the stories elders still carry.",
                 )}
               </p>
               <p className="text-base leading-7 opacity-80">
-                {t(
-                  "home_editorial_paragraph_2",
+                {t("legacy.home_editorial_paragraph_2",
                   "That means one branch can preserve a studio portrait from Alexandria, another can document a village origin in the Delta, and another can connect an oral memory to a marriage record, waqf note, or church register without flattening the family story.",
                 )}
               </p>
@@ -504,34 +500,28 @@ export default function Home() {
               {[
                 {
                   icon: Archive,
-                  title: t(
-                    "home_editorial_card_1_title",
+                  title: t("legacy.home_editorial_card_1_title",
                     "Archive-led research",
                   ),
-                  desc: t(
-                    "home_editorial_card_1_desc",
+                  desc: t("legacy.home_editorial_card_1_desc",
                     "Designed around the record families Egyptian researchers actually use: civil, court, parish, waqf, and institutional archives.",
                   ),
                 },
                 {
                   icon: Heart,
-                  title: t(
-                    "home_editorial_card_2_title",
+                  title: t("legacy.home_editorial_card_2_title",
                     "Story-first preservation",
                   ),
-                  desc: t(
-                    "home_editorial_card_2_desc",
+                  desc: t("legacy.home_editorial_card_2_desc",
                     "Keep oral history, context, nicknames, and family memory beside the documented facts instead of losing them in scattered notes.",
                   ),
                 },
                 {
                   icon: Sparkles,
-                  title: t(
-                    "home_editorial_card_3_title",
+                  title: t("legacy.home_editorial_card_3_title",
                     "A more elegant public memory",
                   ),
-                  desc: t(
-                    "home_editorial_card_3_desc",
+                  desc: t("legacy.home_editorial_card_3_desc",
                     "Present trees, galleries, and collections in a polished format that feels worthy of Egyptian family heritage.",
                   ),
                 },
@@ -559,10 +549,10 @@ export default function Home() {
           <div className="max-w-6xl mx-auto text-center space-y-10">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-teal font-semibold mb-3">
-                {t("home_how_label", "How It Works")}
+                {t("legacy.home_how_label", "How It Works")}
               </p>
               <h2 className="roots-heading">
-                {t("home_how_title", "Your Heritage Journey in Three Steps")}
+                {t("legacy.home_how_title", "Your Heritage Journey in Three Steps")}
               </h2>
             </div>
 
@@ -573,9 +563,8 @@ export default function Home() {
                   icon: Search,
                   color: "text-teal",
                   bg: isDark ? "bg-teal/10" : "bg-teal/5",
-                  title: t("home_how_step1_title", "Research & Discover"),
-                  desc: t(
-                    "home_how_step1_desc",
+                  title: t("legacy.home_how_step1_title", "Research & Discover"),
+                  desc: t("legacy.home_how_step1_desc",
                     "Search through Ottoman court records, Coptic church registers, civil archives, and regional tribal documents to uncover your family's paper trail across Egypt.",
                   ),
                 },
@@ -584,9 +573,8 @@ export default function Home() {
                   icon: TreePine,
                   color: "text-[#d4a843]",
                   bg: isDark ? "bg-[#d4a843]/10" : "bg-[#d4a843]/5",
-                  title: t("home_how_step2_title", "Build Your Tree"),
-                  desc: t(
-                    "home_how_step2_desc",
+                  title: t("legacy.home_how_step2_title", "Build Your Tree"),
+                  desc: t("legacy.home_how_step2_desc",
                     "Connect parents, grandparents, and distant ancestors. Upload GEDCOM files, attach documents, and visualize your lineage interactively with our heritage-focused tree builder.",
                   ),
                 },
@@ -595,9 +583,8 @@ export default function Home() {
                   icon: Heart,
                   color: "text-terracotta",
                   bg: isDark ? "bg-terracotta/10" : "bg-terracotta/5",
-                  title: t("home_how_step3_title", "Preserve & Share"),
-                  desc: t(
-                    "home_how_step3_desc",
+                  title: t("legacy.home_how_step3_title", "Preserve & Share"),
+                  desc: t("legacy.home_how_step3_desc",
                     "Record oral histories, digitize old photographs, and share your family's story with relatives in Egypt and the diaspora. Keep your heritage alive for future generations.",
                   ),
                 },
@@ -635,17 +622,15 @@ export default function Home() {
           <div className="max-w-6xl mx-auto text-center space-y-10">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-[#d4a843] font-semibold mb-3">
-                {t("home_explore_label", "Explore the Platform")}
+                {t("legacy.home_explore_label", "Explore the Platform")}
               </p>
               <h2 className="roots-heading">
-                {t(
-                  "home_explore_title",
+                {t("legacy.home_explore_title",
                   "Everything You Need to Trace Your Roots",
                 )}
               </h2>
               <p className="max-w-3xl mx-auto text-lg opacity-80">
-                {t(
-                  "home_explore_desc",
+                {t("legacy.home_explore_desc",
                   "From family trees to audio recordings of elders' stories — a complete toolkit for Egyptian genealogy and cultural preservation.",
                 )}
               </p>
@@ -660,9 +645,8 @@ export default function Home() {
                   accent: isDark
                     ? "border-teal/20 hover:border-teal/50"
                     : "border-teal/15 hover:border-teal/40",
-                  title: t("home_card_trees_title", "Family Trees"),
-                  desc: t(
-                    "home_card_trees_desc",
+                  title: t("legacy.home_card_trees_title", "Family Trees"),
+                  desc: t("legacy.home_card_trees_desc",
                     "Interactive multi-generational trees with GEDCOM import/export. Supports Arabic, Coptic, and Ottoman naming.",
                   ),
                 },
@@ -673,9 +657,8 @@ export default function Home() {
                   accent: isDark
                     ? "border-terracotta/20 hover:border-terracotta/50"
                     : "border-terracotta/15 hover:border-terracotta/40",
-                  title: t("home_card_gallery_title", "Photo Gallery"),
-                  desc: t(
-                    "home_card_gallery_desc",
+                  title: t("legacy.home_card_gallery_title", "Photo Gallery"),
+                  desc: t("legacy.home_card_gallery_desc",
                     "Browse archival photographs, family portraits, historical documents, and maps in a Pinterest-style masonry layout.",
                   ),
                 },
@@ -686,9 +669,8 @@ export default function Home() {
                   accent: isDark
                     ? "border-[#d4a843]/20 hover:border-[#d4a843]/50"
                     : "border-[#d4a843]/15 hover:border-[#d4a843]/40",
-                  title: t("home_card_library_title", "Library & Documents"),
-                  desc: t(
-                    "home_card_library_desc",
+                  title: t("legacy.home_card_library_title", "Library & Documents"),
+                  desc: t("legacy.home_card_library_desc",
                     "Digitized books, manuscripts, civil registers, nasab texts, and court documents spanning centuries.",
                   ),
                 },
@@ -699,9 +681,8 @@ export default function Home() {
                   accent: isDark
                     ? "border-teal/20 hover:border-teal/50"
                     : "border-teal/15 hover:border-teal/40",
-                  title: t("home_card_audio_title", "Oral Histories"),
-                  desc: t(
-                    "home_card_audio_desc",
+                  title: t("legacy.home_card_audio_title", "Oral Histories"),
+                  desc: t("legacy.home_card_audio_desc",
                     "Record and listen to interviews, poetry recitations, and family stories. Spotify-inspired audio player with playlists.",
                   ),
                 },
@@ -712,9 +693,8 @@ export default function Home() {
                   accent: isDark
                     ? "border-terracotta/20 hover:border-terracotta/50"
                     : "border-terracotta/15 hover:border-terracotta/40",
-                  title: t("home_card_articles_title", "Articles & Stories"),
-                  desc: t(
-                    "home_card_articles_desc",
+                  title: t("legacy.home_card_articles_title", "Articles & Stories"),
+                  desc: t("legacy.home_card_articles_desc",
                     "Share research findings, publish family narratives, and engage with the community through likes, comments, and discussions.",
                   ),
                 },
@@ -725,9 +705,8 @@ export default function Home() {
                   accent: isDark
                     ? "border-[#d4a843]/20 hover:border-[#d4a843]/50"
                     : "border-[#d4a843]/15 hover:border-[#d4a843]/40",
-                  title: t("home_card_archives_title", "Archives"),
-                  desc: t(
-                    "home_card_archives_desc",
+                  title: t("legacy.home_card_archives_title", "Archives"),
+                  desc: t("legacy.home_card_archives_desc",
                     "Navigate Egypt's major archival institutions: Dar al-Wathaeq, Sharia courts, Awqaf registries, colonial census, and more.",
                   ),
                 },
@@ -765,13 +744,13 @@ export default function Home() {
           <div className="w-full max-w-7xl mx-auto space-y-10">
             <div className="text-center">
               <p className="text-sm uppercase tracking-[0.3em] text-teal font-semibold mb-3">
-                {t("home_featured_label", "Featured")}
+                {t("legacy.home_featured_label", "Featured")}
               </p>
               <h2 className="roots-heading">
-                {t("family_tree_builder", "Family Tree Builder")}
+                {t("legacy.family_tree_builder", "Family Tree Builder")}
               </h2>
               <p className="max-w-3xl mx-auto text-base sm:text-lg opacity-90">
-                {t("home_family_tree_intro")}
+                {t("legacy.home_family_tree_intro")}
               </p>
             </div>
 
@@ -817,7 +796,7 @@ export default function Home() {
                           <div className="flex items-start justify-between gap-4">
                             <div className="min-w-0 flex-1">
                               <p className="text-[10px] uppercase tracking-[0.3em] text-primary-brown opacity-70">
-                                {t("trees", "Family Trees")}
+                                {t("legacy.trees", "Family Trees")}
                               </p>
                               <h3 className="text-xl font-bold truncate">
                                 {tree.title}
@@ -826,22 +805,22 @@ export default function Home() {
                                 <UserCircle2 className="w-3 h-3" />
                                 {tree.owner ||
                                   tree.owner_name ||
-                                  t("admin", "Admin")}
+                                  t("legacy.admin", "Admin")}
                               </p>
                             </div>
                             <span
                               className={`text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border ${borderColor}`}
                             >
                               {tree.isPublic
-                                ? t("public", "Public")
-                                : t("private", "Private")}
+                                ? t("legacy.public", "Public")
+                                : t("legacy.private", "Private")}
                             </span>
                           </div>
                         </div>
 
                         <div className="p-5 space-y-4">
                           <p className="text-sm opacity-80 line-clamp-3">
-                            {tree.description || t("tree_card_default_desc")}
+                            {tree.description || t("legacy.tree_card_default_desc")}
                           </p>
                           <div className="grid sm:grid-cols-2 gap-3">
                             <div
@@ -850,11 +829,11 @@ export default function Home() {
                               <Archive className="w-4 h-4 text-terracotta mt-0.5" />
                               <div>
                                 <p className="text-[10px] uppercase opacity-60">
-                                  {t("archive_source", "Archive Source")}
+                                  {t("legacy.archive_source", "Archive Source")}
                                 </p>
                                 <p className="text-xs font-semibold break-words">
                                   {tree.archiveSource ||
-                                    t("not_provided", "Not provided")}
+                                    t("legacy.not_provided", "Not provided")}
                                 </p>
                               </div>
                             </div>
@@ -864,11 +843,11 @@ export default function Home() {
                               <FileText className="w-4 h-4 text-teal mt-0.5" />
                               <div>
                                 <p className="text-[10px] uppercase opacity-60">
-                                  {t("document_code", "Document Code")}
+                                  {t("legacy.document_code", "Document Code")}
                                 </p>
                                 <p className="text-xs font-semibold font-mono break-words">
                                   {tree.documentCode ||
-                                    t("not_provided", "Not provided")}
+                                    t("legacy.not_provided", "Not provided")}
                                 </p>
                               </div>
                             </div>
@@ -880,7 +859,7 @@ export default function Home() {
                               className="interactive-btn btn-neu px-4 py-2.5 inline-flex items-center gap-2 text-sm"
                             >
                               <Eye className="w-4 h-4" />
-                              {t("view_tree", "View Tree")}
+                              {t("legacy.view_tree", "View Tree")}
                             </motion.button>
                             {canDownload && (
                               <a
@@ -890,7 +869,7 @@ export default function Home() {
                                 rel="noreferrer"
                               >
                                 <Download className="w-4 h-4" />
-                                {t("download", "Download")}
+                                {t("legacy.download", "Download")}
                               </a>
                             )}
                           </div>
@@ -911,11 +890,10 @@ export default function Home() {
           <div className="max-w-6xl mx-auto space-y-10 text-center">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-terracotta font-semibold mb-3">
-                {t("home_timeline_label", "Through the Ages")}
+                {t("legacy.home_timeline_label", "Through the Ages")}
               </p>
               <h2 className="roots-heading">
-                {t(
-                  "home_timeline_title",
+                {t("legacy.home_timeline_title",
                   "Records Spanning Egypt's Rich History",
                 )}
               </h2>
@@ -930,9 +908,8 @@ export default function Home() {
               <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                 {[
                   {
-                    era: t("home_era_pharaonic", "Pharaonic"),
-                    sub: t(
-                      "home_era_pharaonic_sub",
+                    era: t("legacy.home_era_pharaonic", "Pharaonic"),
+                    sub: t("legacy.home_era_pharaonic_sub",
                       "Old · Middle · New Kingdoms",
                     ),
                     date: "3100–332 BC",
@@ -943,9 +920,8 @@ export default function Home() {
                     icon: Scroll,
                   },
                   {
-                    era: t("home_era_ptolemaic", "Ptolemaic & Roman"),
-                    sub: t(
-                      "home_era_ptolemaic_sub",
+                    era: t("legacy.home_era_ptolemaic", "Ptolemaic & Roman"),
+                    sub: t("legacy.home_era_ptolemaic_sub",
                       "Greek rule · Roman province · Coptic era",
                     ),
                     date: "332 BC–641 AD",
@@ -954,9 +930,8 @@ export default function Home() {
                     icon: Shield,
                   },
                   {
-                    era: t("home_era_rashidun", "Early Islamic"),
-                    sub: t(
-                      "home_era_rashidun_sub",
+                    era: t("legacy.home_era_rashidun", "Early Islamic"),
+                    sub: t("legacy.home_era_rashidun_sub",
                       "Rashidun · Umayyad · Abbasid",
                     ),
                     date: "641–969",
@@ -967,9 +942,8 @@ export default function Home() {
                     icon: Star,
                   },
                   {
-                    era: t("home_era_fatimid", "Fatimid & Ayyubid"),
-                    sub: t(
-                      "home_era_fatimid_sub",
+                    era: t("legacy.home_era_fatimid", "Fatimid & Ayyubid"),
+                    sub: t("legacy.home_era_fatimid_sub",
                       "Fatimid caliphate · Saladin's dynasty",
                     ),
                     date: "969–1250",
@@ -980,17 +954,16 @@ export default function Home() {
                     icon: Sparkles,
                   },
                   {
-                    era: t("home_era_mamluk", "Mamluk"),
-                    sub: t("home_era_mamluk_sub", "Bahri · Burji sultanates"),
+                    era: t("legacy.home_era_mamluk", "Mamluk"),
+                    sub: t("legacy.home_era_mamluk_sub", "Bahri · Burji sultanates"),
                     date: "1250–1517",
                     color: "text-teal",
                     accent: isDark ? "border-teal/20" : "border-teal/25",
                     icon: Shield,
                   },
                   {
-                    era: t("home_era_ottoman", "Ottoman"),
-                    sub: t(
-                      "home_era_ottoman_sub",
+                    era: t("legacy.home_era_ottoman", "Ottoman"),
+                    sub: t("legacy.home_era_ottoman_sub",
                       "Eyalet · Khedivate of Egypt",
                     ),
                     date: "1517–1882",
@@ -1001,9 +974,8 @@ export default function Home() {
                     icon: Map,
                   },
                   {
-                    era: t("home_era_colonial", "British Period"),
-                    sub: t(
-                      "home_era_colonial_sub",
+                    era: t("legacy.home_era_colonial", "British Period"),
+                    sub: t("legacy.home_era_colonial_sub",
                       "Veiled protectorate · Kingdom of Egypt",
                     ),
                     date: "1882–1952",
@@ -1014,9 +986,8 @@ export default function Home() {
                     icon: Compass,
                   },
                   {
-                    era: t("home_era_nasserist", "Nasserist"),
-                    sub: t(
-                      "home_era_nasserist_sub",
+                    era: t("legacy.home_era_nasserist", "Nasserist"),
+                    sub: t("legacy.home_era_nasserist_sub",
                       "Republic · United Arab Republic",
                     ),
                     date: "1952–1970",
@@ -1025,9 +996,8 @@ export default function Home() {
                     icon: Feather,
                   },
                   {
-                    era: t("home_era_sadat_mubarak", "Sadat & Mubarak"),
-                    sub: t(
-                      "home_era_sadat_mubarak_sub",
+                    era: t("legacy.home_era_sadat_mubarak", "Sadat & Mubarak"),
+                    sub: t("legacy.home_era_sadat_mubarak_sub",
                       "Open-door policy · Modern state",
                     ),
                     date: "1970–2011",
@@ -1038,9 +1008,8 @@ export default function Home() {
                     icon: Layers,
                   },
                   {
-                    era: t("home_era_contemporary", "Contemporary"),
-                    sub: t(
-                      "home_era_contemporary_sub",
+                    era: t("legacy.home_era_contemporary", "Contemporary"),
+                    sub: t("legacy.home_era_contemporary_sub",
                       "Revolution · New Republic",
                     ),
                     date: "2011–Present",
@@ -1084,7 +1053,7 @@ export default function Home() {
               to="/periods"
               className="inline-flex items-center gap-2 text-teal font-semibold hover:underline"
             >
-              {t("home_explore_periods", "Explore All Periods")}
+              {t("legacy.home_explore_periods", "Explore All Periods")}
               <ArrowRight className="w-4 h-4" />
             </NavLink>
           </div>
@@ -1099,10 +1068,10 @@ export default function Home() {
           <div className="max-w-6xl mx-auto space-y-10 text-center">
             <div>
               <h2 className="roots-heading">
-                {t("ancestral_stories", "Ancestral Stories")}
+                {t("legacy.ancestral_stories", "Ancestral Stories")}
               </h2>
               <p className="max-w-3xl mx-auto text-lg opacity-90">
-                {t("home_ancestral_intro")}
+                {t("legacy.home_ancestral_intro")}
               </p>
             </div>
 
@@ -1111,20 +1080,20 @@ export default function Home() {
                 {
                   icon: Feather,
                   color: "text-teal",
-                  title: t("home_ancestral_oral_title"),
-                  desc: t("home_ancestral_oral_desc"),
+                  title: t("legacy.home_ancestral_oral_title"),
+                  desc: t("legacy.home_ancestral_oral_desc"),
                 },
                 {
                   icon: BookOpen,
                   color: "text-[#d4a843]",
-                  title: t("home_ancestral_traditions_title"),
-                  desc: t("home_ancestral_traditions_desc"),
+                  title: t("legacy.home_ancestral_traditions_title"),
+                  desc: t("legacy.home_ancestral_traditions_desc"),
                 },
                 {
                   icon: Users,
                   color: "text-terracotta",
-                  title: t("home_ancestral_branches_title"),
-                  desc: t("home_ancestral_branches_desc"),
+                  title: t("legacy.home_ancestral_branches_title"),
+                  desc: t("legacy.home_ancestral_branches_desc"),
                 },
               ].map((item, i) => (
                 <StaggerItem key={i}>
@@ -1151,42 +1120,42 @@ export default function Home() {
           <div className="max-w-6xl mx-auto space-y-10 text-center">
             <div>
               <h2 className="roots-heading">
-                {t("library_title", "Egyptian Genealogy Library")}
+                {t("legacy.library_title", "Egyptian Genealogy Library")}
               </h2>
               <p className="max-w-3xl mx-auto text-lg opacity-90">
-                {t("home_library_intro")}
+                {t("legacy.home_library_intro")}
               </p>
             </div>
 
             <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {[
                 {
-                  tag: t("home_library_tag_manuscripts"),
+                  tag: t("legacy.home_library_tag_manuscripts"),
                   icon: Scroll,
                   color: "text-[#d4a843]",
                 },
                 {
-                  tag: t("home_library_tag_civil"),
+                  tag: t("legacy.home_library_tag_civil"),
                   icon: FileText,
                   color: "text-teal",
                 },
                 {
-                  tag: t("home_library_tag_nasab"),
+                  tag: t("legacy.home_library_tag_nasab"),
                   icon: Users,
                   color: "text-terracotta",
                 },
                 {
-                  tag: t("home_library_tag_ottoman"),
+                  tag: t("legacy.home_library_tag_ottoman"),
                   icon: Shield,
                   color: "text-[#d4a843]",
                 },
                 {
-                  tag: t("home_library_tag_coptic"),
+                  tag: t("legacy.home_library_tag_coptic"),
                   icon: BookOpen,
                   color: "text-teal",
                 },
                 {
-                  tag: t("home_library_tag_maps"),
+                  tag: t("legacy.home_library_tag_maps"),
                   icon: Map,
                   color: "text-terracotta",
                 },
@@ -1207,7 +1176,7 @@ export default function Home() {
               to="/library"
               className="inline-flex items-center gap-2 text-teal font-semibold hover:underline"
             >
-              {t("home_visit_library", "Visit the Library")}
+              {t("legacy.home_visit_library", "Visit the Library")}
               <ArrowRight className="w-4 h-4" />
             </NavLink>
           </div>
@@ -1221,17 +1190,15 @@ export default function Home() {
           <div className="max-w-6xl mx-auto space-y-10">
             <div className="text-center">
               <p className="text-sm uppercase tracking-[0.3em] text-teal font-semibold mb-3">
-                {t("home_memory_streams_label", "More to Preserve")}
+                {t("legacy.home_memory_streams_label", "More to Preserve")}
               </p>
               <h2 className="roots-heading">
-                {t(
-                  "home_memory_streams_title",
+                {t("legacy.home_memory_streams_title",
                   "The homepage keeps the broader Roots Egypt experience visible",
                 )}
               </h2>
               <p className="max-w-3xl mx-auto text-lg opacity-85">
-                {t(
-                  "home_memory_streams_intro",
+                {t("legacy.home_memory_streams_intro",
                   "Research is only one part of family heritage. Roots Egypt also needs space for voices, images, commentary, and contextual records that make a lineage feel alive.",
                 )}
               </p>
@@ -1242,36 +1209,32 @@ export default function Home() {
                 {
                   icon: Headphones,
                   color: "text-teal",
-                  title: t("home_stream_audio_title", "Audio Memory"),
-                  desc: t(
-                    "home_stream_audio_desc",
+                  title: t("legacy.home_stream_audio_title", "Audio Memory"),
+                  desc: t("legacy.home_stream_audio_desc",
                     "Record elders, recitations, songs, and spoken family memory before those voices disappear.",
                   ),
                 },
                 {
                   icon: Image,
                   color: "text-terracotta",
-                  title: t("home_stream_gallery_title", "Visual Heritage"),
-                  desc: t(
-                    "home_stream_gallery_desc",
+                  title: t("legacy.home_stream_gallery_title", "Visual Heritage"),
+                  desc: t("legacy.home_stream_gallery_desc",
                     "Preserve portraits, studio photography, neighborhood images, and scanned documents with context and provenance.",
                   ),
                 },
                 {
                   icon: Newspaper,
                   color: "text-[#d4a843]",
-                  title: t("home_stream_articles_title", "Research Writing"),
-                  desc: t(
-                    "home_stream_articles_desc",
+                  title: t("legacy.home_stream_articles_title", "Research Writing"),
+                  desc: t("legacy.home_stream_articles_desc",
                     "Turn findings into readable family narratives, archive guides, and published notes for relatives and researchers.",
                   ),
                 },
                 {
                   icon: MessageCircle,
                   color: "text-teal",
-                  title: t("home_stream_dialogue_title", "Family Dialogue"),
-                  desc: t(
-                    "home_stream_dialogue_desc",
+                  title: t("legacy.home_stream_dialogue_title", "Family Dialogue"),
+                  desc: t("legacy.home_stream_dialogue_desc",
                     "Give branches of the family one place to react, correct, expand, and deepen the shared record together.",
                   ),
                 },
@@ -1314,16 +1277,16 @@ export default function Home() {
 
               <Sparkles className="w-8 h-8 text-[#d4a843] mx-auto mb-4" />
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                {t("join_our_community", "Join Our Community")}
+                {t("legacy.join_our_community", "Join Our Community")}
               </h2>
               <p className="text-lg opacity-80 max-w-2xl mx-auto mb-8">
-                {t("join_community_desc")}
+                {t("legacy.join_community_desc")}
               </p>
               <NavLink
                 to="/signup"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white bg-gradient-to-r from-[#d4a843] to-[#8b6914] shadow-lg shadow-[#d4a843]/25 hover:shadow-xl transition-all hover:-translate-y-0.5"
               >
-                {t("join_now", "Join Now")}
+                {t("legacy.join_now", "Join Now")}
                 <ArrowRight className="w-5 h-5" />
               </NavLink>
             </motion.div>
@@ -1353,13 +1316,13 @@ export default function Home() {
                     {viewTree.title}
                   </h2>
                   <p className="text-xs opacity-60">
-                    {t("viewing_mode", "Viewing Mode - Read Only")}
+                    {t("legacy.viewing_mode", "Viewing Mode - Read Only")}
                   </p>
                 </div>
                 <button
                   onClick={() => setViewTree(null)}
                   className="interactive-btn btn-neu p-2.5 rounded-full shrink-0"
-                  aria-label={t("close", "Close")}
+                  aria-label={t("legacy.close", "Close")}
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -1373,8 +1336,7 @@ export default function Home() {
                   <div className="absolute inset-0 flex items-center justify-center p-6">
                     <div className="rounded-lg border border-dark-beige bg-white/90 dark:bg-dark2 dark:border-brand px-6 py-5 text-sm text-primary-brown dark:text-papyrus shadow-xl text-center max-w-md">
                       <div className="font-semibold">
-                        {t(
-                          "tree_builder_error",
+                        {t("legacy.tree_builder_error",
                           "Tree builder failed to load.",
                         )}
                       </div>
@@ -1387,16 +1349,16 @@ export default function Home() {
                       <div className="absolute inset-0 flex items-center justify-center p-6">
                         <div className="rounded-lg border border-dark-beige bg-white/90 px-6 py-5 text-sm text-primary-brown shadow-xl">
                           <div className="font-semibold">
-                            {t("tree_builder_error")}
+                            {t("legacy.tree_builder_error")}
                           </div>
                           <div className="opacity-70">
-                            {error?.message || t("tree_builder_try_again")}
+                            {error?.message || t("legacy.tree_builder_try_again")}
                           </div>
                           <button
                             onClick={reset}
                             className="interactive-btn btn-neu btn-neu--primary mt-3 px-4 py-2 text-xs font-semibold uppercase tracking-wide"
                           >
-                            {t("retry", "Retry")}
+                            {t("legacy.retry", "Retry")}
                           </button>
                         </div>
                       </div>

@@ -18,7 +18,7 @@ import {
   Trees,
 } from "lucide-react";
 import { useThemeStore } from "../store/theme";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import { useAuth } from "../admin/components/AuthContext";
 import { dispatchAppNotification } from "../context/NotificationContext";
 import { api } from "../api/client";
@@ -96,7 +96,7 @@ function roleLabelFor(user: { role: number; roleName?: string } | null): string 
 
 export default function ArticlesPage() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { user } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const themeMode = theme === "dark" ? "dark" : "light";
@@ -182,20 +182,20 @@ export default function ArticlesPage() {
           ...trees.slice(0, 20).map((tree: any) => ({
             id: `tree:${tree.id}`,
             kind: "tree" as const,
-            title: tree.title || t("untitled", "Untitled"),
+            title: tree.title || t("legacy.untitled", "Untitled"),
             body:
               tree.description ||
-              t("tree_card_default_desc", "Family tree shared by the community."),
-            authorName: tree.owner || tree.owner_name || t("unknown", "Unknown"),
+              t("legacy.tree_card_default_desc", "Family tree shared by the community."),
+            authorName: tree.owner || tree.owner_name || t("legacy.unknown", "Unknown"),
             createdAt: tree.createdAt ? new Date(tree.createdAt).getTime() : Date.now(),
             sourceLabel: tree.archiveSource || "",
           })),
           ...galleryRaw.slice(0, 24).map((img: any) => ({
             id: `image:${img.id}`,
             kind: "image" as const,
-            title: img.title || t("untitled", "Untitled"),
-            body: img.description || t("images", "Image from the heritage gallery."),
-            authorName: img.author || t("community", "Community"),
+            title: img.title || t("legacy.untitled", "Untitled"),
+            body: img.description || t("legacy.images", "Image from the heritage gallery."),
+            authorName: img.author || t("legacy.community", "Community"),
             createdAt: img.createdAt ? new Date(img.createdAt).getTime() : Date.now(),
             imageUrl: img.image_path
               ? String(img.image_path).startsWith("http")
@@ -207,9 +207,9 @@ export default function ArticlesPage() {
           ...books.slice(0, 20).map((book: any) => ({
             id: `document:${book.id}`,
             kind: "document" as const,
-            title: book.title || t("untitled", "Untitled"),
-            body: book.description || t("documents", "Document from library collections."),
-            authorName: book.author || t("unknown", "Unknown"),
+            title: book.title || t("legacy.untitled", "Untitled"),
+            body: book.description || t("legacy.documents", "Document from library collections."),
+            authorName: book.author || t("legacy.unknown", "Unknown"),
             createdAt: book.createdAt ? new Date(book.createdAt).getTime() : Date.now(),
             sourceLabel: book.category || "",
           })),
@@ -217,7 +217,7 @@ export default function ArticlesPage() {
         setMediaFeed(next);
       } catch {
         if (!mounted) return;
-        setMediaError(t("media_feed_load_failed", "Could not load media feed."));
+        setMediaError(t("legacy.media_feed_load_failed", "Could not load media feed."));
       } finally {
         if (mounted) setMediaLoading(false);
       }
@@ -370,7 +370,7 @@ export default function ArticlesPage() {
         return next;
       });
       dispatchAppNotification(
-        t("article_published", "Article published"),
+        t("legacy.article_published", "Article published"),
         payload.title
       );
     },
@@ -383,7 +383,7 @@ export default function ArticlesPage() {
       if (!trimmed) return;
       const name = user
         ? user.fullName || user.email
-        : t("articles_guest_name", "Guest");
+        : t("legacy.articles_guest_name", "Guest");
       const id =
         typeof crypto !== "undefined" && crypto.randomUUID
           ? crypto.randomUUID()
@@ -403,7 +403,7 @@ export default function ArticlesPage() {
         return next;
       });
       dispatchAppNotification(
-        t("comment_posted", "New comment"),
+        t("legacy.comment_posted", "New comment"),
         trimmed.slice(0, 80)
       );
     },
@@ -532,7 +532,7 @@ export default function ArticlesPage() {
         typeof crypto !== "undefined" && crypto.randomUUID
           ? crypto.randomUUID()
           : `mc-${Date.now()}`;
-      const name = user ? user.fullName || user.email : t("articles_guest_name", "Guest");
+      const name = user ? user.fullName || user.email : t("legacy.articles_guest_name", "Guest");
       setMediaComments((prev) => [
         ...prev,
         { id, mediaKey, authorName: name, body, createdAt: Date.now() },
@@ -557,14 +557,13 @@ export default function ArticlesPage() {
       hero={
         <div className="space-y-3 px-2">
           <p className="text-sm uppercase tracking-[0.3em] text-teal">
-            {t("articles", "Articles")}
+            {t("legacy.articles", "Articles")}
           </p>
           <h1 className="text-4xl sm:text-5xl font-bold">
-            {t("articles_title", "Community writing")}
+            {t("legacy.articles_title", "Community writing")}
           </h1>
           <p className="max-w-xl mx-auto text-base opacity-90">
-            {t(
-              "articles_intro",
+            {t("legacy.articles_intro",
               "Stories from researchers and families — a living feed of Egyptian heritage."
             )}
           </p>
@@ -587,7 +586,7 @@ export default function ArticlesPage() {
                     : "bg-black/5 dark:bg-white/10"
                 }`}
               >
-                {t("articles_feed_tab", "Articles Feed")}
+                {t("legacy.articles_feed_tab", "Articles Feed")}
               </button>
               <button
                 type="button"
@@ -598,19 +597,19 @@ export default function ArticlesPage() {
                     : "bg-black/5 dark:bg-white/10"
                 }`}
               >
-                {t("media_feed_tab", "Media Feed")}
+                {t("legacy.media_feed_tab", "Media Feed")}
               </button>
             </div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <SlidersHorizontal className="w-4 h-4 text-teal shrink-0" />
               <span className="text-xs font-bold uppercase tracking-wider opacity-60">
-                {t("articles_sort", "Sort")}
+                {t("legacy.articles_sort", "Sort")}
               </span>
               {(
                 [
-                  ["latest", t("articles_sort_latest", "Latest")],
-                  ["likes", t("articles_sort_likes", "Most liked")],
-                  ["comments", t("articles_sort_comments", "Most commented")],
+                  ["latest", t("legacy.articles_sort_latest", "Latest")],
+                  ["likes", t("legacy.articles_sort_likes", "Most liked")],
+                  ["comments", t("legacy.articles_sort_comments", "Most commented")],
                 ] as const
               ).map(([k, label]) => (
                 <button
@@ -633,7 +632,7 @@ export default function ArticlesPage() {
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder={t("articles_search", "Search articles…")}
+                placeholder={t("legacy.articles_search", "Search articles…")}
                 className="w-full rounded-xl border border-black/10 dark:border-white/10 bg-transparent py-2.5 pl-10 pr-3 text-sm"
               />
             </div>
@@ -647,7 +646,7 @@ export default function ArticlesPage() {
                     : "bg-black/5 dark:bg-white/10"
                 }`}
               >
-                {t("articles_cat_all", "All")}
+                {t("legacy.articles_cat_all", "All")}
               </button>
               {EGYPTIAN_CATEGORIES.map((c) => (
                 <button
@@ -672,14 +671,13 @@ export default function ArticlesPage() {
             <CreatePostCard
               theme={themeMode}
               user={user}
-              placeholder={t(
-                "articles_compose_hint",
+              placeholder={t("legacy.articles_compose_hint",
                 "What's on your mind about Egyptian heritage?"
               )}
-              titleLabel={t("articles_title_placeholder", "Title")}
-              bodyLabel={t("articles_body_placeholder", "Your article…")}
-              imageHint={t("articles_cover_hint", "Add a cover image")}
-              postLabel={t("articles_publish", "Post")}
+              titleLabel={t("legacy.articles_title_placeholder", "Title")}
+              bodyLabel={t("legacy.articles_body_placeholder", "Your article…")}
+              imageHint={t("legacy.articles_cover_hint", "Add a cover image")}
+              postLabel={t("legacy.articles_publish", "Post")}
               onPublish={publish}
             />
           ) : feedView === "articles" ? (
@@ -688,8 +686,7 @@ export default function ArticlesPage() {
               animate={{ opacity: 1 }}
               className="rounded-2xl border border-dashed border-teal/35 px-4 py-6 text-center text-sm opacity-90"
             >
-              {t(
-                "articles_login_hint",
+              {t("legacy.articles_login_hint",
                 "Sign in to publish. Everyone can read, like, and comment."
               )}
             </motion.div>
@@ -705,7 +702,7 @@ export default function ArticlesPage() {
                     : "bg-white border-black/10 shadow-md"
                 }`}
               >
-                {t("articles_empty", "No articles yet — be the first to publish.")}
+                {t("legacy.articles_empty", "No articles yet — be the first to publish.")}
               </div>
             ) : (
               visibleList.map((a, index) => (
@@ -743,17 +740,17 @@ export default function ArticlesPage() {
                     onToggleCommentsExpanded={() =>
                       setCommentsOpenId((id) => (id === a.id ? null : a.id))
                     }
-                    readMore={t("articles_read_more", "Read more")}
-                    commentsTitle={t("articles_comments", "Comments")}
-                    replyLabel={t("articles_reply", "Reply")}
-                    guestName={t("articles_guest_name", "Guest")}
+                    readMore={t("legacy.articles_read_more", "Read more")}
+                    commentsTitle={t("legacy.articles_comments", "Comments")}
+                    replyLabel={t("legacy.articles_reply", "Reply")}
+                    guestName={t("legacy.articles_guest_name", "Guest")}
                     staggerIndex={index}
                   />
                 </div>
               ))
             )) : mediaLoading ? (
               <div className="rounded-2xl border border-black/10 dark:border-white/10 p-10 text-center opacity-70">
-                {t("loading", "Loading...")}
+                {t("legacy.loading", "Loading...")}
               </div>
             ) : mediaError ? (
               <div className="rounded-2xl border border-red-300/50 p-6 text-center text-red-500">
@@ -761,7 +758,7 @@ export default function ArticlesPage() {
               </div>
             ) : filteredMedia.length === 0 ? (
               <div className="rounded-2xl border border-black/10 dark:border-white/10 p-10 text-center opacity-70">
-                {t("media_feed_empty", "No media posts match your filters.")}
+                {t("legacy.media_feed_empty", "No media posts match your filters.")}
               </div>
             ) : (
               filteredMedia.slice(0, visibleCount).map((m) => {
@@ -769,10 +766,10 @@ export default function ArticlesPage() {
                 const commentsList = mediaCommentsByItem[mediaKey] || [];
                 const kindLabel =
                   m.kind === "tree"
-                    ? t("trees", "Trees")
+                    ? t("legacy.trees", "Trees")
                     : m.kind === "image"
-                    ? t("gallery", "Gallery")
-                    : t("documents", "Documents");
+                    ? t("legacy.gallery", "Gallery")
+                    : t("legacy.documents", "Documents");
                 return (
                   <motion.article
                     key={m.id}
@@ -832,7 +829,7 @@ export default function ArticlesPage() {
                         className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm opacity-80 hover:bg-black/5 dark:hover:bg-white/10"
                       >
                         <Share2 className="w-4 h-4" />
-                        {t("share", "Share")}
+                        {t("legacy.share", "Share")}
                       </button>
                       <button
                         type="button"
@@ -859,7 +856,7 @@ export default function ArticlesPage() {
                             ? "fill-current"
                             : ""
                         }`} />
-                        {t("save_to_favorites", "Save")}
+                        {t("legacy.save_to_favorites", "Save")}
                       </button>
                     </div>
                     <div className="mt-3 space-y-2">
@@ -887,7 +884,7 @@ export default function ArticlesPage() {
                           onKeyDown={(e) => {
                             if (e.key === "Enter") addMediaComment(mediaKey);
                           }}
-                          placeholder={t("write_comment", "Write a comment…")}
+                          placeholder={t("legacy.write_comment", "Write a comment…")}
                           className="flex-1 rounded-lg border border-black/10 dark:border-white/10 bg-transparent px-3 py-2 text-sm"
                         />
                       </div>
@@ -900,7 +897,7 @@ export default function ArticlesPage() {
               ? filteredSorted.length > visibleList.length
               : filteredMedia.length > visibleCount) ? (
               <div ref={loadMoreRef} className="h-12 flex items-center justify-center text-xs opacity-50">
-                {t("articles_loading_more", "Loading more…")}
+                {t("legacy.articles_loading_more", "Loading more…")}
               </div>
             ) : (
               <div className="h-6" />
@@ -914,10 +911,10 @@ export default function ArticlesPage() {
         onClose={() => setShareTarget(null)}
         article={shareTarget}
         onShareCount={bumpShare}
-        titleShare={t("articles_share_title", "Share article")}
-        labelCopy={t("articles_copy_link", "Copy link")}
-        labelInternal={t("articles_share_internal", "Share internally (notification)")}
-        labelClose={t("close", "Close")}
+        titleShare={t("legacy.articles_share_title", "Share article")}
+        labelCopy={t("legacy.articles_copy_link", "Copy link")}
+        labelInternal={t("legacy.articles_share_internal", "Share internally (notification)")}
+        labelClose={t("legacy.close", "Close")}
       />
     </RootsPageShell>
   );

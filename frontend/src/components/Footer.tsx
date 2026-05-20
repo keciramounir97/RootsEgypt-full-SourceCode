@@ -13,7 +13,7 @@ import {
   MessageCircle,
   Send,
 } from "lucide-react";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import { api } from "../api/client";
 import EgyptianLogoMark from "./EgyptianLogoMark";
 import {
@@ -39,7 +39,7 @@ const fallbackFooter = {
 };
 
 export default function Footer({ data }: FooterProps) {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [footer, setFooter] = useState(data || fallbackFooter);
   const [loaded, setLoaded] = useState(Boolean(data));
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -62,27 +62,27 @@ export default function Footer({ data }: FooterProps) {
 
   const navLinks = useMemo(
     () => [
-      { label: t("home", "Home"), href: "/" },
-      { label: t("resources", "Resources"), href: "/gallery" },
+      { label: t("legacy.home", "Home"), href: "/" },
+      { label: t("legacy.resources", "Resources"), href: "/gallery" },
       {
-        label: t("sources_and_archives", "Sources & Periods"),
+        label: t("legacy.sources_and_archives", "Sources & Periods"),
         href: "/sources-and-periods",
       },
-      { label: t("periods", "Periods"), href: "/periods" },
+      { label: t("legacy.periods", "Periods"), href: "/periods" },
     ],
     [t],
   );
 
   const resourceLinks = useMemo(
     () => [
-      { label: t("gallery", "Gallery"), href: "/gallery" },
+      { label: t("legacy.gallery", "Gallery"), href: "/gallery" },
       {
-        label: t("genealogy_gallery", "Genealogy Gallery"),
+        label: t("legacy.genealogy_gallery", "Genealogy Gallery"),
         href: "/genealogy-gallery",
       },
-      { label: t("library", "Library"), href: "/library" },
-      { label: t("audio_library", "Audio Library"), href: "/audio" },
-      { label: t("articles", "Articles"), href: "/articles" },
+      { label: t("legacy.library", "Library"), href: "/library" },
+      { label: t("legacy.audio_library", "Audio Library"), href: "/audio" },
+      { label: t("legacy.articles", "Articles"), href: "/articles" },
     ],
     [t],
   );
@@ -103,7 +103,7 @@ export default function Footer({ data }: FooterProps) {
     if (!email) {
       setNewsletterStatus({
         type: "error",
-        message: t("newsletter_email_required", "Email is required."),
+        message: t("legacy.newsletter_email_required", "Email is required."),
       });
       return;
     }
@@ -115,8 +115,7 @@ export default function Footer({ data }: FooterProps) {
       setNewsletterEmail("");
       setNewsletterStatus({
         type: "success",
-        message: t(
-          "newsletter_success",
+        message: t("legacy.newsletter_success",
           "Thanks! We will reach out to you soon.",
         ),
       });
@@ -125,7 +124,7 @@ export default function Footer({ data }: FooterProps) {
         type: "error",
         message:
           err.response?.data?.message ||
-          t("newsletter_failed", "Failed to subscribe."),
+          t("legacy.newsletter_failed", "Failed to subscribe."),
       });
     } finally {
       setNewsletterLoading(false);
@@ -160,8 +159,7 @@ export default function Footer({ data }: FooterProps) {
           </div>
           <p className="text-dark-beige/90 mb-6 leading-relaxed">
             {footer.brandTagline ||
-              t(
-                "footer_desc",
+              t("legacy.footer_desc",
                 "The premier platform for preserving Egyptian family heritage and ancestry.",
               )}
           </p>
@@ -187,7 +185,7 @@ export default function Footer({ data }: FooterProps) {
 
         <div className="heritage-footer-column">
           <h3 className="text-lg font-bold mb-4 text-[#d4a843]">
-            {t("links", "Quick Links")}
+            {t("legacy.links", "Quick Links")}
           </h3>
           <ul className="heritage-footer-links space-y-2">
             {navLinks.map((link) => (
@@ -205,7 +203,7 @@ export default function Footer({ data }: FooterProps) {
 
         <div className="heritage-footer-column">
           <h3 className="text-lg font-bold mb-4 text-[#c45c3e]">
-            {t("resources", "Resources")}
+            {t("legacy.resources", "Resources")}
           </h3>
           <ul className="heritage-footer-links space-y-2">
             {resourceLinks.map((link) => (
@@ -223,20 +221,20 @@ export default function Footer({ data }: FooterProps) {
 
         <div className="heritage-footer-column">
           <h3 className="text-lg font-bold mb-4 text-[#d4a843]">
-            {t("contact", "Contact")}
+            {t("legacy.contact", "Contact")}
           </h3>
           <ul className="heritage-footer-links space-y-3">
             <li className="flex items-center gap-2 text-dark-beige/80">
               <MapPin size={16} className="text-[#d4a843]" />
-              <span>{t("location_opening_soon", "Location opening soon")}</span>
+              <span>{t("legacy.location_opening_soon", "Location opening soon")}</span>
             </li>
             <li className="flex items-center gap-2 text-dark-beige/80">
               <Mail size={16} className="text-[#c45c3e]" />
               <a
-                href="mailto:contact@rootsegypt.org"
+                href="mailto:marcousorilious@gmail.com"
                 className="hover:text-[#d4a843] transition-colors interactive-link"
               >
-                contact@rootsegypt.org
+                marcousorilious@gmail.com
               </a>
             </li>
             <li className="flex items-center gap-2 text-dark-beige/80">
@@ -256,26 +254,22 @@ export default function Footer({ data }: FooterProps) {
                 rel="noreferrer"
                 className="hover:text-[#d4a843] transition-colors interactive-link"
               >
-                {t(
-                  "contact_whatsapp_line",
+                {t("legacy.contact_whatsapp_line",
                   `WhatsApp: ${CONTACT_WHATSAPP_DISPLAY}`,
                 )}
               </a>
             </li>
             <li className="flex items-center gap-2 text-dark-beige/80">
               <Clock size={16} className="text-[#d4a843]" />
-              <span>
-                {t("contact_hours_week", "Lun-Ven: 9h-17h")}
-              </span>
+              <span>{t("legacy.contact_hours_week", "Lun-Ven: 9h-17h")}</span>
             </li>
           </ul>
           <form className="mt-6 space-y-4" onSubmit={handleNewsletterSubmit}>
             <p className="text-sm uppercase tracking-[0.3em] text-[#d4a843] font-semibold">
-              {t("newsletter", "Newsletter")}
+              {t("legacy.newsletter", "Newsletter")}
             </p>
             <p className="text-sm text-dark-beige/80">
-              {t(
-                "newsletter_prompt",
+              {t("legacy.newsletter_prompt",
                 "Leave your email and we will reach out to you.",
               )}
             </p>
@@ -289,9 +283,9 @@ export default function Footer({ data }: FooterProps) {
                     setNewsletterStatus({ type: "", message: "" });
                   }
                 }}
-                placeholder={t("email", "Email")}
+                placeholder={t("legacy.email", "Email")}
                 className="heritage-input flex-1 min-w-0 px-4 py-2.5 rounded-lg bg-white/10 border border-[#d4a843]/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-[#d4a843]/45"
-                aria-label={t("email", "Email")}
+                aria-label={t("legacy.email", "Email")}
               />
               <button
                 type="submit"
@@ -300,8 +294,8 @@ export default function Footer({ data }: FooterProps) {
               >
                 <Send size={16} />
                 {newsletterLoading
-                  ? t("subscribing", "Subscribing...")
-                  : t("subscribe", "Subscribe")}
+                  ? t("legacy.subscribing", "Subscribing...")
+                  : t("legacy.subscribe", "Subscribe")}
               </button>
             </div>
             {newsletterStatus.message ? (

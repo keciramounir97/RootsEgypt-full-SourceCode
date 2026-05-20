@@ -24,7 +24,7 @@ import {
   shouldFallbackRoute,
 } from "../../api/helpers";
 
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 
 import Toast from "../../components/Toast";
 import ErrorBoundary from "../../components/ErrorBoundary";
@@ -58,7 +58,7 @@ const buildMockTrees = () =>
 export default function Trees() {
   const { theme } = useThemeStore();
 
-  const { locale, t } = useTranslation();
+  const { language: locale, t } = useLanguage();
 
   const { user } = useAuth();
 
@@ -226,7 +226,7 @@ export default function Trees() {
         setTreesError(loadError);
         setSaveError(loadError);
       } else if (notify) {
-        setSaveSuccess(t("trees_loaded", "Trees loaded."));
+        setSaveSuccess(t("legacy.trees_loaded", "Trees loaded."));
       }
     } finally {
       setLoadingTrees(false);
@@ -414,7 +414,7 @@ export default function Trees() {
 
       peopleDirtyRef.current = false;
 
-      setSaveSuccess(t("tree_loaded", "Tree loaded."));
+      setSaveSuccess(t("legacy.tree_loaded", "Tree loaded."));
 
       return;
     }
@@ -541,7 +541,7 @@ export default function Trees() {
 
         peopleDirtyRef.current = false;
 
-        setSaveSuccess(t("tree_loaded", "Tree loaded."));
+        setSaveSuccess(t("legacy.tree_loaded", "Tree loaded."));
 
         setLoadingGedcom(false);
 
@@ -571,7 +571,7 @@ export default function Trees() {
 
       peopleDirtyRef.current = false;
 
-      setSaveSuccess(t("tree_loaded", "Tree loaded."));
+      setSaveSuccess(t("legacy.tree_loaded", "Tree loaded."));
     } catch (err) {
       setPeople([]);
 
@@ -656,15 +656,15 @@ export default function Trees() {
         throw new Error(
           err?.message ||
             (saveFormat === "gedcom7"
-              ? t("gedcom7_build_failed", "Failed to build GEDCOM 7.0")
+              ? t("legacy.gedcom7_build_failed", "Failed to build GEDCOM 7.0")
               : saveFormat === "gedcom"
-                ? t("gedcom_build_failed", "Failed to build GEDCOM")
-                : t("gedcomx_build_failed", "Failed to build GEDCOM X"))
+                ? t("legacy.gedcom_build_failed", "Failed to build GEDCOM")
+                : t("legacy.gedcomx_build_failed", "Failed to build GEDCOM X"))
         );
       }
       const blob = new Blob([content], { type: mime });
       if (blob.size > MAX_GEDCOM_BYTES) {
-        throw new Error(t("file_too_large", "File is too large (max 50MB)."));
+        throw new Error(t("legacy.file_too_large", "File is too large (max 50MB)."));
       }
       const fileName = `${safeTitle}.${ext}`;
       if (typeof File === "function") {
@@ -727,7 +727,7 @@ export default function Trees() {
       URL.revokeObjectURL(url);
     } catch (err) {
       setSaveError(
-        getApiErrorMessage(err, t("download_failed", "Download failed"))
+        getApiErrorMessage(err, t("legacy.download_failed", "Download failed"))
       );
     }
   };
@@ -799,7 +799,7 @@ export default function Trees() {
           data_format: selectedTree?.data_format,
         });
 
-        setAutoSaveNotice(t("auto_saved", "Auto-saved."));
+        setAutoSaveNotice(t("legacy.auto_saved", "Auto-saved."));
 
         peopleDirtyRef.current = false;
 
@@ -854,14 +854,14 @@ export default function Trees() {
     const title = String(treeForm.title || "").trim();
 
     if (!title) {
-      setSaveError(t("tree_title_required", "Tree title is required."));
+      setSaveError(t("legacy.tree_title_required", "Tree title is required."));
 
       return;
     }
 
     if (!hasPeople && !isUpdateMode) {
       const confirmed = window.confirm(
-        t("save_empty_tree_confirm", "Save this tree without any people yet?")
+        t("legacy.save_empty_tree_confirm", "Save this tree without any people yet?")
       );
 
       if (!confirmed) return;
@@ -961,8 +961,7 @@ export default function Trees() {
     if (!canUpdateSelected || !selectedTree) return;
 
     const shouldDelete = window.confirm(
-      t(
-        "confirm_delete_tree",
+      t("legacy.confirm_delete_tree",
 
         "Delete this tree? This action cannot be undone."
       )
@@ -1007,7 +1006,7 @@ export default function Trees() {
 
       setTab("my");
 
-      setSaveSuccess(t("tree_deleted", "Tree deleted."));
+      setSaveSuccess(t("legacy.tree_deleted", "Tree deleted."));
     } catch (err) {
       if (err?.response?.status === 404) {
         setMyTrees((prev) =>
@@ -1024,11 +1023,11 @@ export default function Trees() {
         peopleDirtyRef.current = false;
         await refreshLists();
         setTab("my");
-        setSaveSuccess(t("tree_deleted", "Tree deleted."));
+        setSaveSuccess(t("legacy.tree_deleted", "Tree deleted."));
         return;
       }
       setSaveError(
-        getApiErrorMessage(err, t("delete_failed", "Delete failed"))
+        getApiErrorMessage(err, t("legacy.delete_failed", "Delete failed"))
       );
     } finally {
       setDeletingTree(false);
@@ -1054,12 +1053,11 @@ export default function Trees() {
 
             <div>
               <h3 className="text-2xl font-bold">
-                {t("trees_builder", "Family Tree Builder")}
+                {t("legacy.trees_builder", "Family Tree Builder")}
               </h3>
 
               <p className="opacity-70">
-                {t(
-                  "trees_builder_desc",
+                {t("legacy.trees_builder_desc",
                   "Public trees are visible to everyone; private trees are only for you.",
                 )}
               </p>
@@ -1075,7 +1073,7 @@ export default function Trees() {
             >
               <RefreshCcw className="w-4 h-4" />
 
-              {t("refresh", "Refresh")}
+              {t("legacy.refresh", "Refresh")}
             </button>
           </div>
         </div>
@@ -1104,8 +1102,8 @@ export default function Trees() {
               className={`text-lg font-bold mb-4 ${isDark ? "text-[#f8f5ef]" : "text-[#162238]"}`}
             >
               {selectedTree
-                ? t("tree_details", "Tree Details")
-                : t("new_tree", "New Tree")}
+                ? t("legacy.tree_details", "Tree Details")
+                : t("legacy.new_tree", "New Tree")}
             </div>
 
             <div className="space-y-3">
@@ -1113,7 +1111,7 @@ export default function Trees() {
                 <label
                   className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
                 >
-                  {t("tree_title", "Tree title")}{" "}
+                  {t("legacy.tree_title", "Tree title")}{" "}
                   <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -1121,7 +1119,7 @@ export default function Trees() {
                   onChange={(e) =>
                     setTreeForm((s) => ({ ...s, title: e.target.value }))
                   }
-                  placeholder={t("tree_title", "Tree title")}
+                  placeholder={t("legacy.tree_title", "Tree title")}
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText}
                   focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50 transition-all`}
                 />
@@ -1131,9 +1129,9 @@ export default function Trees() {
                 <label
                   className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
                 >
-                  {t("custom_category", "Custom Category")}{" "}
+                  {t("legacy.custom_category", "Custom Category")}{" "}
                   <span className="text-xs opacity-60">
-                    ({t("optional", "Optional")})
+                    ({t("legacy.optional", "Optional")})
                   </span>
                 </label>
                 <input
@@ -1141,7 +1139,7 @@ export default function Trees() {
                   onChange={(e) =>
                     setTreeForm((s) => ({ ...s, category: e.target.value }))
                   }
-                  placeholder={t("custom_category_placeholder", "Name this category...")}
+                  placeholder={t("legacy.custom_category_placeholder", "Name this category...")}
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText}
                   focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50 transition-all`}
                 />
@@ -1151,9 +1149,9 @@ export default function Trees() {
                 <label
                   className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
                 >
-                  {t("description", "Description")}{" "}
+                  {t("legacy.description", "Description")}{" "}
                   <span className="text-xs opacity-60">
-                    ({t("optional", "Optional")})
+                    ({t("legacy.optional", "Optional")})
                   </span>
                 </label>
                 <textarea
@@ -1161,7 +1159,7 @@ export default function Trees() {
                   onChange={(e) =>
                     setTreeForm((s) => ({ ...s, description: e.target.value }))
                   }
-                  placeholder={t("description", "Description (optional)")}
+                  placeholder={t("legacy.description", "Description (optional)")}
                   rows={3}
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText}
                   focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50 transition-all resize-none`}
@@ -1172,9 +1170,9 @@ export default function Trees() {
                 <label
                   className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
                 >
-                  {t("archive_source", "Archive Source")}{" "}
+                  {t("legacy.archive_source", "Archive Source")}{" "}
                   <span className="text-xs opacity-60">
-                    ({t("optional", "Optional")})
+                    ({t("legacy.optional", "Optional")})
                   </span>
                 </label>
                 <input
@@ -1185,7 +1183,7 @@ export default function Trees() {
                       archiveSource: e.target.value,
                     }))
                   }
-                  placeholder={t("archive_source", "Archive Source (optional)")}
+                  placeholder={t("legacy.archive_source", "Archive Source (optional)")}
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText}
                   focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50 transition-all`}
                 />
@@ -1195,9 +1193,9 @@ export default function Trees() {
                 <label
                   className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
                 >
-                  {t("document_code", "Document Code")}{" "}
+                  {t("legacy.document_code", "Document Code")}{" "}
                   <span className="text-xs opacity-60">
-                    ({t("optional", "Optional")})
+                    ({t("legacy.optional", "Optional")})
                   </span>
                 </label>
                 <input
@@ -1205,7 +1203,7 @@ export default function Trees() {
                   onChange={(e) =>
                     setTreeForm((s) => ({ ...s, documentCode: e.target.value }))
                   }
-                  placeholder={t("document_code", "Document Code (optional)")}
+                  placeholder={t("legacy.document_code", "Document Code (optional)")}
                   className={`heritage-input w-full px-4 py-2.5 rounded-lg border ${border} ${inputBg} ${inputText}
                   focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50 transition-all`}
                 />
@@ -1228,8 +1226,8 @@ export default function Trees() {
                   className={`text-sm font-semibold ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
                 >
                   {treeForm.isPublic
-                    ? t("public", "Public")
-                    : t("private", "Private")}
+                    ? t("legacy.public", "Public")
+                    : t("legacy.private", "Private")}
                 </span>
               </label>
             </div>
@@ -1237,7 +1235,7 @@ export default function Trees() {
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <label className="flex items-center gap-2 text-sm font-medium">
                 <span className={isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}>
-                  {t("save_file_as", "Save file as")}:
+                  {t("legacy.save_file_as", "Save file as")}:
                 </span>
                 <select
                   value={saveFormat}
@@ -1245,19 +1243,19 @@ export default function Trees() {
                   className={`rounded-lg border ${border} px-3 py-2 text-sm ${inputBg} ${inputText}`}
                 >
                   <option value="gedcom">
-                    {t("gedcom_format_551", "GEDCOM 5.5.1")}
+                    {t("legacy.gedcom_format_551", "GEDCOM 5.5.1")}
                   </option>
                   <option value="gedcom7">
-                    {t("format_gedcom7", "GEDCOM 7.0")}
+                    {t("legacy.format_gedcom7", "GEDCOM 7.0")}
                   </option>
                   <option value="gedcomx_json">
-                    {t("gedcomx_format_json", "GEDCOM X (JSON)")}
+                    {t("legacy.gedcomx_format_json", "GEDCOM X (JSON)")}
                   </option>
                   <option value="gedcomx_xml">
-                    {t("gedcomx_format_xml", "GEDCOM X (XML)")}
+                    {t("legacy.gedcomx_format_xml", "GEDCOM X (XML)")}
                   </option>
                   <option value="gedcomx_gedx">
-                    {t("gedcomx_format_gedx", "GEDCOM X (.gedx)")}
+                    {t("legacy.gedcomx_format_gedx", "GEDCOM X (.gedx)")}
                   </option>
                 </select>
               </label>
@@ -1274,10 +1272,10 @@ export default function Trees() {
               >
                 <Save className="w-4 h-4" />
                 {saving
-                  ? t("saving", "Saving...")
+                  ? t("legacy.saving", "Saving...")
                   : canUpdateSelected
-                    ? t("update_tree", "Update Tree")
-                    : t("save_tree", "Save Tree")}
+                    ? t("legacy.update_tree", "Update Tree")
+                    : t("legacy.save_tree", "Save Tree")}
               </button>
 
               <button
@@ -1290,10 +1288,10 @@ export default function Trees() {
                 }`}
                 onClick={clearCanvas}
                 disabled={saving || loadingGedcom}
-                title={t("clear_canvas", "Clear canvas")}
+                title={t("legacy.clear_canvas", "Clear canvas")}
               >
                 <Trash2 className="w-4 h-4" />
-                {t("clear", "Clear")}
+                {t("legacy.clear", "Clear")}
               </button>
 
               {canUpdateSelected && selectedTree ? (
@@ -1312,15 +1310,15 @@ export default function Trees() {
                 >
                   <X className="w-4 h-4" />
                   {deletingTree
-                    ? t("deleting", "Deleting...")
-                    : t("delete_tree", "Delete Tree")}
+                    ? t("legacy.deleting", "Deleting...")
+                    : t("legacy.delete_tree", "Delete Tree")}
                 </button>
               ) : null}
             </div>
 
             {autoSaving ? (
               <div className="text-xs opacity-70 mt-2">
-                {t("auto_saving", "Auto-saving...")}
+                {t("legacy.auto_saving", "Auto-saving...")}
               </div>
             ) : autoSaveNotice ? (
               <div className="text-xs opacity-70 mt-2">{autoSaveNotice}</div>
@@ -1340,7 +1338,7 @@ export default function Trees() {
                 }`}
                 onClick={() => setTab("my")}
               >
-                {t("my_trees", "My Trees")}
+                {t("legacy.my_trees", "My Trees")}
               </button>
 
               <button
@@ -1352,7 +1350,7 @@ export default function Trees() {
                 }`}
                 onClick={() => setTab("public")}
               >
-                {t("public_trees", "Public Trees")}
+                {t("legacy.public_trees", "Public Trees")}
               </button>
             </div>
 
@@ -1367,17 +1365,17 @@ export default function Trees() {
                 className={`heritage-input w-full rtl:pr-9 rtl:pl-3 ltr:pl-9 ltr:pr-3 py-2.5 rounded-lg border
                 focus:outline-none focus:ring-2 focus:ring-[#24766f]/25 focus:border-[#24766f]/50
                 transition-all ${inputBg} ${inputText} ${border}`}
-                placeholder={t("search_trees", "Search trees...")}
+                placeholder={t("legacy.search_trees", "Search trees...")}
               />
             </div>
 
             {loadingTrees ? (
               <div className="py-8 text-center opacity-70">
-                {t("loading", "Loading...")}
+                {t("legacy.loading", "Loading...")}
               </div>
             ) : filteredTrees.length === 0 ? (
               <div className="py-8 text-center opacity-70">
-                {t("no_trees_found", "No trees found.")}
+                {t("legacy.no_trees_found", "No trees found.")}
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
@@ -1410,21 +1408,21 @@ export default function Trees() {
                         <div className="flex items-start justify-between gap-4">
                           <div className="min-w-0">
                             <p className="text-[10px] uppercase tracking-[0.3em] text-[#24766f] opacity-70">
-                              {t("trees", "Family Trees")}
+                              {t("legacy.trees", "Family Trees")}
                             </p>
                             <h3 className="text-xl font-bold truncate">
                               {tree.title}
                             </h3>
                             <p className="text-sm opacity-70">
-                              {tree.owner || t("unknown", "Unknown")}
+                              {tree.owner || t("legacy.unknown", "Unknown")}
                             </p>
                           </div>
                           <span
                             className={`text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border ${border}`}
                           >
                             {tree.isPublic
-                              ? t("public", "Public")
-                              : t("private", "Private")}
+                              ? t("legacy.public", "Public")
+                              : t("legacy.private", "Private")}
                           </span>
                         </div>
                       </div>
@@ -1432,7 +1430,7 @@ export default function Trees() {
                       <div className="p-4 space-y-4">
                         <p className="text-sm opacity-80 line-clamp-3">
                           {tree.description ||
-                            t("no_description", "No description.")}
+                            t("legacy.no_description", "No description.")}
                         </p>
 
                         {tree.category ? (
@@ -1448,11 +1446,11 @@ export default function Trees() {
                             <Archive className="w-4 h-4 text-[#d9a441] mt-0.5" />
                             <div>
                               <p className="text-[10px] uppercase opacity-60">
-                                {t("archive_source", "Archive Source")}
+                                {t("legacy.archive_source", "Archive Source")}
                               </p>
                               <p className="text-xs font-semibold break-words">
                                 {tree.archiveSource ||
-                                  t("not_provided", "Not provided")}
+                                  t("legacy.not_provided", "Not provided")}
                               </p>
                             </div>
                           </div>
@@ -1462,11 +1460,11 @@ export default function Trees() {
                             <FileText className="w-4 h-4 text-[#d9a441] mt-0.5" />
                             <div>
                               <p className="text-[10px] uppercase opacity-60">
-                                {t("document_code", "Document Code")}
+                                {t("legacy.document_code", "Document Code")}
                               </p>
                               <p className="text-xs font-semibold font-mono break-words">
                                 {tree.documentCode ||
-                                  t("not_provided", "Not provided")}
+                                  t("legacy.not_provided", "Not provided")}
                               </p>
                             </div>
                           </div>
@@ -1475,31 +1473,30 @@ export default function Trees() {
                         <div className="text-xs opacity-70 flex items-center gap-2 flex-wrap">
                           <Users className="w-4 h-4" />
                           {tree.hasGedcom
-                            ? t("has_file", "Has file")
-                            : t("no_file", "No file")}
+                            ? t("legacy.has_file", "Has file")
+                            : t("legacy.no_file", "No file")}
                           {tree.hasGedcom && tree.data_format === "gedcomx" ? (
                             <span className="px-2 py-0.5 rounded bg-[#24766f]/20 text-[#24766f] dark:text-[#d9a441] font-medium">
-                              {t("saved_with_gedcomx", "Saved with GEDCOM X")}
+                              {t("legacy.saved_with_gedcomx", "Saved with GEDCOM X")}
                             </span>
                           ) : null}
                           {tree.hasGedcom && tree.data_format === "gedcom7" ? (
                             <span className="px-2 py-0.5 rounded bg-[#24766f]/20 text-[#24766f] dark:text-[#d9a441] font-medium">
-                              {t("saved_with_gedcom7", "Saved with GEDCOM 7.0")}
+                              {t("legacy.saved_with_gedcom7", "Saved with GEDCOM 7.0")}
                             </span>
                           ) : null}
                           {tree.hasGedcom &&
                           tree.data_format !== "gedcomx" &&
                           tree.data_format !== "gedcom7" ? (
                             <span className="px-2 py-0.5 rounded bg-[#24766f]/10 text-[#24766f]/80 dark:text-[#e8e4dc]/80 font-medium">
-                              {t(
-                                "saved_with_gedcom551",
+                              {t("legacy.saved_with_gedcom551",
                                 "Saved with GEDCOM 5.5.1",
                               )}
                             </span>
                           ) : null}
                           {loadingGedcom && active ? (
                             <span className="ml-auto">
-                              {t("loading", "Loading...")}
+                              {t("legacy.loading", "Loading...")}
                             </span>
                           ) : null}
                         </div>
@@ -1514,7 +1511,7 @@ export default function Trees() {
                             className={`px-4 py-2 rounded-md border ${border} hover:opacity-90 inline-flex items-center gap-2`}
                           >
                             <Eye className="w-4 h-4" />
-                            {t("view_tree", "View Tree")}
+                            {t("legacy.view_tree", "View Tree")}
                           </button>
                           {canDownload ? (
                             <button
@@ -1527,11 +1524,10 @@ export default function Trees() {
                             >
                               <Download className="w-4 h-4" />
                               {tree.data_format === "gedcomx"
-                                ? t("download_gedcomx", "Download GEDCOM X")
+                                ? t("legacy.download_gedcomx", "Download GEDCOM X")
                                 : tree.data_format === "gedcom7"
-                                  ? t("download_gedcom7", "Download GEDCOM 7.0")
-                                  : t(
-                                      "download_gedcom551",
+                                  ? t("legacy.download_gedcom7", "Download GEDCOM 7.0")
+                                  : t("legacy.download_gedcom551",
                                       "Download GEDCOM 5.5.1",
                                     )}
                             </button>
@@ -1553,7 +1549,7 @@ export default function Trees() {
             <div
               className={`text-xl font-bold mb-1 ${isDark ? "text-[#f8f5ef]" : "text-[#162238]"}`}
             >
-              {selectedTree ? selectedTree.title : t("canvas", "Canvas")}
+              {selectedTree ? selectedTree.title : t("legacy.canvas", "Canvas")}
             </div>
 
             <div
@@ -1561,7 +1557,7 @@ export default function Trees() {
             >
               {selectedTree
                 ? selectedTree.description || ""
-                : t("canvas_hint", "Import a file or add people to start.")}
+                : t("legacy.canvas_hint", "Import a file or add people to start.")}
             </div>
           </div>
 
@@ -1569,18 +1565,18 @@ export default function Trees() {
             fallback={({ error, reset }) => (
               <div className={`rounded-lg border ${border} ${metaPanel} p-4`}>
                 <div className="font-semibold">
-                  {t("tree_builder_error", "Tree builder failed to load.")}
+                  {t("legacy.tree_builder_error", "Tree builder failed to load.")}
                 </div>
                 <div className="text-sm opacity-70">
                   {error?.message ||
-                    t("tree_builder_try_again", "Please try again.")}
+                    t("legacy.tree_builder_try_again", "Please try again.")}
                 </div>
                 <button
                   type="button"
                   onClick={reset}
                   className={`mt-3 inline-flex items-center rounded-md border ${border} px-3 py-1 text-xs font-semibold uppercase tracking-wide`}
                 >
-                  {t("retry", "Retry")}
+                  {t("legacy.retry", "Retry")}
                 </button>
               </div>
             )}

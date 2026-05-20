@@ -18,7 +18,7 @@ import {
   type SiteImageSettings,
   type SiteImageRecord,
 } from "../../hooks/useSiteImages";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { useThemeStore } from "../../store/theme";
 import Toast from "../../components/Toast";
 
@@ -31,7 +31,7 @@ const EMPTY_SETTINGS: SiteImageSettings = {
 };
 
 export default function HeroImages() {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { theme } = useThemeStore();
   const isDark = theme === "dark";
   const [settings, setSettings] = useState<SiteImageSettings>(EMPTY_SETTINGS);
@@ -93,7 +93,7 @@ export default function HeroImages() {
       notify(
         getApiErrorMessage(
           err,
-          t("site_images_load_failed", "Failed to load site images."),
+          t("legacy.site_images_load_failed", "Failed to load site images."),
         ),
         "error",
       );
@@ -113,12 +113,12 @@ export default function HeroImages() {
         heroUseDefault: checked,
       });
       setSettings({ ...EMPTY_SETTINGS, ...data });
-      notify(t("hero_images_saved", "Hero image settings saved."));
+      notify(t("legacy.hero_images_saved", "Hero image settings saved."));
     } catch (err) {
       notify(
         getApiErrorMessage(
           err,
-          t("hero_images_save_failed", "Failed to save hero images."),
+          t("legacy.hero_images_save_failed", "Failed to save hero images."),
         ),
         "error",
       );
@@ -129,7 +129,7 @@ export default function HeroImages() {
 
   const uploadImages = async () => {
     if (!files.length) {
-      notify(t("image_required", "Please select an image"), "error");
+      notify(t("legacy.image_required", "Please select an image"), "error");
       return;
     }
     const formData = new FormData();
@@ -139,12 +139,12 @@ export default function HeroImages() {
       const { data } = await api.post("/admin/site-images/hero", formData);
       setSettings({ ...EMPTY_SETTINGS, ...data });
       setFiles([]);
-      notify(t("hero_images_uploaded", "Hero image uploaded."));
+      notify(t("legacy.hero_images_uploaded", "Hero image uploaded."));
     } catch (err) {
       notify(
         getApiErrorMessage(
           err,
-          t("hero_images_upload_failed", "Failed to upload hero image."),
+          t("legacy.hero_images_upload_failed", "Failed to upload hero image."),
         ),
         "error",
       );
@@ -156,7 +156,7 @@ export default function HeroImages() {
   const deleteImage = async (id: number) => {
     if (
       !window.confirm(
-        t("confirm_delete", "Are you sure you want to delete this item?"),
+        t("legacy.confirm_delete", "Are you sure you want to delete this item?"),
       )
     )
       return;
@@ -164,10 +164,10 @@ export default function HeroImages() {
       setSaving(true);
       const { data } = await api.delete(`/admin/site-images/hero/${id}`);
       setSettings({ ...EMPTY_SETTINGS, ...data });
-      notify(t("hero_image_deleted", "Hero image deleted."));
+      notify(t("legacy.hero_image_deleted", "Hero image deleted."));
     } catch (err) {
       notify(
-        getApiErrorMessage(err, t("delete_failed", "Failed to delete")),
+        getApiErrorMessage(err, t("legacy.delete_failed", "Failed to delete")),
         "error",
       );
     } finally {
@@ -189,12 +189,12 @@ export default function HeroImages() {
         editForm,
       );
       setSettings({ ...EMPTY_SETTINGS, ...data });
-      notify(t("hero_image_updated", "Hero image updated."));
+      notify(t("legacy.hero_image_updated", "Hero image updated."));
       setEditingImage(null);
       setEditForm({ title: "", caption: "" });
     } catch (err) {
       notify(
-        getApiErrorMessage(err, t("update_failed", "Failed to update")),
+        getApiErrorMessage(err, t("legacy.update_failed", "Failed to update")),
         "error",
       );
     } finally {
@@ -221,10 +221,10 @@ export default function HeroImages() {
         ids: newOrder,
       });
       setSettings({ ...EMPTY_SETTINGS, ...data });
-      notify(t("hero_images_reordered", "Hero images reordered."));
+      notify(t("legacy.hero_images_reordered", "Hero images reordered."));
     } catch (err) {
       notify(
-        getApiErrorMessage(err, t("reorder_failed", "Failed to reorder")),
+        getApiErrorMessage(err, t("legacy.reorder_failed", "Failed to reorder")),
         "error",
       );
     } finally {
@@ -242,14 +242,13 @@ export default function HeroImages() {
               <p
                 className={`text-sm uppercase tracking-[0.2em] ${palette.accent}`}
               >
-                {t("hero_images", "Hero Images")}
+                {t("legacy.hero_images", "Hero Images")}
               </p>
               <h1 className="text-3xl font-bold mt-1">
-                {t("hero_image_page_title", "Hero Image")}
+                {t("legacy.hero_image_page_title", "Hero Image")}
               </h1>
               <p className={`mt-2 max-w-2xl ${palette.muted}`}>
-                {t(
-                  "hero_image_page_desc",
+                {t("legacy.hero_image_page_desc",
                   "Upload one or more hero images. Multiple images rotate as a slideshow.",
                 )}
               </p>
@@ -261,7 +260,7 @@ export default function HeroImages() {
               disabled={loading || saving}
             >
               <RefreshCw className="w-4 h-4" />
-              {t("refresh", "Refresh")}
+              {t("legacy.refresh", "Refresh")}
             </button>
           </div>
         </div>
@@ -270,7 +269,7 @@ export default function HeroImages() {
           <label className="flex items-center justify-between gap-4 rounded-lg border border-current/10 px-4 py-3">
             <span className="inline-flex items-center gap-2 font-semibold">
               <EyeOff className="w-4 h-4 text-[#24766f]" />
-              {t("show_default_hero_image", "Show default hero image")}
+              {t("legacy.show_default_hero_image", "Show default hero image")}
             </span>
             <input
               type="checkbox"
@@ -301,19 +300,19 @@ export default function HeroImages() {
               disabled={saving}
             >
               <Upload className="w-4 h-4" />
-              {saving ? t("saving", "Saving...") : t("upload", "Upload")}
+              {saving ? t("legacy.saving", "Saving...") : t("legacy.upload", "Upload")}
             </button>
           </div>
         </div>
 
         <div className={`rounded-xl border p-6 ${palette.panel}`}>
           <h2 className="text-xl font-bold mb-4">
-            {t("uploaded_hero_images", "Uploaded hero images")} (
+            {t("legacy.uploaded_hero_images", "Uploaded hero images")} (
             {settings.heroImages.length})
           </h2>
           {loading ? (
             <div className="py-10 text-center opacity-70">
-              {t("loading", "Loading...")}
+              {t("legacy.loading", "Loading...")}
             </div>
           ) : settings.heroImages.length ? (
             <div className="space-y-4">
@@ -339,7 +338,7 @@ export default function HeroImages() {
                     <div className="p-4 space-y-3 bg-[#24766f]/5">
                       <div>
                         <label className="block text-xs font-semibold mb-1">
-                          {t("title", "Title")}
+                          {t("legacy.title", "Title")}
                         </label>
                         <input
                           type="text"
@@ -348,12 +347,12 @@ export default function HeroImages() {
                             setEditForm({ ...editForm, title: e.target.value })
                           }
                           className={`w-full px-3 py-2 rounded border ${palette.input} ${palette.page} text-sm`}
-                          placeholder={t("enter_title", "Enter title...")}
+                          placeholder={t("legacy.enter_title", "Enter title...")}
                         />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold mb-1">
-                          {t("caption", "Caption")}
+                          {t("legacy.caption", "Caption")}
                         </label>
                         <textarea
                           value={editForm.caption}
@@ -365,7 +364,7 @@ export default function HeroImages() {
                           }
                           className={`w-full px-3 py-2 rounded border ${palette.input} ${palette.page} text-sm`}
                           rows={2}
-                          placeholder={t("enter_caption", "Enter caption...")}
+                          placeholder={t("legacy.enter_caption", "Enter caption...")}
                         />
                       </div>
                       <div className="flex gap-2">
@@ -376,7 +375,7 @@ export default function HeroImages() {
                           className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded bg-[#24766f] text-white text-sm font-medium disabled:opacity-50"
                         >
                           <Save className="w-4 h-4" />
-                          {t("save", "Save")}
+                          {t("legacy.save", "Save")}
                         </button>
                         <button
                           type="button"
@@ -385,7 +384,7 @@ export default function HeroImages() {
                           className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded border border-current/20 text-sm font-medium disabled:opacity-50"
                         >
                           <X className="w-4 h-4" />
-                          {t("cancel", "Cancel")}
+                          {t("legacy.cancel", "Cancel")}
                         </button>
                       </div>
                     </div>
@@ -404,7 +403,7 @@ export default function HeroImages() {
                         )}
                         {!image.title && !image.caption && (
                           <p className="text-sm opacity-50">
-                            {t("no_details", "No details")}
+                            {t("legacy.no_details", "No details")}
                           </p>
                         )}
                       </div>
@@ -414,7 +413,7 @@ export default function HeroImages() {
                           onClick={() => handleReorder(index, "up")}
                           disabled={saving || index === 0}
                           className="p-2 rounded hover:bg-black/5 disabled:opacity-30"
-                          title={t("move_up", "Move up")}
+                          title={t("legacy.move_up", "Move up")}
                         >
                           <ArrowUp className="w-4 h-4" />
                         </button>
@@ -425,7 +424,7 @@ export default function HeroImages() {
                             saving || index === settings.heroImages.length - 1
                           }
                           className="p-2 rounded hover:bg-black/5 disabled:opacity-30"
-                          title={t("move_down", "Move down")}
+                          title={t("legacy.move_down", "Move down")}
                         >
                           <ArrowDown className="w-4 h-4" />
                         </button>
@@ -433,7 +432,7 @@ export default function HeroImages() {
                           type="button"
                           onClick={() => handleEdit(image)}
                           className="p-2 rounded hover:bg-black/5"
-                          title={t("edit", "Edit")}
+                          title={t("legacy.edit", "Edit")}
                         >
                           <Edit className="w-4 h-4" />
                         </button>
@@ -442,7 +441,7 @@ export default function HeroImages() {
                           onClick={() => void deleteImage(image.id)}
                           className="p-2 rounded text-red-500 hover:bg-red-500/10"
                           disabled={saving}
-                          title={t("delete", "Delete")}
+                          title={t("legacy.delete", "Delete")}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -455,7 +454,7 @@ export default function HeroImages() {
           ) : (
             <div className="py-12 text-center opacity-70">
               <ImageIcon className="w-12 h-12 mx-auto mb-3 opacity-40" />
-              {t("no_hero_images", "No hero images uploaded yet.")}
+              {t("legacy.no_hero_images", "No hero images uploaded yet.")}
             </div>
           )}
         </div>

@@ -6,7 +6,7 @@ import {
   resolveSiteImageUrl,
   type SiteImageSettings,
 } from "../../hooks/useSiteImages";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { useThemeStore } from "../../store/theme";
 import Toast from "../../components/Toast";
 
@@ -19,7 +19,7 @@ const EMPTY_SETTINGS: SiteImageSettings = {
 };
 
 export default function BackgroundImages() {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { theme } = useThemeStore();
   const isDark = theme === "dark";
   const [settings, setSettings] = useState<SiteImageSettings>(EMPTY_SETTINGS);
@@ -55,7 +55,7 @@ export default function BackgroundImages() {
       const { data } = await api.get("/admin/site-images/background");
       setSettings({ ...EMPTY_SETTINGS, ...data });
     } catch (err) {
-      notify(getApiErrorMessage(err, t("site_images_load_failed", "Failed to load site images.")), "error");
+      notify(getApiErrorMessage(err, t("legacy.site_images_load_failed", "Failed to load site images.")), "error");
     } finally {
       setLoading(false);
     }
@@ -72,9 +72,9 @@ export default function BackgroundImages() {
         backgroundUseDefault: checked,
       });
       setSettings({ ...EMPTY_SETTINGS, ...data });
-      notify(t("background_images_saved", "Background image settings saved."));
+      notify(t("legacy.background_images_saved", "Background image settings saved."));
     } catch (err) {
-      notify(getApiErrorMessage(err, t("background_images_save_failed", "Failed to save background image.")), "error");
+      notify(getApiErrorMessage(err, t("legacy.background_images_save_failed", "Failed to save background image.")), "error");
     } finally {
       setSaving(false);
     }
@@ -82,7 +82,7 @@ export default function BackgroundImages() {
 
   const uploadImages = async () => {
     if (!files.length) {
-      notify(t("image_required", "Please select an image"), "error");
+      notify(t("legacy.image_required", "Please select an image"), "error");
       return;
     }
     const formData = new FormData();
@@ -92,23 +92,23 @@ export default function BackgroundImages() {
       const { data } = await api.post("/admin/site-images/background", formData);
       setSettings({ ...EMPTY_SETTINGS, ...data });
       setFiles([]);
-      notify(t("background_image_uploaded", "Background image uploaded."));
+      notify(t("legacy.background_image_uploaded", "Background image uploaded."));
     } catch (err) {
-      notify(getApiErrorMessage(err, t("background_image_upload_failed", "Failed to upload background image.")), "error");
+      notify(getApiErrorMessage(err, t("legacy.background_image_upload_failed", "Failed to upload background image.")), "error");
     } finally {
       setSaving(false);
     }
   };
 
   const deleteImage = async (id: number) => {
-    if (!window.confirm(t("confirm_delete", "Are you sure you want to delete this item?"))) return;
+    if (!window.confirm(t("legacy.confirm_delete", "Are you sure you want to delete this item?"))) return;
     try {
       setSaving(true);
       const { data } = await api.delete(`/admin/site-images/background/${id}`);
       setSettings({ ...EMPTY_SETTINGS, ...data });
-      notify(t("background_image_deleted", "Background image deleted."));
+      notify(t("legacy.background_image_deleted", "Background image deleted."));
     } catch (err) {
-      notify(getApiErrorMessage(err, t("delete_failed", "Failed to delete")), "error");
+      notify(getApiErrorMessage(err, t("legacy.delete_failed", "Failed to delete")), "error");
     } finally {
       setSaving(false);
     }
@@ -132,14 +132,13 @@ export default function BackgroundImages() {
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className={`text-sm uppercase tracking-[0.2em] ${palette.accent}`}>
-                {t("background_images", "Background Images")}
+                {t("legacy.background_images", "Background Images")}
               </p>
               <h1 className="text-3xl font-bold mt-1">
-                {t("background_image_page_title", "Arriere Plan Image")}
+                {t("legacy.background_image_page_title", "Arriere Plan Image")}
               </h1>
               <p className={`mt-2 max-w-2xl ${palette.muted}`}>
-                {t(
-                  "background_image_page_desc",
+                {t("legacy.background_image_page_desc",
                   "Upload one or more background images for the site sections. Multiple images rotate as a slideshow.",
                 )}
               </p>
@@ -151,7 +150,7 @@ export default function BackgroundImages() {
               disabled={loading || saving}
             >
               <RefreshCw className="w-4 h-4" />
-              {t("refresh", "Refresh")}
+              {t("legacy.refresh", "Refresh")}
             </button>
           </div>
         </div>
@@ -161,11 +160,10 @@ export default function BackgroundImages() {
             <span>
               <span className="inline-flex items-center gap-2 font-semibold">
                 <EyeOff className="w-4 h-4 text-[#24766f]" />
-                {t("show_default_background_image", "Show default background image")}
+                {t("legacy.show_default_background_image", "Show default background image")}
               </span>
               <span className={`mt-1 block text-sm ${palette.muted}`}>
-                {t(
-                  "background_diaporama_hint",
+                {t("legacy.background_diaporama_hint",
                   "Keep the default visible to include it in the background slideshow, or hide it to use only uploaded images.",
                 )}
               </span>
@@ -195,17 +193,17 @@ export default function BackgroundImages() {
               disabled={saving}
             >
               <Upload className="w-4 h-4" />
-              {saving ? t("saving", "Saving...") : t("upload", "Upload")}
+              {saving ? t("legacy.saving", "Saving...") : t("legacy.upload", "Upload")}
             </button>
           </div>
         </div>
 
         <div className={`rounded-xl border p-6 ${palette.panel}`}>
           <h2 className="text-xl font-bold mb-4">
-            {t("uploaded_background_images", "Uploaded background images")}
+            {t("legacy.uploaded_background_images", "Uploaded background images")}
           </h2>
           {loading ? (
-            <div className="py-10 text-center opacity-70">{t("loading", "Loading...")}</div>
+            <div className="py-10 text-center opacity-70">{t("legacy.loading", "Loading...")}</div>
           ) : backgroundItems.length ? (
             <div className="grid gap-4 md:grid-cols-2">
               {backgroundItems.map((image, index) => {
@@ -215,14 +213,14 @@ export default function BackgroundImages() {
                     <img src={backgroundUrl} alt="" className="h-56 w-full object-cover" />
                     <div className="p-3 flex items-center justify-between">
                       <span className="text-sm opacity-70">
-                        {t("background_image", "Background image")} #{index + 1}
+                        {t("legacy.background_image", "Background image")} #{index + 1}
                       </span>
                       <button
                         type="button"
                         onClick={() => void deleteImage(image.id)}
                         className="p-2 rounded-lg text-red-500 hover:bg-red-500/10"
                         disabled={saving}
-                        title={t("delete", "Delete")}
+                        title={t("legacy.delete", "Delete")}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -234,7 +232,7 @@ export default function BackgroundImages() {
           ) : (
             <div className="py-12 text-center opacity-70">
               <ImageIcon className="w-12 h-12 mx-auto mb-3 opacity-40" />
-              {t("no_background_images", "No custom background images uploaded yet.")}
+              {t("legacy.no_background_images", "No custom background images uploaded yet.")}
             </div>
           )}
         </div>

@@ -9,7 +9,7 @@ import "./index.css";
 import "./App.css";
 import App from "./App";
 import { AuthProvider } from "./admin/components/AuthContext";
-import { TranslationProvider } from "./context/TranslationContext";
+import { LanguageProvider } from "./i18n";
 import { queryClient } from "./lib/queryClient";
 import { GlobalProvider } from "./context/GlobalContext";
 import { FavoritesProvider } from "./context/FavoritesContext";
@@ -32,7 +32,7 @@ if (rootElement) {
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <GlobalProvider>
-            <TranslationProvider>
+            <LanguageProvider>
               <NotificationProvider>
                 <FavoritesProvider>
                   <AuthProvider>
@@ -41,10 +41,10 @@ if (rootElement) {
                   </AuthProvider>
                 </FavoritesProvider>
               </NotificationProvider>
-            </TranslationProvider>
+            </LanguageProvider>
           </GlobalProvider>
         </QueryClientProvider>
       </BrowserRouter>
-    </StrictMode>
+    </StrictMode>,
   );
 }

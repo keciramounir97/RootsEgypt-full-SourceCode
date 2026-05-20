@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { api } from "../api/client";
 import { getApiErrorMessage } from "../api/helpers";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
 
 interface AudioItem {
@@ -70,7 +70,7 @@ const sortByDateDesc = (items: AudioItem[]) =>
 
 export default function GalleryAudios() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [audios, setAudios] = useState<AudioItem[]>([]);
@@ -96,9 +96,9 @@ export default function GalleryAudios() {
   const [newComment, setNewComment] = useState("");
   const playlists = useMemo<Playlist[]>(
     () => [
-      { id: 1, name: t("oral_histories", "Oral Histories"), audios: [] },
-      { id: 2, name: t("family_stories", "Family Stories"), audios: [] },
-      { id: 3, name: t("traditional_songs", "Traditional Songs"), audios: [] },
+      { id: 1, name: t("legacy.oral_histories", "Oral Histories"), audios: [] },
+      { id: 2, name: t("legacy.family_stories", "Family Stories"), audios: [] },
+      { id: 3, name: t("legacy.traditional_songs", "Traditional Songs"), audios: [] },
     ],
     [t],
   );
@@ -138,7 +138,7 @@ export default function GalleryAudios() {
         setError(
           getApiErrorMessage(
             err,
-            t("audio_load_failed", "Failed to load audio"),
+            t("legacy.audio_load_failed", "Failed to load audio"),
           ),
         );
         setAudios([]);
@@ -222,7 +222,7 @@ export default function GalleryAudios() {
     const comment: Comment = {
       id: Date.now(),
       userId: "user",
-      userName: t("you", "You"),
+      userName: t("legacy.you", "You"),
       text: newComment,
       createdAt: new Date().toISOString(),
     };
@@ -274,14 +274,13 @@ export default function GalleryAudios() {
             <Music className="w-12 h-12 text-[#d9a441]" />
           </div>
           <p className="text-sm uppercase tracking-[0.3em] text-[#d9a441]">
-            {t("family_collections", "Family Collections")}
+            {t("legacy.family_collections", "Family Collections")}
           </p>
           <h1 className="text-5xl font-bold">
-            {t("audio_archives", "Audio Archives")}
+            {t("legacy.audio_archives", "Audio Archives")}
           </h1>
           <p className="max-w-4xl mx-auto text-lg opacity-90">
-            {t(
-              "audios_intro",
+            {t("legacy.audios_intro",
               "Listen to oral histories, traditional songs, and family recordings. Save your favorites and build your heritage playlist.",
             )}
           </p>
@@ -297,8 +296,7 @@ export default function GalleryAudios() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={t(
-                "search_audios_placeholder",
+              placeholder={t("legacy.search_audios_placeholder",
                 "Search audio archives...",
               )}
               className={`w-full pl-10 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441] transition-colors ${
@@ -318,7 +316,7 @@ export default function GalleryAudios() {
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
-                  {cat === "all" ? t("all_categories", "All Categories") : cat}
+                  {cat === "all" ? t("legacy.all_categories", "All Categories") : cat}
                 </option>
               ))}
             </select>
@@ -327,14 +325,14 @@ export default function GalleryAudios() {
               className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#24766f] text-white font-semibold hover:bg-[#24766f]/90 transition-colors shadow-lg"
             >
               <Upload className="w-5 h-5" />
-              {t("upload", "Upload")}
+              {t("legacy.upload", "Upload")}
             </button>
             <button
               onClick={() => setShowSuggestionModal(true)}
               className={`flex items-center gap-2 px-5 py-3 rounded-xl border ${borderColor} font-semibold hover:bg-[#d9a441]/10 transition-colors`}
             >
               <Lightbulb className="w-5 h-5 text-[#d9a441]" />
-              {t("suggest_category", "Suggest Category")}
+              {t("legacy.suggest_category", "Suggest Category")}
             </button>
           </div>
         </div>
@@ -440,7 +438,7 @@ export default function GalleryAudios() {
         <section className="roots-section">
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-16 h-16 border-4 border-[#d9a441] border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="text-lg opacity-70">{t("loading", "Loading...")}</p>
+            <p className="text-lg opacity-70">{t("legacy.loading", "Loading...")}</p>
           </div>
         </section>
       ) : error ? (
@@ -452,7 +450,7 @@ export default function GalleryAudios() {
       ) : (
         <section className="roots-section" data-aos="fade-up">
           <h2 className="text-3xl font-bold border-l-8 border-[#d9a441] pl-4 mb-8">
-            {t("audios", "Audio Archives")}{" "}
+            {t("legacy.audios", "Audio Archives")}{" "}
             <span className="text-[#24766f]">({filteredAudios.length})</span>
           </h2>
 
@@ -462,7 +460,7 @@ export default function GalleryAudios() {
             >
               <Music className="w-16 h-16 mx-auto text-[#24766f]/50 mb-4" />
               <p className="text-xl opacity-70">
-                {t("no_audios_found", "No audio archives found.")}
+                {t("legacy.no_audios_found", "No audio archives found.")}
               </p>
             </div>
           ) : (
@@ -547,7 +545,7 @@ export default function GalleryAudios() {
       {/* Playlists Sidebar */}
       <section className="roots-section" data-aos="fade-up">
         <h2 className="text-2xl font-bold border-l-8 border-[#24766f] pl-4 mb-6">
-          {t("your_playlists", "Your Playlists")}
+          {t("legacy.your_playlists", "Your Playlists")}
         </h2>
         <div className="grid md:grid-cols-3 gap-4">
           {playlists.map((playlist) => (
@@ -562,7 +560,7 @@ export default function GalleryAudios() {
                 <div>
                   <h4 className="font-bold">{playlist.name}</h4>
                   <p className="text-sm opacity-70">
-                    {playlist.audios.length} {t("tracks", "tracks")}
+                    {playlist.audios.length} {t("legacy.tracks", "tracks")}
                   </p>
                 </div>
               </div>
@@ -572,7 +570,7 @@ export default function GalleryAudios() {
             className={`p-5 rounded-xl border-2 border-dashed ${borderColor} flex items-center justify-center gap-2 opacity-70 hover:opacity-100 transition-opacity`}
           >
             <Plus className="w-5 h-5" />
-            {t("create_playlist", "Create Playlist")}
+            {t("legacy.create_playlist", "Create Playlist")}
           </button>
         </div>
       </section>
@@ -605,7 +603,7 @@ export default function GalleryAudios() {
             </div>
             <p className="opacity-80 mb-4">{currentAudio.description}</p>
             <div className="space-y-3">
-              <h4 className="font-semibold">{t("comments", "Comments")}</h4>
+              <h4 className="font-semibold">{t("legacy.comments", "Comments")}</h4>
               <div className="max-h-40 overflow-auto space-y-2">
                 {(currentAudio.comments || []).map((comment) => (
                   <div
@@ -622,7 +620,7 @@ export default function GalleryAudios() {
                   type="text"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  placeholder={t("write_comment", "Write a comment...")}
+                  placeholder={t("legacy.write_comment", "Write a comment...")}
                   className={`flex-1 px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none`}
                   onKeyDown={(e) =>
                     e.key === "Enter" && handleComment(currentAudio.id)
@@ -652,7 +650,7 @@ export default function GalleryAudios() {
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold">
-                {t("upload_audio", "Upload Audio")}
+                {t("legacy.upload_audio", "Upload Audio")}
               </h3>
               <button
                 onClick={() => setShowUploadModal(false)}
@@ -666,31 +664,31 @@ export default function GalleryAudios() {
             >
               <Upload className="w-12 h-12 mx-auto text-[#24766f] mb-4" />
               <p className="opacity-70 mb-2">
-                {t("drag_drop_audio", "Drag and drop an audio file here")}
+                {t("legacy.drag_drop_audio", "Drag and drop an audio file here")}
               </p>
               <p className="text-sm opacity-50">
-                {t("audio_file_formats_short", "MP3, WAV, M4A supported")}
+                {t("legacy.audio_file_formats_short", "MP3, WAV, M4A supported")}
               </p>
               <input type="file" accept="audio/*" className="hidden" />
             </div>
             <div className="mt-4 space-y-3">
               <input
                 type="text"
-                placeholder={t("title", "Title")}
+                placeholder={t("legacy.title", "Title")}
                 className={`w-full px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none`}
               />
               <input
                 type="text"
-                placeholder={t("custom_category_placeholder", "Name this category...")}
+                placeholder={t("legacy.custom_category_placeholder", "Name this category...")}
                 className={`w-full px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none`}
               />
               <textarea
-                placeholder={t("description", "Description")}
+                placeholder={t("legacy.description", "Description")}
                 rows={3}
                 className={`w-full px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none resize-none`}
               />
               <button className="w-full py-3 rounded-xl bg-[#24766f] text-white font-semibold hover:bg-[#24766f]/90 transition-colors">
-                {t("upload", "Upload")}
+                {t("legacy.upload", "Upload")}
               </button>
             </div>
           </div>
@@ -713,7 +711,7 @@ export default function GalleryAudios() {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold flex items-center gap-2">
                 <Lightbulb className="w-5 h-5 text-[#d9a441]" />
-                {t("suggest_category", "Suggest a Category")}
+                {t("legacy.suggest_category", "Suggest a Category")}
               </h3>
               <button
                 onClick={() => {
@@ -733,11 +731,10 @@ export default function GalleryAudios() {
                   <Lightbulb className="w-8 h-8 text-green-500" />
                 </div>
                 <p className="text-lg font-semibold mb-2">
-                  {t("suggestion_sent", "Suggestion Sent!")}
+                  {t("legacy.suggestion_sent", "Suggestion Sent!")}
                 </p>
                 <p className="text-sm opacity-70">
-                  {t(
-                    "suggestion_pending_review",
+                  {t("legacy.suggestion_pending_review",
                     "An admin will review your suggestion. If approved, it will appear in the category list.",
                   )}
                 </p>
@@ -746,7 +743,7 @@ export default function GalleryAudios() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold mb-2">
-                    {t("category_name", "Category Name")}{" "}
+                    {t("legacy.category_name", "Category Name")}{" "}
                     <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -758,8 +755,7 @@ export default function GalleryAudios() {
                         category: e.target.value,
                       })
                     }
-                    placeholder={t(
-                      "category_placeholder",
+                    placeholder={t("legacy.category_placeholder",
                       "e.g., Nile Delta oral history",
                     )}
                     className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
@@ -767,7 +763,7 @@ export default function GalleryAudios() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold mb-2">
-                    {t("description", "Description")}
+                    {t("legacy.description", "Description")}
                   </label>
                   <textarea
                     value={suggestionForm.message}
@@ -777,8 +773,7 @@ export default function GalleryAudios() {
                         message: e.target.value,
                       })
                     }
-                    placeholder={t(
-                      "why_category",
+                    placeholder={t("legacy.why_category",
                       "Why would this category be useful?",
                     )}
                     rows={3}
@@ -811,8 +806,8 @@ export default function GalleryAudios() {
                   }`}
                 >
                   {suggestionSubmitting
-                    ? t("sending", "Sending...")
-                    : t("send_suggestion", "Send Suggestion")}
+                    ? t("legacy.sending", "Sending...")
+                    : t("legacy.send_suggestion", "Send Suggestion")}
                 </button>
               </div>
             )}

@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { api } from "../api/client";
 import { getApiErrorMessage } from "../api/helpers";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
 
 interface Document {
@@ -69,7 +69,7 @@ const getFileIcon = (fileType?: string) => {
 
 export default function GalleryDocuments() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
@@ -119,7 +119,7 @@ export default function GalleryDocuments() {
         setError(
           getApiErrorMessage(
             err,
-            t("documents_load_failed", "Failed to load documents"),
+            t("legacy.documents_load_failed", "Failed to load documents"),
           ),
         );
         setDocuments([]);
@@ -189,7 +189,7 @@ export default function GalleryDocuments() {
     const comment: Comment = {
       id: Date.now(),
       userId: "user",
-      userName: t("you", "You"),
+      userName: t("legacy.you", "You"),
       text: newComment,
       createdAt: new Date().toISOString(),
     };
@@ -243,14 +243,13 @@ export default function GalleryDocuments() {
             <FileText className="w-12 h-12 text-[#d9a441]" />
           </div>
           <p className="text-sm uppercase tracking-[0.3em] text-[#d9a441]">
-            {t("family_collections", "Family Collections")}
+            {t("legacy.family_collections", "Family Collections")}
           </p>
           <h1 className="text-5xl font-bold">
-            {t("documents", "Documents Archive")}
+            {t("legacy.documents", "Documents Archive")}
           </h1>
           <p className="max-w-4xl mx-auto text-lg opacity-90">
-            {t(
-              "documents_intro",
+            {t("legacy.documents_intro",
               "Access vital records, certificates, immigration papers, and historical documents. Upload and share your family documents.",
             )}
           </p>
@@ -266,7 +265,7 @@ export default function GalleryDocuments() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={t("search_documents_placeholder", "Search documents...")}
+              placeholder={t("legacy.search_documents_placeholder", "Search documents...")}
               className={`w-full pl-10 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441] transition-colors ${
                 isDark ? "text-white placeholder-white/50" : "text-[#162238] placeholder-[#162238]/50"
               }`}
@@ -282,7 +281,7 @@ export default function GalleryDocuments() {
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
-                  {cat === "all" ? t("all_categories", "All Categories") : cat}
+                  {cat === "all" ? t("legacy.all_categories", "All Categories") : cat}
                 </option>
               ))}
             </select>
@@ -291,7 +290,7 @@ export default function GalleryDocuments() {
               className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#24766f] text-white font-semibold hover:bg-[#24766f]/90 transition-colors shadow-lg"
             >
               <Upload className="w-5 h-5" />
-              {t("upload_document", "Upload Document")}
+              {t("legacy.upload_document", "Upload Document")}
             </button>
           </div>
         </div>
@@ -301,7 +300,7 @@ export default function GalleryDocuments() {
         <section className="roots-section">
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-16 h-16 border-4 border-[#d9a441] border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="text-lg opacity-70">{t("loading", "Loading...")}</p>
+            <p className="text-lg opacity-70">{t("legacy.loading", "Loading...")}</p>
           </div>
         </section>
       ) : error ? (
@@ -311,13 +310,13 @@ export default function GalleryDocuments() {
       ) : (
         <section className="roots-section" data-aos="fade-up">
           <h2 className="text-3xl font-bold border-l-8 border-[#d9a441] pl-4 mb-8">
-            {t("documents", "Documents")} <span className="text-[#24766f]">({filteredDocuments.length})</span>
+            {t("legacy.documents", "Documents")} <span className="text-[#24766f]">({filteredDocuments.length})</span>
           </h2>
 
           {filteredDocuments.length === 0 ? (
             <div className={`${cardBg} p-12 rounded-2xl shadow-xl border ${borderColor} text-center`}>
               <FileText className="w-16 h-16 mx-auto text-[#24766f]/50 mb-4" />
-              <p className="text-xl opacity-70">{t("no_documents_found", "No documents found.")}</p>
+              <p className="text-xl opacity-70">{t("legacy.no_documents_found", "No documents found.")}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -334,7 +333,7 @@ export default function GalleryDocuments() {
                     <div className="text-4xl">{getFileIcon(doc.fileType)}</div>
                     <div className="absolute top-3 right-3">
                       <span className="px-2 py-1 rounded-full text-xs bg-[#24766f]/20 text-[#24766f]">
-                        {doc.fileType || t("file", "File").toUpperCase()}
+                        {doc.fileType || t("legacy.file", "File").toUpperCase()}
                       </span>
                     </div>
                   </div>
@@ -432,7 +431,7 @@ export default function GalleryDocuments() {
               <div className="grid grid-cols-2 gap-3">
                 {selectedDocument.archiveSource && (
                   <div className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
-                    <p className="text-xs uppercase opacity-60 mb-1">{t("archive_source", "Archive Source")}</p>
+                    <p className="text-xs uppercase opacity-60 mb-1">{t("legacy.archive_source", "Archive Source")}</p>
                     <p className="font-medium flex items-center gap-1">
                       <Archive className="w-4 h-4 text-[#24766f]" />
                       {selectedDocument.archiveSource}
@@ -441,13 +440,13 @@ export default function GalleryDocuments() {
                 )}
                 {selectedDocument.documentCode && (
                   <div className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
-                    <p className="text-xs uppercase opacity-60 mb-1">{t("document_code", "Document Code")}</p>
+                    <p className="text-xs uppercase opacity-60 mb-1">{t("legacy.document_code", "Document Code")}</p>
                     <p className="font-medium font-mono text-sm">{selectedDocument.documentCode}</p>
                   </div>
                 )}
                 {selectedDocument.date && (
                   <div className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
-                    <p className="text-xs uppercase opacity-60 mb-1">{t("date", "Date")}</p>
+                    <p className="text-xs uppercase opacity-60 mb-1">{t("legacy.date", "Date")}</p>
                     <p className="font-medium flex items-center gap-1">
                       <Archive className="w-4 h-4 text-[#24766f]" />
                       {selectedDocument.date}
@@ -455,8 +454,8 @@ export default function GalleryDocuments() {
                   </div>
                 )}
                 <div className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
-                  <p className="text-xs uppercase opacity-60 mb-1">{t("file_type", "File Type")}</p>
-                  <p className="font-medium">{selectedDocument.fileType || t("unknown", "Unknown")}</p>
+                  <p className="text-xs uppercase opacity-60 mb-1">{t("legacy.file_type", "File Type")}</p>
+                  <p className="font-medium">{selectedDocument.fileType || t("legacy.unknown", "Unknown")}</p>
                 </div>
               </div>
 
@@ -475,7 +474,7 @@ export default function GalleryDocuments() {
                 </button>
                 <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                   <Share2 className="w-5 h-5" />
-                  {t("share", "Share")}
+                  {t("legacy.share", "Share")}
                 </button>
                 {selectedDocument.filePath && (
                   <a
@@ -484,14 +483,14 @@ export default function GalleryDocuments() {
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#24766f] text-white hover:bg-[#24766f]/90 transition-colors"
                   >
                     <Download className="w-5 h-5" />
-                    {t("download", "Download")}
+                    {t("legacy.download", "Download")}
                   </a>
                 )}
               </div>
 
               {/* Comments */}
               <div className="space-y-3">
-                <h4 className="font-semibold">{t("comments", "Comments")}</h4>
+                <h4 className="font-semibold">{t("legacy.comments", "Comments")}</h4>
                 <div className="space-y-2 max-h-40 overflow-auto">
                   {(selectedDocument.comments || []).map((comment) => (
                     <div key={comment.id} className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
@@ -500,7 +499,7 @@ export default function GalleryDocuments() {
                     </div>
                   ))}
                   {(!selectedDocument.comments || selectedDocument.comments.length === 0) && (
-                    <p className="text-sm opacity-50">{t("no_comments", "No comments yet.")}</p>
+                    <p className="text-sm opacity-50">{t("legacy.no_comments", "No comments yet.")}</p>
                   )}
                 </div>
               </div>
@@ -513,7 +512,7 @@ export default function GalleryDocuments() {
                   type="text"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  placeholder={t("write_comment", "Write a comment...")}
+                  placeholder={t("legacy.write_comment", "Write a comment...")}
                   className={`flex-1 px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441] transition-colors`}
                   onKeyDown={(e) => e.key === "Enter" && handleComment(selectedDocument.id)}
                 />
@@ -540,7 +539,7 @@ export default function GalleryDocuments() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold">{t("upload_document", "Upload Document")}</h3>
+              <h3 className="text-xl font-bold">{t("legacy.upload_document", "Upload Document")}</h3>
               <button
                 onClick={() => setShowUploadModal(false)}
                 className="p-2 rounded-lg hover:bg-white/10 transition-colors"
@@ -551,7 +550,7 @@ export default function GalleryDocuments() {
             <div className="space-y-4">
               <input
                 type="text"
-                placeholder={t("title", "Title")}
+                placeholder={t("legacy.title", "Title")}
                 value={uploadForm.title}
                 onChange={(e) => setUploadForm({ ...uploadForm, title: e.target.value })}
                 className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
@@ -560,25 +559,25 @@ export default function GalleryDocuments() {
                 type="text"
                 value={uploadForm.category}
                 onChange={(e) => setUploadForm({ ...uploadForm, category: e.target.value })}
-                placeholder={t("custom_category_placeholder", "Name this category...")}
+                placeholder={t("legacy.custom_category_placeholder", "Name this category...")}
                 className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
               />
               <input
                 type="text"
-                placeholder={t("archive_source", "Archive Source")}
+                placeholder={t("legacy.archive_source", "Archive Source")}
                 value={uploadForm.archiveSource}
                 onChange={(e) => setUploadForm({ ...uploadForm, archiveSource: e.target.value })}
                 className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
               />
               <input
                 type="text"
-                placeholder={t("document_code", "Document Code")}
+                placeholder={t("legacy.document_code", "Document Code")}
                 value={uploadForm.documentCode}
                 onChange={(e) => setUploadForm({ ...uploadForm, documentCode: e.target.value })}
                 className={`w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
               />
               <textarea
-                placeholder={t("description", "Description")}
+                placeholder={t("legacy.description", "Description")}
                 value={uploadForm.description}
                 onChange={(e) => setUploadForm({ ...uploadForm, description: e.target.value })}
                 rows={3}
@@ -587,7 +586,7 @@ export default function GalleryDocuments() {
               <div className={`border-2 border-dashed ${borderColor} rounded-xl p-6 text-center`}>
                 <Upload className="w-8 h-8 mx-auto text-[#24766f] mb-2" />
                 <p className="text-sm opacity-70">
-                  {t("upload_document_file", "Upload document file")}
+                  {t("legacy.upload_document_file", "Upload document file")}
                 </p>
                 <input type="file" accept=".pdf,.doc,.docx,.txt" className="hidden" />
               </div>
@@ -595,7 +594,7 @@ export default function GalleryDocuments() {
                 onClick={handleUpload}
                 className="w-full py-3 rounded-xl bg-[#24766f] text-white font-semibold hover:bg-[#24766f]/90 transition-colors"
               >
-                {t("upload", "Upload")}
+                {t("legacy.upload", "Upload")}
               </button>
             </div>
           </div>

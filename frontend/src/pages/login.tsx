@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "../admin/components/AuthContext";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import EgyptianLogoMark from "../components/EgyptianLogoMark";
 
 const bgImage = "/assets/egypt-bg.jpeg";
@@ -20,7 +20,7 @@ export default function Login() {
   const { theme } = useThemeStore();
   const { login, user } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,11 +43,11 @@ export default function Login() {
 
     const trimmedEmail = email.trim().toLowerCase();
     if (!trimmedEmail || !emailPattern.test(trimmedEmail)) {
-      setError(t("invalid_email", "Please provide a valid email before logging in"));
+      setError(t("legacy.invalid_email", "Please provide a valid email before logging in"));
       return;
     }
     if (!password) {
-      setError(t("password_required", "Password is required to sign you in"));
+      setError(t("legacy.password_required", "Password is required to sign you in"));
       return;
     }
 
@@ -61,14 +61,14 @@ export default function Login() {
           navigate("/admin", { replace: true });
         }
       } else {
-        setError(t("login_failed_no_user", "Login failed: No user data received"));
+        setError(t("legacy.login_failed_no_user", "Login failed: No user data received"));
       }
     } catch (err: any) {
       const message =
         err.userMessage ||
         err.response?.data?.message ||
         err.message ||
-        t("invalid_credentials", "Invalid credentials. Please check your email and password.");
+        t("legacy.invalid_credentials", "Invalid credentials. Please check your email and password.");
 
       if (
         String(message).toLowerCase().includes("validat") ||
@@ -102,8 +102,7 @@ export default function Login() {
             RootsEgypt
           </h2>
           <p className="text-white/80 text-lg max-w-md leading-relaxed">
-            {t(
-              "login_with_email_password",
+            {t("legacy.login_with_email_password",
               "Securely log in and continue building your Egyptian family archive.",
             )}
           </p>
@@ -125,12 +124,12 @@ export default function Login() {
             <h1
               className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-[#0f2742]"}`}
             >
-              {t("welcome_back", "Welcome Back")}
+              {t("legacy.welcome_back", "Welcome Back")}
             </h1>
             <p
               className={`text-base ${isDark ? "text-white/60" : "text-[#162238]/60"}`}
             >
-              {t("login_subtitle", "Sign in to your account")}
+              {t("legacy.login_subtitle", "Sign in to your account")}
             </p>
           </div>
 
@@ -139,7 +138,7 @@ export default function Login() {
               <label
                 className={`text-sm font-medium mb-2 block ${isDark ? "text-white/80" : "text-[#162238]/80"}`}
               >
-                {t("email", "Email")}
+                {t("legacy.email", "Email")}
               </label>
               <div
                 className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all focus-within:border-[#d9a441] focus-within:shadow-lg focus-within:shadow-[#d9a441]/10 ${isDark ? "bg-white/5 border-white/10" : "bg-white border-[#e8e4dc]"}`}
@@ -150,7 +149,7 @@ export default function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t("email_placeholder", "example@email.com")}
+                  placeholder={t("legacy.email_placeholder", "example@email.com")}
                   className={`bg-transparent outline-none flex-1 text-base ${isDark ? "text-white placeholder:text-white/30" : "text-[#162238] placeholder:text-[#162238]/30"}`}
                 />
               </div>
@@ -160,7 +159,7 @@ export default function Login() {
               <label
                 className={`text-sm font-medium mb-2 block ${isDark ? "text-white/80" : "text-[#162238]/80"}`}
               >
-                {t("password", "Password")}
+                {t("legacy.password", "Password")}
               </label>
               <div
                 className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all focus-within:border-[#d9a441] focus-within:shadow-lg focus-within:shadow-[#d9a441]/10 ${isDark ? "bg-white/5 border-white/10" : "bg-white border-[#e8e4dc]"}`}
@@ -193,7 +192,7 @@ export default function Login() {
                 to="/resetpassword"
                 className="text-sm text-[#d9a441] hover:text-[#24766f] transition-colors font-medium"
               >
-                {t("forgot_password", "Forgot password?")}
+                {t("legacy.forgot_password", "Forgot password?")}
               </NavLink>
             </div>
 
@@ -211,14 +210,12 @@ export default function Login() {
                   <Shield className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-amber-600 dark:text-amber-400 text-sm font-medium">
-                      {t(
-                        "account_pending_validation",
+                      {t("legacy.account_pending_validation",
                         "Your account is pending validation.",
                       )}
                     </p>
                     <p className="text-amber-600/60 dark:text-amber-400/60 text-xs mt-1">
-                      {t(
-                        "account_pending_desc",
+                      {t("legacy.account_pending_desc",
                         "A super admin must approve your account before you can log in.",
                       )}
                     </p>
@@ -235,12 +232,12 @@ export default function Login() {
               {loading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  {t("please_wait", "Please wait...")}
+                  {t("legacy.please_wait", "Please wait...")}
                 </>
               ) : (
                 <>
                   <LogIn className="w-5 h-5" />
-                  {t("login", "Login")}
+                  {t("legacy.login", "Login")}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </>
               )}
@@ -249,12 +246,12 @@ export default function Login() {
             <p
               className={`text-center text-sm pt-2 ${isDark ? "text-white/50" : "text-[#162238]/50"}`}
             >
-              {t("no_account_yet", "Don't have an account?")}{" "}
+              {t("legacy.no_account_yet", "Don't have an account?")}{" "}
               <NavLink
                 to="/signup"
                 className="text-[#24766f] font-bold hover:text-[#d9a441] transition-colors"
               >
-                {t("create_account", "Create account")}
+                {t("legacy.create_account", "Create account")}
               </NavLink>
             </p>
           </form>

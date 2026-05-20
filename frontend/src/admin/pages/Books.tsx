@@ -18,13 +18,13 @@ import {
   shouldFallbackRoute,
 } from "../../api/helpers";
 import { formatDate } from "../utils/helpers";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { useAuth } from "../components/AuthContext";
 import Toast from "../../components/Toast";
 
 export default function Books() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { user } = useAuth();
   const isDark = theme === "dark";
   const isAdmin = user?.role === 1 || user?.role === 3;
@@ -60,14 +60,13 @@ export default function Books() {
   };
 
   const validateBookFile = (file) => {
-    if (!file) return t("file_required", "File is required");
+    if (!file) return t("legacy.file_required", "File is required");
     if (file.size > maxBookBytes) {
-      return t("file_too_large", "File is too large (max 50MB).");
+      return t("legacy.file_too_large", "File is too large (max 50MB).");
     }
     const ext = getExtension(file.name);
     if (ext && !allowedBookExts.has(ext)) {
-      return t(
-        "invalid_book_type",
+      return t("legacy.invalid_book_type",
         "Unsupported file type. Use PDF, DOC, DOCX, TXT, EPUB, or MOBI.",
       );
     }
@@ -75,14 +74,14 @@ export default function Books() {
   };
 
   const validateCoverFile = (file) => {
-    if (!file) return t("cover_required", "Cover image is required");
+    if (!file) return t("legacy.cover_required", "Cover image is required");
     if (file.size > maxCoverBytes) {
-      return t("file_too_large", "File is too large (max 50MB).");
+      return t("legacy.file_too_large", "File is too large (max 50MB).");
     }
     const ext = getExtension(file.name);
     const isImageType = file.type ? file.type.startsWith("image/") : false;
     if (!isImageType && ext && !allowedImageExts.has(ext)) {
-      return t("invalid_image_type", "Only image files are allowed.");
+      return t("legacy.invalid_image_type", "Only image files are allowed.");
     }
     return "";
   };
@@ -250,7 +249,7 @@ export default function Books() {
           setMyBooks(mockBooks);
           setPublicBooks(mockBooks.filter((b) => b.isPublic));
           if (notifyToast) {
-            notify(t("books_loaded", "Books loaded."));
+            notify(t("legacy.books_loaded", "Books loaded."));
           }
           return;
         }
@@ -288,12 +287,12 @@ export default function Books() {
           setPublicBooks(Array.isArray(pub) ? pub : []);
         }
         if (notifyToast) {
-          notify(t("books_loaded", "Books loaded."));
+          notify(t("legacy.books_loaded", "Books loaded."));
         }
       } catch (err) {
         const message = getApiErrorMessage(
           err,
-          t("books_load_failed", "Failed to load books"),
+          t("legacy.books_load_failed", "Failed to load books"),
         );
         setError(message);
         notify(message, "error");
@@ -386,19 +385,19 @@ export default function Books() {
         err?.response?.status === 500;
 
       if (!form.title.trim()) {
-        const message = t("title_required", "Title is required");
+        const message = t("legacy.title_required", "Title is required");
         setError(message);
         notify(message, "error");
         return;
       }
       if (!form.file) {
-        const message = t("file_required", "File is required");
+        const message = t("legacy.file_required", "File is required");
         setError(message);
         notify(message, "error");
         return;
       }
       if (!form.cover) {
-        const message = t("cover_required", "Cover image is required");
+        const message = t("legacy.cover_required", "Cover image is required");
         setError(message);
         notify(message, "error");
         return;
@@ -443,12 +442,12 @@ export default function Books() {
 
       setShowAdd(false);
       await loadBooks();
-      notify(t("book_uploaded", "Book uploaded."));
+      notify(t("legacy.book_uploaded", "Book uploaded."));
       if (!isAdmin) setTab("my");
     } catch (err) {
       const message = getApiErrorMessage(
         err,
-        t("upload_failed", "Upload failed"),
+        t("legacy.upload_failed", "Upload failed"),
       );
       setError(message);
       notify(message, "error");
@@ -474,7 +473,7 @@ export default function Books() {
     } catch (err) {
       const message = getApiErrorMessage(
         err,
-        t("open_failed", "Open failed"),
+        t("legacy.open_failed", "Open failed"),
       );
       setError(message);
       notify(message, "error");
@@ -505,7 +504,7 @@ export default function Books() {
     } catch (err) {
       const message = getApiErrorMessage(
         err,
-        t("download_failed", "Download failed"),
+        t("legacy.download_failed", "Download failed"),
       );
       setError(message);
       notify(message, "error");
@@ -528,7 +527,7 @@ export default function Books() {
 
   const deleteBook = async (book) => {
     const ok = window.confirm(
-      t("confirm_delete_book", `Delete "${book?.title || "book"}"?`),
+      t("legacy.confirm_delete_book", `Delete "${book?.title || "book"}"?`),
     );
     if (!ok) return;
 
@@ -558,7 +557,7 @@ export default function Books() {
         setMyBooks((prev) => prev.filter((b) => b.id !== book.id));
       }
       void loadBooks();
-      notify(t("book_deleted", "Book deleted."));
+      notify(t("legacy.book_deleted", "Book deleted."));
     } catch (err) {
       if (err?.response?.status === 404) {
         if (isAdmin) {
@@ -567,12 +566,12 @@ export default function Books() {
           setMyBooks((prev) => prev.filter((b) => b.id !== book.id));
         }
         void loadBooks();
-        notify(t("book_deleted", "Book deleted."));
+        notify(t("legacy.book_deleted", "Book deleted."));
         return;
       }
       const message = getApiErrorMessage(
         err,
-        t("delete_failed", "Delete failed"),
+        t("legacy.delete_failed", "Delete failed"),
       );
       setError(message);
       notify(message, "error");
@@ -587,7 +586,7 @@ export default function Books() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <BookOpen className="w-6 h-6 text-[#24766f]" />
-          <h3 className="text-2xl font-bold">{t("books", "Books")}</h3>
+          <h3 className="text-2xl font-bold">{t("legacy.books", "Books")}</h3>
         </div>
 
         <button
@@ -599,22 +598,22 @@ export default function Books() {
         >
           <Plus className="w-4 h-4" />
           {isAdmin
-            ? t("add_book", "Add Book")
-            : t("upload_book", "Upload Book")}
+            ? t("legacy.add_book", "Add Book")
+            : t("legacy.upload_book", "Upload Book")}
         </button>
       </div>
 
       <div className="grid md:grid-cols-3 gap-3 mb-6">
         <div className={`rounded-xl border ${border} ${card} p-3`}>
-          <p className="text-xs opacity-70">{t("total", "Total")}</p>
+          <p className="text-xs opacity-70">{t("legacy.total", "Total")}</p>
           <p className="text-xl font-bold">{bookStats.total}</p>
         </div>
         <div className={`rounded-xl border ${border} ${card} p-3`}>
-          <p className="text-xs opacity-70">{t("public", "Public")}</p>
+          <p className="text-xs opacity-70">{t("legacy.public", "Public")}</p>
           <p className="text-xl font-bold">{bookStats.publicCount}</p>
         </div>
         <div className={`rounded-xl border ${border} ${card} p-3`}>
-          <p className="text-xs opacity-70">{t("downloads", "Downloads")}</p>
+          <p className="text-xs opacity-70">{t("legacy.downloads", "Downloads")}</p>
           <p className="text-xl font-bold">{bookStats.totalDownloads}</p>
         </div>
       </div>
@@ -626,12 +625,10 @@ export default function Books() {
           <div className="space-y-3">
             <p className="opacity-80">
               {isAdmin
-                ? t(
-                    "books_admin_desc",
+                ? t("legacy.books_admin_desc",
                     "Upload and manage your genealogy library.",
                   )
-                : t(
-                    "books_user_desc",
+                : t("legacy.books_user_desc",
                     "Browse public books or upload private books for your account.",
                   )}
             </p>
@@ -648,7 +645,7 @@ export default function Books() {
                   onClick={() => setTab("public")}
                   disabled={loading}
                 >
-                  {t("public_books", "Public Books")}
+                  {t("legacy.public_books", "Public Books")}
                 </button>
                 <button
                   type="button"
@@ -660,7 +657,7 @@ export default function Books() {
                   onClick={() => setTab("my")}
                   disabled={loading}
                 >
-                  {t("my_books", "My Books")}
+                  {t("legacy.my_books", "My Books")}
                 </button>
               </div>
             ) : null}
@@ -673,7 +670,7 @@ export default function Books() {
               className={`heritage-input w-full pl-9 pr-3 py-2 rounded-md border
             focus:outline-none focus:ring-2 focus:ring-[#24766f]/25
               ${inputBg} ${inputText} ${border}`}
-              placeholder={t("search_books", "Search books...")}
+              placeholder={t("legacy.search_books", "Search books...")}
             />
           </div>
         </div>
@@ -684,7 +681,7 @@ export default function Books() {
       >
         {loading ? (
           <div className="p-10 text-center opacity-60">
-            {t("loading", "Loading...")}
+            {t("legacy.loading", "Loading...")}
           </div>
         ) : error ? (
           <div className="p-10 text-center">
@@ -693,7 +690,7 @@ export default function Books() {
         ) : filtered.length === 0 ? (
           <div className="p-10 text-center opacity-70">
             <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
-            <p>{t("no_books_found", "No books found.")}</p>
+            <p>{t("legacy.no_books_found", "No books found.")}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -701,28 +698,28 @@ export default function Books() {
               <thead className={subtle}>
                 <tr className={`text-start border-b ${border}`}>
                   <th className="py-3 px-4 text-start">
-                    {t("title", "Title")}
+                    {t("legacy.title", "Title")}
                   </th>
                   <th className="py-3 px-4 text-start">
-                    {t("author", "Author")}
+                    {t("legacy.author", "Author")}
                   </th>
                   <th className="py-3 px-4 text-start">
-                    {t("category", "Category")}
+                    {t("legacy.category", "Category")}
                   </th>
                   <th className="py-3 px-4 text-start">
-                    {t("public", "Public")}
+                    {t("legacy.public", "Public")}
                   </th>
                   <th className="py-3 px-4 text-start">
-                    {t("downloads", "Downloads")}
+                    {t("legacy.downloads", "Downloads")}
                   </th>
                   {isAdmin ? (
                     <th className="py-3 px-4 text-start">
-                      {t("uploaded_by", "Uploaded By")}
+                      {t("legacy.uploaded_by", "Uploaded By")}
                     </th>
                   ) : null}
-                  <th className="py-3 px-4 text-start">{t("date", "Date")}</th>
+                  <th className="py-3 px-4 text-start">{t("legacy.date", "Date")}</th>
                   <th className="py-3 px-4 text-end">
-                    {t("actions", "Actions")}
+                    {t("legacy.actions", "Actions")}
                   </th>
                 </tr>
               </thead>
@@ -746,7 +743,7 @@ export default function Books() {
                             {coverSrc ? (
                               <img
                                 src={coverSrc}
-                                alt={b.title || t("book_cover", "Book cover")}
+                                alt={b.title || t("legacy.book_cover", "Book cover")}
                                 className={`h-12 w-9 object-cover rounded-md ${border}`}
                                 loading="lazy"
                               />
@@ -770,7 +767,7 @@ export default function Books() {
                           <span
                             className={`heritage-pill ${isPublic ? "heritage-pill--public" : "heritage-pill--private"}`}
                           >
-                            {isPublic ? t("yes", "Yes") : t("no", "No")}
+                            {isPublic ? t("legacy.yes", "Yes") : t("legacy.no", "No")}
                           </span>
                         </td>
                         <td className="py-3 px-4 text-start">
@@ -791,7 +788,7 @@ export default function Books() {
                                 type="button"
                                 className={`px-3 py-2 rounded-md border ${border} hover:opacity-90`}
                                 onClick={() => openFile(b)}
-                                title={t("open_file", "Open file")}
+                                title={t("legacy.open_file", "Open file")}
                               >
                                 <ExternalLink className="w-4 h-4" />
                               </button>
@@ -802,7 +799,7 @@ export default function Books() {
                                 href={downloadUrl(b.id)}
                                 target="_blank"
                                 rel="noreferrer"
-                                title={t("download", "Download")}
+                                title={t("legacy.download", "Download")}
                               >
                                 <Download className="w-4 h-4" />
                               </a>
@@ -812,7 +809,7 @@ export default function Books() {
                                 className={`px-3 py-2 rounded-md border ${border} hover:opacity-90 disabled:opacity-60`}
                                 onClick={() => void downloadProtected(b)}
                                 disabled={saving}
-                                title={t("download", "Download")}
+                                title={t("legacy.download", "Download")}
                               >
                                 <Download className="w-4 h-4" />
                               </button>
@@ -824,7 +821,7 @@ export default function Books() {
                                 className="px-3 py-2 rounded-md bg-[#a0552a] text-white hover:bg-[#a0552a] disabled:opacity-60"
                                 onClick={() => deleteBook(b)}
                                 disabled={saving}
-                                title={t("delete", "Delete")}
+                                title={t("legacy.delete", "Delete")}
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -855,14 +852,13 @@ export default function Books() {
                 <p
                   className={`text-xs uppercase tracking-[0.35em] ${accentText} opacity-80`}
                 >
-                  {t("upload_book", "Upload Book")}
+                  {t("legacy.upload_book", "Upload Book")}
                 </p>
                 <h4 className="text-2xl font-bold mt-1">
-                  {t("upload_book", "Upload Book")}
+                  {t("legacy.upload_book", "Upload Book")}
                 </h4>
                 <p className="text-sm opacity-70 max-w-2xl">
-                  {t(
-                    "upload_book_desc",
+                  {t("legacy.upload_book_desc",
                     "Add a PDF or document to the library.",
                   )}
                 </p>
@@ -886,7 +882,7 @@ export default function Books() {
                   <div
                     className={`text-[11px] uppercase tracking-[0.3em] ${accentText}`}
                   >
-                    {t("cover_image", "Cover Image")}
+                    {t("legacy.cover_image", "Cover Image")}
                   </div>
                   <div className="mt-3 grid grid-cols-[96px_1fr] gap-3 items-center">
                     <div
@@ -895,12 +891,12 @@ export default function Books() {
                       {coverPreview ? (
                         <img
                           src={coverPreview}
-                          alt={t("cover_preview", "Cover preview")}
+                          alt={t("legacy.cover_preview", "Cover preview")}
                           className="h-full w-full object-cover"
                         />
                       ) : (
                         <span className="text-xs font-semibold text-[#24766f]">
-                          {t("add_cover", "Add cover")}
+                          {t("legacy.add_cover", "Add cover")}
                         </span>
                       )}
                     </div>
@@ -923,7 +919,7 @@ export default function Books() {
                   <span
                     className={`text-[11px] uppercase tracking-[0.3em] ${accentText}`}
                   >
-                    {t("file", "File")}
+                    {t("legacy.file", "File")}
                   </span>
                   <div className="mt-2 flex items-center gap-2">
                     <input
@@ -946,7 +942,7 @@ export default function Books() {
 
                 <label className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5">
                   <span className="text-sm font-medium">
-                    {t("public_visible", "Public (visible on website)")}
+                    {t("legacy.public_visible", "Public (visible on website)")}
                   </span>
                   <input
                     type="checkbox"
@@ -963,7 +959,7 @@ export default function Books() {
               <div className="space-y-4">
                 <label className="block">
                   <span className="text-sm font-semibold">
-                    {t("title", "Title")}
+                    {t("legacy.title", "Title")}
                   </span>
                   <input
                     value={form.title}
@@ -972,7 +968,7 @@ export default function Books() {
                     }
                     required
                     className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                    placeholder={t("book_title_placeholder", "Book title")}
+                    placeholder={t("legacy.book_title_placeholder", "Book title")}
                     disabled={saving}
                   />
                 </label>
@@ -980,7 +976,7 @@ export default function Books() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <label className="block">
                     <span className="text-sm font-semibold">
-                      {t("author", "Author")}
+                      {t("legacy.author", "Author")}
                     </span>
                     <input
                       value={form.author}
@@ -988,14 +984,14 @@ export default function Books() {
                         setForm((s) => ({ ...s, author: e.target.value }))
                       }
                       className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                      placeholder={t("author", "Author")}
+                      placeholder={t("legacy.author", "Author")}
                       disabled={saving}
                     />
                   </label>
 
                   <label className="block">
                     <span className="text-sm font-semibold">
-                      {t("custom_category", "Custom Category")}
+                      {t("legacy.custom_category", "Custom Category")}
                     </span>
                     <input
                       value={form.category}
@@ -1003,7 +999,7 @@ export default function Books() {
                         setForm((s) => ({ ...s, category: e.target.value }))
                       }
                       className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                      placeholder={t("custom_category_placeholder", "Name this category...")}
+                      placeholder={t("legacy.custom_category_placeholder", "Name this category...")}
                       disabled={saving}
                     />
                   </label>
@@ -1012,7 +1008,7 @@ export default function Books() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <label className="block">
                     <span className="text-sm font-semibold">
-                      {t("archive_source", "Archive Source")}
+                      {t("legacy.archive_source", "Archive Source")}
                     </span>
                     <input
                       value={form.archiveSource}
@@ -1023,14 +1019,14 @@ export default function Books() {
                         }))
                       }
                       className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                      placeholder={t("archive_source", "Archive Source")}
+                      placeholder={t("legacy.archive_source", "Archive Source")}
                       disabled={saving}
                     />
                   </label>
 
                   <label className="block">
                     <span className="text-sm font-semibold">
-                      {t("document_code", "Document Code")}
+                      {t("legacy.document_code", "Document Code")}
                     </span>
                     <input
                       value={form.documentCode}
@@ -1038,7 +1034,7 @@ export default function Books() {
                         setForm((s) => ({ ...s, documentCode: e.target.value }))
                       }
                       className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                      placeholder={t("document_code", "Document Code")}
+                      placeholder={t("legacy.document_code", "Document Code")}
                       disabled={saving}
                     />
                   </label>
@@ -1046,7 +1042,7 @@ export default function Books() {
 
                 <label className="block">
                   <span className="text-sm font-semibold">
-                    {t("description", "Description")}
+                    {t("legacy.description", "Description")}
                   </span>
                   <textarea
                     value={form.description}
@@ -1054,7 +1050,7 @@ export default function Books() {
                       setForm((s) => ({ ...s, description: e.target.value }))
                     }
                     className={`heritage-input mt-2 w-full px-3 py-2 rounded-md border ${inputBg} ${inputText} ${border}`}
-                    placeholder={t("short_description", "Short description")}
+                    placeholder={t("legacy.short_description", "Short description")}
                     rows={2}
                     disabled={saving}
                   />
@@ -1074,7 +1070,7 @@ export default function Books() {
                   onClick={() => setShowAdd(false)}
                   disabled={saving}
                 >
-                  {t("cancel", "Cancel")}
+                  {t("legacy.cancel", "Cancel")}
                 </button>
                 <button
                   type="submit"
@@ -1083,8 +1079,8 @@ export default function Books() {
                 >
                   <Upload className="w-4 h-4" />
                   {saving
-                    ? t("uploading", "Uploading...")
-                    : t("upload", "Upload")}
+                    ? t("legacy.uploading", "Uploading...")
+                    : t("legacy.upload", "Upload")}
                 </button>
               </div>
             </form>

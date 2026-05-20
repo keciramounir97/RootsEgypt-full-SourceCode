@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useThemeStore } from "../../store/theme";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { api } from "../../api/client";
 import {
   getApiErrorMessage,
@@ -39,7 +39,7 @@ interface Suggestion {
 
 export default function AdminSuggestions() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
 
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -124,7 +124,7 @@ export default function AdminSuggestions() {
       setSuggestions((prev) =>
         prev.map((s) => (s.id === id ? { ...s, status: "approved" } : s))
       );
-      notify(t("suggestion_approved", "Suggestion approved successfully!"));
+      notify(t("legacy.suggestion_approved", "Suggestion approved successfully!"));
     } catch (error) {
       console.error("Failed to approve suggestion:", error);
       notify(getApiErrorMessage(error, "Failed to approve suggestion"), "error");
@@ -147,7 +147,7 @@ export default function AdminSuggestions() {
       setSuggestions((prev) =>
         prev.map((s) => (s.id === id ? { ...s, status: "rejected" } : s))
       );
-      notify(t("suggestion_rejected", "Suggestion rejected."));
+      notify(t("legacy.suggestion_rejected", "Suggestion rejected."));
     } catch (error) {
       console.error("Failed to reject suggestion:", error);
       notify(getApiErrorMessage(error, "Failed to reject suggestion"), "error");
@@ -219,10 +219,10 @@ export default function AdminSuggestions() {
         {/* Header */}
         <div className="mb-8" data-aos="fade-down">
           <h1 className={`text-4xl font-bold font-serif ${isDark ? "text-[#d9a441]" : "text-[#24766f]"} mb-2`}>
-            {t("suggestions_management", "Suggestions & Requests")}
+            {t("legacy.suggestions_management", "Suggestions & Requests")}
           </h1>
           <p className={`${textColor} opacity-70`}>
-            {t("suggestions_desc", "Review and approve user-submitted category suggestions and content requests")}
+            {t("legacy.suggestions_desc", "Review and approve user-submitted category suggestions and content requests")}
           </p>
         </div>
 
@@ -230,19 +230,19 @@ export default function AdminSuggestions() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-[#d9a441]">{suggestions.filter((s) => s.status === "pending").length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("pending", "Pending")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.pending", "Pending")}</p>
           </div>
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-green-500">{suggestions.filter((s) => s.status === "approved").length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("approved", "Approved")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.approved", "Approved")}</p>
           </div>
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-red-500">{suggestions.filter((s) => s.status === "rejected").length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("rejected", "Rejected")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.rejected", "Rejected")}</p>
           </div>
           <div className={`${cardBg} border ${border} rounded-xl p-4 text-center`}>
             <p className="text-3xl font-bold text-[#24766f]">{suggestions.length}</p>
-            <p className={`text-sm ${textColor} opacity-70`}>{t("total", "Total")}</p>
+            <p className={`text-sm ${textColor} opacity-70`}>{t("legacy.total", "Total")}</p>
           </div>
         </div>
 
@@ -250,7 +250,7 @@ export default function AdminSuggestions() {
         <div className={`${cardBg} border ${border} rounded-xl p-4 mb-6 flex flex-wrap gap-4`} data-aos="fade-up">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 opacity-50" />
-            <span className={`text-sm font-medium ${textColor}`}>{t("status", "Status")}:</span>
+            <span className={`text-sm font-medium ${textColor}`}>{t("legacy.status", "Status")}:</span>
           </div>
           <div className="flex gap-2">
             {(["all", "pending", "approved", "rejected"] as const).map((f) => (
@@ -270,19 +270,19 @@ export default function AdminSuggestions() {
             ))}
           </div>
           <div className="flex items-center gap-2 ml-4">
-            <span className={`text-sm font-medium ${textColor}`}>{t("type", "Type")}:</span>
+            <span className={`text-sm font-medium ${textColor}`}>{t("legacy.type", "Type")}:</span>
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
               className={`px-3 py-1 rounded-lg ${isDark ? "bg-white/10" : "bg-black/10"} ${textColor} text-sm outline-none`}
             >
-              <option value="all">{t("all_types", "All Types")}</option>
-              <option value="audio_category">{t("audio", "Audio")}</option>
-              <option value="image_category">{t("images", "Images")}</option>
-              <option value="book_category">{t("books", "Books")}</option>
-              <option value="document_category">{t("documents", "Documents")}</option>
-              <option value="article_category">{t("articles", "Articles")}</option>
-              <option value="tree_category">{t("trees", "Trees")}</option>
+              <option value="all">{t("legacy.all_types", "All Types")}</option>
+              <option value="audio_category">{t("legacy.audio", "Audio")}</option>
+              <option value="image_category">{t("legacy.images", "Images")}</option>
+              <option value="book_category">{t("legacy.books", "Books")}</option>
+              <option value="document_category">{t("legacy.documents", "Documents")}</option>
+              <option value="article_category">{t("legacy.articles", "Articles")}</option>
+              <option value="tree_category">{t("legacy.trees", "Trees")}</option>
             </select>
           </div>
         </div>
@@ -292,24 +292,24 @@ export default function AdminSuggestions() {
           {loading ? (
             <div className="text-center py-12">
               <div className="w-12 h-12 border-4 border-[#d9a441] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-              <p className={textColor}>{t("loading", "Loading...")}</p>
+              <p className={textColor}>{t("legacy.loading", "Loading...")}</p>
             </div>
           ) : filteredSuggestions.length === 0 ? (
             <div className="text-center py-12">
               <MessageSquare className={`w-16 h-16 mx-auto ${textColor} opacity-20 mb-4`} />
-              <p className={`${textColor} opacity-70`}>{t("no_suggestions", "No suggestions found.")}</p>
+              <p className={`${textColor} opacity-70`}>{t("legacy.no_suggestions", "No suggestions found.")}</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className={`${isDark ? "bg-white/5" : "bg-black/5"}`}>
                   <tr>
-                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("user", "User")}</th>
-                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("type", "Type")}</th>
-                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("category", "Category")}</th>
-                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("message", "Message")}</th>
-                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("date", "Date")}</th>
-                    <th className={`px-4 py-3 text-center text-sm font-semibold ${textColor}`}>{t("actions", "Actions")}</th>
+                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("legacy.user", "User")}</th>
+                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("legacy.type", "Type")}</th>
+                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("legacy.category", "Category")}</th>
+                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("legacy.message", "Message")}</th>
+                    <th className={`px-4 py-3 text-left text-sm font-semibold ${textColor}`}>{t("legacy.date", "Date")}</th>
+                    <th className={`px-4 py-3 text-center text-sm font-semibold ${textColor}`}>{t("legacy.actions", "Actions")}</th>
                   </tr>
                 </thead>
                 <tbody className={`divide-y ${border}`}>
@@ -348,14 +348,14 @@ export default function AdminSuggestions() {
                               <button
                                 onClick={() => handleApprove(suggestion.id)}
                                 className="p-2 rounded-lg bg-green-500/20 text-green-500 hover:bg-green-500/30 transition"
-                                title={t("approve", "Approve")}
+                                title={t("legacy.approve", "Approve")}
                               >
                                 <Check className="w-5 h-5" />
                               </button>
                               <button
                                 onClick={() => handleReject(suggestion.id)}
                                 className="p-2 rounded-lg bg-red-500/20 text-red-500 hover:bg-red-500/30 transition"
-                                title={t("reject", "Reject")}
+                                title={t("legacy.reject", "Reject")}
                               >
                                 <X className="w-5 h-5" />
                               </button>
@@ -363,12 +363,12 @@ export default function AdminSuggestions() {
                           ) : suggestion.status === "approved" ? (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-500/20 text-green-500 text-sm">
                               <Check className="w-4 h-4" />
-                              {t("approved", "Approved")}
+                              {t("legacy.approved", "Approved")}
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-500/20 text-red-500 text-sm">
                               <X className="w-4 h-4" />
-                              {t("rejected", "Rejected")}
+                              {t("legacy.rejected", "Rejected")}
                             </span>
                           )}
                         </div>

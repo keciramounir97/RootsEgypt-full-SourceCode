@@ -14,6 +14,7 @@ import {
   Link as LinkIcon,
 } from "lucide-react";
 import type { User } from "../../admin/components/AuthContext";
+import { useLanguage } from "../../i18n";
 import {
   type ArticlePost,
   type ArticleComment,
@@ -109,6 +110,7 @@ export default function ArticlePostCard({
   guestName,
   staggerIndex = 0,
 }: ArticlePostCardProps) {
+  const { t } = useLanguage();
   const reduce = useReducedMotion();
   const [bodyOpen, setBodyOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -236,12 +238,13 @@ export default function ArticlePostCard({
                         className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/10"
                         onClick={() => {
                           void navigator.clipboard.writeText(
-                            `${window.location.origin}/articles#${article.id}`
+                            `${window.location.origin}/articles#${article.id}`,
                           );
                           setMenuOpen(false);
                         }}
                       >
-                        <LinkIcon className="w-4 h-4" /> Copy link
+                        <LinkIcon className="w-4 h-4" />{" "}
+                        {t("legacy.copy_link", "Copy link")}
                       </button>
                       {canDelete ? (
                         <button
@@ -252,7 +255,7 @@ export default function ArticlePostCard({
                             setMenuOpen(false);
                           }}
                         >
-                          <Trash2 className="w-4 h-4" /> Delete
+                          <Trash2 className="w-4 h-4" /> {t("legacy.delete", "Delete")}
                         </button>
                       ) : null}
                     </motion.div>
@@ -299,7 +302,7 @@ export default function ArticlePostCard({
                 onClick={() => setBodyOpen(false)}
                 className="mt-1 text-sm font-semibold text-teal hover:underline"
               >
-                Show less
+                {t("legacy.show_less", "Show less")}
               </button>
             ) : null}
 
@@ -329,7 +332,9 @@ export default function ArticlePostCard({
               type="button"
               onClick={handleLike}
               className={`relative flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
-                liked ? "text-red-500" : "opacity-80 hover:bg-black/5 dark:hover:bg-white/10"
+                liked
+                  ? "text-red-500"
+                  : "opacity-80 hover:bg-black/5 dark:hover:bg-white/10"
               }`}
               aria-pressed={liked}
             >
@@ -379,7 +384,10 @@ export default function ArticlePostCard({
 
       <motion.div
         initial={false}
-        animate={{ height: commentsExpanded ? "auto" : 0, opacity: commentsExpanded ? 1 : 0 }}
+        animate={{
+          height: commentsExpanded ? "auto" : 0,
+          opacity: commentsExpanded ? 1 : 0,
+        }}
         transition={{ type: "spring", damping: 28, stiffness: 280 }}
         className="overflow-hidden border-t border-black/5 dark:border-white/10"
       >
@@ -422,7 +430,7 @@ export default function ArticlePostCard({
                   submitMain();
                 }
               }}
-              placeholder="Write a comment…"
+              placeholder={t("legacy.comment_placeholder", "Write a comment…")}
               className="flex-1 rounded-xl border border-black/10 dark:border-white/10 bg-transparent px-4 py-2.5 text-sm"
             />
           </div>
@@ -433,7 +441,7 @@ export default function ArticlePostCard({
         <button
           type="button"
           className="fixed inset-0 z-10 cursor-default bg-transparent"
-          aria-label="Close menu"
+          aria-label={t("legacy.close_menu", "Close menu")}
           onClick={() => setMenuOpen(false)}
         />
       ) : null}
@@ -542,6 +550,7 @@ function CommentBlock({
   onSubmitReply: (parentId: string) => void;
   isReply?: boolean;
 }) {
+  const { t } = useLanguage();
   const name = c.authorName || guestName;
   const showReplyBox = replyParentId === c.id;
 
@@ -556,12 +565,16 @@ function CommentBlock({
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
-            <span className="font-semibold text-[var(--text-color)]">{name}</span>
+            <span className="font-semibold text-[var(--text-color)]">
+              {name}
+            </span>
             <span className="text-[10px] opacity-50">
               {new Date(c.createdAt).toLocaleString()}
             </span>
           </div>
-          <p className="mt-1 whitespace-pre-wrap text-[var(--text-color)]/90">{c.body}</p>
+          <p className="mt-1 whitespace-pre-wrap text-[var(--text-color)]/90">
+            {c.body}
+          </p>
           <div className="mt-2 flex flex-wrap items-center gap-3">
             <button
               type="button"
@@ -570,15 +583,15 @@ function CommentBlock({
                 commentLiked[c.id] ? "text-red-500" : "opacity-70"
               }`}
             >
-              <Heart className={`h-3.5 w-3.5 ${commentLiked[c.id] ? "fill-current" : ""}`} />
+              <Heart
+                className={`h-3.5 w-3.5 ${commentLiked[c.id] ? "fill-current" : ""}`}
+              />
               {commentLikeCounts[c.id] ?? 0}
             </button>
             {!isReply ? (
               <button
                 type="button"
-                onClick={() =>
-                  setReplyParentId(showReplyBox ? null : c.id)
-                }
+                onClick={() => setReplyParentId(showReplyBox ? null : c.id)}
                 className="text-xs font-medium text-teal"
               >
                 {replyLabel}
@@ -601,7 +614,7 @@ function CommentBlock({
                     onSubmitReply(c.id);
                   }
                 }}
-                placeholder="Write a reply…"
+                placeholder={t("legacy.reply_placeholder", "Write a reply…")}
                 className="w-full rounded-lg border border-black/10 dark:border-white/10 bg-transparent px-3 py-2 text-sm"
               />
             </motion.div>

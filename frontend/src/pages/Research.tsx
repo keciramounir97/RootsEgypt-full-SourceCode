@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import { api } from "../api/client";
 import TreesBuilder, { parseGedcom, parseGedcomX } from "../admin/components/TreesBuilder";
 import ErrorBoundary from "../components/ErrorBoundary";
@@ -24,7 +24,7 @@ import RootsPageShell from "../components/RootsPageShell";
 
 export default function Research() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState({ trees: [], books: [], people: [] });
@@ -138,11 +138,11 @@ export default function Research() {
       const list = Array.isArray(people) ? people : [];
       setViewPeople(list);
       if (!list.length) {
-        setViewTreeError(t("gedcom_no_people", "No individuals found in GEDCOM."));
+        setViewTreeError(t("legacy.gedcom_no_people", "No individuals found in GEDCOM."));
       }
     } catch (err) {
       setViewPeople([]);
-      setViewTreeError(err?.response?.data?.message || err?.message || t("tree_builder_error", "Failed to load tree."));
+      setViewTreeError(err?.response?.data?.message || err?.message || t("legacy.tree_builder_error", "Failed to load tree."));
     } finally {
       setViewLoading(false);
     }
@@ -151,14 +151,13 @@ export default function Research() {
   const heroContent = (
     <div className="space-y-5 text-center max-w-3xl mx-auto">
       <p className="text-xs uppercase tracking-[0.35em] text-teal">
-        {t("research_hero_kicker", "Research Center")}
+        {t("legacy.research_hero_kicker", "Research Center")}
       </p>
       <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
-        {t("research_center_title", "Genealogical Research Center")}
+        {t("legacy.research_center_title", "Genealogical Research Center")}
       </h1>
       <p className="max-w-2xl mx-auto text-base sm:text-lg opacity-90 text-pretty">
-        {t(
-          "research_intro",
+        {t("legacy.research_intro",
           "Explore archival methods and record types for Egyptian genealogy — from Ottoman-era registers and waqf deeds to modern civil status."
         )}
       </p>
@@ -173,25 +172,22 @@ export default function Research() {
     () => [
       {
         icon: Scroll,
-        title: t("research_cat_court_title", "Ottoman & Islamic courts in Egypt"),
-        desc: t(
-          "research_cat_court_desc",
+        title: t("legacy.research_cat_court_title", "Ottoman & Islamic courts in Egypt"),
+        desc: t("legacy.research_cat_court_desc",
           "Sharia registers, waqf ledgers, and provincial administration in Cairo, Alexandria, and Upper Egypt."
         ),
       },
       {
         icon: FileText,
-        title: t("research_cat_civil_title", "Colonial & civil status"),
-        desc: t(
-          "research_cat_civil_desc",
+        title: t("legacy.research_cat_civil_title", "Colonial & civil status"),
+        desc: t("legacy.research_cat_civil_desc",
           "British administration files, overseas archives (e.g. ANOM), and modern Egyptian civil registry extracts."
         ),
       },
       {
         icon: Users,
-        title: t("research_cat_lineage_title", "Lineage & communities"),
-        desc: t(
-          "research_cat_lineage_desc",
+        title: t("legacy.research_cat_lineage_title", "Lineage & communities"),
+        desc: t("legacy.research_cat_lineage_desc",
           "Coptic parish registers, rural leadership records, Sa‘idi and Delta oral histories, and family manuscripts."
         ),
       },
@@ -203,23 +199,23 @@ export default function Research() {
     () => [
       {
         icon: BookOpen,
-        title: t("research_guide_ottoman_title", "Reading Ottoman-era documents"),
-        desc: t("research_guide_ottoman_desc", "Scripts, formulas, and naming patterns in Egyptian court registers."),
+        title: t("legacy.research_guide_ottoman_title", "Reading Ottoman-era documents"),
+        desc: t("legacy.research_guide_ottoman_desc", "Scripts, formulas, and naming patterns in Egyptian court registers."),
       },
       {
         icon: Compass,
-        title: t("research_guide_trace_title", "Tracing displaced branches"),
-        desc: t("research_guide_trace_desc", "Follow migrations within Egypt and the diaspora using several sources."),
+        title: t("legacy.research_guide_trace_title", "Tracing displaced branches"),
+        desc: t("legacy.research_guide_trace_desc", "Follow migrations within Egypt and the diaspora using several sources."),
       },
       {
         icon: Map,
-        title: t("research_guide_archive_title", "Using Egyptian archives"),
-        desc: t("research_guide_archive_desc", "Dar al-Wathaeq, governorate civil offices, and church-held registers."),
+        title: t("legacy.research_guide_archive_title", "Using Egyptian archives"),
+        desc: t("legacy.research_guide_archive_desc", "Dar al-Wathaeq, governorate civil offices, and church-held registers."),
       },
       {
         icon: Users,
-        title: t("research_guide_oral_title", "Oral history interviews"),
-        desc: t("research_guide_oral_desc", "Structured conversations with elders about names, places, and kinship."),
+        title: t("legacy.research_guide_oral_title", "Oral history interviews"),
+        desc: t("legacy.research_guide_oral_desc", "Structured conversations with elders about names, places, and kinship."),
       },
     ],
     [t]
@@ -228,24 +224,22 @@ export default function Research() {
   const researchTimeline = useMemo(
     () => [
       {
-        period: t("research_tl_1_period", "3100 BC – 641 AD — Ancient to late antique"),
-        detail: t(
-          "research_tl_1_detail",
+        period: t("legacy.research_tl_1_period", "3100 BC – 641 AD — Ancient to late antique"),
+        detail: t("legacy.research_tl_1_detail",
           "Royal and temple inscriptions, papyri, and late antique sources where they survive."
         ),
       },
       {
-        period: t("research_tl_2_period", "641 – 1517 — Islamic & Mamluk Egypt"),
-        detail: t("research_tl_2_detail", "Chronicles, waqf, and early Sharia documentation of families and property."),
+        period: t("legacy.research_tl_2_period", "641 – 1517 — Islamic & Mamluk Egypt"),
+        detail: t("legacy.research_tl_2_detail", "Chronicles, waqf, and early Sharia documentation of families and property."),
       },
       {
-        period: t("research_tl_3_period", "1517 – 1882 — Ottoman Egypt"),
-        detail: t("research_tl_3_detail", "Provincial courts, tax rolls, and patrilineal naming in imperial registers."),
+        period: t("legacy.research_tl_3_period", "1517 – 1882 — Ottoman Egypt"),
+        detail: t("legacy.research_tl_3_detail", "Provincial courts, tax rolls, and patrilineal naming in imperial registers."),
       },
       {
-        period: t("research_tl_4_period", "1882 – present — Modern Egypt"),
-        detail: t(
-          "research_tl_4_detail",
+        period: t("legacy.research_tl_4_period", "1882 – present — Modern Egypt"),
+        detail: t("legacy.research_tl_4_detail",
           "Civil status, national ID, Dar al-Wathaeq, and diaspora consular documentation."
         ),
       },
@@ -258,7 +252,7 @@ export default function Research() {
       <section className="roots-section" data-aos="fade-up">
         <div className="space-y-6">
           <h2 className="text-2xl sm:text-3xl font-bold border-l-4 border-teal pl-4">
-            {t("search_research_materials", "Search Research Materials")}
+            {t("legacy.search_research_materials", "Search Research Materials")}
           </h2>
           <div
             className={`flex flex-col md:flex-row gap-4 p-6 rounded-2xl border ${sectionBorder} ${sectionCard} shadow-neu`}
@@ -273,8 +267,7 @@ export default function Research() {
                   if (!e.target.value) setSearched(false);
                 }}
                 onKeyDown={handleKeyDown}
-                placeholder={t(
-                  "search_placeholder",
+                placeholder={t("legacy.search_placeholder",
                   "Search ancestors, archives, regions..."
                 )}
                 className={`w-full pl-10 py-3 rounded-md bg-transparent border ${sectionBorder} outline-none ${theme === "dark" ? "text-white" : "text-[#091326]"
@@ -286,18 +279,18 @@ export default function Research() {
               onClick={() => handleSearch()}
               className="interactive-btn btn-neu btn-neu--primary px-8 py-3 shrink-0"
             >
-              {t("search_button", "Search")}
+              {t("legacy.search_button", "Search")}
             </button>
           </div>
 
           {searched && (
             <div className="space-y-8">
               {loading ? (
-                <div className="text-center opacity-70">{t("searching", "Searching...")}</div>
+                <div className="text-center opacity-70">{t("legacy.searching", "Searching...")}</div>
               ) : (
                 <div className="space-y-8">
                   <ResultSection
-                    title={t("books_and_documents", "Books & Documents")}
+                    title={t("legacy.books_and_documents", "Books & Documents")}
                     count={results.books.length}
                     borderColor={sectionBorder}
                     items={results.books}
@@ -311,7 +304,7 @@ export default function Research() {
                     )}
                   />
                   <ResultSection
-                    title={t("people_label", "People")}
+                    title={t("legacy.people_label", "People")}
                     count={results.people.length}
                     borderColor={sectionBorder}
                     items={results.people}
@@ -323,7 +316,7 @@ export default function Research() {
                         onView={() =>
                           handleViewTree({
                             id: person.tree_id,
-                            title: person.tree_title || t("unknown_tree_title", "Unknown tree"),
+                            title: person.tree_title || t("legacy.unknown_tree_title", "Unknown tree"),
                             description: person.tree_description || "",
                             owner_name: person.owner_name || person.owner || "",
                             isPublic: person.tree_is_public,
@@ -333,7 +326,7 @@ export default function Research() {
                     )}
                   />
                   <ResultSection
-                    title={t("trees", "Family Trees")}
+                    title={t("legacy.trees", "Family Trees")}
                     count={results.trees.length}
                     borderColor={sectionBorder}
                     items={results.trees}
@@ -357,7 +350,7 @@ export default function Research() {
         <section className="roots-section roots-section-alt" data-aos="fade-up">
           <div className="space-y-6">
             <h2 className="text-3xl font-bold">
-              {t("suggested_public_trees", "Suggested Public Family Trees")}
+              {t("legacy.suggested_public_trees", "Suggested Public Family Trees")}
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {suggestedTrees.map((tree, idx) => (
@@ -371,14 +364,14 @@ export default function Research() {
                   <h3 className="text-xl font-bold mb-2">{tree.title}</h3>
                   <p className="text-sm opacity-70 mb-4 line-clamp-3">
                     {tree.description ||
-                      t("explore_public_tree_desc", "Explore this public family tree to discover connections.")}
+                      t("legacy.explore_public_tree_desc", "Explore this public family tree to discover connections.")}
                   </p>
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-500/10 mb-4">
                     <span className="text-xs opacity-60">
-                      {t("owner", "Owner")}: {tree.owner_name || tree.owner || "Admin"}
+                      {t("legacy.owner", "Owner")}: {tree.owner_name || tree.owner || "Admin"}
                     </span>
                     <span className="text-xs bg-teal/15 text-teal px-2 py-1 rounded">
-                      {t("public", "Public")}
+                      {t("legacy.public", "Public")}
                     </span>
                   </div>
                   <button
@@ -387,7 +380,7 @@ export default function Research() {
                     className="interactive-btn btn-neu btn-neu--primary w-full py-2.5 flex items-center justify-center gap-2"
                   >
                     <Eye className="w-4 h-4" />
-                    {t("view_tree", "View Tree")}
+                    {t("legacy.view_tree", "View Tree")}
                   </button>
                 </div>
               ))}
@@ -399,7 +392,7 @@ export default function Research() {
       <section className="roots-section" data-aos="fade-up">
         <div className="space-y-6">
           <h2 className="text-2xl sm:text-3xl font-bold border-l-4 border-terracotta pl-4">
-            {t("research_categories", "Research Categories")}
+            {t("legacy.research_categories", "Research Categories")}
           </h2>
           <div className="grid md:grid-cols-3 gap-6 md:gap-8">
             {researchCategories.map((item, idx) => {
@@ -422,7 +415,7 @@ export default function Research() {
       <section className="roots-section roots-section-alt" data-aos="fade-up">
         <div className="space-y-6">
           <h2 className="text-2xl sm:text-3xl font-bold border-l-4 border-terracotta pl-4">
-            {t("research_guides_title", "Research Guides & Tutorials")}
+            {t("legacy.research_guides_title", "Research Guides & Tutorials")}
           </h2>
           <div className="grid md:grid-cols-2 gap-6 md:gap-8">
             {researchGuides.map((item, idx) => {
@@ -444,7 +437,7 @@ export default function Research() {
 
       <section data-aos="fade-up">
         <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-center">
-          {t("research_timeline_heading", "Egypt — timeline for genealogists")}
+          {t("legacy.research_timeline_heading", "Egypt — timeline for genealogists")}
         </h2>
         <div className="relative border-l-4 border-teal ml-4 sm:ml-6 space-y-8">
           {researchTimeline.map((item, idx) => (
@@ -472,7 +465,7 @@ export default function Research() {
                   <Users className="w-5 h-5 text-[color:var(--color-nile)]" />
                   {viewTree.title}
                 </h2>
-                <p className="text-xs opacity-60">{t("viewing_mode_read_only", "Viewing Mode - Read Only")}</p>
+                <p className="text-xs opacity-60">{t("legacy.viewing_mode_read_only", "Viewing Mode - Read Only")}</p>
               </div>
               <button
                 onClick={() => {
@@ -494,7 +487,7 @@ export default function Research() {
                 <div className="absolute inset-0 flex items-center justify-center p-6">
                   <div className="rounded-lg border border-[#e8dfca] bg-white/90 dark:bg-[#091326] dark:border-[color:var(--color-nile)] px-6 py-5 text-sm text-[color:var(--color-nile)] dark:text-[#e8dfca] shadow-xl text-center max-w-md">
                     <div className="font-semibold">
-                      {t("tree_builder_error", "Tree builder failed to load.")}
+                      {t("legacy.tree_builder_error", "Tree builder failed to load.")}
                     </div>
                     <p className="mt-2 opacity-80">{viewTreeError}</p>
                   </div>
@@ -505,18 +498,18 @@ export default function Research() {
                     <div className="absolute inset-0 flex items-center justify-center p-6">
                       <div className="rounded-lg border border-[#e8dfca] bg-white/90 px-6 py-5 text-sm text-[color:var(--color-nile)] shadow-xl">
                         <div className="font-semibold">
-                          {t("tree_builder_error", "Tree builder failed to load.")}
+                          {t("legacy.tree_builder_error", "Tree builder failed to load.")}
                         </div>
                         <div className="opacity-70">
                           {error?.message ||
-                            t("tree_builder_try_again", "Please try again.")}
+                            t("legacy.tree_builder_try_again", "Please try again.")}
                         </div>
                         <button
                           type="button"
                           onClick={reset}
                           className="interactive-btn btn-neu btn-neu--primary mt-3 px-4 py-2 text-xs font-semibold uppercase tracking-wide"
                         >
-                          {t("retry", "Retry")}
+                          {t("legacy.retry", "Retry")}
                         </button>
                       </div>
                     </div>
@@ -538,7 +531,7 @@ export default function Research() {
 }
 
 function ResultSection({ title, count, borderColor, items, renderItem }) {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   if (!items) return null;
   return (
     <div>
@@ -552,7 +545,7 @@ function ResultSection({ title, count, borderColor, items, renderItem }) {
         </div>
       ) : (
         <div className="text-sm opacity-60 italic">
-          {t("research_empty_category", "No results in this category for your search.")}
+          {t("legacy.research_empty_category", "No results in this category for your search.")}
         </div>
       )}
       <div className={`w-full h-px my-4 ${borderColor}`}></div>
@@ -561,7 +554,7 @@ function ResultSection({ title, count, borderColor, items, renderItem }) {
 }
 
 function BookResult({ book, downloadUrl, borderColor }) {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   return (
     <div
       className={`p-4 rounded-2xl border ${borderColor} flex flex-col sm:flex-row gap-4`}
@@ -569,7 +562,7 @@ function BookResult({ book, downloadUrl, borderColor }) {
       <div>
         <div className="font-bold">{book.title}</div>
         <div className="text-sm opacity-60">
-          {t("by_prefix", "by")} {book.author || t("unknown", "Unknown")}
+          {t("legacy.by_prefix", "by")} {book.author || t("legacy.unknown", "Unknown")}
         </div>
         <div className="text-xs bg-[color:var(--color-nile)]/10 text-[color:var(--color-nile)] px-2 py-1 rounded inline-block mt-1">
           {book.category}
@@ -583,11 +576,11 @@ function BookResult({ book, downloadUrl, borderColor }) {
           className="interactive-btn btn-neu btn-neu--primary px-4 py-2 text-sm flex items-center gap-2 self-start sm:self-center shrink-0"
         >
           <Download className="w-4 h-4" />
-          {t("download", "Download")}
+          {t("legacy.download", "Download")}
         </a>
       ) : (
         <span className="text-xs opacity-50 italic self-start sm:self-center">
-          {t("unavailable", "Unavailable")}
+          {t("legacy.unavailable", "Unavailable")}
         </span>
       )}
     </div>
@@ -595,17 +588,17 @@ function BookResult({ book, downloadUrl, borderColor }) {
 }
 
 function PersonResult({ person, borderColor, onView }) {
-  const { t } = useTranslation();
-  const treeTitle = person.tree_title || t("unknown_tree_title", "Unknown tree");
+  const { t } = useLanguage();
+  const treeTitle = person.tree_title || t("legacy.unknown_tree_title", "Unknown tree");
   return (
     <div
       className={`interactive-card p-4 rounded-2xl border ${borderColor} hover:border-[color:var(--color-nile)]/50 transition-colors`}
     >
-      <div className="font-bold text-lg">{person.name || t("unknown", "Unknown")}</div>
-      <div className="text-sm opacity-70 mb-2">{t("tree_label", "Tree")}: {treeTitle}</div>
+      <div className="font-bold text-lg">{person.name || t("legacy.unknown", "Unknown")}</div>
+      <div className="text-sm opacity-70 mb-2">{t("legacy.tree_label", "Tree")}: {treeTitle}</div>
       <div className="text-xs opacity-50 flex items-center gap-1">
         <UserCircle2 className="w-3 h-3" />
-        {t("owner", "Owner")}: {person.owner_name || person.owner || t("unknown", "Unknown")}
+        {t("legacy.owner", "Owner")}: {person.owner_name || person.owner || t("legacy.unknown", "Unknown")}
       </div>
       {onView ? (
         <button
@@ -613,7 +606,7 @@ function PersonResult({ person, borderColor, onView }) {
           className="interactive-btn btn-neu btn-neu--primary mt-3 w-full py-2.5 font-bold text-sm flex items-center justify-center gap-2"
         >
           <Eye className="w-4 h-4" />
-          {t("view_tree", "View Tree")}
+          {t("legacy.view_tree", "View Tree")}
         </button>
       ) : null}
     </div>
@@ -621,25 +614,25 @@ function PersonResult({ person, borderColor, onView }) {
 }
 
 function TreeResult({ tree, borderColor, onView }) {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   return (
     <div
       className={`interactive-card p-4 rounded-2xl border ${borderColor} hover:border-[color:var(--color-nile)]/50 transition-colors`}
     >
       <div className="font-bold text-lg">{tree.title}</div>
       <div className="text-sm opacity-70 mb-2 line-clamp-2">
-        {tree.description || t("no_description_provided", "No description provided.")}
+        {tree.description || t("legacy.no_description_provided", "No description provided.")}
       </div>
       <div className="text-xs opacity-50 flex items-center gap-1">
         <UserCircle2 className="w-3 h-3" />
-        {t("owner", "Owner")}: {tree.owner_name || tree.owner || t("unknown", "Unknown")}
+        {t("legacy.owner", "Owner")}: {tree.owner_name || tree.owner || t("legacy.unknown", "Unknown")}
       </div>
       <button
         onClick={onView}
         className="interactive-btn btn-neu btn-neu--primary mt-3 w-full py-2.5 font-bold text-sm flex items-center justify-center gap-2"
       >
         <Eye className="w-4 h-4" />
-        {t("view_and_explore", "View & Explore")}
+        {t("legacy.view_and_explore", "View & Explore")}
       </button>
     </div>
   );

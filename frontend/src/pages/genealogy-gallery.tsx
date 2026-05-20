@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { api } from "../api/client";
 import { getApiErrorMessage, getApiRoot, normalizeTree } from "../api/helpers";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import { useFavorites } from "../context/FavoritesContext";
 import RootsPageShell from "../components/RootsPageShell";
 import TreesBuilder, { parseGedcom, parseGedcomX } from "../admin/components/TreesBuilder";
@@ -32,7 +32,7 @@ const sortByDateDesc = (items) =>
 
 export default function GenealogyGallery() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const location = useLocation();
   const { isFavorite, toggleFavorite } = useFavorites();
 
@@ -113,7 +113,7 @@ export default function GenealogyGallery() {
 
   const shareTree = (tree) => {
     const url = `${window.location.origin}/genealogy-gallery`;
-    const title = tree?.title || t("trees", "Family Trees");
+    const title = tree?.title || t("legacy.trees", "Family Trees");
     if (navigator.share) {
       void navigator.share({ title, text: `${title} — Roots Egypt`, url });
     } else {
@@ -157,7 +157,7 @@ export default function GenealogyGallery() {
 
     try {
       if (!tree.hasGedcom || !tree.gedcomUrl) {
-        setViewTreeError(t("no_gedcom_available", "No GEDCOM file available yet."));
+        setViewTreeError(t("legacy.no_gedcom_available", "No GEDCOM file available yet."));
         setViewLoading(false);
         return;
       }
@@ -165,7 +165,7 @@ export default function GenealogyGallery() {
       const gedcomUrl = fileUrl(tree.gedcomUrl);
       const response = await fetch(gedcomUrl);
       if (!response.ok) {
-        setViewTreeError(t("tree_builder_error", "Failed to load tree."));
+        setViewTreeError(t("legacy.tree_builder_error", "Failed to load tree."));
         setViewLoading(false);
         return;
       }
@@ -175,11 +175,11 @@ export default function GenealogyGallery() {
       const list = Array.isArray(people) ? people : [];
       setViewPeople(list);
       if (!list.length) {
-        setViewTreeError(t("gedcom_no_people", "No individuals found in GEDCOM."));
+        setViewTreeError(t("legacy.gedcom_no_people", "No individuals found in GEDCOM."));
       }
     } catch (err) {
       setViewPeople([]);
-      setViewTreeError(t("tree_builder_error", "Failed to load tree."));
+      setViewTreeError(t("legacy.tree_builder_error", "Failed to load tree."));
     } finally {
       setViewLoading(false);
     }
@@ -199,14 +199,13 @@ export default function GenealogyGallery() {
       hero={
         <div className="space-y-4">
           <p className="text-sm uppercase tracking-[0.3em] text-teal">
-            {t("genealogy_gallery", "Genealogy Gallery")}
+            {t("legacy.genealogy_gallery", "Genealogy Gallery")}
           </p>
           <h1 className="text-5xl font-bold">
-            {t("genealogy_gallery_title", "Egyptian Genealogy Gallery")}
+            {t("legacy.genealogy_gallery_title", "Egyptian Genealogy Gallery")}
           </h1>
           <p className="max-w-4xl mx-auto text-lg opacity-90">
-            {t(
-              "genealogy_gallery_trees_only",
+            {t("legacy.genealogy_gallery_trees_only",
               "This page lists published family trees only — open one to explore GEDCOM data, save favourites, or share a link."
             )}
           </p>
@@ -216,7 +215,7 @@ export default function GenealogyGallery() {
       <section className="roots-section roots-section-alt" data-aos="fade-up">
         <div className="space-y-6">
             <h2 className="text-3xl font-bold border-l-8 border-l-teal pl-4">
-            {t("search_trees_section", "Find a tree")}
+            {t("legacy.search_trees_section", "Find a tree")}
           </h2>
           <div
             className={`grid gap-4 md:grid-cols-[2fr_1fr] items-center p-6 rounded-xl border ${borderColor}`}
@@ -227,7 +226,7 @@ export default function GenealogyGallery() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder={t("search_trees", "Search trees...")}
+                placeholder={t("legacy.search_trees", "Search trees...")}
                 className={`w-full pl-10 py-3 rounded-md bg-transparent border ${borderColor} outline-none ${
                   theme === "dark" ? "text-white" : "text-[#091326]"
                 }`}
@@ -242,9 +241,9 @@ export default function GenealogyGallery() {
                   theme === "dark" ? "text-white" : "text-[#091326]"
                 }`}
               >
-                <option value="all">{t("all_trees", "All Trees")}</option>
+                <option value="all">{t("legacy.all_trees", "All Trees")}</option>
                 <option value="with-gedcom">
-                  {t("with_gedcom", "With GEDCOM file")}
+                  {t("legacy.with_gedcom", "With GEDCOM file")}
                 </option>
               </select>
             </div>
@@ -256,16 +255,16 @@ export default function GenealogyGallery() {
         <div className={`${cardBg} p-6 rounded-2xl shadow-lg border ${borderColor}`}>
             <Trees className="w-8 h-8 text-teal mb-4" />
           <p className="text-sm uppercase tracking-[0.2em] text-[#0c4a6e] dark:text-teal mb-2">
-            {t("latest_tree", "Latest tree")}
+            {t("legacy.latest_tree", "Latest tree")}
           </p>
           {latestTree ? (
             <>
               <h3 className="text-xl font-bold">{latestTree.title}</h3>
               <p className="text-sm opacity-80 mt-1">
-                {latestTree.owner || t("unknown", "Unknown")}
+                {latestTree.owner || t("legacy.unknown", "Unknown")}
               </p>
               <p className="text-sm opacity-80 mt-3">
-                {latestTree.description || t("no_description", "No description.")}
+                {latestTree.description || t("legacy.no_description", "No description.")}
               </p>
               {latestTree.archiveSource && (
                 <p className="text-xs opacity-70 mt-2">
@@ -281,7 +280,7 @@ export default function GenealogyGallery() {
               )}
             </>
           ) : (
-            <p className="opacity-70">{t("no_trees_found", "No trees found.")}</p>
+            <p className="opacity-70">{t("legacy.no_trees_found", "No trees found.")}</p>
           )}
         </div>
       </section>
@@ -289,7 +288,7 @@ export default function GenealogyGallery() {
       {loading ? (
         <section className="roots-section">
           <div className="text-center opacity-70">
-            {t("loading", "Loading...")}
+            {t("legacy.loading", "Loading...")}
           </div>
         </section>
       ) : error ? (
@@ -301,7 +300,7 @@ export default function GenealogyGallery() {
       {!loading && !error && (
         <section className="roots-section" data-aos="fade-up">
           <h2 className="text-3xl font-bold border-l-8 border-l-teal pl-4 mb-6">
-            {t("trees", "Family Trees")} ({filteredTrees.length})
+            {t("legacy.trees", "Family Trees")} ({filteredTrees.length})
           </h2>
           {treesError ? (
             <div className="mb-4 text-sm text-red-500 font-semibold">
@@ -313,8 +312,8 @@ export default function GenealogyGallery() {
               className={`${cardBg} p-8 rounded-xl shadow-xl border ${borderColor} text-center opacity-70`}
             >
               {treesError
-                ? t("trees_unavailable", "Trees are temporarily unavailable.")
-                : t("no_trees_found", "No trees found.")}
+                ? t("legacy.trees_unavailable", "Trees are temporarily unavailable.")
+                : t("legacy.no_trees_found", "No trees found.")}
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-8">
@@ -330,21 +329,21 @@ export default function GenealogyGallery() {
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
                           <p className="text-[10px] uppercase tracking-[0.3em] text-[#0c4a6e] dark:text-teal opacity-70">
-                            {t("trees", "Family Trees")}
+                            {t("legacy.trees", "Family Trees")}
                           </p>
                           <h3 className="text-2xl font-bold truncate">
                             {tree.title}
                           </h3>
                           <p className="text-sm opacity-70">
-                            {tree.owner || t("unknown", "Unknown")}
+                            {tree.owner || t("legacy.unknown", "Unknown")}
                           </p>
                         </div>
                         <span
                           className={`text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border ${borderColor}`}
                         >
                           {tree.isPublic
-                            ? t("public", "Public")
-                            : t("private", "Private")}
+                            ? t("legacy.public", "Public")
+                            : t("legacy.private", "Private")}
                         </span>
                       </div>
                     </div>
@@ -352,7 +351,7 @@ export default function GenealogyGallery() {
                     <div className="p-5 space-y-4">
                       <p className="text-sm opacity-80">
                         {tree.description ||
-                          t("no_description", "No description.")}
+                          t("legacy.no_description", "No description.")}
                       </p>
 
                       <div className="grid sm:grid-cols-2 gap-3">
@@ -362,11 +361,11 @@ export default function GenealogyGallery() {
                           <Archive className="w-4 h-4 text-teal mt-0.5" />
                           <div>
                             <p className="text-[10px] uppercase opacity-60">
-                              {t("archive_source", "Archive Source")}
+                              {t("legacy.archive_source", "Archive Source")}
                             </p>
                             <p className="text-xs font-semibold break-words">
                               {tree.archiveSource ||
-                                t("not_provided", "Not provided")}
+                                t("legacy.not_provided", "Not provided")}
                             </p>
                           </div>
                         </div>
@@ -376,11 +375,11 @@ export default function GenealogyGallery() {
                           <FileText className="w-4 h-4 text-teal mt-0.5" />
                           <div>
                             <p className="text-[10px] uppercase opacity-60">
-                              {t("document_code", "Document Code")}
+                              {t("legacy.document_code", "Document Code")}
                             </p>
                             <p className="text-xs font-semibold font-mono break-words">
                               {tree.documentCode ||
-                                t("not_provided", "Not provided")}
+                                t("legacy.not_provided", "Not provided")}
                             </p>
                           </div>
                         </div>
@@ -389,21 +388,21 @@ export default function GenealogyGallery() {
                       <div className="text-xs opacity-70 flex items-center gap-2 flex-wrap">
                         <Users className="w-4 h-4" />
                         {tree.hasGedcom
-                          ? t("has_file", "Has file")
-                          : t("no_file", "No file")}
+                          ? t("legacy.has_file", "Has file")
+                          : t("legacy.no_file", "No file")}
                         {tree.hasGedcom && tree.data_format === "gedcomx" ? (
                           <span className="px-2 py-0.5 rounded bg-[#0c4a6e]/20 text-[#0c4a6e] dark:text-teal font-medium">
-                            {t("saved_with_gedcomx", "Saved with GEDCOM X")}
+                            {t("legacy.saved_with_gedcomx", "Saved with GEDCOM X")}
                           </span>
                         ) : null}
                         {tree.hasGedcom && tree.data_format === "gedcom7" ? (
                           <span className="px-2 py-0.5 rounded bg-[#0c4a6e]/20 text-[#0c4a6e] dark:text-teal font-medium">
-                            {t("saved_with_gedcom7", "Saved with GEDCOM 7.0")}
+                            {t("legacy.saved_with_gedcom7", "Saved with GEDCOM 7.0")}
                           </span>
                         ) : null}
                         {tree.hasGedcom && tree.data_format !== "gedcomx" && tree.data_format !== "gedcom7" ? (
                           <span className="px-2 py-0.5 rounded bg-[#0c4a6e]/10 text-[#0c4a6e] dark:text-teal/80 font-medium">
-                            {t("saved_with_gedcom551", "Saved with GEDCOM 5.5.1")}
+                            {t("legacy.saved_with_gedcom551", "Saved with GEDCOM 5.5.1")}
                           </span>
                         ) : null}
                       </div>
@@ -416,8 +415,8 @@ export default function GenealogyGallery() {
                             toggleFavorite("tree", tree.id)
                           }
                           className="btn-neu-icon"
-                          aria-label={t("favorites", "Favourites")}
-                          title={t("favorites", "Favourites")}
+                          aria-label={t("legacy.favorites", "Favourites")}
+                          title={t("legacy.favorites", "Favourites")}
                         >
                           <Heart
                             className={`w-5 h-5 ${
@@ -431,8 +430,8 @@ export default function GenealogyGallery() {
                           type="button"
                           onClick={() => shareTree(tree)}
                           className="btn-neu-icon"
-                          aria-label={t("share", "Share")}
-                          title={t("share", "Share")}
+                          aria-label={t("legacy.share", "Share")}
+                          title={t("legacy.share", "Share")}
                         >
                           <Share2 className="w-5 h-5" />
                         </button>
@@ -442,7 +441,7 @@ export default function GenealogyGallery() {
                           className={`interactive-btn btn-neu btn-neu--sage px-4 py-2 inline-flex items-center gap-2`}
                         >
                           <Eye className="w-4 h-4" />
-                          {t("view_tree", "View Tree")}
+                          {t("legacy.view_tree", "View Tree")}
                         </button>
                         {canDownload ? (
                           <a
@@ -453,10 +452,10 @@ export default function GenealogyGallery() {
                           >
                             <Download className="w-4 h-4" />
                             {tree.data_format === "gedcomx"
-                              ? t("download_gedcomx", "Download GEDCOM X")
+                              ? t("legacy.download_gedcomx", "Download GEDCOM X")
                               : tree.data_format === "gedcom7"
-                                ? t("download_gedcom7", "Download GEDCOM 7.0")
-                                : t("download_gedcom551", "Download GEDCOM 5.5.1")}
+                                ? t("legacy.download_gedcom7", "Download GEDCOM 7.0")
+                                : t("legacy.download_gedcom551", "Download GEDCOM 5.5.1")}
                           </a>
                         ) : null}
                       </div>
@@ -490,7 +489,7 @@ export default function GenealogyGallery() {
                     {viewTree.title}
                   </h2>
                   <p className="text-xs opacity-60">
-                    {t("viewing_mode", "Viewing Mode - Read Only")}
+                    {t("legacy.viewing_mode", "Viewing Mode - Read Only")}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -503,10 +502,10 @@ export default function GenealogyGallery() {
                     >
                       <Download className="w-4 h-4" />
                       {viewTree.data_format === "gedcomx"
-                        ? t("download_gedcomx", "Download GEDCOM X")
+                        ? t("legacy.download_gedcomx", "Download GEDCOM X")
                         : viewTree.data_format === "gedcom7"
-                          ? t("download_gedcom7", "Download GEDCOM 7.0")
-                          : t("download_gedcom551", "Download GEDCOM 5.5.1")}
+                          ? t("legacy.download_gedcom7", "Download GEDCOM 7.0")
+                          : t("legacy.download_gedcom551", "Download GEDCOM 5.5.1")}
                     </a>
                   ) : null}
                   <button
@@ -517,7 +516,7 @@ export default function GenealogyGallery() {
                       setViewTreeError("");
                     }}
                     className="p-2 rounded-full hover:bg-black/10 transition"
-                    aria-label={t("close", "Close")}
+                    aria-label={t("legacy.close", "Close")}
                   >
                     <X className="w-6 h-6" />
                   </button>
@@ -527,14 +526,14 @@ export default function GenealogyGallery() {
                 {viewLoading ? (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center opacity-70">
-                      {t("loading", "Loading...")}
+                      {t("legacy.loading", "Loading...")}
                     </div>
                   </div>
                 ) : viewTreeError ? (
                   <div className="absolute inset-0 flex items-center justify-center p-6">
                     <div className="rounded-lg border border-[#d8c7b0] bg-white/90 dark:bg-[#091326] dark:border-[#0c4a6e] px-6 py-5 text-sm text-[#0c4a6e] dark:text-[#e8dfca] shadow-xl text-center max-w-md">
                       <div className="font-semibold">
-                        {t("tree_builder_error", "Tree builder failed to load.")}
+                        {t("legacy.tree_builder_error", "Tree builder failed to load.")}
                       </div>
                       <p className="mt-2 opacity-80">{viewTreeError}</p>
                     </div>

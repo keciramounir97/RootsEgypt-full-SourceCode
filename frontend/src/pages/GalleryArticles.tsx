@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { api } from "../api/client";
 import { getApiErrorMessage, getApiRoot } from "../api/helpers";
-import { useTranslation } from "../context/TranslationContext";
+import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
 const articleFallbackImage = "/assets/gallery/roots-egypt-gallery-01.jpeg";
 
@@ -71,9 +71,9 @@ const formatTimeAgo = (dateString: string, t: (key: string, fallback?: string) =
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
 
-  if (minutes < 60) return `${minutes}${t("minutes_ago_suffix", "m ago")}`;
-  if (hours < 24) return `${hours}${t("hours_ago_suffix", "h ago")}`;
-  if (days < 7) return `${days}${t("days_ago_suffix", "d ago")}`;
+  if (minutes < 60) return `${minutes}${t("legacy.minutes_ago_suffix", "m ago")}`;
+  if (hours < 24) return `${hours}${t("legacy.hours_ago_suffix", "h ago")}`;
+  if (days < 7) return `${days}${t("legacy.days_ago_suffix", "d ago")}`;
   return date.toLocaleDateString();
 };
 
@@ -160,7 +160,7 @@ const normalizePost = (item: any, apiRoot: string, fallbackName = "Member"): Pos
 
 export default function GalleryArticles() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const apiRoot = useMemo(() => getApiRoot(), []);
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -192,7 +192,7 @@ export default function GalleryArticles() {
               : [];
         setPosts(
           sortByDateDesc(
-            items.map((item: any) => normalizePost(item, apiRoot, t("member", "Member"))),
+            items.map((item: any) => normalizePost(item, apiRoot, t("legacy.member", "Member"))),
           ),
         );
       } catch {
@@ -225,7 +225,7 @@ export default function GalleryArticles() {
         is_public: newPostVisibility !== "private",
       };
       const { data } = await api.post("/my/articles", payload);
-      const post = normalizePost(data?.data || data, apiRoot, t("you", "You"));
+      const post = normalizePost(data?.data || data, apiRoot, t("legacy.you", "You"));
       setPosts((prev) => sortByDateDesc([post, ...prev.filter((item) => item.id !== post.id)]));
       setNewPostContent("");
       setNewPostCategory("");
@@ -234,8 +234,8 @@ export default function GalleryArticles() {
       setShowCreatePost(false);
     } catch (err) {
       setPostError(
-        getApiErrorMessage(err, t("post_publish_failed", "Could not publish the post."), {
-          unauthorized: t("login_to_publish_post", "Please log in to publish a post."),
+        getApiErrorMessage(err, t("legacy.post_publish_failed", "Could not publish the post."), {
+          unauthorized: t("legacy.login_to_publish_post", "Please log in to publish a post."),
         }),
       );
     } finally {
@@ -285,7 +285,7 @@ export default function GalleryArticles() {
     const comment: Comment = {
       id: Date.now(),
       userId: "currentUser",
-      userName: t("you", "You"),
+      userName: t("legacy.you", "You"),
       text: newComment,
       likes: 0,
       createdAt: new Date().toISOString(),
@@ -349,14 +349,13 @@ export default function GalleryArticles() {
       hero={
         <div className="space-y-4">
           <p className="text-sm uppercase tracking-[0.3em] text-[#d9a441]">
-            {t("community", "Community")}
+            {t("legacy.community", "Community")}
           </p>
           <h1 className="text-5xl font-bold">
-            {t("articles_feed", "Heritage Stories")}
+            {t("legacy.articles_feed", "Heritage Stories")}
           </h1>
           <p className="max-w-4xl mx-auto text-lg opacity-90">
-            {t(
-              "articles_intro",
+            {t("legacy.articles_intro",
               "Share your family stories, discoveries, and connect with others on their genealogical journey.",
             )}
           </p>
@@ -368,7 +367,7 @@ export default function GalleryArticles() {
         <div className={`p-5 rounded-2xl ${cardBg} border ${borderColor} shadow-lg`}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#24766f] to-[#d9a441] flex items-center justify-center text-white font-bold">
-              {t("user", "User").charAt(0)}
+              {t("legacy.user", "User").charAt(0)}
             </div>
             <button
               onClick={() => setShowCreatePost(true)}
@@ -376,7 +375,7 @@ export default function GalleryArticles() {
                 isDark ? "bg-white/5" : "bg-black/5"
               }`}
             >
-              {t("share_story", "Share your family story...")}
+              {t("legacy.share_story", "Share your family story...")}
             </button>
           </div>
           <div className={`flex items-center gap-2 mt-4 pt-4 border-t ${borderColor}`}>
@@ -385,14 +384,14 @@ export default function GalleryArticles() {
               className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm"
             >
               <Image className="w-5 h-5 text-green-500" />
-              {t("photo", "Photo")}
+              {t("legacy.photo", "Photo")}
             </button>
             <button
               onClick={() => setShowCreatePost(true)}
               className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm"
             >
               <Video className="w-5 h-5 text-blue-500" />
-              {t("video", "Video")}
+              {t("legacy.video", "Video")}
             </button>
           </div>
           {postError ? (
@@ -459,7 +458,7 @@ export default function GalleryArticles() {
                   {post.images.length === 1 ? (
                     <img
                       src={post.images[0]}
-                      alt={t("post_image", "Post image")}
+                      alt={t("legacy.post_image", "Post image")}
                       onError={(event) => {
                         event.currentTarget.src = articleFallbackImage;
                       }}
@@ -471,7 +470,7 @@ export default function GalleryArticles() {
                         <div key={img} className="relative overflow-hidden rounded-xl border border-black/5">
                           <img
                             src={img}
-                            alt={`${t("post_image", "Post image")} ${i + 1}`}
+                            alt={`${t("legacy.post_image", "Post image")} ${i + 1}`}
                             onError={(event) => {
                               event.currentTarget.src = articleFallbackImage;
                             }}
@@ -502,8 +501,8 @@ export default function GalleryArticles() {
                   </span>
                 </div>
                 <div className="flex items-center gap-4 text-sm opacity-70">
-                  <span>{post.comments?.length || 0} {t("comments", "comments")}</span>
-                  <span>{Math.floor(Math.random() * 10)} {t("shares", "shares")}</span>
+                  <span>{post.comments?.length || 0} {t("legacy.comments", "comments")}</span>
+                  <span>{Math.floor(Math.random() * 10)} {t("legacy.shares", "shares")}</span>
                 </div>
               </div>
 
@@ -521,7 +520,7 @@ export default function GalleryArticles() {
                     }`}
                   >
                     <ThumbsUp className={`w-5 h-5 ${post.isLiked ? "fill-current" : ""}`} />
-                    {t("like", "Like")}
+                    {t("legacy.like", "Like")}
                   </button>
 
                   {/* Reaction Picker */}
@@ -549,12 +548,12 @@ export default function GalleryArticles() {
                   className="flex items-center gap-2 px-4 py-2 rounded-lg opacity-70 hover:opacity-100 hover:bg-white/10 transition-colors"
                 >
                   <MessageCircle className="w-5 h-5" />
-                  {t("comment", "Comment")}
+                  {t("legacy.comment", "Comment")}
                 </button>
 
                 <button className="flex items-center gap-2 px-4 py-2 rounded-lg opacity-70 hover:opacity-100 hover:bg-white/10 transition-colors">
                   <Share2 className="w-5 h-5" />
-                  {t("share", "Share")}
+                  {t("legacy.share", "Share")}
                 </button>
 
                 <button
@@ -587,9 +586,9 @@ export default function GalleryArticles() {
                         </div>
                         <p className="text-sm mt-1">{comment.text}</p>
                         <div className="flex items-center gap-4 mt-2 text-xs opacity-60">
-                          <button className="hover:opacity-100">{t("like", "Like")}</button>
-                          <button className="hover:opacity-100">{t("reply", "Reply")}</button>
-                          {comment.likes && <span>{comment.likes} {t("likes", "likes")}</span>}
+                          <button className="hover:opacity-100">{t("legacy.like", "Like")}</button>
+                          <button className="hover:opacity-100">{t("legacy.reply", "Reply")}</button>
+                          {comment.likes && <span>{comment.likes} {t("legacy.likes", "likes")}</span>}
                         </div>
                       </div>
                     </div>
@@ -598,14 +597,14 @@ export default function GalleryArticles() {
                   {/* Comment Input */}
                   <div className="flex gap-3 items-center">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#24766f] to-[#d9a441] flex items-center justify-center text-white text-xs font-bold shrink-0">
-                      {t("user", "User").charAt(0)}
+                      {t("legacy.user", "User").charAt(0)}
                     </div>
                     <div className="flex-1 flex items-center gap-2">
                       <input
                         type="text"
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
-                        placeholder={t("write_comment", "Write a comment...")}
+                        placeholder={t("legacy.write_comment", "Write a comment...")}
                         className={`flex-1 px-4 py-2 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441] text-sm`}
                         onKeyDown={(e) => e.key === "Enter" && handleComment(post.id)}
                       />
@@ -635,7 +634,7 @@ export default function GalleryArticles() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className={`p-4 border-b ${borderColor} flex items-center justify-between`}>
-              <h3 className="text-xl font-bold">{t("create_post", "Create Post")}</h3>
+              <h3 className="text-xl font-bold">{t("legacy.create_post", "Create Post")}</h3>
               <button
                 onClick={() => setShowCreatePost(false)}
                 className="p-2 rounded-lg hover:bg-white/10 transition-colors"
@@ -647,12 +646,12 @@ export default function GalleryArticles() {
             <div className="p-4">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#24766f] to-[#d9a441] flex items-center justify-center text-white font-bold shrink-0">
-                  {t("user", "User").charAt(0)}
+                  {t("legacy.user", "User").charAt(0)}
                 </div>
                 <textarea
                   value={newPostContent}
                   onChange={(e) => setNewPostContent(e.target.value)}
-                  placeholder={t("share_story_placeholder", "Share your family story, discovery, or question...")}
+                  placeholder={t("legacy.share_story_placeholder", "Share your family story, discovery, or question...")}
                   rows={5}
                   className={`flex-1 resize-none outline-none bg-transparent ${
                     isDark ? "placeholder-white/50" : "placeholder-black/50"
@@ -665,7 +664,7 @@ export default function GalleryArticles() {
                 type="text"
                 value={newPostCategory}
                 onChange={(event) => setNewPostCategory(event.target.value)}
-                placeholder={t("custom_category_placeholder", "Name this category...")}
+                placeholder={t("legacy.custom_category_placeholder", "Name this category...")}
                 className={`mt-4 w-full px-4 py-3 rounded-xl bg-transparent border ${borderColor} outline-none focus:border-[#d9a441]`}
               />
 
@@ -696,7 +695,7 @@ export default function GalleryArticles() {
               {/* Add to post */}
               <div className={`mt-4 p-3 rounded-xl border ${borderColor} space-y-3`}>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm opacity-70">{t("add_to_post", "Add to your post")}</span>
+                  <span className="text-sm opacity-70">{t("legacy.add_to_post", "Add to your post")}</span>
                   <div className="flex items-center gap-2">
                     <Image className="w-5 h-5 text-green-500" />
                     <Video className="w-5 h-5 text-blue-500" />
@@ -712,7 +711,7 @@ export default function GalleryArticles() {
                         addNewPostImage();
                       }
                     }}
-                    placeholder={t("image_url", "Image URL")}
+                    placeholder={t("legacy.image_url", "Image URL")}
                     className={`min-w-0 flex-1 px-3 py-2 rounded-lg bg-transparent border ${borderColor} outline-none text-sm`}
                   />
                   <button
@@ -721,7 +720,7 @@ export default function GalleryArticles() {
                     className="px-3 py-2 rounded-lg bg-[#24766f] text-white inline-flex items-center gap-1 text-sm"
                   >
                     <Plus className="w-4 h-4" />
-                    {t("add", "Add")}
+                    {t("legacy.add", "Add")}
                   </button>
                 </div>
               </div>
@@ -732,15 +731,15 @@ export default function GalleryArticles() {
 
               {/* Visibility */}
               <div className="mt-4 flex items-center gap-2">
-                <span className="text-sm opacity-70">{t("visibility", "Visibility")}:</span>
+                <span className="text-sm opacity-70">{t("legacy.visibility", "Visibility")}:</span>
                 <select
                   value={newPostVisibility}
                   onChange={(event) => setNewPostVisibility(event.target.value as "public" | "community" | "private")}
                   className={`px-3 py-1 rounded-lg bg-transparent border ${borderColor} text-sm outline-none`}
                 >
-                  <option value="public">{t("public", "Public")}</option>
-                  <option value="community">{t("community", "Community")}</option>
-                  <option value="private">{t("private", "Private")}</option>
+                  <option value="public">{t("legacy.public", "Public")}</option>
+                  <option value="community">{t("legacy.community", "Community")}</option>
+                  <option value="private">{t("legacy.private", "Private")}</option>
                 </select>
               </div>
             </div>
@@ -755,7 +754,7 @@ export default function GalleryArticles() {
                     : "bg-gray-400 cursor-not-allowed"
                 }`}
               >
-                {posting ? t("posting", "Posting...") : t("post", "Post")}
+                {posting ? t("legacy.posting", "Posting...") : t("legacy.post", "Post")}
               </button>
             </div>
           </div>

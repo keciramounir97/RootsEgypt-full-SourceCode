@@ -9,6 +9,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import { useState, useEffect } from "react";
 import L, { type LatLngExpression } from "leaflet";
+import { useLanguage } from "../i18n";
 
 // Fix for default marker icons in React-Leaflet
 // @ts-ignore
@@ -310,6 +311,7 @@ const cities = [
    MAIN COMPONENT
 ======================= */
 export default function MaghrebTribesMap() {
+  const { t } = useLanguage();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -320,7 +322,7 @@ export default function MaghrebTribesMap() {
     return (
       <div className="w-full h-full bg-[#f8f5ef]/10 flex items-center justify-center animate-pulse">
         <span className="text-white/20 text-xs uppercase tracking-widest">
-          Loading Map...
+          {t("legacy.loading_map", "Loading map…")}
         </span>
       </div>
     );
@@ -354,15 +356,17 @@ export default function MaghrebTribesMap() {
           const center = zone.coordinates
             .reduce(
               (acc, coord) => [acc[0] + coord[0], acc[1] + coord[1]],
-              [0, 0]
+              [0, 0],
             )
             .map((sum) => sum / zone.coordinates.length);
 
           const labelIcon = L.divIcon({
             className: "custom-label-marker",
-            html: `<div style="background-color: ${zone.color
-              }; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 10px; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.3); width: max-content; margin-left: -50%; border: 1px solid white;">${zone.name.split(" ")[0]
-              }</div>`,
+            html: `<div style="background-color: ${
+              zone.color
+            }; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 10px; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.3); width: max-content; margin-left: -50%; border: 1px solid white;">${
+              zone.name.split(" ")[0]
+            }</div>`,
             iconSize: [0, 0], // Size handled by CSS/HTML content
           });
 
@@ -386,15 +390,16 @@ export default function MaghrebTribesMap() {
                       {zone.name}
                     </h4>
                     <p>
-                      <strong>Population:</strong> {zone.population}
+                      <strong>{t("legacy.map_population_label", "Population")}:</strong>{" "}
+                      {zone.population}
                     </p>
                     <p>
-                      <strong>Type:</strong>{" "}
+                      <strong>{t("legacy.type", "Type")}:</strong>{" "}
                       {zone.name.includes("Reguibat")
-                        ? "Confédération guerrière"
+                        ? t("legacy.tribe_type_warrior_confederation", "Warrior confederation")
                         : zone.name.includes("Oulad")
-                          ? "Tribu commerçante"
-                          : "Tribu maraboutique"}
+                          ? t("legacy.tribe_type_trading_tribe", "Trading tribe")
+                          : t("legacy.tribe_type_maraboutic_tribe", "Maraboutic tribe")}
                     </p>
                   </div>
                 </Popup>
@@ -421,7 +426,7 @@ export default function MaghrebTribesMap() {
       {/* LEGEND OVERLAY */}
       <div className="absolute bottom-6 left-6 z-[400] w-[220px] rounded-lg bg-white/90 p-3 shadow-lg border border-gray-200 pointer-events-auto">
         <h3 className="text-xs font-bold uppercase tracking-wider text-gray-700 mb-2 border-b pb-1">
-          Tribes of Western Sahara
+          {t("legacy.tribes_of_western_sahara", "Tribes of Western Sahara")}
         </h3>
         <div className="space-y-1.5">
           {tribalZones.map((zone) => (
@@ -441,7 +446,7 @@ export default function MaghrebTribesMap() {
               <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
             </span>
             <span className="text-[10px] font-medium text-gray-800">
-              Major Cities
+              {t("legacy.major_cities", "Major cities")}
             </span>
           </div>
         </div>

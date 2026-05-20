@@ -9,12 +9,12 @@ import {
 } from "lucide-react";
 import { useThemeStore } from "../../store/theme";
 import { api } from "../../api/client";
-import { useTranslation } from "../../context/TranslationContext";
+import { useLanguage } from "../../i18n";
 import { useAuth } from "../components/AuthContext";
 
 export default function ActivityLog() {
   const { theme } = useThemeStore();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { user } = useAuth();
   const isDark = theme === "dark";
   const isAdmin = user?.role === 1 || user?.role === 3;
@@ -52,7 +52,7 @@ export default function ActivityLog() {
         } catch (err) {
           if (!active) return;
           setRows([]);
-          setError(err.response?.data?.message || t("activity_load_failed", "Failed to load activity"));
+          setError(err.response?.data?.message || t("legacy.activity_load_failed", "Failed to load activity"));
         } finally {
           if (!active) return;
           setLoading(false);
@@ -101,9 +101,9 @@ export default function ActivityLog() {
         className={`rounded-lg p-5 mb-6 border ${border}
         bg-gradient-to-r from-[#24766f]/15 to-[#0f1f33]/10 heritage-panel heritage-panel--accent`}
       >
-        <h3 className="text-2xl font-bold">{t("activity", "Activity Log")}</h3>
+        <h3 className="text-2xl font-bold">{t("legacy.activity", "Activity Log")}</h3>
         <p className="opacity-70">
-          {t("activity_desc", "Track what happens across your platform.")}
+          {t("legacy.activity_desc", "Track what happens across your platform.")}
         </p>
 
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -115,7 +115,7 @@ export default function ActivityLog() {
               className={`heritage-input w-full pl-9 pr-3 py-2 rounded-md border
               focus:outline-none focus:ring-2 focus:ring-[#24766f]/25
               ${inputBg} ${inputText} ${border}`}
-              placeholder={t("search_activity", "Search activity...")}
+              placeholder={t("legacy.search_activity", "Search activity...")}
             />
           </div>
 
@@ -128,18 +128,18 @@ export default function ActivityLog() {
               focus:outline-none focus:ring-2 focus:ring-[#24766f]/25
               ${inputBg} ${inputText} ${border}`}
             >
-              <option value="all">{t("all_types", "All types")}</option>
-              <option value="security">{t("security", "Security")}</option>
-              <option value="users">{t("users", "Users")}</option>
-              <option value="books">{t("books", "Books")}</option>
-              <option value="notifications">{t("notifications", "Notifications")}</option>
-              <option value="trees">{t("trees", "Family Trees")}</option>
+              <option value="all">{t("legacy.all_types", "All types")}</option>
+              <option value="security">{t("legacy.security", "Security")}</option>
+              <option value="users">{t("legacy.users", "Users")}</option>
+              <option value="books">{t("legacy.books", "Books")}</option>
+              <option value="notifications">{t("legacy.notifications", "Notifications")}</option>
+              <option value="trees">{t("legacy.trees", "Family Trees")}</option>
             </select>
           </div>
 
           <div className="flex items-center justify-end">
             <span className="text-sm opacity-70">
-              {`${rows.length} ${t("events_count", "event(s)")}`}
+              {`${rows.length} ${t("legacy.events_count", "event(s)")}`}
             </span>
           </div>
         </div>
@@ -152,17 +152,17 @@ export default function ActivityLog() {
           <table className="heritage-table w-full text-sm">
             <thead className={subtle}>
               <tr className={`text-left border-b ${border}`}>
-                <th className="py-3 px-4">{t("type", "Type")}</th>
-                <th className="py-3 px-4">{t("description", "Description")}</th>
-                <th className="py-3 px-4">{t("user", "User")}</th>
-                <th className="py-3 px-4">{t("date", "Date")}</th>
+                <th className="py-3 px-4">{t("legacy.type", "Type")}</th>
+                <th className="py-3 px-4">{t("legacy.description", "Description")}</th>
+                <th className="py-3 px-4">{t("legacy.user", "User")}</th>
+                <th className="py-3 px-4">{t("legacy.date", "Date")}</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
                   <td colSpan={4} className="py-10 text-center opacity-60">
-                    {t("loading", "Loading...")}
+                    {t("legacy.loading", "Loading...")}
                   </td>
                 </tr>
               ) : error ? (
@@ -171,8 +171,7 @@ export default function ActivityLog() {
                     <div className="text-[#a0552a] font-semibold">{error}</div>
                     {!isAdmin ? (
                       <div className="text-sm opacity-70 mt-2">
-                        {t(
-                          "admin_required",
+                        {t("legacy.admin_required",
                           "This page requires an admin account.",
                         )}
                       </div>
@@ -182,7 +181,7 @@ export default function ActivityLog() {
               ) : rows.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="py-10 text-center opacity-60">
-                    {t("no_activity_found", "No activity found.")}
+                    {t("legacy.no_activity_found", "No activity found.")}
                   </td>
                 </tr>
               ) : (
