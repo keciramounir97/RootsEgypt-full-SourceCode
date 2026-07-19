@@ -11,6 +11,7 @@ const express_rate_limit_1 = require("express-rate-limit");
 const crypto_1 = require("crypto");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+const trees_controller_1 = require("./modules/trees/trees.controller");
 const ALLOWED_CORS_ORIGINS = [
     "https://rootsegypt.org",
     "https://www.rootsegypt.org",
@@ -95,6 +96,10 @@ function apiInfoPayload() {
         routes: "/api/routes",
         message: "API routes are available under /api. If this appears for /api/errors/not-found, check reverse proxy path forwarding.",
     };
+}
+function getTreeUploadFilename(pathname) {
+    const match = String(pathname || "").match(/^\/(?:backend\/|dist\/)?uploads\/trees\/([^/?#]+)$/i);
+    return (match === null || match === void 0 ? void 0 : match[1]) || null;
 }
 function getStartupDbTimeoutMs() {
     const raw = process.env.DB_STARTUP_READY_TIMEOUT_MS ||
@@ -549,6 +554,40 @@ async function bootstrap() {
         });
         const uploadsPath = path.join(process.cwd(), "uploads");
         app.use("/uploads", require("express").static(uploadsPath));
+        const uploadFallbackKnex = app.get("KnexConnection");
+        app.use(async (req, res, next) => {
+            if (req.method !== "GET")
+                return next();
+            const filename = getTreeUploadFilename(req.path);
+            if (!filename)
+                return next();
+            try {
+                const tree = await uploadFallbackKnex("family_trees")
+                    .where("gedcom_path", "like", `%/${filename}`)
+                    .orWhere("gedcom_path", "like", `%${filename}`)
+                    .first();
+                if (!tree) {
+                    return res
+                        .status(404)
+                        .type("text/plain; charset=utf-8")
+                        .send("GEDCOM upload not found");
+                }
+                const people = await uploadFallbackKnex("persons")
+                    .select("id", "name")
+                    .where("tree_id", tree.id)
+                    .orderBy("name", "asc");
+                return res
+                    .type("text/plain; charset=utf-8")
+                    .send((0, trees_controller_1.buildFallbackGedcom)(tree, people));
+            }
+            catch (err) {
+                console.warn(`Upload tree fallback failed for ${filename}: ${(err === null || err === void 0 ? void 0 : err.message) || err}`);
+                return res
+                    .status(404)
+                    .type("text/plain; charset=utf-8")
+                    .send("GEDCOM upload not found");
+            }
+        });
         app.use((req, res, next) => {
             if (req.method === "GET" && (req.path === "/" || req.path === "")) {
                 return res.type("application/json").json(apiInfoPayload());
