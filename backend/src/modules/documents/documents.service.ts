@@ -3,6 +3,7 @@ import { Document } from '../../models/Document';
 import { ActivityService } from '../activity/activity.service';
 import { resolveStoredFilePath, safeUnlink, UPLOADS_DIR } from '../../common/utils/file.utils';
 import * as path from 'path';
+import * as fs from 'fs';
 
 export const DOCUMENT_UPLOADS_DIR = path.join(UPLOADS_DIR, 'documents');
 
@@ -22,6 +23,8 @@ export class DocumentsService implements OnModuleInit {
                     table.string('title', 255).notNullable();
                     table.text('description').nullable();
                     table.string('file_path', 512).nullable();
+                    table.specificType('file_data', 'LONGBLOB').nullable();
+                    table.string('file_mime_type', 120).nullable();
                     table.string('file_type', 50).nullable();
                     table.string('category', 100).nullable();
                     table.string('archive_source', 255).nullable();
@@ -39,6 +42,16 @@ export class DocumentsService implements OnModuleInit {
             if (!(await this.knex.schema.hasColumn('documents', 'category'))) {
                 await this.knex.schema.alterTable('documents', (table) => {
                     table.string('category', 100).nullable();
+                });
+            }
+            if (!(await this.knex.schema.hasColumn('documents', 'file_data'))) {
+                await this.knex.schema.alterTable('documents', (table) => {
+                    table.specificType('file_data', 'LONGBLOB').nullable();
+                });
+            }
+            if (!(await this.knex.schema.hasColumn('documents', 'file_mime_type'))) {
+                await this.knex.schema.alterTable('documents', (table) => {
+                    table.string('file_mime_type', 120).nullable();
                 });
             }
         } catch (err: any) {
@@ -73,11 +86,14 @@ export class DocumentsService implements OnModuleInit {
     async create(data: any, userId: number, file?: Express.Multer.File) {
         const filePath = file ? `/uploads/documents/${file.filename}` : null;
         const ext = file ? path.extname(file.originalname).replace('.', '').toUpperCase() : null;
+        const fileData = file ? fs.readFileSync(file.path) : null;
 
         const doc = await Document.query(this.knex).insertAndFetch({
             title: data.title,
             description: data.description || null,
             file_path: filePath,
+            file_data: fileData,
+            file_mime_type: file?.mimetype || null,
             file_type: data.fileType || ext || null,
             category: data.category || null,
             archive_source: data.archiveSource || null,
@@ -112,6 +128,8 @@ export class DocumentsService implements OnModuleInit {
             if (doc.file_path) safeUnlink(resolveStoredFilePath(doc.file_path));
             const ext = path.extname(file.originalname).replace('.', '').toUpperCase();
             updateData.file_path = `/uploads/documents/${file.filename}`;
+            updateData.file_data = fs.readFileSync(file.path);
+            updateData.file_mime_type = file.mimetype || 'application/octet-stream';
             updateData.file_type = ext || doc.file_type;
         }
 

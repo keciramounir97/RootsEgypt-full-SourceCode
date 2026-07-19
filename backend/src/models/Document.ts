@@ -7,6 +7,8 @@ export class Document extends BaseModel {
     title!: string;
     description?: string;
     file_path?: string;
+    file_data?: Buffer;
+    file_mime_type?: string;
     file_type?: string;
     category?: string;
     archive_source?: string;
@@ -25,4 +27,10 @@ export class Document extends BaseModel {
             is_public: { type: 'boolean' },
         },
     };
+
+    $formatJson(json) {
+        json = super.$formatJson(json);
+        delete json.file_data;
+        return json;
+    }
 }

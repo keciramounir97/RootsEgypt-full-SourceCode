@@ -12,6 +12,7 @@ const crypto_1 = require("crypto");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const trees_controller_1 = require("./modules/trees/trees.controller");
+const db_file_util_1 = require("./common/utils/db-file.util");
 const ALLOWED_CORS_ORIGINS = [
     "https://rootsegypt.org",
     "https://www.rootsegypt.org",
@@ -101,6 +102,12 @@ function getTreeUploadFilename(pathname) {
     const match = String(pathname || "").match(/^\/(?:backend\/|dist\/)?uploads\/trees\/([^/?#]+)$/i);
     return (match === null || match === void 0 ? void 0 : match[1]) || null;
 }
+function getDbBackedUpload(pathname) {
+    const match = String(pathname || "").match(/^\/uploads\/(books|gallery|documents)\/([^/?#]+)$/i);
+    if (!match)
+        return null;
+    return { kind: match[1].toLowerCase(), filename: match[2] };
+}
 function isMissingGedcomDownload(req, statusCode) {
     if (statusCode !== 404 || req.method !== "GET")
         return false;
@@ -153,6 +160,44 @@ async function ensureCriticalSchema(knex) {
             if (!(await knex.schema.hasColumn("books", "updated_at"))) {
                 await knex.schema.alterTable("books", (t) => t.timestamp("updated_at").nullable());
                 console.log("🟡 Schema patch: added books.updated_at");
+            }
+        }
+        if (await knex.schema.hasTable("books")) {
+            const bookColumns = [
+                ["file_data", (t) => t.specificType("file_data", "LONGBLOB").nullable()],
+                ["file_mime_type", (t) => t.string("file_mime_type", 120).nullable()],
+                ["cover_data", (t) => t.specificType("cover_data", "LONGBLOB").nullable()],
+                ["cover_mime_type", (t) => t.string("cover_mime_type", 120).nullable()],
+            ];
+            for (const [name, addColumn] of bookColumns) {
+                if (await knex.schema.hasColumn("books", name))
+                    continue;
+                await knex.schema.alterTable("books", (t) => addColumn(t));
+                console.log(`Schema patch: added books.${name}`);
+            }
+        }
+        if (await knex.schema.hasTable("gallery")) {
+            const galleryFileColumns = [
+                ["image_data", (t) => t.specificType("image_data", "LONGBLOB").nullable()],
+                ["image_mime_type", (t) => t.string("image_mime_type", 120).nullable()],
+            ];
+            for (const [name, addColumn] of galleryFileColumns) {
+                if (await knex.schema.hasColumn("gallery", name))
+                    continue;
+                await knex.schema.alterTable("gallery", (t) => addColumn(t));
+                console.log(`Schema patch: added gallery.${name}`);
+            }
+        }
+        if (await knex.schema.hasTable("documents")) {
+            const documentColumns = [
+                ["file_data", (t) => t.specificType("file_data", "LONGBLOB").nullable()],
+                ["file_mime_type", (t) => t.string("file_mime_type", 120).nullable()],
+            ];
+            for (const [name, addColumn] of documentColumns) {
+                if (await knex.schema.hasColumn("documents", name))
+                    continue;
+                await knex.schema.alterTable("documents", (t) => addColumn(t));
+                console.log(`Schema patch: added documents.${name}`);
             }
         }
         if (await knex.schema.hasTable("gallery")) {
@@ -223,6 +268,10 @@ async function ensureCriticalSchema(knex) {
                 t.string("category");
                 t.string("file_path").notNullable();
                 t.string("cover_path");
+                t.specificType("file_data", "LONGBLOB").nullable();
+                t.string("file_mime_type", 120).nullable();
+                t.specificType("cover_data", "LONGBLOB").nullable();
+                t.string("cover_mime_type", 120).nullable();
                 t.bigInteger("file_size");
                 t.string("archive_source");
                 t.string("document_code");
@@ -268,6 +317,8 @@ async function ensureCriticalSchema(knex) {
                 t.string("title").notNullable();
                 t.text("description");
                 t.string("image_path").notNullable();
+                t.specificType("image_data", "LONGBLOB").nullable();
+                t.string("image_mime_type", 120).nullable();
                 t.integer("uploaded_by")
                     .unsigned()
                     .references("id")
@@ -608,6 +659,45 @@ async function bootstrap() {
                     .type("text/plain; charset=utf-8")
                     .send("GEDCOM upload not found");
             }
+        });
+        app.use(async (req, res, next) => {
+            if (req.method !== "GET")
+                return next();
+            const upload = getDbBackedUpload(req.path);
+            if (!upload)
+                return next();
+            try {
+                if (upload.kind === "gallery") {
+                    const row = await uploadFallbackKnex("gallery")
+                        .where("image_path", "like", `%/${upload.filename}`)
+                        .first();
+                    const payload = (0, db_file_util_1.getStoredFilePayload)(row, "image_data", "image_mime_type", "image_path", "application/octet-stream", upload.filename);
+                    if (payload)
+                        return res.type(payload.mimeType).send(payload.data);
+                }
+                if (upload.kind === "documents") {
+                    const row = await uploadFallbackKnex("documents")
+                        .where("file_path", "like", `%/${upload.filename}`)
+                        .first();
+                    const payload = (0, db_file_util_1.getStoredFilePayload)(row, "file_data", "file_mime_type", "file_path", "application/octet-stream", upload.filename);
+                    if (payload)
+                        return res.type(payload.mimeType).send(payload.data);
+                }
+                if (upload.kind === "books") {
+                    const row = await uploadFallbackKnex("books")
+                        .where("cover_path", "like", `%/${upload.filename}`)
+                        .orWhere("file_path", "like", `%/${upload.filename}`)
+                        .first();
+                    const isCover = String((row === null || row === void 0 ? void 0 : row.cover_path) || "").endsWith(`/${upload.filename}`);
+                    const payload = (0, db_file_util_1.getStoredFilePayload)(row, isCover ? "cover_data" : "file_data", isCover ? "cover_mime_type" : "file_mime_type", isCover ? "cover_path" : "file_path", "application/octet-stream", upload.filename);
+                    if (payload)
+                        return res.type(payload.mimeType).send(payload.data);
+                }
+            }
+            catch (err) {
+                console.warn(`DB upload fallback failed for ${req.path}: ${(err === null || err === void 0 ? void 0 : err.message) || err}`);
+            }
+            next();
         });
         app.use((req, res, next) => {
             if (req.method === "GET" && (req.path === "/" || req.path === "")) {

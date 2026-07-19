@@ -3,6 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Document = void 0;
 const BaseModel_1 = require("./BaseModel");
 class Document extends BaseModel_1.BaseModel {
+    $formatJson(json) {
+        json = super.$formatJson(json);
+        delete json.file_data;
+        return json;
+    }
 }
 exports.Document = Document;
 Document.tableName = 'documents';

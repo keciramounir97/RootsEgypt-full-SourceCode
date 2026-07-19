@@ -18,6 +18,7 @@ const Document_1 = require("../../models/Document");
 const activity_service_1 = require("../activity/activity.service");
 const file_utils_1 = require("../../common/utils/file.utils");
 const path = require("path");
+const fs = require("fs");
 exports.DOCUMENT_UPLOADS_DIR = path.join(file_utils_1.UPLOADS_DIR, 'documents');
 let DocumentsService = class DocumentsService {
     constructor(knex, activityService) {
@@ -33,6 +34,8 @@ let DocumentsService = class DocumentsService {
                     table.string('title', 255).notNullable();
                     table.text('description').nullable();
                     table.string('file_path', 512).nullable();
+                    table.specificType('file_data', 'LONGBLOB').nullable();
+                    table.string('file_mime_type', 120).nullable();
                     table.string('file_type', 50).nullable();
                     table.string('category', 100).nullable();
                     table.string('archive_source', 255).nullable();
@@ -49,6 +52,16 @@ let DocumentsService = class DocumentsService {
             if (!(await this.knex.schema.hasColumn('documents', 'category'))) {
                 await this.knex.schema.alterTable('documents', (table) => {
                     table.string('category', 100).nullable();
+                });
+            }
+            if (!(await this.knex.schema.hasColumn('documents', 'file_data'))) {
+                await this.knex.schema.alterTable('documents', (table) => {
+                    table.specificType('file_data', 'LONGBLOB').nullable();
+                });
+            }
+            if (!(await this.knex.schema.hasColumn('documents', 'file_mime_type'))) {
+                await this.knex.schema.alterTable('documents', (table) => {
+                    table.string('file_mime_type', 120).nullable();
                 });
             }
         }
@@ -80,10 +93,13 @@ let DocumentsService = class DocumentsService {
     async create(data, userId, file) {
         const filePath = file ? `/uploads/documents/${file.filename}` : null;
         const ext = file ? path.extname(file.originalname).replace('.', '').toUpperCase() : null;
+        const fileData = file ? fs.readFileSync(file.path) : null;
         const doc = await Document_1.Document.query(this.knex).insertAndFetch({
             title: data.title,
             description: data.description || null,
             file_path: filePath,
+            file_data: fileData,
+            file_mime_type: (file === null || file === void 0 ? void 0 : file.mimetype) || null,
             file_type: data.fileType || ext || null,
             category: data.category || null,
             archive_source: data.archiveSource || null,
@@ -123,6 +139,8 @@ let DocumentsService = class DocumentsService {
                 (0, file_utils_1.safeUnlink)((0, file_utils_1.resolveStoredFilePath)(doc.file_path));
             const ext = path.extname(file.originalname).replace('.', '').toUpperCase();
             updateData.file_path = `/uploads/documents/${file.filename}`;
+            updateData.file_data = fs.readFileSync(file.path);
+            updateData.file_mime_type = file.mimetype || 'application/octet-stream';
             updateData.file_type = ext || doc.file_type;
         }
         await Document_1.Document.query(this.knex).patch(updateData).where('id', id);

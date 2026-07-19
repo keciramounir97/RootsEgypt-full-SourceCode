@@ -1473,6 +1473,9 @@ export function buildGedcomXJson(people, locale, t) {
     const parts = [];
     const given = normalizeSpaces(p?.given);
     const surname = normalizeSpaces(p?.surname);
+    const sourceLinks = Array.isArray(p.sourceLinks)
+      ? p.sourceLinks.map((link) => String(link || "").trim()).filter(Boolean)
+      : [];
     if (given) parts.push({ type: GEDCOM_X_GIVEN, value: given });
     if (surname) parts.push({ type: GEDCOM_X_SURNAME, value: surname });
     persons.push({
@@ -1488,6 +1491,7 @@ export function buildGedcomXJson(people, locale, t) {
         (p.birthYear || p.birthPlace) && { type: GEDCOM_X_BIRTH, date: p.birthYear ? { original: p.birthYear } : undefined, place: p.birthPlace ? { original: p.birthPlace } : undefined },
         (p.deathDate || p.deathPlace) && { type: GEDCOM_X_DEATH, date: p.deathDate ? { original: p.deathDate } : undefined, place: p.deathPlace ? { original: p.deathPlace } : undefined },
       ].filter(Boolean),
+      sources: sourceLinks.map((link) => ({ descriptionRef: link })),
     });
     if (p.father && byId.has(String(p.father))) {
       relationships.push({ type: GEDCOM_X_PARENT_CHILD, person1: { resource: `#${String(p.father)}` }, person2: { resource: `#${id}` } });
@@ -1522,6 +1526,9 @@ export function buildGedcomXXml(people, locale, t) {
     const full = safeName(p);
     const given = normalizeSpaces(p?.given);
     const surname = normalizeSpaces(p?.surname);
+    const sourceLinks = Array.isArray(p.sourceLinks)
+      ? p.sourceLinks.map((link) => String(link || "").trim()).filter(Boolean)
+      : [];
     out += `  <gedx:person id="${esc(id)}">\n`;
     out += "    <gedx:names>\n      <gedx:name>\n        <gedx:nameForm>\n";
     out += `          <gedx:fullText>${esc(full || [given, surname].filter(Boolean).join(" "))}</gedx:fullText>\n`;
@@ -1535,6 +1542,9 @@ export function buildGedcomXXml(people, locale, t) {
     if (p.gender) {
       const gType = String(p.gender).toUpperCase().startsWith("M") ? GEDCOM_X_MALE : GEDCOM_X_FEMALE;
       out += `    <gedx:gender type="${esc(gType)}"/>\n`;
+    }
+    for (const link of sourceLinks) {
+      out += `    <gedx:source descriptionRef="${esc(link)}"/>\n`;
     }
     const hasBirth = p.birthYear || p.birthPlace;
     const hasDeath = p.deathDate || p.deathPlace;

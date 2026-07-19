@@ -5,6 +5,8 @@ export declare class Document extends BaseModel {
     title: string;
     description?: string;
     file_path?: string;
+    file_data?: Buffer;
+    file_mime_type?: string;
     file_type?: string;
     category?: string;
     archive_source?: string;
@@ -30,4 +32,5 @@ export declare class Document extends BaseModel {
             };
         };
     };
+    $formatJson(json: any): any;
 }

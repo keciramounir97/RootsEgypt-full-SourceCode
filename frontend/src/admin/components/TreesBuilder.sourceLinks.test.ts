@@ -17,6 +17,9 @@ if (!window.localStorage) {
 }
 
 const {
+  buildGedcom,
+  buildGedcomXJson,
+  buildGedcomXXml,
   extractPersonLinks,
   hydrateEditableSourceLinks,
   parseGedcom,
@@ -175,5 +178,27 @@ describe("GEDCOM source/document links", () => {
         kind: "external",
       },
     ]);
+  });
+
+  it("exports source links in GEDCOM and GEDCOM X formats", () => {
+    const people = [
+      {
+        id: "p1",
+        names: { en: "A Person" },
+        given: "A",
+        surname: "Person",
+        sourceLinks: ["https://gallica.bnf.fr/ark:/12148/test"],
+      },
+    ];
+
+    expect(buildGedcom(people, "en", (key: string, fallback: string) => fallback)).toContain(
+      "2 FILE https://gallica.bnf.fr/ark:/12148/test",
+    );
+    expect(buildGedcomXJson(people, "en", (_key: string, fallback: string) => fallback)).toContain(
+      '"descriptionRef": "https://gallica.bnf.fr/ark:/12148/test"',
+    );
+    expect(buildGedcomXXml(people, "en", (_key: string, fallback: string) => fallback)).toContain(
+      'descriptionRef="https://gallica.bnf.fr/ark:/12148/test"',
+    );
   });
 });

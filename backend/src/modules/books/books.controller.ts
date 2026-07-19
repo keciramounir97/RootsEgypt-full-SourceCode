@@ -26,6 +26,7 @@ import { Response, Request as ExpressRequest } from "express";
 import * as fs from 'fs';
 import * as path from 'path';
 import { CreateBookDto, UpdateBookDto } from './dto/book.dto';
+import { getStoredFilePayload } from '../../common/utils/db-file.util';
 
 @Controller()
 export class BooksController {
@@ -58,6 +59,23 @@ export class BooksController {
   ) {
     const book = await this.booksService.getPublic(id);
     if (!book.is_public) throw new ForbiddenException("Not public");
+
+    const stored = getStoredFilePayload(
+      book as any,
+      "file_data",
+      "file_mime_type",
+      "file_path",
+      "application/octet-stream",
+      "book-download",
+    );
+    if (stored) {
+      await this.booksService.incrementDownload(id);
+      res
+        .type(stored.mimeType)
+        .attachment(stored.filename)
+        .send(stored.data);
+      return;
+    }
 
     const filePath = this.booksService.getFilePath(book);
     if (!filePath || !fs.existsSync(filePath))
@@ -144,6 +162,23 @@ export class BooksController {
   ) {
     const book = await this.booksService.findOne(id);
     if (book.uploaded_by !== req.user.id) throw new ForbiddenException();
+
+    const stored = getStoredFilePayload(
+      book as any,
+      "file_data",
+      "file_mime_type",
+      "file_path",
+      "application/octet-stream",
+      "book-download",
+    );
+    if (stored) {
+      await this.booksService.incrementDownload(id);
+      res
+        .type(stored.mimeType)
+        .attachment(stored.filename)
+        .send(stored.data);
+      return;
+    }
 
     const filePath = this.booksService.getFilePath(book);
     if (!filePath || !fs.existsSync(filePath))

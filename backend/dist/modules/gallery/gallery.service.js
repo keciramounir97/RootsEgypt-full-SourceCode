@@ -18,10 +18,27 @@ const knex_1 = require("knex");
 const Gallery_1 = require("../../models/Gallery");
 const activity_service_1 = require("../activity/activity.service");
 const file_utils_1 = require("../../common/utils/file.utils");
+const fs = require("fs");
 let GalleryService = class GalleryService {
     constructor(knex, activityService) {
         this.knex = knex;
         this.activityService = activityService;
+    }
+    async onModuleInit() {
+        await this.ensureGallerySchema();
+    }
+    async ensureGallerySchema() {
+        if (!(await this.knex.schema.hasTable("gallery")))
+            return;
+        const columns = [
+            ["image_data", (table) => table.specificType("image_data", "LONGBLOB").nullable()],
+            ["image_mime_type", (table) => table.string("image_mime_type", 120).nullable()],
+        ];
+        for (const [name, addColumn] of columns) {
+            if (await this.knex.schema.hasColumn("gallery", name))
+                continue;
+            await this.knex.schema.alterTable("gallery", (table) => addColumn(table));
+        }
     }
     async listPublic() {
         return Gallery_1.Gallery.query(this.knex)
@@ -65,10 +82,13 @@ let GalleryService = class GalleryService {
         }
         const isPublic = data.isPublic === "true" || data.isPublic === true;
         const imagePath = `/uploads/gallery/${file.filename}`;
+        const imageData = fs.readFileSync(file.path);
         const newItem = await Gallery_1.Gallery.query(this.knex).insertAndFetch({
             title: data.title,
             description: data.description,
             image_path: imagePath,
+            image_data: imageData,
+            image_mime_type: file.mimetype || "application/octet-stream",
             uploaded_by: userId,
             is_public: isPublic,
             archive_source: data.archiveSource,
@@ -115,6 +135,8 @@ let GalleryService = class GalleryService {
             if (item.image_path)
                 (0, file_utils_1.safeUnlink)((0, file_utils_1.resolveStoredFilePath)(item.image_path));
             updateData.image_path = `/uploads/gallery/${file.filename}`;
+            updateData.image_data = fs.readFileSync(file.path);
+            updateData.image_mime_type = file.mimetype || "application/octet-stream";
         }
         await Gallery_1.Gallery.query(this.knex).patch(updateData).where("id", id);
         await this.activityService.log(userId, "gallery", `Updated gallery item: ${item.title}`);

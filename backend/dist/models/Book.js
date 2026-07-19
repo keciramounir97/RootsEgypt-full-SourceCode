@@ -4,6 +4,12 @@ exports.Book = void 0;
 const BaseModel_1 = require("./BaseModel");
 const objection_1 = require("objection");
 class Book extends BaseModel_1.BaseModel {
+    $formatJson(json) {
+        json = super.$formatJson(json);
+        delete json.file_data;
+        delete json.cover_data;
+        return json;
+    }
 }
 exports.Book = Book;
 Book.tableName = 'books';

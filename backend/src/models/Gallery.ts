@@ -8,6 +8,8 @@ export class Gallery extends BaseModel {
     title!: string;
     description?: string;
     image_path!: string;
+    image_data?: Buffer;
+    image_mime_type?: string;
     uploaded_by?: number;
     book_id?: number;
     tree_id?: number;
@@ -32,6 +34,12 @@ export class Gallery extends BaseModel {
             is_public: { type: 'boolean' },
         },
     };
+
+    $formatJson(json) {
+        json = super.$formatJson(json);
+        delete json.image_data;
+        return json;
+    }
 
     static relationMappings = () => ({
         uploader: {

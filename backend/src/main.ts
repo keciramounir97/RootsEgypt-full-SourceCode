@@ -16,6 +16,7 @@ import {
   buildFallbackGedcom,
   getStoredGedcomText,
 } from "./modules/trees/trees.controller";
+import { getStoredFilePayload } from "./common/utils/db-file.util";
 
 /** Production CORS origins: RootsEgypt .org domains + EasyPanel + dev localhost */
 const ALLOWED_CORS_ORIGINS = [
@@ -129,6 +130,14 @@ function getTreeUploadFilename(pathname: string): string | null {
   return match?.[1] || null;
 }
 
+function getDbBackedUpload(pathname: string) {
+  const match = String(pathname || "").match(
+    /^\/uploads\/(books|gallery|documents)\/([^/?#]+)$/i,
+  );
+  if (!match) return null;
+  return { kind: match[1].toLowerCase(), filename: match[2] };
+}
+
 function isMissingGedcomDownload(req: any, statusCode: number) {
   if (statusCode !== 404 || req.method !== "GET") return false;
   return /^\/api\/(?:admin\/trees|my\/trees|trees)\/\d+\/gedcom(?:[?#]|$)/i.test(
@@ -210,6 +219,44 @@ async function ensureCriticalSchema(knex: Knex) {
     }
 
     // ── Initial schema tables (may be missing if migration was recorded done but partially ran) ──
+
+    if (await knex.schema.hasTable("books")) {
+      const bookColumns = [
+        ["file_data", (t) => t.specificType("file_data", "LONGBLOB").nullable()],
+        ["file_mime_type", (t) => t.string("file_mime_type", 120).nullable()],
+        ["cover_data", (t) => t.specificType("cover_data", "LONGBLOB").nullable()],
+        ["cover_mime_type", (t) => t.string("cover_mime_type", 120).nullable()],
+      ] as const;
+      for (const [name, addColumn] of bookColumns) {
+        if (await knex.schema.hasColumn("books", name)) continue;
+        await knex.schema.alterTable("books", (t) => addColumn(t));
+        console.log(`Schema patch: added books.${name}`);
+      }
+    }
+
+    if (await knex.schema.hasTable("gallery")) {
+      const galleryFileColumns = [
+        ["image_data", (t) => t.specificType("image_data", "LONGBLOB").nullable()],
+        ["image_mime_type", (t) => t.string("image_mime_type", 120).nullable()],
+      ] as const;
+      for (const [name, addColumn] of galleryFileColumns) {
+        if (await knex.schema.hasColumn("gallery", name)) continue;
+        await knex.schema.alterTable("gallery", (t) => addColumn(t));
+        console.log(`Schema patch: added gallery.${name}`);
+      }
+    }
+
+    if (await knex.schema.hasTable("documents")) {
+      const documentColumns = [
+        ["file_data", (t) => t.specificType("file_data", "LONGBLOB").nullable()],
+        ["file_mime_type", (t) => t.string("file_mime_type", 120).nullable()],
+      ] as const;
+      for (const [name, addColumn] of documentColumns) {
+        if (await knex.schema.hasColumn("documents", name)) continue;
+        await knex.schema.alterTable("documents", (t) => addColumn(t));
+        console.log(`Schema patch: added documents.${name}`);
+      }
+    }
 
     if (await knex.schema.hasTable("gallery")) {
       if (!(await knex.schema.hasColumn("gallery", "seed_key"))) {
@@ -303,6 +350,10 @@ async function ensureCriticalSchema(knex: Knex) {
         t.string("category");
         t.string("file_path").notNullable();
         t.string("cover_path");
+        t.specificType("file_data", "LONGBLOB").nullable();
+        t.string("file_mime_type", 120).nullable();
+        t.specificType("cover_data", "LONGBLOB").nullable();
+        t.string("cover_mime_type", 120).nullable();
         t.bigInteger("file_size");
         t.string("archive_source");
         t.string("document_code");
@@ -356,6 +407,8 @@ async function ensureCriticalSchema(knex: Knex) {
         t.string("title").notNullable();
         t.text("description");
         t.string("image_path").notNullable();
+        t.specificType("image_data", "LONGBLOB").nullable();
+        t.string("image_mime_type", 120).nullable();
         t.integer("uploaded_by")
           .unsigned()
           .references("id")
@@ -762,6 +815,68 @@ async function bootstrap() {
           .type("text/plain; charset=utf-8")
           .send("GEDCOM upload not found");
       }
+    });
+
+    app.use(async (req: any, res: any, next: () => void) => {
+      if (req.method !== "GET") return next();
+
+      const upload = getDbBackedUpload(req.path);
+      if (!upload) return next();
+
+      try {
+        if (upload.kind === "gallery") {
+          const row = await uploadFallbackKnex("gallery")
+            .where("image_path", "like", `%/${upload.filename}`)
+            .first();
+          const payload = getStoredFilePayload(
+            row,
+            "image_data",
+            "image_mime_type",
+            "image_path",
+            "application/octet-stream",
+            upload.filename,
+          );
+          if (payload) return res.type(payload.mimeType).send(payload.data);
+        }
+
+        if (upload.kind === "documents") {
+          const row = await uploadFallbackKnex("documents")
+            .where("file_path", "like", `%/${upload.filename}`)
+            .first();
+          const payload = getStoredFilePayload(
+            row,
+            "file_data",
+            "file_mime_type",
+            "file_path",
+            "application/octet-stream",
+            upload.filename,
+          );
+          if (payload) return res.type(payload.mimeType).send(payload.data);
+        }
+
+        if (upload.kind === "books") {
+          const row = await uploadFallbackKnex("books")
+            .where("cover_path", "like", `%/${upload.filename}`)
+            .orWhere("file_path", "like", `%/${upload.filename}`)
+            .first();
+          const isCover = String(row?.cover_path || "").endsWith(`/${upload.filename}`);
+          const payload = getStoredFilePayload(
+            row,
+            isCover ? "cover_data" : "file_data",
+            isCover ? "cover_mime_type" : "file_mime_type",
+            isCover ? "cover_path" : "file_path",
+            "application/octet-stream",
+            upload.filename,
+          );
+          if (payload) return res.type(payload.mimeType).send(payload.data);
+        }
+      } catch (err: any) {
+        console.warn(
+          `DB upload fallback failed for ${req.path}: ${err?.message || err}`,
+        );
+      }
+
+      next();
     });
 
     // Root route: avoid 404 when hitting API base URL (e.g. https://api.example.com/)

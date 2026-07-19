@@ -4,6 +4,11 @@ exports.Gallery = void 0;
 const BaseModel_1 = require("./BaseModel");
 const objection_1 = require("objection");
 class Gallery extends BaseModel_1.BaseModel {
+    $formatJson(json) {
+        json = super.$formatJson(json);
+        delete json.image_data;
+        return json;
+    }
 }
 exports.Gallery = Gallery;
 Gallery.tableName = 'gallery';

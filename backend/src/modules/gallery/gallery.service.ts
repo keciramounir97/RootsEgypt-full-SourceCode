@@ -1,15 +1,32 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException, OnModuleInit } from '@nestjs/common';
 import { Knex } from "knex";
 import { Gallery } from '../../models/Gallery';
 import { ActivityService } from '../activity/activity.service';
 import { resolveStoredFilePath, safeUnlink } from '../../common/utils/file.utils';
+import * as fs from 'fs';
 
 @Injectable()
-export class GalleryService {
+export class GalleryService implements OnModuleInit {
   constructor(
     @Inject("KnexConnection") private readonly knex: Knex,
     private readonly activityService: ActivityService,
   ) {}
+
+  async onModuleInit() {
+    await this.ensureGallerySchema();
+  }
+
+  private async ensureGallerySchema() {
+    if (!(await this.knex.schema.hasTable("gallery"))) return;
+    const columns = [
+      ["image_data", (table) => table.specificType("image_data", "LONGBLOB").nullable()],
+      ["image_mime_type", (table) => table.string("image_mime_type", 120).nullable()],
+    ] as const;
+    for (const [name, addColumn] of columns) {
+      if (await this.knex.schema.hasColumn("gallery", name)) continue;
+      await this.knex.schema.alterTable("gallery", (table) => addColumn(table));
+    }
+  }
 
   async listPublic() {
     return Gallery.query(this.knex)
@@ -60,6 +77,7 @@ export class GalleryService {
 
     const isPublic = data.isPublic === "true" || data.isPublic === true;
     const imagePath = `/uploads/gallery/${file.filename}`;
+    const imageData = fs.readFileSync(file.path);
 
     // Gallery currently only fully public uploads in legacy code (no private folder logic seen in galleryController, unlike books/trees)
     // Legacy: imagePath: `/uploads/gallery/${req.file.filename}`
@@ -68,6 +86,8 @@ export class GalleryService {
       title: data.title,
       description: data.description,
       image_path: imagePath,
+      image_data: imageData,
+      image_mime_type: file.mimetype || "application/octet-stream",
       uploaded_by: userId,
       is_public: isPublic,
       archive_source: data.archiveSource,
@@ -127,6 +147,8 @@ export class GalleryService {
     if (file) {
       if (item.image_path) safeUnlink(resolveStoredFilePath(item.image_path));
       updateData.image_path = `/uploads/gallery/${file.filename}`;
+      updateData.image_data = fs.readFileSync(file.path);
+      updateData.image_mime_type = file.mimetype || "application/octet-stream";
     }
 
     await Gallery.query(this.knex).patch(updateData).where("id", id);

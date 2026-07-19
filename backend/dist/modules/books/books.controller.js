@@ -23,6 +23,7 @@ const platform_express_1 = require("@nestjs/platform-express");
 const fs = require("fs");
 const path = require("path");
 const book_dto_1 = require("./dto/book.dto");
+const db_file_util_1 = require("../../common/utils/db-file.util");
 let BooksController = BooksController_1 = class BooksController {
     constructor(booksService) {
         this.booksService = booksService;
@@ -44,6 +45,15 @@ let BooksController = BooksController_1 = class BooksController {
         const book = await this.booksService.getPublic(id);
         if (!book.is_public)
             throw new common_1.ForbiddenException("Not public");
+        const stored = (0, db_file_util_1.getStoredFilePayload)(book, "file_data", "file_mime_type", "file_path", "application/octet-stream", "book-download");
+        if (stored) {
+            await this.booksService.incrementDownload(id);
+            res
+                .type(stored.mimeType)
+                .attachment(stored.filename)
+                .send(stored.data);
+            return;
+        }
         const filePath = this.booksService.getFilePath(book);
         if (!filePath || !fs.existsSync(filePath))
             throw new common_1.NotFoundException("File not found");
@@ -76,6 +86,15 @@ let BooksController = BooksController_1 = class BooksController {
         const book = await this.booksService.findOne(id);
         if (book.uploaded_by !== req.user.id)
             throw new common_1.ForbiddenException();
+        const stored = (0, db_file_util_1.getStoredFilePayload)(book, "file_data", "file_mime_type", "file_path", "application/octet-stream", "book-download");
+        if (stored) {
+            await this.booksService.incrementDownload(id);
+            res
+                .type(stored.mimeType)
+                .attachment(stored.filename)
+                .send(stored.data);
+            return;
+        }
         const filePath = this.booksService.getFilePath(book);
         if (!filePath || !fs.existsSync(filePath))
             throw new common_1.NotFoundException("File not found");

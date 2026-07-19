@@ -5,6 +5,8 @@ export declare class Gallery extends BaseModel {
     title: string;
     description?: string;
     image_path: string;
+    image_data?: Buffer;
+    image_mime_type?: string;
     uploaded_by?: number;
     book_id?: number;
     tree_id?: number;
@@ -37,6 +39,7 @@ export declare class Gallery extends BaseModel {
             };
         };
     };
+    $formatJson(json: any): any;
     static relationMappings: () => {
         uploader: {
             relation: import("objection").RelationType;

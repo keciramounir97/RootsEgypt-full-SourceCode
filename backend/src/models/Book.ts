@@ -11,6 +11,10 @@ export class Book extends BaseModel {
     category?: string;
     file_path!: string;
     cover_path?: string;
+    file_data?: Buffer;
+    file_mime_type?: string;
+    cover_data?: Buffer;
+    cover_mime_type?: string;
     file_size?: number; // BigInt handled as number/string in JS
     archive_source?: string;
     document_code?: string;
@@ -31,6 +35,13 @@ export class Book extends BaseModel {
             is_public: { type: 'boolean' },
         },
     };
+
+    $formatJson(json) {
+        json = super.$formatJson(json);
+        delete json.file_data;
+        delete json.cover_data;
+        return json;
+    }
 
     static relationMappings = () => ({
         uploader: {

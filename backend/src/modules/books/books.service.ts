@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException, OnModuleInit } from '@nestjs/common';
 import { Knex } from "knex";
 import { Book } from '../../models/Book';
 import { ActivityService } from '../activity/activity.service';
@@ -7,11 +7,29 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 @Injectable()
-export class BooksService {
+export class BooksService implements OnModuleInit {
   constructor(
     @Inject("KnexConnection") private readonly knex: Knex,
     private readonly activityService: ActivityService,
   ) {}
+
+  async onModuleInit() {
+    await this.ensureBookSchema();
+  }
+
+  private async ensureBookSchema() {
+    if (!(await this.knex.schema.hasTable("books"))) return;
+    const columns = [
+      ["file_data", (table) => table.specificType("file_data", "LONGBLOB").nullable()],
+      ["file_mime_type", (table) => table.string("file_mime_type", 120).nullable()],
+      ["cover_data", (table) => table.specificType("cover_data", "LONGBLOB").nullable()],
+      ["cover_mime_type", (table) => table.string("cover_mime_type", 120).nullable()],
+    ] as const;
+    for (const [name, addColumn] of columns) {
+      if (await this.knex.schema.hasColumn("books", name)) continue;
+      await this.knex.schema.alterTable("books", (table) => addColumn(table));
+    }
+  }
 
   async listPublic() {
     return Book.query(this.knex)
@@ -69,6 +87,8 @@ export class BooksService {
 
     const isPublic = data.isPublic === "true" || data.isPublic === true;
     let filePath = `/uploads/books/${bookFile.filename}`;
+    const fileData = fs.readFileSync(bookFile.path);
+    const coverData = coverFile ? fs.readFileSync(coverFile.path) : null;
 
     if (!isPublic) {
       const src = bookFile.path;
@@ -89,6 +109,10 @@ export class BooksService {
       document_code: data.documentCode,
       file_path: filePath,
       cover_path: coverPath,
+      file_data: fileData,
+      file_mime_type: bookFile.mimetype || "application/octet-stream",
+      cover_data: coverData,
+      cover_mime_type: coverFile?.mimetype || null,
       file_size: bookFile.size,
       uploaded_by: userId,
       is_public: isPublic,
@@ -147,12 +171,15 @@ export class BooksService {
 
       // Save new
       let newPath = `/uploads/books/${bookFile.filename}`;
+      const newFileData = fs.readFileSync(bookFile.path);
       if (!isPublic) {
         const dest = path.join(PRIVATE_BOOK_UPLOADS_DIR, bookFile.filename);
         safeMoveFile(bookFile.path, dest);
         newPath = `private/books/${bookFile.filename}`;
       }
       updateData.file_path = newPath;
+      updateData.file_data = newFileData;
+      updateData.file_mime_type = bookFile.mimetype || "application/octet-stream";
       updateData.file_size = bookFile.size;
     } else if (book.is_public !== isPublic) {
       // Move existing file if visibility changed
@@ -176,6 +203,8 @@ export class BooksService {
     if (coverFile) {
       if (book.cover_path) safeUnlink(resolveStoredFilePath(book.cover_path));
       updateData.cover_path = `/uploads/books/${coverFile.filename}`;
+      updateData.cover_data = fs.readFileSync(coverFile.path);
+      updateData.cover_mime_type = coverFile.mimetype || "application/octet-stream";
     }
 
     await Book.query(this.knex).patch(updateData).where("id", id);
@@ -217,5 +246,13 @@ export class BooksService {
 
   getFilePath(book: Book) {
     return resolveStoredFilePath(book.file_path);
+  }
+
+  getStoredFile(book: Book) {
+    return {
+      data: book.file_data,
+      mimeType: book.file_mime_type || "application/octet-stream",
+      filename: path.basename(book.file_path || "book-download"),
+    };
   }
 }

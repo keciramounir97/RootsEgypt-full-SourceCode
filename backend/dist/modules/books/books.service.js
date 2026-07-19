@@ -25,6 +25,24 @@ let BooksService = class BooksService {
         this.knex = knex;
         this.activityService = activityService;
     }
+    async onModuleInit() {
+        await this.ensureBookSchema();
+    }
+    async ensureBookSchema() {
+        if (!(await this.knex.schema.hasTable("books")))
+            return;
+        const columns = [
+            ["file_data", (table) => table.specificType("file_data", "LONGBLOB").nullable()],
+            ["file_mime_type", (table) => table.string("file_mime_type", 120).nullable()],
+            ["cover_data", (table) => table.specificType("cover_data", "LONGBLOB").nullable()],
+            ["cover_mime_type", (table) => table.string("cover_mime_type", 120).nullable()],
+        ];
+        for (const [name, addColumn] of columns) {
+            if (await this.knex.schema.hasColumn("books", name))
+                continue;
+            await this.knex.schema.alterTable("books", (table) => addColumn(table));
+        }
+    }
     async listPublic() {
         return Book_1.Book.query(this.knex)
             .where("is_public", true)
@@ -70,6 +88,8 @@ let BooksService = class BooksService {
         }
         const isPublic = data.isPublic === "true" || data.isPublic === true;
         let filePath = `/uploads/books/${bookFile.filename}`;
+        const fileData = fs.readFileSync(bookFile.path);
+        const coverData = coverFile ? fs.readFileSync(coverFile.path) : null;
         if (!isPublic) {
             const src = bookFile.path;
             const dest = path.join(file_utils_1.PRIVATE_BOOK_UPLOADS_DIR, bookFile.filename);
@@ -86,6 +106,10 @@ let BooksService = class BooksService {
             document_code: data.documentCode,
             file_path: filePath,
             cover_path: coverPath,
+            file_data: fileData,
+            file_mime_type: bookFile.mimetype || "application/octet-stream",
+            cover_data: coverData,
+            cover_mime_type: (coverFile === null || coverFile === void 0 ? void 0 : coverFile.mimetype) || null,
             file_size: bookFile.size,
             uploaded_by: userId,
             is_public: isPublic,
@@ -127,12 +151,15 @@ let BooksService = class BooksService {
             const oldPath = (0, file_utils_1.resolveStoredFilePath)(book.file_path);
             (0, file_utils_1.safeUnlink)(oldPath);
             let newPath = `/uploads/books/${bookFile.filename}`;
+            const newFileData = fs.readFileSync(bookFile.path);
             if (!isPublic) {
                 const dest = path.join(file_utils_1.PRIVATE_BOOK_UPLOADS_DIR, bookFile.filename);
                 (0, file_utils_1.safeMoveFile)(bookFile.path, dest);
                 newPath = `private/books/${bookFile.filename}`;
             }
             updateData.file_path = newPath;
+            updateData.file_data = newFileData;
+            updateData.file_mime_type = bookFile.mimetype || "application/octet-stream";
             updateData.file_size = bookFile.size;
         }
         else if (book.is_public !== isPublic) {
@@ -156,6 +183,8 @@ let BooksService = class BooksService {
             if (book.cover_path)
                 (0, file_utils_1.safeUnlink)((0, file_utils_1.resolveStoredFilePath)(book.cover_path));
             updateData.cover_path = `/uploads/books/${coverFile.filename}`;
+            updateData.cover_data = fs.readFileSync(coverFile.path);
+            updateData.cover_mime_type = coverFile.mimetype || "application/octet-stream";
         }
         await Book_1.Book.query(this.knex).patch(updateData).where("id", id);
         await this.activityService.log(userId, "books", `Updated book: ${book.title}`);
@@ -182,6 +211,13 @@ let BooksService = class BooksService {
     }
     getFilePath(book) {
         return (0, file_utils_1.resolveStoredFilePath)(book.file_path);
+    }
+    getStoredFile(book) {
+        return {
+            data: book.file_data,
+            mimeType: book.file_mime_type || "application/octet-stream",
+            filename: path.basename(book.file_path || "book-download"),
+        };
     }
 };
 exports.BooksService = BooksService;

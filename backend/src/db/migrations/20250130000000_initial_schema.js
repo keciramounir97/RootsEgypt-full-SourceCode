@@ -94,6 +94,10 @@ exports.up = async function (knex) {
       table.string("category");
       table.string("file_path").notNullable();
       table.string("cover_path");
+      table.specificType("file_data", "LONGBLOB").nullable();
+      table.string("file_mime_type", 120).nullable();
+      table.specificType("cover_data", "LONGBLOB").nullable();
+      table.string("cover_mime_type", 120).nullable();
       table.bigInteger("file_size"); // BigInt support
       table.string("archive_source");
       table.string("document_code");
@@ -147,6 +151,8 @@ exports.up = async function (knex) {
       table.string("title").notNullable();
       table.text("description"); // text type
       table.string("image_path").notNullable();
+      table.specificType("image_data", "LONGBLOB").nullable();
+      table.string("image_mime_type", 120).nullable();
       table
         .integer("uploaded_by")
         .unsigned()

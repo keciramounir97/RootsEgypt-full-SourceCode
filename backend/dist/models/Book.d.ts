@@ -8,6 +8,10 @@ export declare class Book extends BaseModel {
     category?: string;
     file_path: string;
     cover_path?: string;
+    file_data?: Buffer;
+    file_mime_type?: string;
+    cover_data?: Buffer;
+    cover_mime_type?: string;
     file_size?: number;
     archive_source?: string;
     document_code?: string;
@@ -36,6 +40,7 @@ export declare class Book extends BaseModel {
             };
         };
     };
+    $formatJson(json: any): any;
     static relationMappings: () => {
         uploader: {
             relation: import("objection").RelationType;
