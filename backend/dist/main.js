@@ -101,6 +101,11 @@ function getTreeUploadFilename(pathname) {
     const match = String(pathname || "").match(/^\/(?:backend\/|dist\/)?uploads\/trees\/([^/?#]+)$/i);
     return (match === null || match === void 0 ? void 0 : match[1]) || null;
 }
+function isMissingGedcomDownload(req, statusCode) {
+    if (statusCode !== 404 || req.method !== "GET")
+        return false;
+    return /^\/api\/(?:admin\/trees|my\/trees|trees)\/\d+\/gedcom(?:[?#]|$)/i.test(String(req.originalUrl || req.url || ""));
+}
 function getStartupDbTimeoutMs() {
     const raw = process.env.DB_STARTUP_READY_TIMEOUT_MS ||
         process.env.STARTUP_DB_TIMEOUT_MS ||
@@ -681,6 +686,8 @@ async function bootstrap() {
         });
         app.use((req, res, next) => {
             res.on("finish", () => {
+                if (isMissingGedcomDownload(req, res.statusCode))
+                    return;
                 if (res.statusCode >= 400) {
                     const origin = req.headers.origin || "-";
                     const requestId = req.id || "-";

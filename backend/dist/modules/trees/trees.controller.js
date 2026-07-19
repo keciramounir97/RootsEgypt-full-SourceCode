@@ -71,6 +71,11 @@ let TreesController = TreesController_1 = class TreesController {
         this.logger = new common_1.Logger(TreesController_1.name);
     }
     async sendGedcomResponse(tree, res) {
+        const storedGedcom = (0, exports.getStoredGedcomText)(tree);
+        if (storedGedcom) {
+            res.type("text/plain; charset=utf-8").send(storedGedcom);
+            return;
+        }
         const filePath = tree.gedcom_path
             ? this.treesService.getGedcomPath(tree)
             : null;
@@ -78,11 +83,6 @@ let TreesController = TreesController_1 = class TreesController {
             const ext = path.extname(filePath) || ".ged";
             const safeName = ((tree.title || "tree").replace(/[^\w.-]+/g, "_").trim() || "tree") + ext;
             res.download(filePath, safeName);
-            return;
-        }
-        const storedGedcom = (0, exports.getStoredGedcomText)(tree);
-        if (storedGedcom) {
-            res.type("text/plain; charset=utf-8").send(storedGedcom);
             return;
         }
         const people = await Person_1.Person.query(this.knex)

@@ -89,6 +89,12 @@ export class TreesController {
   ) {}
 
   private async sendGedcomResponse(tree: any, res: Response) {
+    const storedGedcom = getStoredGedcomText(tree);
+    if (storedGedcom) {
+      res.type("text/plain; charset=utf-8").send(storedGedcom);
+      return;
+    }
+
     const filePath = tree.gedcom_path
       ? this.treesService.getGedcomPath(tree)
       : null;
@@ -97,12 +103,6 @@ export class TreesController {
       const safeName =
         ((tree.title || "tree").replace(/[^\w.-]+/g, "_").trim() || "tree") + ext;
       res.download(filePath, safeName);
-      return;
-    }
-
-    const storedGedcom = getStoredGedcomText(tree);
-    if (storedGedcom) {
-      res.type("text/plain; charset=utf-8").send(storedGedcom);
       return;
     }
 

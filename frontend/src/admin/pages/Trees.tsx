@@ -557,22 +557,13 @@ export default function Trees() {
         return;
       }
 
-      const opts = { responseType: "text" as const };
-      const tryAdmin = () => api.get(`/admin/trees/${tree.id}/gedcom`, opts);
-      const tryMy = () => api.get(`/my/trees/${tree.id}/gedcom`, opts);
-      const tryPublic = () => api.get(`/trees/${tree.id}/gedcom`, opts);
-      const fallbackGedcom = (err) =>
-        err?.response?.status === 404 ||
-        err?.response?.status === 403 ||
-        err?.response?.status === 401 ||
-        shouldFallbackRoute(err);
-
-      const res = await requestWithFallback(
-        tab === "public"
-          ? [tryAdmin, tryPublic, tryMy]
-          : [tryAdmin, tryMy, tryPublic],
-        fallbackGedcom
-      );
+      const endpoint =
+        isAdmin
+          ? `/admin/trees/${tree.id}/gedcom`
+          : tab === "public"
+            ? `/trees/${tree.id}/gedcom`
+            : `/my/trees/${tree.id}/gedcom`;
+      const res = await api.get(endpoint, { responseType: "text" });
 
       const raw = typeof res?.data === "string" ? res.data : (res?.data && (res.data as any).data != null ? String((res.data as any).data) : "");
       const isGedcomX = tree.data_format === "gedcomx" || /^\s*(\{|\<\?xml)/.test(raw);

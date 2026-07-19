@@ -129,6 +129,13 @@ function getTreeUploadFilename(pathname: string): string | null {
   return match?.[1] || null;
 }
 
+function isMissingGedcomDownload(req: any, statusCode: number) {
+  if (statusCode !== 404 || req.method !== "GET") return false;
+  return /^\/api\/(?:admin\/trees|my\/trees|trees)\/\d+\/gedcom(?:[?#]|$)/i.test(
+    String(req.originalUrl || req.url || ""),
+  );
+}
+
 function getStartupDbTimeoutMs(): number {
   const raw =
     process.env.DB_STARTUP_READY_TIMEOUT_MS ||
@@ -872,6 +879,7 @@ async function bootstrap() {
     // Production diagnostics: log failed requests with origin and request id.
     app.use((req: any, res: any, next: () => void) => {
       res.on("finish", () => {
+        if (isMissingGedcomDownload(req, res.statusCode)) return;
         if (res.statusCode >= 400) {
           const origin = req.headers.origin || "-";
           const requestId = req.id || "-";
