@@ -22,6 +22,8 @@ const {
   buildGedcomXXml,
   extractPersonLinks,
   hydrateEditableSourceLinks,
+  getDocumentSourceLink,
+  normalizeExistingDocumentsResponse,
   parseGedcom,
   parseGedcomX,
   updateEditableSourceLinks,
@@ -200,5 +202,48 @@ describe("GEDCOM source/document links", () => {
     expect(buildGedcomXXml(people, "en", (_key: string, fallback: string) => fallback)).toContain(
       'descriptionRef="https://gallica.bnf.fr/ark:/12148/test"',
     );
+  });
+
+  it("normalizes existing uploaded documents into selectable source links", () => {
+    const docs = normalizeExistingDocumentsResponse(
+      {
+        documents: [
+          {
+            id: 12,
+            title: "Birth act",
+            document_code: "ACT-12",
+            file_path: "/uploads/documents/birth-act.pdf",
+          },
+          {
+            id: 13,
+            title: "Marriage act",
+            filePath: "marriage-act.pdf",
+          },
+        ],
+      },
+      "https://api.rootsegypt.org"
+    );
+
+    expect(docs).toMatchObject([
+      {
+        id: 12,
+        title: "Birth act",
+        sourceUrl: "https://api.rootsegypt.org/uploads/documents/birth-act.pdf",
+      },
+      {
+        id: 13,
+        title: "Marriage act",
+        sourceUrl: "https://api.rootsegypt.org/uploads/documents/marriage-act.pdf",
+      },
+    ]);
+  });
+
+  it("keeps absolute existing document URLs unchanged", () => {
+    expect(
+      getDocumentSourceLink(
+        { file_path: "https://gallica.bnf.fr/ark:/12148/bpt6k9760202w" },
+        "https://api.rootsegypt.org"
+      )
+    ).toBe("https://gallica.bnf.fr/ark:/12148/bpt6k9760202w");
   });
 });

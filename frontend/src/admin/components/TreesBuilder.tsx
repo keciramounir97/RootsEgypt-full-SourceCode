@@ -17,6 +17,7 @@ import {
   FileCode2,
   Network,
   ChevronDown,
+  X,
 } from "lucide-react";
 
 import { useThemeStore } from "../../store/theme";
@@ -24,6 +25,8 @@ import { useThemeStore } from "../../store/theme";
 import { useLanguage } from "../../i18n";
 
 import { getApiRoot } from "../../api/helpers";
+import { api } from "../../api/client";
+import { requestWithFallback, shouldFallbackRoute } from "../../api/helpers";
 
 const CARD_W = 220;
 
@@ -97,11 +100,6 @@ const addUniqueSourceLink = (links, raw) => {
     }
   }
 };
-
-const escapeHtml = (value) =>
-  String(value ?? "").replace(/[&<>"']/g, (ch) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch])
-  );
 
 /**
  * Collect every source/document link attached to a person: explicit link tags
@@ -213,6 +211,56 @@ export function hydrateEditableSourceLinks(person) {
       }
     })
   );
+}
+
+export function getDocumentSourceLink(document, apiRoot = getApiRoot()) {
+  const raw =
+    document?.file_path ??
+    document?.filePath ??
+    document?.path ??
+    document?.url ??
+    document?.href ??
+    "";
+  const value = String(raw || "").trim();
+  if (!value) return "";
+  if (/^https?:\/\//i.test(value)) return value;
+  let pathname = value.startsWith("/") ? value : `/${value}`;
+  if (!pathname.startsWith("/uploads/")) {
+    pathname = `/uploads/documents/${value.replace(/^\/+/, "")}`;
+  }
+  return `${String(apiRoot || "").replace(/\/+$/, "")}${pathname}`;
+}
+
+export function normalizeExistingDocumentsResponse(data, apiRoot = getApiRoot()) {
+  const list = Array.isArray(data)
+    ? data
+    : Array.isArray(data?.documents)
+      ? data.documents
+      : Array.isArray(data?.items)
+        ? data.items
+        : Array.isArray(data?.data)
+          ? data.data
+          : [];
+
+  return list
+    .map((doc) => {
+      const url = getDocumentSourceLink(doc, apiRoot);
+      if (!url) return null;
+      const title =
+        doc?.title ||
+        doc?.name ||
+        doc?.documentCode ||
+        doc?.document_code ||
+        url.split("/").pop() ||
+        "Document";
+      return {
+        ...doc,
+        id: doc?.id ?? url,
+        title,
+        sourceUrl: url,
+      };
+    })
+    .filter(Boolean);
 }
 
 const createEmptyForm = () => ({
@@ -1649,11 +1697,22 @@ export default function TreesBuilder({
 
   const [selectedPerson, setSelectedPerson] = useState<any>(null);
 
+  const [selectedPersonCardPosition, setSelectedPersonCardPosition] =
+    useState(null);
+
   const [sourceLinkDraft, setSourceLinkDraft] = useState("");
 
   const [sourceLinkEditIndex, setSourceLinkEditIndex] = useState(null);
 
   const [sourceLinkPanelOpen, setSourceLinkPanelOpen] = useState(false);
+
+  const [documentLinkPanelOpen, setDocumentLinkPanelOpen] = useState(false);
+
+  const [existingDocuments, setExistingDocuments] = useState([]);
+
+  const [documentsLoading, setDocumentsLoading] = useState(false);
+
+  const [selectedDocumentLink, setSelectedDocumentLink] = useState("");
 
   const [personStatus, setPersonStatus] = useState({
     message: "",
@@ -2289,145 +2348,23 @@ export default function TreesBuilder({
           .on("click", (_event, d) => {
             const found =
               people.find((p) => String(p.id) === String(d.id)) || d;
-
+            const event = _event;
+            const bounds = wrapRef.current?.getBoundingClientRect?.();
+            if (bounds && Number.isFinite(event?.clientX) && Number.isFinite(event?.clientY)) {
+              const x = Math.min(
+                Math.max(event.clientX - bounds.left + 14, 12),
+                Math.max(bounds.width - 380, 12)
+              );
+              const y = Math.min(
+                Math.max(event.clientY - bounds.top - 20, 12),
+                Math.max(bounds.height - 360, 12)
+              );
+              setSelectedPersonCardPosition({ x, y });
+            }
             setSelectedPerson(found);
-          })
-
-          .on("mouseover", (e, d) => {
-            const name = nameOf(d);
-            const gender = displayGender(d.gender);
-            const birthDate = normalizeSpaces(d.birthYear || d.birthDate || "");
-            const birthPlace = normalizeSpaces(d.birthPlace || "");
-            const deathDate = normalizeSpaces(d.deathDate || d.deathYear || "");
-            const deathPlace = normalizeSpaces(d.deathPlace || "");
-            const details = String(d.details || "").trim();
-            const profession = normalizeSpaces(d.profession || "");
-            const archiveSource = Array.isArray(d.archiveSource)
-              ? d.archiveSource.filter(Boolean).join(", ")
-              : normalizeSpaces(d.archiveSource || "");
-            const documentCode = Array.isArray(d.documentCode)
-              ? d.documentCode.filter(Boolean).join(", ")
-              : normalizeSpaces(d.documentCode || "");
-            const reliability = normalizeSpaces(d.reliability || "");
-
-            // Resolve relationships for tooltip (use nameOf for GEDCOM X compatibility)
-            const getP = (id) => {
-              const found = people.find((x) => String(x.id) === String(id));
-              return found ? nameOf(found) : "";
-            };
-            const fatherName = d.father ? getP(d.father) : "";
-            const motherName = d.mother ? getP(d.mother) : "";
-            const spouseName = d.spouse ? getP(d.spouse) : "";
-
-            const rows = [];
-            const addRow = (label, value) => {
-              if (!value) return;
-              rows.push(
-                `<div class="flex justify-between gap-4"><span class="opacity-70">${escapeHtml(label)}:</span><span>${escapeHtml(value)}</span></div>`
-              );
-            };
-
-            addRow(t("legacy.gender", "Gender"), displayGender(d.gender));
-            addRow(t("legacy.born", "Born"), birthDate);
-            addRow(t("legacy.birth_place", "Birth place"), birthPlace);
-            addRow(t("legacy.died", "Died"), deathDate);
-            addRow(t("legacy.death_place", "Death place"), deathPlace);
-            addRow(t("legacy.profession", "Profession"), profession);
-            addRow(t("legacy.spouse", "Spouse"), spouseName);
-            addRow(t("legacy.father", "Father"), fatherName);
-            addRow(t("legacy.mother", "Mother"), motherName);
-
-            const detailsHtml = details
-              ? `<div class="mt-2 text-[10px] opacity-80 border-t pt-1 whitespace-pre-line">${escapeHtml(details)}</div>`
-              : "";
-
-            const sourceRows = [];
-            if (archiveSource) {
-              sourceRows.push(
-                `<div class="flex justify-between gap-4"><span class="opacity-70">${t("legacy.archive_source",
-                  "Archive Source"
-                )}:</span><span>${escapeHtml(archiveSource)}</span></div>`
-              );
-            }
-            if (documentCode) {
-              sourceRows.push(
-                `<div class="flex justify-between gap-4"><span class="opacity-70">${t("legacy.document_code",
-                  "Document Code"
-                )}:</span><span>${escapeHtml(documentCode)}</span></div>`
-              );
-            }
-            if (reliability) {
-              sourceRows.push(
-                `<div class="flex justify-between gap-4"><span class="opacity-70">${t("legacy.reliability",
-                  "Reliability"
-                )}:</span><span>${escapeHtml(reliability)}</span></div>`
-              );
-            }
-
-            const personLinks = extractPersonLinks(d);
-            if (personLinks.length) {
-              const linkRows = personLinks
-                .map(
-                  (l) =>
-                    `<div class="flex items-center gap-1"><span class="opacity-60">[link]</span> <span style="text-decoration:underline">${escapeHtml(
-                      l.label
-                    )}</span>${
-                      l.kind === "local"
-                        ? ` <span class="opacity-60">(${t("legacy.local_document", "local document")})</span>`
-                        : ""
-                    }</div>`
-                )
-                .join("");
-              sourceRows.push(
-                `<div class="mt-1 space-y-0.5"><div class="opacity-70">${t("legacy.sources_documents",
-                  "Sources & Documents"
-                )}:</div>${linkRows}<div class="opacity-60">${t("legacy.click_person_for_links",
-                  "Click the person to open these links"
-                )}</div></div>`
-              );
-            }
-
-            const sourcesHtml = sourceRows.length
-              ? `<div class="mt-2 pt-2 border-t text-[10px] space-y-1">${sourceRows.join(
-                ""
-              )}</div>`
-              : "";
-            const infoHtml = rows.join("");
-            const emptyHtml =
-              !infoHtml && !detailsHtml && !sourcesHtml
-                ? `<div class="opacity-60">${t("legacy.no_details",
-                  "No details"
-                )}</div>`
-                : "";
-
-            const tooltipHtml = `
-            <div class="text-sm font-bold border-b pb-1 mb-1">${name} <span class="opacity-70 text-xs">(${gender})</span></div>
-            <div class="space-y-1 text-xs">
-              ${infoHtml}
-              ${emptyHtml}
-              ${detailsHtml}
-              ${sourcesHtml}
-            </div>
-          `;
-
-            tooltip
-              .style("visibility", "visible")
-              .html(tooltipHtml)
-              .style("top", `${e.pageY + 15}px`)
-              .style("left", `${e.pageX + 15}px`);
-          })
-          .on("mousemove", (e) => {
-            tooltip
-              .style("top", `${e.pageY + 15}px`)
-              .style("left", `${e.pageX + 15}px`);
-          })
-          .on("mouseout", () => {
-            tooltip.style("visibility", "hidden");
           });
 
         zoomRect.on("click", () => {
-          setSelectedPerson(null);
-
           tooltip.style("visibility", "hidden");
         });
 
@@ -2513,38 +2450,6 @@ export default function TreesBuilder({
             const dead = d.deathDate || d.deathYear || "";
             return dead ? `d. ${dead}` : "";
           });
-
-        // Add tooltip title for comprehensive hover info
-        node.append("title").text((d) => {
-          const details = [];
-          details.push(`Name: ${nameOf(d)}`);
-          if (d.gender) details.push(`Gender: ${d.gender}`);
-          if (d.birthYear || d.birthDate)
-            details.push(`Born: ${d.birthDate || d.birthYear}`);
-          if (d.birthPlace) details.push(`Birth Place: ${d.birthPlace}`);
-          if (d.deathDate || d.deathYear)
-            details.push(`Died: ${d.deathDate || d.deathYear}`);
-          if (d.deathPlace) details.push(`Death Place: ${d.deathPlace}`);
-          if (d.details) details.push(`Details: ${d.details}`);
-
-          // Add family info
-          const fatherName = d.father ? relationName(d.father) : null;
-          const motherName = d.mother ? relationName(d.mother) : null;
-          const spouseName = d.spouse ? relationName(d.spouse) : null;
-
-          if (fatherName) details.push(`Father: ${fatherName}`);
-          if (motherName) details.push(`Mother: ${motherName}`);
-          if (spouseName) details.push(`Spouse: ${spouseName}`);
-
-          const kids = people.filter(
-            (p) => p.father === d.id || p.mother === d.id
-          );
-          if (kids.length > 0) {
-            details.push(`Children: ${kids.map((k) => nameOf(k)).join(", ")}`);
-          }
-
-          return details.join("\n");
-        });
 
         // PLACE
         node
@@ -3267,7 +3172,10 @@ export default function TreesBuilder({
       });
     });
 
-    if (selectedPerson?.id === id) setSelectedPerson(null);
+    if (selectedPerson?.id === id) {
+      setSelectedPerson(null);
+      setSelectedPersonCardPosition(null);
+    }
 
     notifyPerson(t("legacy.person_deleted", "Person deleted."));
   };
@@ -3370,6 +3278,26 @@ export default function TreesBuilder({
     [selectedPerson]
   );
 
+  const closeSelectedPersonCard = useCallback(() => {
+    setSelectedPerson(null);
+    setSelectedPersonCardPosition(null);
+    setSourceLinkDraft("");
+    setSourceLinkEditIndex(null);
+    setSourceLinkPanelOpen(false);
+    setDocumentLinkPanelOpen(false);
+    setSelectedDocumentLink("");
+  }, []);
+
+  const selectPersonFromList = useCallback((person) => {
+    setSelectedPerson(person);
+    setSelectedPersonCardPosition(null);
+    setSourceLinkDraft("");
+    setSourceLinkEditIndex(null);
+    setSourceLinkPanelOpen(false);
+    setDocumentLinkPanelOpen(false);
+    setSelectedDocumentLink("");
+  }, []);
+
   const editableSourceLinkValues = useMemo(
     () => selectedPersonLinks.map((link) => link.url),
     [selectedPersonLinks]
@@ -3404,6 +3332,7 @@ export default function TreesBuilder({
     setSourceLinkDraft("");
     setSourceLinkEditIndex(null);
     setSourceLinkPanelOpen(true);
+    setDocumentLinkPanelOpen(false);
   }, [persistSelectedSourceLinks, readOnly, selectedPerson]);
 
   const openSourceLinkEdit = useCallback((index, value) => {
@@ -3413,6 +3342,7 @@ export default function TreesBuilder({
     setSourceLinkDraft(value || "");
     setSourceLinkEditIndex(index);
     setSourceLinkPanelOpen(true);
+    setDocumentLinkPanelOpen(false);
   }, [persistSelectedSourceLinks, readOnly, selectedPerson]);
 
   const saveSourceLinkDraft = useCallback(() => {
@@ -3454,6 +3384,78 @@ export default function TreesBuilder({
     },
     [editableSourceLinkValues, notifyPerson, persistSelectedSourceLinks, t]
   );
+
+  const loadExistingDocuments = useCallback(async () => {
+    setDocumentsLoading(true);
+    try {
+      const shouldFallbackDocumentRead = (err) =>
+        shouldFallbackRoute(err) ||
+        err?.response?.status === 401 ||
+        err?.response?.status === 403 ||
+        err?.response?.status === 500 ||
+        err?.code === "AUTH_MISSING";
+      const { data } = await requestWithFallback(
+        [
+          () => api.get("/admin/documents"),
+          () => api.get("/my/documents"),
+          () => api.get("/documents"),
+        ],
+        shouldFallbackDocumentRead
+      );
+      const docs = normalizeExistingDocumentsResponse(data);
+      setExistingDocuments(docs);
+      setSelectedDocumentLink(docs[0]?.sourceUrl || "");
+      if (!docs.length) {
+        notifyPerson(
+          t("legacy.no_documents", "No documents found."),
+          "error"
+        );
+      }
+    } catch {
+      setExistingDocuments([]);
+      setSelectedDocumentLink("");
+      notifyPerson(
+        t("legacy.documents_load_failed", "Failed to load documents"),
+        "error"
+      );
+    } finally {
+      setDocumentsLoading(false);
+    }
+  }, [notifyPerson, t]);
+
+  const openDocumentLinkPanel = useCallback(() => {
+    if (!selectedPerson || readOnly) return;
+    const hydrated = hydrateEditableSourceLinks(selectedPerson);
+    persistSelectedSourceLinks(hydrated.sourceLinks);
+    setSourceLinkPanelOpen(false);
+    setDocumentLinkPanelOpen(true);
+    if (!existingDocuments.length) void loadExistingDocuments();
+  }, [
+    existingDocuments.length,
+    loadExistingDocuments,
+    persistSelectedSourceLinks,
+    readOnly,
+    selectedPerson,
+  ]);
+
+  const linkSelectedDocumentToPerson = useCallback(() => {
+    const link = String(selectedDocumentLink || "").trim();
+    if (!link) {
+      notifyError(t("legacy.select_document_first", "Select a document first."));
+      return;
+    }
+    persistSelectedSourceLinks([...editableSourceLinkValues, link]);
+    setDocumentLinkPanelOpen(false);
+    setSelectedDocumentLink("");
+    notifyPerson(t("legacy.document_linked", "Document linked to person."));
+  }, [
+    editableSourceLinkValues,
+    notifyError,
+    notifyPerson,
+    persistSelectedSourceLinks,
+    selectedDocumentLink,
+    t,
+  ]);
 
   const centerTree = () => {
     const zoom = zoomRef.current;
@@ -3895,7 +3897,15 @@ export default function TreesBuilder({
 
             {selectedPerson ? (
               <div
-                className={`absolute bottom-3 left-3 z-10 w-[min(360px,88%)] rounded-md border ${border} ${card} p-3 shadow-lg heritage-panel heritage-panel--grid`}
+                className={`absolute z-10 w-[min(390px,88%)] rounded-md border ${border} ${card} p-3 shadow-lg heritage-panel heritage-panel--grid`}
+                style={
+                  selectedPersonCardPosition
+                    ? {
+                        left: selectedPersonCardPosition.x,
+                        top: selectedPersonCardPosition.y,
+                      }
+                    : { left: 12, bottom: 12 }
+                }
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -3907,11 +3917,27 @@ export default function TreesBuilder({
                     </div>
                   </div>
 
-                  {!readOnly ? (
+                  <button
+                    type="button"
+                    onClick={closeSelectedPersonCard}
+                    className={`shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border ${border} ${
+                      isDark
+                        ? "bg-white/10 text-white hover:bg-white/15"
+                        : "bg-white text-[#0c4a6e] hover:bg-[#f8f5ef]"
+                    }`}
+                    title={t("legacy.close", "Close")}
+                    aria-label={t("legacy.close", "Close")}
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {!readOnly ? (
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
                     <button
                       type="button"
                       onClick={openSourceLinkAdd}
-                      className={`shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-md border ${border} ${
+                      className={`inline-flex h-8 w-8 items-center justify-center rounded-md border ${border} ${
                         isDark
                           ? "bg-white/10 text-white hover:bg-white/15"
                           : "bg-white text-[#0c4a6e] hover:bg-[#f8f5ef]"
@@ -3921,8 +3947,39 @@ export default function TreesBuilder({
                     >
                       <Plus className="h-4 w-4" />
                     </button>
-                  ) : null}
-                </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openSourceLinkEdit(
+                          0,
+                          editableSourceLinkValues[0] || ""
+                        )
+                      }
+                      disabled={!editableSourceLinkValues.length}
+                      className={`inline-flex h-8 w-8 items-center justify-center rounded-md border ${border} ${
+                        isDark
+                          ? "bg-white/10 text-white hover:bg-white/15"
+                          : "bg-white text-[#0c4a6e] hover:bg-[#f8f5ef]"
+                      } disabled:cursor-not-allowed disabled:opacity-40`}
+                      title={t("legacy.edit_source_link", "Edit source link")}
+                      aria-label={t("legacy.edit_source_link", "Edit source link")}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={openDocumentLinkPanel}
+                      className={`inline-flex min-h-8 items-center gap-2 rounded-md border ${border} px-2.5 py-1.5 text-xs font-semibold ${
+                        isDark
+                          ? "bg-white/10 text-white hover:bg-white/15"
+                          : "bg-white text-[#0c4a6e] hover:bg-[#f8f5ef]"
+                      }`}
+                    >
+                      <FileText className="h-4 w-4" />
+                      {t("legacy.link_existing_document", "Lier avec existing document")}
+                    </button>
+                  </div>
+                ) : null}
 
                 <div className="mt-1 text-xs opacity-70">
                   {selectedPerson.birthYear
@@ -4062,6 +4119,59 @@ export default function TreesBuilder({
                     </div>
                   </div>
                 ) : null}
+
+                {!readOnly && documentLinkPanelOpen ? (
+                  <div className="mt-2 rounded-md border border-current/15 p-2">
+                    <div className="mb-1 flex items-center justify-between gap-2">
+                      <label className="block text-xs font-semibold">
+                        {t("legacy.link_existing_document", "Lier avec existing document")}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={loadExistingDocuments}
+                        className="text-[11px] font-semibold text-[#0d9488] hover:underline disabled:opacity-50"
+                        disabled={documentsLoading}
+                      >
+                        {documentsLoading
+                          ? t("legacy.loading", "Loading...")
+                          : t("legacy.refresh", "Refresh")}
+                      </button>
+                    </div>
+                    <div className="flex gap-2">
+                      <select
+                        value={selectedDocumentLink}
+                        onChange={(event) => setSelectedDocumentLink(event.target.value)}
+                        disabled={documentsLoading || !existingDocuments.length}
+                        className={`min-w-0 flex-1 rounded-md border ${border} ${inputBg} ${inputText} px-2 py-1.5 text-xs disabled:opacity-50`}
+                      >
+                        {existingDocuments.length ? (
+                          existingDocuments.map((doc) => (
+                            <option key={`${doc.id}-${doc.sourceUrl}`} value={doc.sourceUrl}>
+                              {doc.title}
+                              {doc.documentCode || doc.document_code
+                                ? ` - ${doc.documentCode || doc.document_code}`
+                                : ""}
+                            </option>
+                          ))
+                        ) : (
+                          <option value="">
+                            {documentsLoading
+                              ? t("legacy.loading", "Loading...")
+                              : t("legacy.no_documents", "No documents found.")}
+                          </option>
+                        )}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={linkSelectedDocumentToPerson}
+                        disabled={documentsLoading || !selectedDocumentLink}
+                        className="rounded-md bg-[#0d9488] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#0f766e] disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {t("legacy.link", "Link")}
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             ) : null}
           </div>
@@ -4106,7 +4216,7 @@ export default function TreesBuilder({
                           selectedPerson &&
                           String(selectedPerson.id) === String(item.id)
                         }
-                        onClick={() => setSelectedPerson(item.person)}
+                        onClick={() => selectPersonFromList(item.person)}
                         inputText={inputText}
                       />
                     ))
