@@ -384,6 +384,7 @@ async function ensureCriticalSchema(knex: Knex) {
           .onDelete("SET NULL");
         t.string("title").notNullable();
         t.string("description");
+        t.string("category");
         t.string("gedcom_path");
         t.text("gedcom_text", "longtext").nullable();
         t.string("data_format", 20).defaultTo("gedcom");

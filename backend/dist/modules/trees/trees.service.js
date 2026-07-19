@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TreesService = void 0;
+exports.parseTreePeopleFromContent = parseTreePeopleFromContent;
 exports.insertTreePeopleRows = insertTreePeopleRows;
 const common_1 = require("@nestjs/common");
 const knex_1 = require("knex");
@@ -23,6 +24,85 @@ const file_utils_1 = require("../../common/utils/file.utils");
 const gedcomx_util_1 = require("../../common/utils/gedcomx.util");
 const path = require("path");
 const fs = require("fs");
+function normalizeGedcomName(raw) {
+    const cleaned = String(raw || "")
+        .replace(/\//g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    return cleaned || null;
+}
+function parseGedcomPeople(text) {
+    const lines = String(text || "").split(/\r\n|\n|\r/);
+    const people = [];
+    let current = null;
+    const flush = () => {
+        if (!current)
+            return;
+        let name = current.name ||
+            [normalizeGedcomName(current.given), normalizeGedcomName(current.surname)]
+                .filter(Boolean)
+                .join(" ")
+                .trim() ||
+            null;
+        if (name)
+            people.push({ name });
+        current = null;
+    };
+    for (const rawLine of lines) {
+        const line = String(rawLine || "").trim();
+        if (!line)
+            continue;
+        const parts = line.split(/\s+/);
+        if (parts[0] === "0") {
+            if (/^0\s+@[^@]+@\s+INDI\b/i.test(line) || /^0\s+INDI\b/i.test(line)) {
+                flush();
+                current = { name: null, given: "", surname: "" };
+            }
+            else {
+                flush();
+                current = null;
+            }
+            continue;
+        }
+        if (!current)
+            continue;
+        const tag = String(parts[1] || "").toUpperCase();
+        const value = parts.slice(2).join(" ").trim();
+        if (tag === "NAME")
+            current.name = normalizeGedcomName(value);
+        if (tag === "GIVN")
+            current.given = value;
+        if (tag === "SURN")
+            current.surname = value;
+    }
+    flush();
+    return people;
+}
+function parseTreePeopleFromContent(content, filename = "tree.ged") {
+    const format = (0, gedcomx_util_1.detectGedcomXFormat)(content, filename);
+    let people = [];
+    if (format === "json") {
+        const data = JSON.parse(content);
+        const parsed = (0, gedcomx_util_1.parseGedcomXFromJson)(data);
+        people = parsed.map((p) => ({
+            name: (p.names && p.names.en) ||
+                [p.given, p.surname].filter(Boolean).join(" ") ||
+                "Unknown",
+        }));
+    }
+    else if (format === "xml") {
+        const parsed = (0, gedcomx_util_1.parseGedcomXFromXml)(content);
+        people = parsed.map((p) => ({
+            name: (p.names && p.names.en) ||
+                [p.given, p.surname].filter(Boolean).join(" ") ||
+                "Unknown",
+        }));
+    }
+    else {
+        people = parseGedcomPeople(content) || [];
+    }
+    return people;
+}
 async function insertTreePeopleRows(knex, treeId, people, chunkSize = 500) {
     const rows = people.map((p) => ({
         tree_id: treeId,
@@ -269,113 +349,35 @@ let TreesService = class TreesService {
             return "gedcom7";
         return "gedcom";
     }
-    normalizeGedcomName(raw) {
-        const cleaned = String(raw || "")
-            .replace(/\//g, " ")
-            .replace(/\s+/g, " ")
-            .trim();
-        return cleaned || null;
-    }
-    parseGedcomPeople(text) {
-        const lines = String(text || "").split(/\r\n|\n|\r/);
-        const people = [];
-        let current = null;
-        const flush = () => {
-            if (!current)
-                return;
-            let name = current.name ||
-                [
-                    this.normalizeGedcomName(current.given),
-                    this.normalizeGedcomName(current.surname),
-                ]
-                    .filter(Boolean)
-                    .join(" ")
-                    .trim() ||
-                null;
-            if (name)
-                people.push({ name });
-            current = null;
-        };
-        for (const rawLine of lines) {
-            const line = String(rawLine || "").trim();
-            if (!line)
-                continue;
-            const parts = line.split(/\s+/);
-            if (parts[0] === "0") {
-                if (/^0\s+@[^@]+@\s+INDI\b/i.test(line) || /^0\s+INDI\b/i.test(line)) {
-                    flush();
-                    current = { name: null, given: "", surname: "" };
-                }
-                else {
-                    flush();
-                    current = null;
-                }
-                continue;
-            }
-            if (!current)
-                continue;
-            const tag = String(parts[1] || "").toUpperCase();
-            const value = parts.slice(2).join(" ").trim();
-            if (tag === "NAME")
-                current.name = this.normalizeGedcomName(value);
-            if (tag === "GIVN")
-                current.given = value;
-            if (tag === "SURN")
-                current.surname = value;
-        }
-        flush();
-        return people;
-    }
     async rebuildPeople(treeId, gedcomPath) {
         if (!treeId)
             return;
         try {
             const filePath = (0, file_utils_1.resolveStoredFilePath)(gedcomPath);
-            if (!filePath || !fs.existsSync(filePath)) {
+            let content = "";
+            let sourceName = gedcomPath ? path.basename(gedcomPath) : "tree.ged";
+            if (filePath && fs.existsSync(filePath)) {
+                content = fs.readFileSync(filePath, "utf8");
+                sourceName = path.basename(filePath);
+            }
+            else {
+                const storedTree = await Tree_1.Tree.query(this.knex)
+                    .findById(treeId)
+                    .select("gedcom_text", "gedcom_path", "data_format");
+                content =
+                    typeof (storedTree === null || storedTree === void 0 ? void 0 : storedTree.gedcom_text) === "string"
+                        ? storedTree.gedcom_text
+                        : "";
+                sourceName =
+                    (storedTree === null || storedTree === void 0 ? void 0 : storedTree.gedcom_path) ||
+                        gedcomPath ||
+                        ((storedTree === null || storedTree === void 0 ? void 0 : storedTree.data_format) === "gedcomx" ? "tree.gedx" : "tree.ged");
+            }
+            if (!content.trim()) {
                 await Person_1.Person.query(this.knex).delete().where("tree_id", treeId);
                 return;
             }
-            const content = fs.readFileSync(filePath, "utf8");
-            const format = (0, gedcomx_util_1.detectGedcomXFormat)(content, path.basename(filePath));
-            let people = [];
-            if (format === "json") {
-                try {
-                    const data = JSON.parse(content);
-                    const parsed = (0, gedcomx_util_1.parseGedcomXFromJson)(data);
-                    people = parsed.map((p) => ({
-                        name: (p.names && p.names.en) ||
-                            [p.given, p.surname].filter(Boolean).join(" ") ||
-                            "Unknown",
-                    }));
-                }
-                catch (e) {
-                    console.warn("GEDCOM X JSON parse failed:", e === null || e === void 0 ? void 0 : e.message);
-                    return;
-                }
-            }
-            else if (format === "xml") {
-                try {
-                    const parsed = (0, gedcomx_util_1.parseGedcomXFromXml)(content);
-                    people = parsed.map((p) => ({
-                        name: (p.names && p.names.en) ||
-                            [p.given, p.surname].filter(Boolean).join(" ") ||
-                            "Unknown",
-                    }));
-                }
-                catch (e) {
-                    console.warn("GEDCOM X XML parse failed:", e === null || e === void 0 ? void 0 : e.message);
-                    return;
-                }
-            }
-            else {
-                try {
-                    people = this.parseGedcomPeople(content) || [];
-                }
-                catch (parseErr) {
-                    console.warn("GEDCOM parse failed, keeping existing people:", parseErr === null || parseErr === void 0 ? void 0 : parseErr.message);
-                    return;
-                }
-            }
+            const people = parseTreePeopleFromContent(content, sourceName);
             await Person_1.Person.query(this.knex).delete().where("tree_id", treeId);
             if (!people.length)
                 return;

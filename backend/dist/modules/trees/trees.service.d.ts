@@ -5,6 +5,9 @@ import { ActivityService } from "../activity/activity.service";
 type TreePersonInput = {
     name?: string | null;
 };
+export declare function parseTreePeopleFromContent(content: string, filename?: string): {
+    name?: string;
+}[];
 export declare function insertTreePeopleRows(knex: Knex, treeId: number, people: TreePersonInput[], chunkSize?: number): Promise<void>;
 export declare class TreesService implements OnModuleInit {
     private readonly knex;
@@ -28,8 +31,6 @@ export declare class TreesService implements OnModuleInit {
     }>;
     getGedcomPath(tree: Tree): string;
     private inferDataFormat;
-    private normalizeGedcomName;
-    private parseGedcomPeople;
     rebuildPeople(treeId: number, gedcomPath: string): Promise<void>;
 }
 export {};

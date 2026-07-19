@@ -130,6 +130,7 @@ exports.up = async function (knex) {
         .onDelete("SET NULL");
       table.string("title").notNullable();
       table.string("description");
+      table.string("category");
       table.string("gedcom_path");
       table.text("gedcom_text", "longtext").nullable();
       table.string("archive_source");

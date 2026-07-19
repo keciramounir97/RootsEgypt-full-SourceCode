@@ -13,6 +13,7 @@
     "start:easypanel": "node scripts/start-easypanel.js",
     "migrate:latest": "node scripts/migrate-latest.js",
     "smoke:seed-admins": "node scripts/smoke-seed-admin-logins.js",
+    "smoke:tree-db": "node scripts/smoke-tree-db-persistence.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
