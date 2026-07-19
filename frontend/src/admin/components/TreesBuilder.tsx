@@ -1699,9 +1699,6 @@ export default function TreesBuilder({
 
   const [selectedPerson, setSelectedPerson] = useState<any>(null);
 
-  const [selectedPersonCardPosition, setSelectedPersonCardPosition] =
-    useState(null);
-
   const [sourceLinkDraft, setSourceLinkDraft] = useState("");
 
   const [sourceLinkEditIndex, setSourceLinkEditIndex] = useState(null);
@@ -2310,24 +2307,6 @@ export default function TreesBuilder({
           event?.preventDefault?.();
           event?.stopPropagation?.();
           const found = people.find((p) => String(p.id) === String(d.id)) || d;
-          const bounds = wrapRef.current?.getBoundingClientRect?.();
-          if (bounds && Number.isFinite(event?.clientX) && Number.isFinite(event?.clientY)) {
-            const cardWidth = 390;
-            const cardHeight = 420;
-            const preferRight = event.clientX - bounds.left + 18;
-            const preferTop = event.clientY - bounds.top - 24;
-            const x = Math.min(
-              Math.max(preferRight, 12),
-              Math.max(bounds.width - cardWidth - 12, 12)
-            );
-            const y = Math.min(
-              Math.max(preferTop, 12),
-              Math.max(bounds.height - cardHeight - 12, 12)
-            );
-            setSelectedPersonCardPosition({ x, y });
-          } else {
-            setSelectedPersonCardPosition(null);
-          }
           setSelectedPerson(found);
         };
 
@@ -3238,7 +3217,6 @@ export default function TreesBuilder({
 
     if (selectedPerson?.id === id) {
       setSelectedPerson(null);
-      setSelectedPersonCardPosition(null);
     }
 
     notifyPerson(t("legacy.person_deleted", "Person deleted."));
@@ -3344,7 +3322,6 @@ export default function TreesBuilder({
 
   const closeSelectedPersonCard = useCallback(() => {
     setSelectedPerson(null);
-    setSelectedPersonCardPosition(null);
     setSourceLinkDraft("");
     setSourceLinkEditIndex(null);
     setSourceLinkPanelOpen(false);
@@ -3354,7 +3331,6 @@ export default function TreesBuilder({
 
   const selectPersonFromList = useCallback((person) => {
     setSelectedPerson(person);
-    setSelectedPersonCardPosition(null);
     setSourceLinkDraft("");
     setSourceLinkEditIndex(null);
     setSourceLinkPanelOpen(false);
@@ -3961,22 +3937,22 @@ export default function TreesBuilder({
 
             {selectedPerson ? (
               <div
-                className={`absolute z-10 max-h-[min(520px,calc(100%-24px))] w-[min(390px,88%)] overflow-y-auto rounded-md border ${border} ${card} p-3 shadow-lg heritage-panel heritage-panel--grid`}
-                style={
-                  selectedPersonCardPosition
-                    ? {
-                        left: selectedPersonCardPosition.x,
-                        top: selectedPersonCardPosition.y,
-                      }
-                    : { left: 12, bottom: 12 }
-                }
+                className={`fixed inset-0 z-[1000] flex items-center justify-center p-4 ${
+                  isDark ? "bg-black/75" : "bg-[#0d1b2a]/45"
+                } backdrop-blur-sm`}
+                role="dialog"
+                aria-modal="true"
+                aria-label={t("legacy.person_card", "Person card")}
               >
-                <div className="flex items-start justify-between gap-3">
+                <div
+                  className={`max-h-[min(760px,calc(100vh-32px))] w-full max-w-3xl overflow-y-auto rounded-lg border ${border} ${card} p-5 shadow-2xl heritage-panel heritage-panel--grid`}
+                >
+                <div className="flex items-start justify-between gap-4 border-b border-current/10 pb-3">
                   <div className="min-w-0">
-                    <div className="text-sm font-semibold truncate">
+                    <div className="text-xl font-semibold truncate">
                       {nameOf(selectedPerson)}
                     </div>
-                    <div className="text-[10px] uppercase tracking-widest opacity-60">
+                    <div className="text-[11px] uppercase tracking-widest opacity-60">
                       {t("legacy.person_card", "Person card")}
                     </div>
                   </div>
@@ -3997,7 +3973,7 @@ export default function TreesBuilder({
                 </div>
 
                 {!readOnly ? (
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <div className="mt-4 flex flex-wrap items-center gap-2">
                     <button
                       type="button"
                       onClick={openSourceLinkAdd}
@@ -4045,7 +4021,8 @@ export default function TreesBuilder({
                   </div>
                 ) : null}
 
-                <div className="mt-1 text-xs opacity-70">
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                <div className="text-sm opacity-75">
                   {selectedPerson.birthYear
                     ? `${t("legacy.birth_year", "Birth Year")}: ${
                         selectedPerson.birthYear
@@ -4053,7 +4030,7 @@ export default function TreesBuilder({
                     : `${t("legacy.birth_year", "Birth Year")}: -`}
                 </div>
 
-                <div className="text-xs opacity-70">
+                <div className="text-sm opacity-75">
                   {selectedPerson.birthPlace
                     ? `${t("legacy.birth_place", "Birth Place")}: ${
                         selectedPerson.birthPlace
@@ -4061,7 +4038,7 @@ export default function TreesBuilder({
                     : `${t("legacy.birth_place", "Birth Place")}: -`}
                 </div>
 
-                <div className="text-xs opacity-70">
+                <div className="text-sm opacity-75">
                   {selectedPerson.deathDate
                     ? `${t("legacy.death_date", "Death Date")}: ${
                         selectedPerson.deathDate
@@ -4069,7 +4046,7 @@ export default function TreesBuilder({
                     : `${t("legacy.death_date", "Death Date")}: -`}
                 </div>
 
-                <div className="text-xs opacity-70">
+                <div className="text-sm opacity-75">
                   {selectedPerson.deathPlace
                     ? `${t("legacy.death_place", "Death Place")}: ${
                         selectedPerson.deathPlace
@@ -4077,44 +4054,45 @@ export default function TreesBuilder({
                     : `${t("legacy.death_place", "Death Place")}: -`}
                 </div>
 
-                <div className="text-xs opacity-70">
+                <div className="text-sm opacity-75">
                   {`${t("legacy.gender", "Gender")}: ${displayGender(
                     selectedPerson.gender,
                   )}`}
                 </div>
 
                 {selectedPerson.profession ? (
-                  <div className="text-xs opacity-70">
+                  <div className="text-sm opacity-75">
                     {t("legacy.profession", "Profession")}:{" "}
                     {selectedPerson.profession}
                   </div>
                 ) : null}
 
-                <div className="text-xs opacity-70">
+                <div className="text-sm opacity-75">
                   {t("legacy.father", "Father")}: {relationName(selectedPerson.father)}
                 </div>
 
-                <div className="text-xs opacity-70">
+                <div className="text-sm opacity-75">
                   {t("legacy.mother", "Mother")}: {relationName(selectedPerson.mother)}
                 </div>
 
-                <div className="text-xs opacity-70">
+                <div className="text-sm opacity-75">
                   {t("legacy.spouse", "Spouse")}: {relationName(selectedPerson.spouse)}
                 </div>
 
-                <div className="text-xs opacity-70">
+                <div className="text-sm opacity-75 sm:col-span-2">
                   {t("legacy.children", "Children")}:{" "}
                   {selectedChildren.length
                     ? selectedChildren.map((c) => nameOf(c)).join(", ")
                     : "-"}
                 </div>
+                </div>
 
                 {selectedPerson.archiveSource ||
                 selectedPerson.documentCode ||
                 selectedPerson.reliability ? (
-                  <div className="mt-2 space-y-1 border-t border-current/20 pt-2">
+                  <div className="mt-4 space-y-1 border-t border-current/20 pt-3">
                     {selectedPerson.archiveSource ? (
-                      <div className="text-xs opacity-75">
+                      <div className="text-sm opacity-75">
                         {t("legacy.archive_source", "Archive Source")}:{" "}
                         {Array.isArray(selectedPerson.archiveSource)
                           ? selectedPerson.archiveSource.filter(Boolean).join(", ")
@@ -4122,7 +4100,7 @@ export default function TreesBuilder({
                       </div>
                     ) : null}
                     {selectedPerson.documentCode ? (
-                      <div className="text-xs opacity-75">
+                      <div className="text-sm opacity-75">
                         {t("legacy.document_code", "Document Code")}:{" "}
                         {Array.isArray(selectedPerson.documentCode)
                           ? selectedPerson.documentCode.filter(Boolean).join(", ")
@@ -4130,7 +4108,7 @@ export default function TreesBuilder({
                       </div>
                     ) : null}
                     {selectedPerson.reliability ? (
-                      <div className="text-xs opacity-75">
+                      <div className="text-sm opacity-75">
                         {t("legacy.reliability", "Reliability")}:{" "}
                         {selectedPerson.reliability}
                       </div>
@@ -4139,7 +4117,7 @@ export default function TreesBuilder({
                 ) : null}
 
                 {selectedPerson.details ? (
-                  <div className="mt-2 whitespace-pre-line rounded border border-current/10 p-2 text-xs opacity-80">
+                  <div className="mt-4 whitespace-pre-line rounded-md border border-current/10 p-3 text-sm opacity-85">
                     {selectedPerson.details}
                   </div>
                 ) : null}
@@ -4148,7 +4126,7 @@ export default function TreesBuilder({
                   const personLinks = selectedPersonLinks;
                   if (!personLinks.length) return null;
                   return (
-                    <div className="mt-2 pt-2 border-t border-current/20">
+                    <div className="mt-4 pt-3 border-t border-current/20">
                       <div className="mb-1 flex items-center justify-between gap-2">
                         <div className="text-xs font-semibold">
                           {t("legacy.sources_documents", "Sources & Documents")}
@@ -4286,6 +4264,7 @@ export default function TreesBuilder({
                     </div>
                   </div>
                 ) : null}
+                </div>
               </div>
             ) : null}
           </div>

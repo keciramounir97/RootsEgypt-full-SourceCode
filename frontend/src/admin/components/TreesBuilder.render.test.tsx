@@ -70,6 +70,7 @@ describe("TreesBuilder rendering", () => {
       clientY: 180,
     });
 
+    expect(await screen.findByRole("dialog", { name: "Person card" })).toBeTruthy();
     expect(await screen.findByText("Person card")).toBeTruthy();
     fireEvent.click(screen.getByLabelText("Close"));
 
