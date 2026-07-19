@@ -39,4 +39,13 @@ describe("stored GEDCOM fallback", () => {
     expect(getStoredGedcomText({ gedcom_text: valid })).toBe(valid);
     expect(getStoredGedcomText({ gedcom_text: "0 HEAD\n0 TRLR\n" })).toBeNull();
   });
+
+  it("accepts GEDCOM X XML and JSON stored in the database", () => {
+    const xml =
+      '<?xml version="1.0"?><gedx:Gedcomx xmlns:gedx="http://gedcomx.org/v1/"><gedx:person id="p1" /></gedx:Gedcomx>';
+    const json = '{"persons":[{"id":"p1","names":[{"nameForms":[{"fullText":"A Person"}]}]}]}';
+
+    expect(getStoredGedcomText({ gedcom_text: xml })).toBe(xml);
+    expect(getStoredGedcomText({ gedcom_text: json })).toBe(json);
+  });
 });

@@ -65,9 +65,19 @@ export const buildFallbackGedcom = (
 export const hasGedcomIndividuals = (content: unknown) =>
   /^0\s+@[^@]+@\s+INDI\b/im.test(String(content || ""));
 
+export const hasGedcomXPeople = (content: unknown) => {
+  const text = String(content || "").trim();
+  return (
+    /<[\w:-]*person\b/i.test(text) ||
+    /"persons"\s*:\s*\[/i.test(text)
+  );
+};
+
 export const getStoredGedcomText = (tree: any) => {
   const content = typeof tree?.gedcom_text === "string" ? tree.gedcom_text : "";
-  return hasGedcomIndividuals(content) ? content : null;
+  return hasGedcomIndividuals(content) || hasGedcomXPeople(content)
+    ? content
+    : null;
 };
 
 @Controller()

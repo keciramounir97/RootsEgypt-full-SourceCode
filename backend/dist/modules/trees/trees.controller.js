@@ -13,7 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var TreesController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TreesController = exports.getStoredGedcomText = exports.hasGedcomIndividuals = exports.buildFallbackGedcom = void 0;
+exports.TreesController = exports.getStoredGedcomText = exports.hasGedcomXPeople = exports.hasGedcomIndividuals = exports.buildFallbackGedcom = void 0;
 const common_1 = require("@nestjs/common");
 const trees_service_1 = require("./trees.service");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
@@ -51,9 +51,17 @@ const buildFallbackGedcom = (_tree, people = []) => {
 exports.buildFallbackGedcom = buildFallbackGedcom;
 const hasGedcomIndividuals = (content) => /^0\s+@[^@]+@\s+INDI\b/im.test(String(content || ""));
 exports.hasGedcomIndividuals = hasGedcomIndividuals;
+const hasGedcomXPeople = (content) => {
+    const text = String(content || "").trim();
+    return (/<[\w:-]*person\b/i.test(text) ||
+        /"persons"\s*:\s*\[/i.test(text));
+};
+exports.hasGedcomXPeople = hasGedcomXPeople;
 const getStoredGedcomText = (tree) => {
     const content = typeof (tree === null || tree === void 0 ? void 0 : tree.gedcom_text) === "string" ? tree.gedcom_text : "";
-    return (0, exports.hasGedcomIndividuals)(content) ? content : null;
+    return (0, exports.hasGedcomIndividuals)(content) || (0, exports.hasGedcomXPeople)(content)
+        ? content
+        : null;
 };
 exports.getStoredGedcomText = getStoredGedcomText;
 let TreesController = TreesController_1 = class TreesController {

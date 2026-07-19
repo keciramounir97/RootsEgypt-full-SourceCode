@@ -11,6 +11,7 @@ export declare const buildFallbackGedcom: (_tree: {
     name?: string;
 }>) => string;
 export declare const hasGedcomIndividuals: (content: unknown) => boolean;
+export declare const hasGedcomXPeople: (content: unknown) => boolean;
 export declare const getStoredGedcomText: (tree: any) => any;
 export declare class TreesController {
     private readonly treesService;
