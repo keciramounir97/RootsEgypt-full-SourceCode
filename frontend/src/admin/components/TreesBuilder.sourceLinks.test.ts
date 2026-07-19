@@ -20,6 +20,7 @@ const {
   extractPersonLinks,
   hydrateEditableSourceLinks,
   parseGedcom,
+  parseGedcomX,
   updateEditableSourceLinks,
 } = await import("./TreesBuilder");
 
@@ -153,6 +154,25 @@ describe("GEDCOM source/document links", () => {
       {
         label: "managed-scan.pdf",
         kind: "local",
+      },
+    ]);
+  });
+
+  it("extracts GEDCOM X person source links", () => {
+    const people = parseGedcomX(`<?xml version="1.0"?>
+<gedx:Gedcomx xmlns:gedx="http://gedcomx.org/v1/">
+  <gedx:person id="p1">
+    <gedx:names><gedx:name><gedx:nameForm><gedx:fullText>Ould Mohamed Abdallahi</gedx:fullText></gedx:nameForm></gedx:name></gedx:names>
+    <gedx:source descriptionRef="https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&amp;query=Ould%20Mohamed%20Abdallahi"/>
+  </gedx:person>
+</gedx:Gedcomx>`);
+
+    const links = extractPersonLinks(people[0]);
+
+    expect(links).toMatchObject([
+      {
+        label: "Gallica (BnF)",
+        kind: "external",
       },
     ]);
   });

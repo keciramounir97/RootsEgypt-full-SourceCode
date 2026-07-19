@@ -13,6 +13,7 @@
       </gedx:name>
     </gedx:names>
     <gedx:gender type="http://gedcomx.org/Male"/>
+    <gedx:source descriptionRef="https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&amp;query=Ould%20Mohamed%20Abdallahi"/>
     <gedx:facts>
       <gedx:fact type="http://gedcomx.org/Birth">
         <gedx:date original="1948"/>
@@ -32,6 +33,7 @@
       </gedx:name>
     </gedx:names>
     <gedx:gender type="http://gedcomx.org/Female"/>
+    <gedx:source descriptionRef="https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&amp;query=Fatimetou"/>
     <gedx:facts>
       <gedx:fact type="http://gedcomx.org/Birth">
         <gedx:date original="1952"/>
@@ -51,6 +53,7 @@
       </gedx:name>
     </gedx:names>
     <gedx:gender type="http://gedcomx.org/Male"/>
+    <gedx:source descriptionRef="https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&amp;query=Sidi%20Mohamed"/>
     <gedx:facts>
       <gedx:fact type="http://gedcomx.org/Birth">
         <gedx:date original="1978"/>

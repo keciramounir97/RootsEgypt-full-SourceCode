@@ -79,6 +79,25 @@ const SOURCE_HOST_LABELS = [
   ["nationalarchives.gov.eg", "National Archives of Egypt"],
 ];
 
+const collectUrlsFromText = (value) => {
+  const text = String(value || "");
+  return text.match(URL_IN_TEXT_RE) || [];
+};
+
+const addUniqueSourceLink = (links, raw) => {
+  const value = String(raw || "").trim();
+  if (!value) return;
+  const urls = collectUrlsFromText(value);
+  const candidates = urls.length ? urls : [value];
+  for (const candidate of candidates) {
+    const link = String(candidate || "").trim().replace(/[).,;]+$/, "");
+    if (!link || !/^https?:\/\//i.test(link)) continue;
+    if (!links.some((existing) => String(existing).toLowerCase() === link.toLowerCase())) {
+      links.push(link);
+    }
+  }
+};
+
 const escapeHtml = (value) =>
   String(value ?? "").replace(/[&<>"']/g, (ch) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch])
@@ -1201,6 +1220,26 @@ export function parseGedcomXFromJson(data) {
         deathPlace = placeOrig || deathPlace;
       }
     }
+    const sourceLinks = [];
+    const collectSourceValue = (value) => addUniqueSourceLink(sourceLinks, value);
+    const sourceRefs = Array.isArray(per.sources) ? per.sources : [];
+    for (const source of sourceRefs) {
+      if (typeof source === "string") {
+        collectSourceValue(source);
+        continue;
+      }
+      collectSourceValue(source?.descriptionRef);
+      collectSourceValue(source?.resource);
+      collectSourceValue(source?.href);
+      collectSourceValue(source?.url);
+      collectSourceValue(source?.citation?.value);
+    }
+    if (Array.isArray(per.identifiers)) {
+      for (const identifier of per.identifiers) {
+        if (typeof identifier === "string") collectSourceValue(identifier);
+        else collectSourceValue(identifier?.value);
+      }
+    }
     const parsed = splitName(fullText || "Unknown");
     persons.set(id, {
       id,
@@ -1216,6 +1255,8 @@ export function parseGedcomXFromJson(data) {
       reliability: "",
       details: "",
       color: "",
+      sourceLinks,
+      sourceLinksManaged: false,
       father: null,
       mother: null,
       spouse: null,
@@ -1330,6 +1371,25 @@ export function parseGedcomXFromXml(text) {
         deathPlace = placeOrig || deathPlace;
       }
     }
+    const sourceLinks = [];
+    const collectSourceValue = (value) => addUniqueSourceLink(sourceLinks, value);
+    const sourceEls = el.getElementsByTagNameNS(ns, "source").length
+      ? Array.from(el.getElementsByTagNameNS(ns, "source"))
+      : Array.from(el.getElementsByTagName("source"));
+    for (const source of sourceEls) {
+      collectSourceValue(source.getAttribute("descriptionRef"));
+      collectSourceValue(source.getAttribute("resource"));
+      collectSourceValue(source.getAttribute("href"));
+      collectSourceValue(source.getAttributeNS("http://www.w3.org/1999/xlink", "href"));
+      collectSourceValue(source.textContent || "");
+    }
+    const identifierEls = el.getElementsByTagNameNS(ns, "identifier").length
+      ? Array.from(el.getElementsByTagNameNS(ns, "identifier"))
+      : Array.from(el.getElementsByTagName("identifier"));
+    for (const identifier of identifierEls) {
+      collectSourceValue(identifier.getAttribute("value"));
+      collectSourceValue(identifier.textContent || "");
+    }
     const parsed = splitName(fullText || "Unknown");
     persons.set(id, {
       id,
@@ -1345,6 +1405,8 @@ export function parseGedcomXFromXml(text) {
       reliability: "",
       details: "",
       color: "",
+      sourceLinks,
+      sourceLinksManaged: false,
       father: null,
       mother: null,
       spouse: null,
