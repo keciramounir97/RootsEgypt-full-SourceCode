@@ -30,11 +30,18 @@ let AllExceptionsFilter = AllExceptionsFilter_1 = class AllExceptionsFilter {
             ? message.message
             : message;
         const requestId = request.id || "-";
+        const logText = `[${requestId}] HTTP ${status} - ${Array.isArray(errorMessage) ? errorMessage[0] : errorMessage}`;
         if (!(exception instanceof common_1.HttpException) && exception instanceof Error) {
             this.logger.error(`[${requestId}] UNHANDLED ${((_a = exception.constructor) === null || _a === void 0 ? void 0 : _a.name) || "Error"}: ${exception.message}`, exception.stack);
         }
-        else {
-            this.logger.error(`[${requestId}] HTTP ${status} - ${Array.isArray(errorMessage) ? errorMessage[0] : errorMessage}`);
+        else if (status >= 500) {
+            this.logger.error(logText);
+        }
+        else if (status !== common_1.HttpStatus.NOT_FOUND && process.env.LOG_HTTP_4XX === "true") {
+            this.logger.warn(logText);
+        }
+        else if (status === common_1.HttpStatus.NOT_FOUND && process.env.LOG_HTTP_404 === "true") {
+            this.logger.warn(logText);
         }
         if (requestId !== "-") {
             response.setHeader("X-Request-Id", requestId);

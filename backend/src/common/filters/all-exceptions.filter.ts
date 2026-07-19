@@ -38,16 +38,21 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const requestId = (request as Request & { id?: string }).id || "-";
 
-    // Always log the real error
+    const logText = `[${requestId}] HTTP ${status} - ${Array.isArray(errorMessage) ? errorMessage[0] : errorMessage}`;
+
+    // Log real server failures, but do not emit Nest ERROR lines for ordinary
+    // missing routes like /api/notifications during stale frontend polling.
     if (!(exception instanceof HttpException) && exception instanceof Error) {
       this.logger.error(
         `[${requestId}] UNHANDLED ${exception.constructor?.name || "Error"}: ${exception.message}`,
         exception.stack,
       );
-    } else {
-      this.logger.error(
-        `[${requestId}] HTTP ${status} - ${Array.isArray(errorMessage) ? errorMessage[0] : errorMessage}`,
-      );
+    } else if (status >= 500) {
+      this.logger.error(logText);
+    } else if (status !== HttpStatus.NOT_FOUND && process.env.LOG_HTTP_4XX === "true") {
+      this.logger.warn(logText);
+    } else if (status === HttpStatus.NOT_FOUND && process.env.LOG_HTTP_404 === "true") {
+      this.logger.warn(logText);
     }
 
     if (requestId !== "-") {
