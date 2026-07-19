@@ -9,7 +9,9 @@ import {
   FileText,
   LocateFixed,
   Plus,
+  Pencil,
   Search,
+  Trash2,
   Upload,
   UserRound,
   FileCode2,
@@ -20,6 +22,8 @@ import {
 import { useThemeStore } from "../../store/theme";
 
 import { useLanguage } from "../../i18n";
+
+import { getApiRoot } from "../../api/helpers";
 
 const CARD_W = 220;
 
@@ -57,6 +61,141 @@ const getFileExtension = (name) => {
 const hasGedcomIndividuals = (text) =>
   /(^|\r?\n)\s*0\s+@?[^\r\n]*\bINDI\b/i.test(String(text || ""));
 
+const URL_IN_TEXT_RE = /https?:\/\/[^\s"'<>()\[\]]+/gi;
+
+const LOCAL_DOC_RE = /^\.?\/?(?:private_)?uploads\//i;
+const LOCAL_DOC_IN_TEXT_RE =
+  /(?:^|[\s("'=:])(\.?\/?(?:private_)?uploads\/[^\s"'<>()\[\]]+)/gi;
+
+// Friendly labels for well-known trusted archives; anything else shows its hostname.
+const SOURCE_HOST_LABELS = [
+  ["gallica.bnf.fr", "Gallica (BnF)"],
+  ["familysearch.org", "FamilySearch"],
+  ["geneanet.org", "Geneanet"],
+  ["ancestry.", "Ancestry"],
+  ["archives.gov", "National Archives (US)"],
+  ["archive.org", "Internet Archive"],
+  ["nationalarchives.gov.uk", "National Archives (UK)"],
+  ["nationalarchives.gov.eg", "National Archives of Egypt"],
+];
+
+const escapeHtml = (value) =>
+  String(value ?? "").replace(/[&<>"']/g, (ch) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch])
+  );
+
+/**
+ * Collect every source/document link attached to a person: explicit link tags
+ * (OBJE/FILE, WWW, _URL, _LINK) plus URLs or local upload paths embedded in the
+ * archive source, document code, or notes text. Local `uploads/...` paths are
+ * resolved against the API root so they open the hosted document.
+ */
+export function extractPersonLinks(person) {
+  if (!person) return [];
+  const links = [];
+  const seen = new Set();
+
+  const addExternal = (raw) => {
+    const url = String(raw || "").trim().replace(/[).,;]+$/, "");
+    if (!url || seen.has(url.toLowerCase())) return;
+    seen.add(url.toLowerCase());
+    let label = url;
+    try {
+      const parsed = new URL(url);
+      const path = parsed.pathname || "";
+      if (/^\/(?:private_)?uploads\//i.test(path)) {
+        links.push({
+          url,
+          label: path.split("/").pop() || path,
+          kind: "local",
+        });
+        return;
+      }
+      const host = parsed.hostname.replace(/^www\./, "");
+      const known = SOURCE_HOST_LABELS.find(([h]) => host.includes(h));
+      label = known ? known[1] : host;
+    } catch {
+      /* not a parseable URL — keep raw text as label */
+    }
+    links.push({ url, label, kind: "external" });
+  };
+
+  const addLocal = (raw) => {
+    let path = String(raw || "").trim().replace(/^\.\//, "");
+    if (!path) return;
+    if (!path.startsWith("/")) path = `/${path}`;
+    const url = `${getApiRoot().replace(/\/+$/, "").replace(/\/api$/, "")}${path}`;
+    if (seen.has(url.toLowerCase())) return;
+    seen.add(url.toLowerCase());
+    links.push({
+      url,
+      label: path.split("/").pop() || path,
+      kind: "local",
+    });
+  };
+
+  const fields = [];
+  if (Array.isArray(person.sourceLinks)) fields.push(...person.sourceLinks);
+  if (!person.sourceLinksManaged) {
+    for (const f of [person.archiveSource, person.documentCode, person.details]) {
+      if (f) fields.push(f);
+    }
+  }
+
+  for (const field of fields) {
+    const text = String(field || "");
+    const trimmed = text.trim();
+    if (LOCAL_DOC_RE.test(trimmed)) {
+      addLocal(trimmed);
+    }
+    const urls = text.match(URL_IN_TEXT_RE) || [];
+    urls.forEach(addExternal);
+    for (const match of text.matchAll(LOCAL_DOC_IN_TEXT_RE)) {
+      addLocal(match[1]);
+    }
+  }
+
+  return links;
+}
+
+export function updateEditableSourceLinks(person, sourceLinks) {
+  const seen = new Set();
+  const links = [];
+
+  for (const link of Array.isArray(sourceLinks) ? sourceLinks : []) {
+    const trimmed = String(link || "").trim();
+    const key = trimmed.toLowerCase();
+    if (!trimmed || seen.has(key)) continue;
+    seen.add(key);
+    links.push(trimmed);
+  }
+
+  return {
+    ...(person || {}),
+    sourceLinks: links,
+    sourceLinksManaged: true,
+  };
+}
+
+export function hydrateEditableSourceLinks(person) {
+  if (!person) return person;
+  if (person.sourceLinksManaged) {
+    return updateEditableSourceLinks(person, person.sourceLinks);
+  }
+
+  return updateEditableSourceLinks(
+    person,
+    extractPersonLinks(person).map((link) => {
+      if (link.kind !== "local") return link.url;
+      try {
+        return new URL(link.url).pathname;
+      } catch {
+        return link.url;
+      }
+    })
+  );
+}
+
 const createEmptyForm = () => ({
   id: null,
   name: "",
@@ -73,6 +212,8 @@ const createEmptyForm = () => ({
   profession: "",
   archiveSource: "",
   documentCode: "",
+  sourceLinks: [],
+  sourceLinksManaged: false,
   reliability: "",
   color: "#f5f1e8",
 });
@@ -189,6 +330,8 @@ export const parseGedcom = (raw) => {
 
   let inDeath = false;
 
+  let inObje = false;
+
   let noteTarget = null;
 
   const ensurePerson = (id) => {
@@ -219,6 +362,9 @@ export const parseGedcom = (raw) => {
         documentCode: "",
 
         reliability: "",
+
+        sourceLinks: [],
+        sourceLinksManaged: false,
 
         details: "",
 
@@ -301,6 +447,8 @@ export const parseGedcom = (raw) => {
 
       inDeath = false;
 
+      inObje = false;
+
       const hasPointer = String(parts[1] || "").startsWith("@");
 
       const pointer = hasPointer ? parts[1] : null;
@@ -342,6 +490,8 @@ export const parseGedcom = (raw) => {
       const tag = parts[1];
 
       const value = parts.slice(2).join(" ").trim();
+
+      if (inObje && level <= 1 && tag !== "OBJE") inObje = false;
 
       if (noteTarget && (tag === "CONT" || tag === "CONC")) {
         noteTarget.text += tag === "CONT" ? `\n${value}` : value;
@@ -461,6 +611,24 @@ export const parseGedcom = (raw) => {
         continue;
       }
 
+      if (tag === "OBJE") {
+        inObje = true;
+
+        continue;
+      }
+
+      if (inObje && tag === "FILE") {
+        if (value && !p.sourceLinks.includes(value)) p.sourceLinks.push(value);
+
+        continue;
+      }
+
+      if (tag === "WWW" || tag === "URL" || tag === "_URL" || tag === "_LINK") {
+        if (value && !p.sourceLinks.includes(value)) p.sourceLinks.push(value);
+
+        continue;
+      }
+
       if (tag === "REFN" || tag === "_DOC") {
         p.documentCode = mergeField(p.documentCode, value);
 
@@ -475,6 +643,12 @@ export const parseGedcom = (raw) => {
 
       if (tag === "_COLOR" || tag === "COLOR") {
         p.color = value;
+
+        continue;
+      }
+
+      if (tag === "_SLINK_MANAGED") {
+        p.sourceLinksManaged = /^(Y|TRUE|1)$/i.test(value);
 
         continue;
       }
@@ -913,6 +1087,19 @@ export const buildGedcom = (people, locale, t, gedcomVersion = "5.5.1") => {
 
     if (p.reliability) {
       lines.push(`1 _RELI ${String(p.reliability).trim()}`);
+    }
+
+    if (Array.isArray(p.sourceLinks)) {
+      for (const link of p.sourceLinks) {
+        const trimmed = String(link || "").trim();
+        if (!trimmed) continue;
+        lines.push("1 OBJE");
+        lines.push(`2 FILE ${trimmed}`);
+      }
+    }
+
+    if (p.sourceLinksManaged) {
+      lines.push("1 _SLINK_MANAGED Y");
     }
 
     if (p.color) lines.push(`1 _COLOR ${String(p.color).trim()}`);
@@ -1390,6 +1577,12 @@ export default function TreesBuilder({
 
   const [selectedPerson, setSelectedPerson] = useState<any>(null);
 
+  const [sourceLinkDraft, setSourceLinkDraft] = useState("");
+
+  const [sourceLinkEditIndex, setSourceLinkEditIndex] = useState(null);
+
+  const [sourceLinkPanelOpen, setSourceLinkPanelOpen] = useState(false);
+
   const [personStatus, setPersonStatus] = useState({
     message: "",
     type: "success",
@@ -1539,6 +1732,8 @@ export default function TreesBuilder({
         profession: person.profession || "",
         archiveSource: person.archiveSource || "",
         documentCode: person.documentCode || "",
+        sourceLinks: Array.isArray(person.sourceLinks) ? [...person.sourceLinks] : [],
+        sourceLinksManaged: Boolean(person.sourceLinksManaged),
         reliability: person.reliability || "",
         father: person.father || "",
         mother: person.mother || "",
@@ -2056,7 +2251,7 @@ export default function TreesBuilder({
             const addRow = (label, value) => {
               if (!value) return;
               rows.push(
-                `<div class="flex justify-between gap-4"><span class="opacity-70">${label}:</span><span>${value}</span></div>`
+                `<div class="flex justify-between gap-4"><span class="opacity-70">${escapeHtml(label)}:</span><span>${escapeHtml(value)}</span></div>`
               );
             };
 
@@ -2071,7 +2266,7 @@ export default function TreesBuilder({
             addRow(t("legacy.mother", "Mother"), motherName);
 
             const detailsHtml = details
-              ? `<div class="mt-2 text-[10px] opacity-80 border-t pt-1 whitespace-pre-line">${details}</div>`
+              ? `<div class="mt-2 text-[10px] opacity-80 border-t pt-1 whitespace-pre-line">${escapeHtml(details)}</div>`
               : "";
 
             const sourceRows = [];
@@ -2079,21 +2274,44 @@ export default function TreesBuilder({
               sourceRows.push(
                 `<div class="flex justify-between gap-4"><span class="opacity-70">${t("legacy.archive_source",
                   "Archive Source"
-                )}:</span><span>${archiveSource}</span></div>`
+                )}:</span><span>${escapeHtml(archiveSource)}</span></div>`
               );
             }
             if (documentCode) {
               sourceRows.push(
                 `<div class="flex justify-between gap-4"><span class="opacity-70">${t("legacy.document_code",
                   "Document Code"
-                )}:</span><span>${documentCode}</span></div>`
+                )}:</span><span>${escapeHtml(documentCode)}</span></div>`
               );
             }
             if (reliability) {
               sourceRows.push(
                 `<div class="flex justify-between gap-4"><span class="opacity-70">${t("legacy.reliability",
                   "Reliability"
-                )}:</span><span>${reliability}</span></div>`
+                )}:</span><span>${escapeHtml(reliability)}</span></div>`
+              );
+            }
+
+            const personLinks = extractPersonLinks(d);
+            if (personLinks.length) {
+              const linkRows = personLinks
+                .map(
+                  (l) =>
+                    `<div class="flex items-center gap-1"><span class="opacity-60">[link]</span> <span style="text-decoration:underline">${escapeHtml(
+                      l.label
+                    )}</span>${
+                      l.kind === "local"
+                        ? ` <span class="opacity-60">(${t("legacy.local_document", "local document")})</span>`
+                        : ""
+                    }</div>`
+                )
+                .join("");
+              sourceRows.push(
+                `<div class="mt-1 space-y-0.5"><div class="opacity-70">${t("legacy.sources_documents",
+                  "Sources & Documents"
+                )}:</div>${linkRows}<div class="opacity-60">${t("legacy.click_person_for_links",
+                  "Click the person to open these links"
+                )}</div></div>`
               );
             }
 
@@ -2727,6 +2945,14 @@ export default function TreesBuilder({
 
           documentCode: String(addForm.documentCode || "").trim(),
 
+          sourceLinks: Array.isArray(addForm.sourceLinks)
+            ? addForm.sourceLinks.map((link) => String(link || "").trim()).filter(Boolean)
+            : Array.isArray(prevPerson.sourceLinks)
+              ? [...prevPerson.sourceLinks]
+              : [],
+
+          sourceLinksManaged: Boolean(addForm.sourceLinksManaged || prevPerson.sourceLinksManaged),
+
           reliability: String(addForm.reliability || "").trim(),
 
           father: nextFatherRaw ? nextFatherRaw : null,
@@ -2878,6 +3104,12 @@ export default function TreesBuilder({
       archiveSource: String(addForm.archiveSource || "").trim(),
 
       documentCode: String(addForm.documentCode || "").trim(),
+
+      sourceLinks: Array.isArray(addForm.sourceLinks)
+        ? addForm.sourceLinks.map((link) => String(link || "").trim()).filter(Boolean)
+        : [],
+
+      sourceLinksManaged: Boolean(addForm.sourceLinksManaged),
 
       reliability: String(addForm.reliability || "").trim(),
 
@@ -3060,6 +3292,96 @@ export default function TreesBuilder({
 
     return out;
   }, [selectedPerson, people]);
+
+  const selectedPersonLinks = useMemo(
+    () => (selectedPerson ? extractPersonLinks(selectedPerson) : []),
+    [selectedPerson]
+  );
+
+  const editableSourceLinkValues = useMemo(
+    () => selectedPersonLinks.map((link) => link.url),
+    [selectedPersonLinks]
+  );
+
+  const persistSelectedSourceLinks = useCallback(
+    (sourceLinks) => {
+      if (!selectedPerson || readOnly || !canMutatePeople) return;
+      const selectedId = String(selectedPerson.id);
+      let updatedSelected = null;
+
+      applyPeopleUpdate((prev) =>
+        prev.map((person) => {
+          if (String(person.id) !== selectedId) return person;
+          updatedSelected = updateEditableSourceLinks(
+            hydrateEditableSourceLinks(person),
+            sourceLinks
+          );
+          return updatedSelected;
+        })
+      );
+
+      if (updatedSelected) setSelectedPerson(updatedSelected);
+    },
+    [applyPeopleUpdate, canMutatePeople, readOnly, selectedPerson]
+  );
+
+  const openSourceLinkAdd = useCallback(() => {
+    if (!selectedPerson || readOnly) return;
+    const hydrated = hydrateEditableSourceLinks(selectedPerson);
+    persistSelectedSourceLinks(hydrated.sourceLinks);
+    setSourceLinkDraft("");
+    setSourceLinkEditIndex(null);
+    setSourceLinkPanelOpen(true);
+  }, [persistSelectedSourceLinks, readOnly, selectedPerson]);
+
+  const openSourceLinkEdit = useCallback((index, value) => {
+    if (!selectedPerson || readOnly) return;
+    const hydrated = hydrateEditableSourceLinks(selectedPerson);
+    persistSelectedSourceLinks(hydrated.sourceLinks);
+    setSourceLinkDraft(value || "");
+    setSourceLinkEditIndex(index);
+    setSourceLinkPanelOpen(true);
+  }, [persistSelectedSourceLinks, readOnly, selectedPerson]);
+
+  const saveSourceLinkDraft = useCallback(() => {
+    const trimmed = sourceLinkDraft.trim();
+    if (!trimmed) {
+      notifyError(t("legacy.source_link_required", "Add a document or source link first."));
+      return;
+    }
+
+    const nextLinks = [...editableSourceLinkValues];
+    if (sourceLinkEditIndex === null || sourceLinkEditIndex === undefined) {
+      nextLinks.push(trimmed);
+    } else {
+      nextLinks[sourceLinkEditIndex] = trimmed;
+    }
+
+    persistSelectedSourceLinks(nextLinks);
+    setSourceLinkDraft("");
+    setSourceLinkEditIndex(null);
+    setSourceLinkPanelOpen(false);
+    notifyPerson(t("legacy.source_link_saved", "Source link saved."));
+  }, [
+    editableSourceLinkValues,
+    notifyError,
+    notifyPerson,
+    persistSelectedSourceLinks,
+    sourceLinkDraft,
+    sourceLinkEditIndex,
+    t,
+  ]);
+
+  const deleteSourceLinkAt = useCallback(
+    (index) => {
+      const nextLinks = editableSourceLinkValues.filter((_, i) => i !== index);
+      persistSelectedSourceLinks(nextLinks);
+      setSourceLinkDraft("");
+      setSourceLinkEditIndex(null);
+      notifyPerson(t("legacy.source_link_deleted", "Source link deleted."));
+    },
+    [editableSourceLinkValues, notifyPerson, persistSelectedSourceLinks, t]
+  );
 
   const centerTree = () => {
     const zoom = zoomRef.current;
@@ -3499,12 +3821,35 @@ export default function TreesBuilder({
               </div>
             ) : null}
 
-            {readOnly && selectedPerson ? (
+            {selectedPerson ? (
               <div
-                className={`absolute bottom-3 left-3 z-10 w-[min(320px,85%)] rounded-md border ${border} ${card} p-3 shadow-lg heritage-panel heritage-panel--grid`}
+                className={`absolute bottom-3 left-3 z-10 w-[min(360px,88%)] rounded-md border ${border} ${card} p-3 shadow-lg heritage-panel heritage-panel--grid`}
               >
-                <div className="text-sm font-semibold">
-                  {nameOf(selectedPerson)}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold truncate">
+                      {nameOf(selectedPerson)}
+                    </div>
+                    <div className="text-[10px] uppercase tracking-widest opacity-60">
+                      {t("legacy.person_card", "Person card")}
+                    </div>
+                  </div>
+
+                  {!readOnly ? (
+                    <button
+                      type="button"
+                      onClick={openSourceLinkAdd}
+                      className={`shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-md border ${border} ${
+                        isDark
+                          ? "bg-white/10 text-white hover:bg-white/15"
+                          : "bg-white text-[#0c4a6e] hover:bg-[#f8f5ef]"
+                      }`}
+                      title={t("legacy.add_source_link", "Add source link")}
+                      aria-label={t("legacy.add_source_link", "Add source link")}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  ) : null}
                 </div>
 
                 <div className="mt-1 text-xs opacity-70">
@@ -3555,6 +3900,96 @@ export default function TreesBuilder({
                     ? selectedChildren.map((c) => nameOf(c)).join(", ")
                     : "-"}
                 </div>
+
+                {(() => {
+                  const personLinks = selectedPersonLinks;
+                  if (!personLinks.length) return null;
+                  return (
+                    <div className="mt-2 pt-2 border-t border-current/20">
+                      <div className="mb-1 flex items-center justify-between gap-2">
+                        <div className="text-xs font-semibold">
+                          {t("legacy.sources_documents", "Sources & Documents")}
+                        </div>
+                        {!readOnly ? (
+                          <button
+                            type="button"
+                            onClick={openSourceLinkAdd}
+                            className="text-xs font-semibold text-[#0d9488] hover:underline"
+                          >
+                            + {t("legacy.add", "Add")}
+                          </button>
+                        ) : null}
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        {personLinks.map((l, index) => (
+                          <div
+                            key={`${l.url}-${index}`}
+                            className="flex items-start gap-2 rounded border border-current/10 p-1.5"
+                          >
+                            <a
+                              href={l.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="min-w-0 flex-1 text-xs underline break-all text-[#0d9488] hover:opacity-80"
+                            >
+                              [link] {l.label}
+                              {l.kind === "local"
+                                ? ` (${t("legacy.local_document", "local document")})`
+                                : ""}
+                            </a>
+                            {!readOnly ? (
+                              <div className="flex shrink-0 gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => openSourceLinkEdit(index, l.url)}
+                                  className="inline-flex h-7 w-7 items-center justify-center rounded border border-current/10 text-[#0d9488] hover:bg-current/10"
+                                  title={t("legacy.edit", "Edit")}
+                                  aria-label={t("legacy.edit", "Edit")}
+                                >
+                                  <Pencil className="h-3.5 w-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => deleteSourceLinkAt(index)}
+                                  className="inline-flex h-7 w-7 items-center justify-center rounded border border-current/10 text-red-500 hover:bg-red-500/10"
+                                  title={t("legacy.delete", "Delete")}
+                                  aria-label={t("legacy.delete", "Delete")}
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            ) : null}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {!readOnly && sourceLinkPanelOpen ? (
+                  <div className="mt-2 rounded-md border border-current/15 p-2">
+                    <label className="mb-1 block text-xs font-semibold">
+                      {sourceLinkEditIndex === null || sourceLinkEditIndex === undefined
+                        ? t("legacy.add_source_link", "Add source link")
+                        : t("legacy.edit_source_link", "Edit source link")}
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        value={sourceLinkDraft}
+                        onChange={(event) => setSourceLinkDraft(event.target.value)}
+                        placeholder={t("legacy.source_link_placeholder", "https://... or /uploads/documents/file.pdf")}
+                        className={`min-w-0 flex-1 rounded-md border ${border} ${inputBg} ${inputText} px-2 py-1.5 text-xs`}
+                      />
+                      <button
+                        type="button"
+                        onClick={saveSourceLinkDraft}
+                        className="rounded-md bg-[#0d9488] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#0f766e]"
+                      >
+                        {t("legacy.save", "Save")}
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             ) : null}
           </div>

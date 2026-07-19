@@ -28,28 +28,28 @@
   --book-shadow: 4px 6px 18px rgba(0, 0, 0, 0.1);
 
   /* Fluid responsive containers - scales for mobile/tablet/desktop/ultrawide */
-  --container-padding-x: clamp(0.75rem, 2vw, 2rem);
-  --container-padding-y: clamp(1rem, 2.5vw, 2rem);
+  --container-padding-x: clamp(0.75rem, 1.7vw, 1.75rem);
+  --container-padding-y: clamp(0.85rem, 2vw, 1.65rem);
   --container-max: min(100%, 2240px);
   --content-max: min(100%, 1920px);
-  --section-gap: clamp(3rem, 5vw, 5.5rem);
+  --section-gap: clamp(2.4rem, 4vw, 4.5rem);
   --color-lotus: #e8b4a0;
   --color-lotus-deep: #c97d63;
   --color-date-palm: #5a7c3a;
   --color-indigo-night: #1e2a4a;
 
   /* Fluid type & spacing — one scale, fewer @media overrides */
-  --font-size-xs: clamp(0.6rem, 0.5rem + 0.3vw, 0.9rem);
-  --font-size-sm: clamp(0.7rem, 0.6rem + 0.4vw, 1.05rem);
-  --font-size-base: clamp(0.9rem, 0.75rem + 0.65vw, 1.4rem);
-  --font-size-lg: clamp(1.05rem, 0.9rem + 0.8vw, 1.7rem);
-  --font-size-xl: clamp(1.2rem, 1rem + 1vw, 2rem);
-  --font-size-2xl: clamp(1.4rem, 1.1rem + 1.3vw, 2.6rem);
-  --font-size-3xl: clamp(1.75rem, 1.35rem + 1.75vw, 3.4rem);
-  --font-size-4xl: clamp(2.1rem, 1.6rem + 2.4vw, 4.6rem);
-  --font-size-5xl: clamp(2.6rem, 1.9rem + 3.2vw, 5.8rem);
-  --font-size-6xl: clamp(3.2rem, 2.2rem + 4vw, 7.5rem);
-  --font-size-hero: clamp(2rem, 0.9rem + 5vw, 9rem);
+  --font-size-xs: clamp(0.6rem, 0.5rem + 0.3vw, 0.8rem);
+  --font-size-sm: clamp(0.7rem, 0.6rem + 0.4vw, 0.95rem);
+  --font-size-base: clamp(0.88rem, 0.76rem + 0.42vw, 1.03rem);
+  --font-size-lg: clamp(1rem, 0.88rem + 0.55vw, 1.25rem);
+  --font-size-xl: clamp(1.14rem, 0.98rem + 0.72vw, 1.5rem);
+  --font-size-2xl: clamp(1.3rem, 1.08rem + 0.95vw, 1.9rem);
+  --font-size-3xl: clamp(1.55rem, 1.26rem + 1.2vw, 2.4rem);
+  --font-size-4xl: clamp(1.9rem, 1.5rem + 1.65vw, 3.1rem);
+  --font-size-5xl: clamp(2.25rem, 1.75rem + 2.15vw, 4rem);
+  --font-size-6xl: clamp(2.75rem, 2rem + 2.8vw, 5.1rem);
+  --font-size-hero: clamp(1.9rem, 1.1rem + 3.4vw, 6rem);
   --space-xs: clamp(0.25rem, 0.2rem + 0.25vw, 0.5rem);
   --space-sm: clamp(0.5rem, 0.4rem + 0.5vw, 1rem);
   --space-md: clamp(1rem, 0.8rem + 1vw, 2rem);
@@ -150,6 +150,30 @@ h6,
 .font-display {
   font-family: "Cormorant Garamond", "Cinzel", serif;
   letter-spacing: 0.01em;
+}
+
+.heritage-page-root .text-5xl,
+.roots-shell .text-5xl {
+  font-size: clamp(2.15rem, 3.8vw, 3.75rem);
+  line-height: 1;
+}
+
+.heritage-page-root .text-4xl,
+.roots-shell .text-4xl {
+  font-size: clamp(1.85rem, 3vw, 3rem);
+  line-height: 1.05;
+}
+
+.heritage-page-root .text-3xl,
+.roots-shell .text-3xl {
+  font-size: clamp(1.45rem, 2.1vw, 2.15rem);
+  line-height: 1.12;
+}
+
+.heritage-page-root .text-2xl,
+.roots-shell .text-2xl {
+  font-size: clamp(1.2rem, 1.5vw, 1.65rem);
+  line-height: 1.2;
 }
 
 /* Theme: never rely on inherited color alone — dark mode keeps readable body text */
@@ -696,6 +720,8 @@ select:focus-visible {
 }
 
 html {
+  /* Slightly reduced root size (15px) — the whole site reads a touch less zoomed. */
+  font-size: 93.75%;
   transition: font-size 0.4s ease-out;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -4295,4 +4321,26 @@ button,
     border-radius: 18px;
     padding: 0.45rem;
   }
+}
+
+/* Custom Accessibility & Contrast Overrides */
+.heritage-hero h1,
+.heritage-hero__inner h1,
+.heritage-hero h1 * {
+  color: #ffffff !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65) !important;
+}
+
+/* Ensure placeholder text is highly legible */
+input::placeholder,
+textarea::placeholder,
+.heritage-input::placeholder {
+  color: #64748b !important;
+  opacity: 0.9 !important;
+}
+.dark input::placeholder,
+.dark textarea::placeholder,
+.dark .heritage-input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 0.9 !important;
 }

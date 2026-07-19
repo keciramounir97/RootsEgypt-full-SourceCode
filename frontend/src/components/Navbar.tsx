@@ -136,7 +136,7 @@ export default function Navbar() {
       clearTimeout(suggestTimerRef.current);
     }
 
-    if (q.length < 2) {
+    if (q.length < 1) {
       setSuggestions({ trees: [], people: [] });
       setSuggestOpen(false);
       setSuggestLoading(false);
@@ -179,7 +179,7 @@ export default function Navbar() {
   }, [query, t]);
 
   const handleSuggestFocus = () => {
-    if (String(query || "").trim().length >= 2) {
+    if (String(query || "").trim().length >= 1) {
       setSuggestOpen(true);
     }
   };
