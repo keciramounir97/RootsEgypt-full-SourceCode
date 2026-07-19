@@ -1665,6 +1665,8 @@ export default function TreesBuilder({
 
   const nodesRef = useRef([]);
 
+  const detailPointerRef = useRef({ x: 0, y: 0, active: false });
+
   const importGedcomRef = useRef(null);
   const importGedcomFormatRef = useRef("5.5.1"); // "5.5.1" | "7.0" for dropdown choice
   const importGedcomXRef = useRef(null);
@@ -2303,6 +2305,32 @@ export default function TreesBuilder({
               .strength((d) => (d.type === "couple" ? 0.6 : 0.85))
           );
 
+        const openPersonDetails = (event, d) => {
+          if (event?.defaultPrevented) return;
+          event?.preventDefault?.();
+          event?.stopPropagation?.();
+          const found = people.find((p) => String(p.id) === String(d.id)) || d;
+          const bounds = wrapRef.current?.getBoundingClientRect?.();
+          if (bounds && Number.isFinite(event?.clientX) && Number.isFinite(event?.clientY)) {
+            const cardWidth = 390;
+            const cardHeight = 420;
+            const preferRight = event.clientX - bounds.left + 18;
+            const preferTop = event.clientY - bounds.top - 24;
+            const x = Math.min(
+              Math.max(preferRight, 12),
+              Math.max(bounds.width - cardWidth - 12, 12)
+            );
+            const y = Math.min(
+              Math.max(preferTop, 12),
+              Math.max(bounds.height - cardHeight - 12, 12)
+            );
+            setSelectedPersonCardPosition({ x, y });
+          } else {
+            setSelectedPersonCardPosition(null);
+          }
+          setSelectedPerson(found);
+        };
+
         const node = g
 
           .selectAll("g.node")
@@ -2345,23 +2373,23 @@ export default function TreesBuilder({
               })
           )
 
-          .on("click", (_event, d) => {
-            const found =
-              people.find((p) => String(p.id) === String(d.id)) || d;
-            const event = _event;
-            const bounds = wrapRef.current?.getBoundingClientRect?.();
-            if (bounds && Number.isFinite(event?.clientX) && Number.isFinite(event?.clientY)) {
-              const x = Math.min(
-                Math.max(event.clientX - bounds.left + 14, 12),
-                Math.max(bounds.width - 380, 12)
-              );
-              const y = Math.min(
-                Math.max(event.clientY - bounds.top - 20, 12),
-                Math.max(bounds.height - 360, 12)
-              );
-              setSelectedPersonCardPosition({ x, y });
-            }
-            setSelectedPerson(found);
+          .on("pointerdown.detail", (event) => {
+            detailPointerRef.current = {
+              x: Number(event?.clientX) || 0,
+              y: Number(event?.clientY) || 0,
+              active: true,
+            };
+          })
+          .on("pointerup.detail", (event, d) => {
+            const start = detailPointerRef.current;
+            detailPointerRef.current = { x: 0, y: 0, active: false };
+            const dx = (Number(event?.clientX) || 0) - start.x;
+            const dy = (Number(event?.clientY) || 0) - start.y;
+            if (!start.active || Math.hypot(dx, dy) > 8) return;
+            openPersonDetails(event, d);
+          })
+          .on("click.detail", (event, d) => {
+            openPersonDetails(event, d);
           });
 
         zoomRect.on("click", () => {
@@ -3897,7 +3925,7 @@ export default function TreesBuilder({
 
             {selectedPerson ? (
               <div
-                className={`absolute z-10 w-[min(390px,88%)] rounded-md border ${border} ${card} p-3 shadow-lg heritage-panel heritage-panel--grid`}
+                className={`absolute z-10 max-h-[min(520px,calc(100%-24px))] w-[min(390px,88%)] overflow-y-auto rounded-md border ${border} ${card} p-3 shadow-lg heritage-panel heritage-panel--grid`}
                 style={
                   selectedPersonCardPosition
                     ? {
@@ -4019,6 +4047,21 @@ export default function TreesBuilder({
                   )}`}
                 </div>
 
+                {selectedPerson.profession ? (
+                  <div className="text-xs opacity-70">
+                    {t("legacy.profession", "Profession")}:{" "}
+                    {selectedPerson.profession}
+                  </div>
+                ) : null}
+
+                <div className="text-xs opacity-70">
+                  {t("legacy.father", "Father")}: {relationName(selectedPerson.father)}
+                </div>
+
+                <div className="text-xs opacity-70">
+                  {t("legacy.mother", "Mother")}: {relationName(selectedPerson.mother)}
+                </div>
+
                 <div className="text-xs opacity-70">
                   {t("legacy.spouse", "Spouse")}: {relationName(selectedPerson.spouse)}
                 </div>
@@ -4029,6 +4072,41 @@ export default function TreesBuilder({
                     ? selectedChildren.map((c) => nameOf(c)).join(", ")
                     : "-"}
                 </div>
+
+                {selectedPerson.archiveSource ||
+                selectedPerson.documentCode ||
+                selectedPerson.reliability ? (
+                  <div className="mt-2 space-y-1 border-t border-current/20 pt-2">
+                    {selectedPerson.archiveSource ? (
+                      <div className="text-xs opacity-75">
+                        {t("legacy.archive_source", "Archive Source")}:{" "}
+                        {Array.isArray(selectedPerson.archiveSource)
+                          ? selectedPerson.archiveSource.filter(Boolean).join(", ")
+                          : selectedPerson.archiveSource}
+                      </div>
+                    ) : null}
+                    {selectedPerson.documentCode ? (
+                      <div className="text-xs opacity-75">
+                        {t("legacy.document_code", "Document Code")}:{" "}
+                        {Array.isArray(selectedPerson.documentCode)
+                          ? selectedPerson.documentCode.filter(Boolean).join(", ")
+                          : selectedPerson.documentCode}
+                      </div>
+                    ) : null}
+                    {selectedPerson.reliability ? (
+                      <div className="text-xs opacity-75">
+                        {t("legacy.reliability", "Reliability")}:{" "}
+                        {selectedPerson.reliability}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                {selectedPerson.details ? (
+                  <div className="mt-2 whitespace-pre-line rounded border border-current/10 p-2 text-xs opacity-80">
+                    {selectedPerson.details}
+                  </div>
+                ) : null}
 
                 {(() => {
                   const personLinks = selectedPersonLinks;
