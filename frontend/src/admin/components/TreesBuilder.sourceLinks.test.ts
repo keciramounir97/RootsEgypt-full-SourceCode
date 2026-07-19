@@ -1,4 +1,6 @@
 // @vitest-environment jsdom
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 // The theme store reads window.localStorage at module scope; some jsdom/node
@@ -252,5 +254,38 @@ describe("GEDCOM source/document links", () => {
         "https://api.rootsegypt.org"
       )
     ).toBe("https://gallica.bnf.fr/ark:/12148/bpt6k9760202w");
+  });
+
+  it("parses the larger GEDCOM 5.5.1, GEDCOM 7, and GEDCOM X sample trees with links", () => {
+    const sampleRoot = resolve(process.cwd(), "../backend/sample-data");
+    const ged551 = readFileSync(
+      resolve(sampleRoot, "gallica-family-gedcom-5.5.1.ged"),
+      "utf8",
+    );
+    const ged7 = readFileSync(
+      resolve(sampleRoot, "gallica-family-gedcom-7.ged"),
+      "utf8",
+    );
+    const gedx = readFileSync(
+      resolve(sampleRoot, "gallica-family-gedcomx.gedx"),
+      "utf8",
+    );
+
+    const parsed551 = parseGedcom(ged551);
+    const parsed7 = parseGedcom(ged7);
+    const parsedX = parseGedcomX(gedx);
+
+    expect(parsed551).toHaveLength(8);
+    expect(parsed7).toHaveLength(8);
+    expect(parsedX).toHaveLength(8);
+    expect(extractPersonLinks(parsed551[0]).map((link: any) => link.label)).toEqual(
+      expect.arrayContaining(["Gallica (BnF)", "ould-mohamed-birth-register.pdf"]),
+    );
+    expect(extractPersonLinks(parsed7[0]).map((link: any) => link.label)).toEqual(
+      expect.arrayContaining(["Gallica (BnF)", "ould-mohamed-birth-register.pdf"]),
+    );
+    expect(extractPersonLinks(parsedX[1]).map((link: any) => link.label)).toEqual(
+      expect.arrayContaining(["Gallica (BnF)", "fatimetou-family-register.pdf"]),
+    );
   });
 });

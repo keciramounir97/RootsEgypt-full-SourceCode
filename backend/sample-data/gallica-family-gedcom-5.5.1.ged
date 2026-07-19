@@ -7,20 +7,23 @@
 0 @I1@ INDI
 1 NAME Ould Mohamed /Abdallahi/
 1 SEX M
+1 OCCU Community elder
 1 BIRT
 2 DATE 1948
 2 PLAC Nouakchott, Mauritania
+1 NOTE Patriarch with oral testimony and linked archive scans.
 1 SOUR Gallica https://gallica.bnf.fr/ark:/12148/bpt6k9760202w
 1 OBJE
 2 FILE https://gallica.bnf.fr/ark:/12148/btv1b8451617s
 1 REFN /uploads/documents/ould-mohamed-birth-register.pdf
-1 NOTE Local uploaded proof: /uploads/documents/ould-mohamed-birth-register.pdf
 1 FAMS @F1@
 0 @I2@ INDI
 1 NAME Fatimetou /Mint Ahmed/
 1 SEX F
+1 OCCU Teacher
 1 BIRT
 2 DATE 1952
+2 PLAC Boutilimit, Mauritania
 1 NOTE Source Gallica: https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&query=Fatimetou%20Mauritanie
 1 OBJE
 2 FILE /uploads/documents/fatimetou-family-register.pdf
@@ -28,13 +31,67 @@
 0 @I3@ INDI
 1 NAME Sidi /Mohamed/
 1 SEX M
+1 OCCU Archivist
 1 BIRT
 2 DATE 1978
+2 PLAC Nouakchott, Mauritania
 1 WWW https://gallica.bnf.fr/ark:/12148/bpt6k6543210
 1 REFN /uploads/documents/sidi-mohamed-school-record.pdf
 1 FAMC @F1@
+1 FAMS @F2@
+0 @I4@ INDI
+1 NAME Mariem /Salem/
+1 SEX F
+1 OCCU Research assistant
+1 BIRT
+2 DATE 1981
+2 PLAC Atar, Mauritania
+1 NOTE Marriage proof: /uploads/documents/sidi-mariem-marriage-act.pdf
+1 SOUR Gallica https://gallica.bnf.fr/ark:/12148/bpt6k5683533v
+1 FAMS @F2@
+0 @I5@ INDI
+1 NAME Ahmed /Sidi/
+1 SEX M
+1 BIRT
+2 DATE 2005
+2 PLAC Cairo, Egypt
+1 REFN /uploads/documents/ahmed-sidi-birth-certificate.pdf
+1 WWW https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&query=Ahmed%20Sidi
+1 FAMC @F2@
+0 @I6@ INDI
+1 NAME Leila /Sidi/
+1 SEX F
+1 BIRT
+2 DATE 2008
+2 PLAC Alexandria, Egypt
+1 NOTE Linked school file: /uploads/documents/leila-sidi-school-file.pdf
+1 FAMC @F2@
+0 @I7@ INDI
+1 NAME Salem /Ould Ahmed/
+1 SEX M
+1 BIRT
+2 DATE 1922
+2 PLAC Trarza, Mauritania
+1 DEAT
+2 DATE 1994
+2 PLAC Nouakchott, Mauritania
+1 WWW https://gallica.bnf.fr/ark:/12148/bpt6k1234567
+1 REFN /uploads/documents/salem-ould-ahmed-dossier.pdf
+0 @I8@ INDI
+1 NAME Aicha /Mint Salem/
+1 SEX F
+1 BIRT
+2 DATE 1926
+2 PLAC Trarza, Mauritania
+1 NOTE Family notebook scan: /uploads/documents/aicha-mint-salem-notebook.pdf
+1 WWW https://gallica.bnf.fr/ark:/12148/bpt6k7654321
 0 @F1@ FAM
 1 HUSB @I1@
 1 WIFE @I2@
 1 CHIL @I3@
+0 @F2@ FAM
+1 HUSB @I3@
+1 WIFE @I4@
+1 CHIL @I5@
+1 CHIL @I6@
 0 TRLR

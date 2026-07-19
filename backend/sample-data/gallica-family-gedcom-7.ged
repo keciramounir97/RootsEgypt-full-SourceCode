@@ -1,0 +1,98 @@
+0 HEAD
+1 SOUR RootsEgypt
+1 GEDC
+2 VERS 7.0
+1 SCHMA
+2 TAG _LINK https://gallica.bnf.fr/ark:/12148/bpt6k9760202w
+1 CHAR UTF-8
+0 @m1@ INDI
+1 NAME Ould Mohamed /Abdallahi/
+1 SEX M
+1 BIRT
+2 DATE 1948
+2 PLAC Nouakchott, Mauritania
+1 NOTE Patriarch with Gallica and local uploaded proof.
+1 WWW https://gallica.bnf.fr/ark:/12148/bpt6k9760202w
+1 OBJE
+2 FILE /uploads/documents/ould-mohamed-birth-register.pdf
+1 FAMS @f1@
+0 @m2@ INDI
+1 NAME Fatimetou /Mint Ahmed/
+1 SEX F
+1 BIRT
+2 DATE 1952
+2 PLAC Boutilimit, Mauritania
+1 WWW https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&query=Fatimetou%20Mauritanie
+1 OBJE
+2 FILE /uploads/documents/fatimetou-family-register.pdf
+1 FAMS @f1@
+0 @m3@ INDI
+1 NAME Sidi /Mohamed/
+1 SEX M
+1 BIRT
+2 DATE 1978
+2 PLAC Nouakchott, Mauritania
+1 WWW https://gallica.bnf.fr/ark:/12148/bpt6k6543210
+1 OBJE
+2 FILE /uploads/documents/sidi-mohamed-school-record.pdf
+1 FAMC @f1@
+1 FAMS @f2@
+0 @m4@ INDI
+1 NAME Mariem /Salem/
+1 SEX F
+1 BIRT
+2 DATE 1981
+2 PLAC Atar, Mauritania
+1 WWW https://gallica.bnf.fr/ark:/12148/bpt6k5683533v
+1 OBJE
+2 FILE /uploads/documents/sidi-mariem-marriage-act.pdf
+1 FAMS @f2@
+0 @m5@ INDI
+1 NAME Ahmed /Sidi/
+1 SEX M
+1 BIRT
+2 DATE 2005
+2 PLAC Cairo, Egypt
+1 OBJE
+2 FILE /uploads/documents/ahmed-sidi-birth-certificate.pdf
+1 FAMC @f2@
+0 @m6@ INDI
+1 NAME Leila /Sidi/
+1 SEX F
+1 BIRT
+2 DATE 2008
+2 PLAC Alexandria, Egypt
+1 OBJE
+2 FILE /uploads/documents/leila-sidi-school-file.pdf
+1 FAMC @f2@
+0 @m7@ INDI
+1 NAME Salem /Ould Ahmed/
+1 SEX M
+1 BIRT
+2 DATE 1922
+2 PLAC Trarza, Mauritania
+1 DEAT
+2 DATE 1994
+2 PLAC Nouakchott, Mauritania
+1 WWW https://gallica.bnf.fr/ark:/12148/bpt6k1234567
+1 OBJE
+2 FILE /uploads/documents/salem-ould-ahmed-dossier.pdf
+0 @m8@ INDI
+1 NAME Aicha /Mint Salem/
+1 SEX F
+1 BIRT
+2 DATE 1926
+2 PLAC Trarza, Mauritania
+1 WWW https://gallica.bnf.fr/ark:/12148/bpt6k7654321
+1 OBJE
+2 FILE /uploads/documents/aicha-mint-salem-notebook.pdf
+0 @f1@ FAM
+1 HUSB @m1@
+1 WIFE @m2@
+1 CHIL @m3@
+0 @f2@ FAM
+1 HUSB @m3@
+1 WIFE @m4@
+1 CHIL @m5@
+1 CHIL @m6@
+0 TRLR

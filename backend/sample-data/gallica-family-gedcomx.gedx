@@ -1,61 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gedx:Gedcomx xmlns:gedx="http://gedcomx.org/v1/">
   <gedx:person id="m1">
-    <gedx:names>
-      <gedx:name>
-        <gedx:nameForm>
-          <gedx:fullText>Ould Mohamed Abdallahi</gedx:fullText>
-          <gedx:parts>
-            <gedx:part type="http://gedcomx.org/Given">Ould Mohamed</gedx:part>
-            <gedx:part type="http://gedcomx.org/Surname">Abdallahi</gedx:part>
-          </gedx:parts>
-        </gedx:nameForm>
-      </gedx:name>
-    </gedx:names>
+    <gedx:names><gedx:name><gedx:nameForm><gedx:fullText>Ould Mohamed Abdallahi</gedx:fullText><gedx:parts><gedx:part type="http://gedcomx.org/Given">Ould Mohamed</gedx:part><gedx:part type="http://gedcomx.org/Surname">Abdallahi</gedx:part></gedx:parts></gedx:nameForm></gedx:name></gedx:names>
     <gedx:gender type="http://gedcomx.org/Male"/>
-    <gedx:facts>
-      <gedx:fact type="http://gedcomx.org/Birth">
-        <gedx:date original="1948"/>
-        <gedx:place original="Nouakchott, Mauritania"/>
-      </gedx:fact>
-    </gedx:facts>
+    <gedx:facts><gedx:fact type="http://gedcomx.org/Birth"><gedx:date original="1948"/><gedx:place original="Nouakchott, Mauritania"/></gedx:fact></gedx:facts>
     <gedx:source descriptionRef="https://gallica.bnf.fr/ark:/12148/bpt6k9760202w"/>
     <gedx:source descriptionRef="/uploads/documents/ould-mohamed-birth-register.pdf"/>
   </gedx:person>
   <gedx:person id="m2">
-    <gedx:names>
-      <gedx:name>
-        <gedx:nameForm>
-          <gedx:fullText>Fatimetou Mint Ahmed</gedx:fullText>
-        </gedx:nameForm>
-      </gedx:name>
-    </gedx:names>
+    <gedx:names><gedx:name><gedx:nameForm><gedx:fullText>Fatimetou Mint Ahmed</gedx:fullText></gedx:nameForm></gedx:name></gedx:names>
     <gedx:gender type="http://gedcomx.org/Female"/>
+    <gedx:facts><gedx:fact type="http://gedcomx.org/Birth"><gedx:date original="1952"/><gedx:place original="Boutilimit, Mauritania"/></gedx:fact></gedx:facts>
     <gedx:source descriptionRef="https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&amp;query=Fatimetou%20Mauritanie"/>
     <gedx:source descriptionRef="/uploads/documents/fatimetou-family-register.pdf"/>
   </gedx:person>
   <gedx:person id="m3">
-    <gedx:names>
-      <gedx:name>
-        <gedx:nameForm>
-          <gedx:fullText>Sidi Mohamed</gedx:fullText>
-        </gedx:nameForm>
-      </gedx:name>
-    </gedx:names>
+    <gedx:names><gedx:name><gedx:nameForm><gedx:fullText>Sidi Mohamed</gedx:fullText></gedx:nameForm></gedx:name></gedx:names>
     <gedx:gender type="http://gedcomx.org/Male"/>
+    <gedx:facts><gedx:fact type="http://gedcomx.org/Birth"><gedx:date original="1978"/><gedx:place original="Nouakchott, Mauritania"/></gedx:fact></gedx:facts>
     <gedx:source descriptionRef="https://gallica.bnf.fr/ark:/12148/bpt6k6543210"/>
     <gedx:source descriptionRef="/uploads/documents/sidi-mohamed-school-record.pdf"/>
   </gedx:person>
-  <gedx:relationship type="http://gedcomx.org/Couple">
-    <gedx:person1 resource="#m1"/>
-    <gedx:person2 resource="#m2"/>
-  </gedx:relationship>
-  <gedx:relationship type="http://gedcomx.org/ParentChild">
-    <gedx:person1 resource="#m1"/>
-    <gedx:person2 resource="#m3"/>
-  </gedx:relationship>
-  <gedx:relationship type="http://gedcomx.org/ParentChild">
-    <gedx:person1 resource="#m2"/>
-    <gedx:person2 resource="#m3"/>
-  </gedx:relationship>
+  <gedx:person id="m4">
+    <gedx:names><gedx:name><gedx:nameForm><gedx:fullText>Mariem Salem</gedx:fullText></gedx:nameForm></gedx:name></gedx:names>
+    <gedx:gender type="http://gedcomx.org/Female"/>
+    <gedx:facts><gedx:fact type="http://gedcomx.org/Birth"><gedx:date original="1981"/><gedx:place original="Atar, Mauritania"/></gedx:fact></gedx:facts>
+    <gedx:source descriptionRef="https://gallica.bnf.fr/ark:/12148/bpt6k5683533v"/>
+    <gedx:source descriptionRef="/uploads/documents/sidi-mariem-marriage-act.pdf"/>
+  </gedx:person>
+  <gedx:person id="m5">
+    <gedx:names><gedx:name><gedx:nameForm><gedx:fullText>Ahmed Sidi</gedx:fullText></gedx:nameForm></gedx:name></gedx:names>
+    <gedx:gender type="http://gedcomx.org/Male"/>
+    <gedx:facts><gedx:fact type="http://gedcomx.org/Birth"><gedx:date original="2005"/><gedx:place original="Cairo, Egypt"/></gedx:fact></gedx:facts>
+    <gedx:source descriptionRef="/uploads/documents/ahmed-sidi-birth-certificate.pdf"/>
+  </gedx:person>
+  <gedx:person id="m6">
+    <gedx:names><gedx:name><gedx:nameForm><gedx:fullText>Leila Sidi</gedx:fullText></gedx:nameForm></gedx:name></gedx:names>
+    <gedx:gender type="http://gedcomx.org/Female"/>
+    <gedx:facts><gedx:fact type="http://gedcomx.org/Birth"><gedx:date original="2008"/><gedx:place original="Alexandria, Egypt"/></gedx:fact></gedx:facts>
+    <gedx:source descriptionRef="/uploads/documents/leila-sidi-school-file.pdf"/>
+  </gedx:person>
+  <gedx:person id="m7">
+    <gedx:names><gedx:name><gedx:nameForm><gedx:fullText>Salem Ould Ahmed</gedx:fullText></gedx:nameForm></gedx:name></gedx:names>
+    <gedx:gender type="http://gedcomx.org/Male"/>
+    <gedx:facts><gedx:fact type="http://gedcomx.org/Birth"><gedx:date original="1922"/><gedx:place original="Trarza, Mauritania"/></gedx:fact></gedx:facts>
+    <gedx:source descriptionRef="https://gallica.bnf.fr/ark:/12148/bpt6k1234567"/>
+    <gedx:source descriptionRef="/uploads/documents/salem-ould-ahmed-dossier.pdf"/>
+  </gedx:person>
+  <gedx:person id="m8">
+    <gedx:names><gedx:name><gedx:nameForm><gedx:fullText>Aicha Mint Salem</gedx:fullText></gedx:nameForm></gedx:name></gedx:names>
+    <gedx:gender type="http://gedcomx.org/Female"/>
+    <gedx:facts><gedx:fact type="http://gedcomx.org/Birth"><gedx:date original="1926"/><gedx:place original="Trarza, Mauritania"/></gedx:fact></gedx:facts>
+    <gedx:source descriptionRef="https://gallica.bnf.fr/ark:/12148/bpt6k7654321"/>
+    <gedx:source descriptionRef="/uploads/documents/aicha-mint-salem-notebook.pdf"/>
+  </gedx:person>
+  <gedx:relationship type="http://gedcomx.org/Couple"><gedx:person1 resource="#m1"/><gedx:person2 resource="#m2"/></gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/Couple"><gedx:person1 resource="#m3"/><gedx:person2 resource="#m4"/></gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/ParentChild"><gedx:person1 resource="#m1"/><gedx:person2 resource="#m3"/></gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/ParentChild"><gedx:person1 resource="#m2"/><gedx:person2 resource="#m3"/></gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/ParentChild"><gedx:person1 resource="#m3"/><gedx:person2 resource="#m5"/></gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/ParentChild"><gedx:person1 resource="#m4"/><gedx:person2 resource="#m5"/></gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/ParentChild"><gedx:person1 resource="#m3"/><gedx:person2 resource="#m6"/></gedx:relationship>
+  <gedx:relationship type="http://gedcomx.org/ParentChild"><gedx:person1 resource="#m4"/><gedx:person2 resource="#m6"/></gedx:relationship>
 </gedx:Gedcomx>

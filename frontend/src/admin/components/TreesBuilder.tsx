@@ -2497,20 +2497,6 @@ export default function TreesBuilder({
             return loc.length > 25 ? loc.substring(0, 23) + "..." : loc;
           });
 
-        // DETAILS (New)
-        node
-          .append("text")
-          .attr("y", 42)
-          .attr("text-anchor", "middle")
-          .style("font-size", "9px")
-          .style("fill", isDark ? "#ffffff80" : "#0d1b2a80")
-          .style("font-family", "Manrope")
-          .text((d) => {
-            const det = d.details || "";
-            if (!det) return "";
-            return det.length > 30 ? det.substring(0, 28) + "..." : det;
-          });
-
         node
           .append("rect")
           .attr("class", "node-click-hitbox")
@@ -2525,6 +2511,37 @@ export default function TreesBuilder({
           .on("pointerdown.detail", rememberDetailPointer)
           .on("pointerup.detail", openDetailFromPointer)
           .on("click.detail", openPersonDetails);
+
+        const detailButton = node
+          .append("g")
+          .attr("class", "node-open-details-button")
+          .style("cursor", "pointer")
+          .on("pointerdown.detail", rememberDetailPointer)
+          .on("pointerup.detail", openDetailFromPointer)
+          .on("click.detail", openPersonDetails);
+
+        detailButton
+          .append("rect")
+          .attr("x", -58)
+          .attr("y", 36)
+          .attr("width", 116)
+          .attr("height", 20)
+          .attr("rx", 5)
+          .attr("fill", isDark ? "#0d9488" : "#0c4a6e")
+          .attr("stroke", isDark ? "#9de8dd" : "#e8dfca")
+          .attr("stroke-width", 0.6)
+          .attr("opacity", 0.96);
+
+        detailButton
+          .append("text")
+          .attr("y", 50)
+          .attr("text-anchor", "middle")
+          .style("font-size", "10px")
+          .style("font-weight", 700)
+          .style("fill", "#ffffff")
+          .style("font-family", "Manrope")
+          .style("pointer-events", "none")
+          .text(t("legacy.open_details", "Open details"));
 
         const couplePath = (d) => {
           const direction = d.source.x <= d.target.x ? 1 : -1;

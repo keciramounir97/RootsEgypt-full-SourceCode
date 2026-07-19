@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 if (!window.localStorage) {
@@ -55,5 +55,26 @@ describe("TreesBuilder rendering", () => {
 
     expect(errors.join("\n")).not.toMatch(/tree_render_failed|Failed to render tree/i);
     errorSpy.mockRestore();
+  });
+
+  it("opens and closes the persistent person details card from the SVG button", async () => {
+    const people = parseGedcom(SAMPLE_GEDCOM);
+    const { container } = render(<TreesBuilder people={people} readOnly />);
+
+    await waitFor(() => {
+      expect(container.querySelectorAll("g.node-open-details-button").length).toBe(3);
+    });
+
+    fireEvent.click(container.querySelector("g.node-open-details-button") as Element, {
+      clientX: 220,
+      clientY: 180,
+    });
+
+    expect(await screen.findByText("Person card")).toBeTruthy();
+    fireEvent.click(screen.getByLabelText("Close"));
+
+    await waitFor(() => {
+      expect(screen.queryByText("Person card")).toBeNull();
+    });
   });
 });
