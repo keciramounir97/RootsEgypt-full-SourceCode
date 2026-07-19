@@ -4,6 +4,11 @@
 **/dist
 **/*.log
 backend/uploads
+!backend/uploads/
+!backend/uploads/trees/
+!backend/uploads/trees/*.ged
+!backend/uploads/trees/*.gedcom
+!backend/uploads/trees/*.gedx
 backend/private_uploads
 backend/.env
 frontend/.env

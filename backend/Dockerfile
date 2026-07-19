@@ -23,8 +23,10 @@ COPY --from=builder /app/knexfile.js ./
 COPY --from=builder /app/server.js ./
 COPY --from=builder /app/src/db ./src/db
 
-# uploads directory
-RUN mkdir -p uploads private_uploads
+# Restore GEDCOM/source files that are tracked in GitHub, then ensure runtime
+# upload folders exist for new files.
+COPY uploads/ ./uploads/
+RUN mkdir -p uploads/trees private_uploads/trees
 
 EXPOSE 5000
 
