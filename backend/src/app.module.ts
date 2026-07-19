@@ -17,6 +17,7 @@ import { AudiosModule } from './modules/audios/audios.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { SuggestionsModule } from './modules/suggestions/suggestions.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { SettingsModule } from './modules/settings/settings.module';
     DocumentsModule,
     SuggestionsModule,
     SettingsModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [],

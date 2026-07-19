@@ -25,6 +25,23 @@ import {
 import * as path from "path";
 import * as fs from "fs";
 
+type TreePersonInput = { name?: string | null };
+
+export async function insertTreePeopleRows(
+  knex: Knex,
+  treeId: number,
+  people: TreePersonInput[],
+  chunkSize = 500,
+) {
+  const rows = people.map((p) => ({
+    tree_id: treeId,
+    name: (p.name || "").trim() || "Unknown",
+  }));
+
+  if (!rows.length) return;
+  await knex.batchInsert(Person.tableName, rows, chunkSize);
+}
+
 @Injectable()
 export class TreesService implements OnModuleInit {
   constructor(
@@ -423,13 +440,7 @@ export class TreesService implements OnModuleInit {
       await Person.query(this.knex).delete().where("tree_id", treeId);
       if (!people.length) return;
 
-      const chunkSize = 500;
-      for (let i = 0; i < people.length; i += chunkSize) {
-        const chunk = people
-          .slice(i, i + chunkSize)
-          .map((p) => ({ tree_id: treeId, name: p.name }));
-        await Person.query(this.knex).insert(chunk);
-      }
+      await insertTreePeopleRows(this.knex, treeId, people);
     } catch (err) {
       console.error("Failed to rebuild tree people", (err as Error)?.message);
     }

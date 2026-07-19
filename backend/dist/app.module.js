@@ -26,6 +26,7 @@ const audios_module_1 = require("./modules/audios/audios.module");
 const documents_module_1 = require("./modules/documents/documents.module");
 const suggestions_module_1 = require("./modules/suggestions/suggestions.module");
 const settings_module_1 = require("./modules/settings/settings.module");
+const notifications_module_1 = require("./modules/notifications/notifications.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -52,6 +53,7 @@ exports.AppModule = AppModule = __decorate([
             documents_module_1.DocumentsModule,
             suggestions_module_1.SuggestionsModule,
             settings_module_1.SettingsModule,
+            notifications_module_1.NotificationsModule,
         ],
         controllers: [],
         providers: [],

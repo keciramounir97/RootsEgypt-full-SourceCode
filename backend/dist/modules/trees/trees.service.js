@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TreesService = void 0;
+exports.insertTreePeopleRows = insertTreePeopleRows;
 const common_1 = require("@nestjs/common");
 const knex_1 = require("knex");
 const Tree_1 = require("../../models/Tree");
@@ -22,6 +23,15 @@ const file_utils_1 = require("../../common/utils/file.utils");
 const gedcomx_util_1 = require("../../common/utils/gedcomx.util");
 const path = require("path");
 const fs = require("fs");
+async function insertTreePeopleRows(knex, treeId, people, chunkSize = 500) {
+    const rows = people.map((p) => ({
+        tree_id: treeId,
+        name: (p.name || "").trim() || "Unknown",
+    }));
+    if (!rows.length)
+        return;
+    await knex.batchInsert(Person_1.Person.tableName, rows, chunkSize);
+}
 let TreesService = class TreesService {
     constructor(knex, activityService) {
         this.knex = knex;
@@ -360,13 +370,7 @@ let TreesService = class TreesService {
             await Person_1.Person.query(this.knex).delete().where("tree_id", treeId);
             if (!people.length)
                 return;
-            const chunkSize = 500;
-            for (let i = 0; i < people.length; i += chunkSize) {
-                const chunk = people
-                    .slice(i, i + chunkSize)
-                    .map((p) => ({ tree_id: treeId, name: p.name }));
-                await Person_1.Person.query(this.knex).insert(chunk);
-            }
+            await insertTreePeopleRows(this.knex, treeId, people);
         }
         catch (err) {
             console.error("Failed to rebuild tree people", err === null || err === void 0 ? void 0 : err.message);

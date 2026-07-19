@@ -13,6 +13,7 @@ interface TreeRaw {
   isPublic?: boolean;
   gedcom_path?: string;
   gedcomPath?: string;
+  hasGedcom?: boolean;
   owner?: unknown;
   owner_name?: unknown;
   created_at?: string;
@@ -53,7 +54,9 @@ export const normalizeTree = (
     ownerRaw && typeof ownerRaw === "object"
       ? (ownerRaw as OwnerObject).full_name ?? (ownerRaw as OwnerObject).fullName ?? (ownerRaw as OwnerObject).email ?? ""
       : (ownerRaw as string) ?? "";
-  const hasGedcom = !!(tree.gedcom_path ?? tree.gedcomPath);
+  const hasGedcom = Boolean(
+    tree.gedcom_path ?? tree.gedcomPath ?? tree.hasGedcom,
+  );
   const scope = options?.gedcomScope ?? (isPublic ? "public" : "my");
   const gedcomPathPrefix =
     scope === "admin" ? "/api/admin/trees" : scope === "my" ? "/api/my/trees" : "/api/trees";
