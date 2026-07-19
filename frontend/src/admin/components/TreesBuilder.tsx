@@ -2331,6 +2331,25 @@ export default function TreesBuilder({
           setSelectedPerson(found);
         };
 
+        const rememberDetailPointer = (event) => {
+          event?.stopPropagation?.();
+          detailPointerRef.current = {
+            x: Number(event?.clientX) || 0,
+            y: Number(event?.clientY) || 0,
+            active: true,
+          };
+        };
+
+        const openDetailFromPointer = (event, d) => {
+          event?.stopPropagation?.();
+          const start = detailPointerRef.current;
+          detailPointerRef.current = { x: 0, y: 0, active: false };
+          const dx = (Number(event?.clientX) || 0) - start.x;
+          const dy = (Number(event?.clientY) || 0) - start.y;
+          if (!start.active || Math.hypot(dx, dy) > 8) return;
+          openPersonDetails(event, d);
+        };
+
         const node = g
 
           .selectAll("g.node")
@@ -2373,24 +2392,9 @@ export default function TreesBuilder({
               })
           )
 
-          .on("pointerdown.detail", (event) => {
-            detailPointerRef.current = {
-              x: Number(event?.clientX) || 0,
-              y: Number(event?.clientY) || 0,
-              active: true,
-            };
-          })
-          .on("pointerup.detail", (event, d) => {
-            const start = detailPointerRef.current;
-            detailPointerRef.current = { x: 0, y: 0, active: false };
-            const dx = (Number(event?.clientX) || 0) - start.x;
-            const dy = (Number(event?.clientY) || 0) - start.y;
-            if (!start.active || Math.hypot(dx, dy) > 8) return;
-            openPersonDetails(event, d);
-          })
-          .on("click.detail", (event, d) => {
-            openPersonDetails(event, d);
-          });
+          .on("pointerdown.detail", rememberDetailPointer)
+          .on("pointerup.detail", openDetailFromPointer)
+          .on("click.detail", openPersonDetails);
 
         zoomRect.on("click", () => {
           tooltip.style("visibility", "hidden");
@@ -2506,6 +2510,21 @@ export default function TreesBuilder({
             if (!det) return "";
             return det.length > 30 ? det.substring(0, 28) + "..." : det;
           });
+
+        node
+          .append("rect")
+          .attr("class", "node-click-hitbox")
+          .attr("x", -CARD_W / 2)
+          .attr("y", -CARD_H / 2)
+          .attr("width", CARD_W)
+          .attr("height", CARD_H)
+          .attr("rx", 6)
+          .attr("fill", "transparent")
+          .style("pointer-events", "all")
+          .style("cursor", "pointer")
+          .on("pointerdown.detail", rememberDetailPointer)
+          .on("pointerup.detail", openDetailFromPointer)
+          .on("click.detail", openPersonDetails);
 
         const couplePath = (d) => {
           const direction = d.source.x <= d.target.x ? 1 : -1;
