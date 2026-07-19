@@ -30,7 +30,11 @@ import { useLanguage } from "../i18n";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../api/client";
-import { getApiRoot, normalizeTree } from "../api/helpers";
+import {
+  getApiRoot,
+  getGedcomLoadErrorMessage,
+  normalizeTree,
+} from "../api/helpers";
 import HeroSlider from "../components/HeroSlider";
 import { useSiteImages } from "../hooks/useSiteImages";
 import TreesBuilder, {
@@ -267,7 +271,13 @@ export default function Home() {
     } catch (err: any) {
       setViewPeople([]);
       setViewTreeError(
-        err?.response?.data?.message || err?.message || t("legacy.tree_builder_error"),
+        getGedcomLoadErrorMessage(
+          err?.response?.status,
+          typeof err?.response?.data === "string"
+            ? err.response.data
+            : err?.response?.data?.message || err?.message,
+          t("legacy.tree_builder_error", "Failed to load tree."),
+        ),
       );
     } finally {
       setViewLoading(false);

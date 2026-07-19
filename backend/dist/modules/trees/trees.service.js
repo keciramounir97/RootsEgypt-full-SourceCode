@@ -53,6 +53,11 @@ let TreesService = class TreesService {
                 table.string("category", 255).nullable();
             });
         }
+        if (!(await this.knex.schema.hasColumn("family_trees", "gedcom_text"))) {
+            await this.knex.schema.alterTable("family_trees", (table) => {
+                table.text("gedcom_text", "longtext").nullable();
+            });
+        }
     }
     parseBoolean(value, fallback = false) {
         if (value === undefined || value === null || value === "")
@@ -125,6 +130,7 @@ let TreesService = class TreesService {
         }
         const isPublic = this.getPublicInput(data, false);
         let gedcomPath = file ? `/uploads/trees/${file.filename}` : null;
+        const gedcomText = file ? fs.readFileSync(file.path, "utf8") : null;
         let dataFormat = "gedcom";
         if (file) {
             const explicit = (_b = data.data_format) !== null && _b !== void 0 ? _b : data.dataFormat;
@@ -133,7 +139,7 @@ let TreesService = class TreesService {
                 explicit === "gedcom")
                 dataFormat = explicit;
             else {
-                const content = fs.readFileSync(file.path, "utf8").slice(0, 4000);
+                const content = (gedcomText || "").slice(0, 4000);
                 dataFormat = this.inferDataFormat(file.originalname, content);
             }
         }
@@ -150,6 +156,7 @@ let TreesService = class TreesService {
             archive_source: data.archiveSource,
             document_code: data.documentCode,
             gedcom_path: gedcomPath,
+            gedcom_text: gedcomText,
             data_format: dataFormat,
             user_id: userId,
             is_public: isPublic,
@@ -189,7 +196,8 @@ let TreesService = class TreesService {
         if (file) {
             if (tree.gedcom_path)
                 (0, file_utils_1.safeUnlink)((0, file_utils_1.resolveStoredFilePath)(tree.gedcom_path));
-            const fileContent = fs.readFileSync(file.path, "utf8").slice(0, 4000);
+            const fullFileContent = fs.readFileSync(file.path, "utf8");
+            const fileContent = fullFileContent.slice(0, 4000);
             let newPath = `/uploads/trees/${file.filename}`;
             if (!isPublic) {
                 const dest = path.join(file_utils_1.PRIVATE_TREE_UPLOADS_DIR, file.filename);
@@ -197,6 +205,7 @@ let TreesService = class TreesService {
                 newPath = `private/trees/${file.filename}`;
             }
             updateData.gedcom_path = newPath;
+            updateData.gedcom_text = fullFileContent;
             const explicit = (_b = data.data_format) !== null && _b !== void 0 ? _b : data.dataFormat;
             if (explicit === "gedcom7" ||
                 explicit === "gedcomx" ||

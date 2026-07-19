@@ -37,21 +37,9 @@ const escapeGedcomValue = (value: unknown) =>
     .trim();
 
 export const buildFallbackGedcom = (
-  tree: { id?: number; title?: string; description?: string },
+  _tree: { id?: number; title?: string; description?: string },
   people: Array<{ id?: number; name?: string }> = [],
 ) => {
-  const rows = people.length
-    ? people.map((person, index) => ({
-        id: `@I${index + 1}@`,
-        name: escapeGedcomValue(person.name) || `Person ${index + 1}`,
-      }))
-    : [
-        {
-          id: "@I1@",
-          name: escapeGedcomValue(tree?.title) || "Family Tree",
-        },
-      ];
-
   const lines = [
     "0 HEAD",
     "1 SOUR RootsEgypt",
@@ -60,16 +48,26 @@ export const buildFallbackGedcom = (
     "1 CHAR UTF-8",
   ];
 
+  const rows = people.map((person, index) => ({
+    id: `@I${index + 1}@`,
+    name: escapeGedcomValue(person.name) || `Person ${index + 1}`,
+  }));
+
   for (const row of rows) {
     lines.push(`0 ${row.id} INDI`);
     lines.push(`1 NAME ${row.name}`);
-    if (!people.length && tree?.description) {
-      lines.push(`1 NOTE ${escapeGedcomValue(tree.description)}`);
-    }
   }
 
   lines.push("0 TRLR");
   return `${lines.join("\n")}\n`;
+};
+
+export const hasGedcomIndividuals = (content: unknown) =>
+  /^0\s+@[^@]+@\s+INDI\b/im.test(String(content || ""));
+
+export const getStoredGedcomText = (tree: any) => {
+  const content = typeof tree?.gedcom_text === "string" ? tree.gedcom_text : "";
+  return hasGedcomIndividuals(content) ? content : null;
 };
 
 @Controller()
@@ -92,11 +90,27 @@ export class TreesController {
       return;
     }
 
+    const storedGedcom = getStoredGedcomText(tree);
+    if (storedGedcom) {
+      res.type("text/plain; charset=utf-8").send(storedGedcom);
+      return;
+    }
+
     const people = await Person.query(this.knex)
       .where("tree_id", tree.id)
       .orderBy("name", "asc");
-    const fallback = buildFallbackGedcom(tree, people);
-    res.type("text/plain; charset=utf-8").send(fallback);
+    if (people.length) {
+      const fallback = buildFallbackGedcom(tree, people);
+      res.type("text/plain; charset=utf-8").send(fallback);
+      return;
+    }
+
+    res
+      .status(404)
+      .type("text/plain; charset=utf-8")
+      .send(
+        "GEDCOM file missing and no cached people were found. Re-upload or restore the original GEDCOM file for this tree.",
+      );
   }
 
   @Get("trees")

@@ -67,6 +67,11 @@ export class TreesService implements OnModuleInit {
         table.string("category", 255).nullable();
       });
     }
+    if (!(await this.knex.schema.hasColumn("family_trees", "gedcom_text"))) {
+      await this.knex.schema.alterTable("family_trees", (table) => {
+        table.text("gedcom_text", "longtext").nullable();
+      });
+    }
   }
 
   private parseBoolean(value: unknown, fallback = false) {
@@ -146,6 +151,7 @@ export class TreesService implements OnModuleInit {
 
     const isPublic = this.getPublicInput(data, false);
     let gedcomPath = file ? `/uploads/trees/${file.filename}` : null;
+    const gedcomText = file ? fs.readFileSync(file.path, "utf8") : null;
 
     let dataFormat: "gedcom" | "gedcomx" | "gedcom7" = "gedcom";
     if (file) {
@@ -157,7 +163,7 @@ export class TreesService implements OnModuleInit {
       )
         dataFormat = explicit;
       else {
-        const content = fs.readFileSync(file.path, "utf8").slice(0, 4000);
+        const content = (gedcomText || "").slice(0, 4000);
         dataFormat = this.inferDataFormat(file.originalname, content);
       }
     }
@@ -175,6 +181,7 @@ export class TreesService implements OnModuleInit {
       archive_source: data.archiveSource,
       document_code: data.documentCode,
       gedcom_path: gedcomPath,
+      gedcom_text: gedcomText,
       data_format: dataFormat,
       user_id: userId,
       is_public: isPublic,
@@ -227,7 +234,8 @@ export class TreesService implements OnModuleInit {
       // Delete old
       if (tree.gedcom_path) safeUnlink(resolveStoredFilePath(tree.gedcom_path));
 
-      const fileContent = fs.readFileSync(file.path, "utf8").slice(0, 4000);
+      const fullFileContent = fs.readFileSync(file.path, "utf8");
+      const fileContent = fullFileContent.slice(0, 4000);
 
       // Save new (store as-is, no conversion)
       let newPath = `/uploads/trees/${file.filename}`;
@@ -237,6 +245,7 @@ export class TreesService implements OnModuleInit {
         newPath = `private/trees/${file.filename}`;
       }
       updateData.gedcom_path = newPath;
+      updateData.gedcom_text = fullFileContent;
       const explicit = data.data_format ?? data.dataFormat;
       if (
         explicit === "gedcom7" ||

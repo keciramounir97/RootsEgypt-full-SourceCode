@@ -7,6 +7,7 @@ export declare class Tree extends BaseModel {
     description?: string;
     category?: string;
     gedcom_path?: string;
+    gedcom_text?: string;
     data_format?: "gedcom" | "gedcomx" | "gedcom7";
     archive_source?: string;
     document_code?: string;

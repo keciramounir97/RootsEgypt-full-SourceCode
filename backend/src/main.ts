@@ -12,7 +12,10 @@ import { Knex } from "knex";
 import { CorsOptions as ExpressCorsOptions } from "cors";
 import cors = require("cors");
 import * as bcrypt from "bcryptjs";
-import { buildFallbackGedcom } from "./modules/trees/trees.controller";
+import {
+  buildFallbackGedcom,
+  getStoredGedcomText,
+} from "./modules/trees/trees.controller";
 
 /** Production CORS origins: RootsEgypt .org domains + EasyPanel + dev localhost */
 const ALLOWED_CORS_ORIGINS = [
@@ -179,6 +182,16 @@ async function ensureCriticalSchema(knex: Knex) {
       }
     }
 
+    if (
+      (await knex.schema.hasTable("family_trees")) &&
+      !(await knex.schema.hasColumn("family_trees", "gedcom_text"))
+    ) {
+      await knex.schema.alterTable("family_trees", (t) =>
+        t.text("gedcom_text", "longtext").nullable(),
+      );
+      console.log("Schema patch: added family_trees.gedcom_text");
+    }
+
     // books.updated_at  (20250131 migration)
     if (await knex.schema.hasTable("books")) {
       if (!(await knex.schema.hasColumn("books", "updated_at"))) {
@@ -314,6 +327,7 @@ async function ensureCriticalSchema(knex: Knex) {
         t.string("title").notNullable();
         t.string("description");
         t.string("gedcom_path");
+        t.text("gedcom_text", "longtext").nullable();
         t.string("data_format", 20).defaultTo("gedcom");
         t.string("archive_source");
         t.string("document_code");
@@ -710,14 +724,28 @@ async function bootstrap() {
             .send("GEDCOM upload not found");
         }
 
+        const storedGedcom = getStoredGedcomText(tree);
+        if (storedGedcom) {
+          return res.type("text/plain; charset=utf-8").send(storedGedcom);
+        }
+
         const people = await uploadFallbackKnex("persons")
           .select("id", "name")
           .where("tree_id", tree.id)
           .orderBy("name", "asc");
 
+        if (people.length) {
+          return res
+            .type("text/plain; charset=utf-8")
+            .send(buildFallbackGedcom(tree, people));
+        }
+
         return res
+          .status(404)
           .type("text/plain; charset=utf-8")
-          .send(buildFallbackGedcom(tree, people));
+          .send(
+            "GEDCOM file missing and no cached people were found. Re-upload or restore the original GEDCOM file for this tree.",
+          );
       } catch (err: any) {
         console.warn(
           `Upload tree fallback failed for ${filename}: ${err?.message || err}`,

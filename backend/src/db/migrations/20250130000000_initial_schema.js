@@ -127,6 +127,7 @@ exports.up = async function (knex) {
       table.string("title").notNullable();
       table.string("description");
       table.string("gedcom_path");
+      table.text("gedcom_text", "longtext").nullable();
       table.string("archive_source");
       table.string("document_code");
       table.boolean("is_public").defaultTo(false);

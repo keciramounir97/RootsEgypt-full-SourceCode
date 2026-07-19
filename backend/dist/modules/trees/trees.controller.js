@@ -13,7 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var TreesController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TreesController = exports.buildFallbackGedcom = void 0;
+exports.TreesController = exports.getStoredGedcomText = exports.hasGedcomIndividuals = exports.buildFallbackGedcom = void 0;
 const common_1 = require("@nestjs/common");
 const trees_service_1 = require("./trees.service");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
@@ -29,18 +29,7 @@ const escapeGedcomValue = (value) => String(value !== null && value !== void 0 ?
     .replace(/\r?\n/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-const buildFallbackGedcom = (tree, people = []) => {
-    const rows = people.length
-        ? people.map((person, index) => ({
-            id: `@I${index + 1}@`,
-            name: escapeGedcomValue(person.name) || `Person ${index + 1}`,
-        }))
-        : [
-            {
-                id: "@I1@",
-                name: escapeGedcomValue(tree === null || tree === void 0 ? void 0 : tree.title) || "Family Tree",
-            },
-        ];
+const buildFallbackGedcom = (_tree, people = []) => {
     const lines = [
         "0 HEAD",
         "1 SOUR RootsEgypt",
@@ -48,17 +37,25 @@ const buildFallbackGedcom = (tree, people = []) => {
         "2 VERS 5.5.1",
         "1 CHAR UTF-8",
     ];
+    const rows = people.map((person, index) => ({
+        id: `@I${index + 1}@`,
+        name: escapeGedcomValue(person.name) || `Person ${index + 1}`,
+    }));
     for (const row of rows) {
         lines.push(`0 ${row.id} INDI`);
         lines.push(`1 NAME ${row.name}`);
-        if (!people.length && (tree === null || tree === void 0 ? void 0 : tree.description)) {
-            lines.push(`1 NOTE ${escapeGedcomValue(tree.description)}`);
-        }
     }
     lines.push("0 TRLR");
     return `${lines.join("\n")}\n`;
 };
 exports.buildFallbackGedcom = buildFallbackGedcom;
+const hasGedcomIndividuals = (content) => /^0\s+@[^@]+@\s+INDI\b/im.test(String(content || ""));
+exports.hasGedcomIndividuals = hasGedcomIndividuals;
+const getStoredGedcomText = (tree) => {
+    const content = typeof (tree === null || tree === void 0 ? void 0 : tree.gedcom_text) === "string" ? tree.gedcom_text : "";
+    return (0, exports.hasGedcomIndividuals)(content) ? content : null;
+};
+exports.getStoredGedcomText = getStoredGedcomText;
 let TreesController = TreesController_1 = class TreesController {
     constructor(treesService, knex) {
         this.treesService = treesService;
@@ -75,11 +72,23 @@ let TreesController = TreesController_1 = class TreesController {
             res.download(filePath, safeName);
             return;
         }
+        const storedGedcom = (0, exports.getStoredGedcomText)(tree);
+        if (storedGedcom) {
+            res.type("text/plain; charset=utf-8").send(storedGedcom);
+            return;
+        }
         const people = await Person_1.Person.query(this.knex)
             .where("tree_id", tree.id)
             .orderBy("name", "asc");
-        const fallback = (0, exports.buildFallbackGedcom)(tree, people);
-        res.type("text/plain; charset=utf-8").send(fallback);
+        if (people.length) {
+            const fallback = (0, exports.buildFallbackGedcom)(tree, people);
+            res.type("text/plain; charset=utf-8").send(fallback);
+            return;
+        }
+        res
+            .status(404)
+            .type("text/plain; charset=utf-8")
+            .send("GEDCOM file missing and no cached people were found. Re-upload or restore the original GEDCOM file for this tree.");
     }
     async listPublic() {
         try {

@@ -18,6 +18,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useLanguage } from "../i18n";
 import { api } from "../api/client";
+import { getGedcomLoadErrorMessage } from "../api/helpers";
 import TreesBuilder, { parseGedcom, parseGedcomX } from "../admin/components/TreesBuilder";
 import ErrorBoundary from "../components/ErrorBoundary";
 import RootsPageShell from "../components/RootsPageShell";
@@ -140,9 +141,17 @@ export default function Research() {
       if (!list.length) {
         setViewTreeError(t("legacy.gedcom_no_people", "No individuals found in GEDCOM."));
       }
-    } catch (err) {
+    } catch (err: any) {
       setViewPeople([]);
-      setViewTreeError(err?.response?.data?.message || err?.message || t("legacy.tree_builder_error", "Failed to load tree."));
+      setViewTreeError(
+        getGedcomLoadErrorMessage(
+          err?.response?.status,
+          typeof err?.response?.data === "string"
+            ? err.response.data
+            : err?.response?.data?.message || err?.message,
+          t("legacy.tree_builder_error", "Failed to load tree."),
+        ),
+      );
     } finally {
       setViewLoading(false);
     }
@@ -637,8 +646,6 @@ function TreeResult({ tree, borderColor, onView }) {
     </div>
   );
 }
-
-
 
 
 

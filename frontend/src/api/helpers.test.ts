@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeTree } from "./helpers";
+import { getGedcomLoadErrorMessage, normalizeTree } from "./helpers";
 
 describe("normalizeTree", () => {
   it("keeps API-provided hasGedcom true even when the file path is hidden", () => {
@@ -15,5 +15,13 @@ describe("normalizeTree", () => {
 
     expect(tree.hasGedcom).toBe(true);
     expect(tree.gedcomUrl).toBe("https://api.rootsegypt.org/api/trees/12/gedcom");
+  });
+});
+
+describe("getGedcomLoadErrorMessage", () => {
+  it("explains that a missing GEDCOM must be re-uploaded", () => {
+    expect(getGedcomLoadErrorMessage(404, "GEDCOM file missing")).toContain(
+      "Re-upload",
+    );
   });
 });

@@ -15,7 +15,12 @@ import {
   X,
 } from "lucide-react";
 import { api } from "../api/client";
-import { getApiErrorMessage, getApiRoot, normalizeTree } from "../api/helpers";
+import {
+  getApiErrorMessage,
+  getApiRoot,
+  getGedcomLoadErrorMessage,
+  normalizeTree,
+} from "../api/helpers";
 import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
 import TreesBuilder, { parseGedcom, parseGedcomX } from "../admin/components/TreesBuilder";
@@ -131,7 +136,14 @@ export default function GalleryTrees() {
       const gedcomUrl = fileUrl(tree.gedcomUrl);
       const response = await fetch(gedcomUrl);
       if (!response.ok) {
-        setViewTreeError(t("legacy.tree_builder_error", "Failed to load tree."));
+        const body = await response.text().catch(() => "");
+        setViewTreeError(
+          getGedcomLoadErrorMessage(
+            response.status,
+            body,
+            t("legacy.tree_builder_error", "Failed to load tree."),
+          ),
+        );
         setViewLoading(false);
         return;
       }

@@ -86,6 +86,25 @@ export const getApiRoot = () => {
   return base.replace(/\/api\/?$/, "");
 };
 
+export const GEDCOM_REUPLOAD_MESSAGE =
+  "Original GEDCOM file is missing on the server. Re-upload or restore the GEDCOM file for this tree to load the full visualizer.";
+
+export const getGedcomLoadErrorMessage = (
+  status?: number,
+  body?: string,
+  fallback = "Failed to load tree.",
+) => {
+  const normalized = String(body || "").toLowerCase();
+  if (
+    status === 404 ||
+    normalized.includes("gedcom file missing") ||
+    normalized.includes("gedcom upload not found")
+  ) {
+    return GEDCOM_REUPLOAD_MESSAGE;
+  }
+  return body?.trim() || fallback;
+};
+
 export const shouldFallbackRoute = (error: unknown) => {
   const err = error as { response?: { status?: number } };
   const status = err?.response?.status;

@@ -2,7 +2,7 @@ import { TreesService } from './trees.service';
 import { Response, Request as ExpressRequest } from "express";
 import { Knex } from "knex";
 import { CreateTreeDto, UpdateTreeDto } from './dto/tree.dto';
-export declare const buildFallbackGedcom: (tree: {
+export declare const buildFallbackGedcom: (_tree: {
     id?: number;
     title?: string;
     description?: string;
@@ -10,6 +10,8 @@ export declare const buildFallbackGedcom: (tree: {
     id?: number;
     name?: string;
 }>) => string;
+export declare const hasGedcomIndividuals: (content: unknown) => boolean;
+export declare const getStoredGedcomText: (tree: any) => any;
 export declare class TreesController {
     private readonly treesService;
     private readonly knex;

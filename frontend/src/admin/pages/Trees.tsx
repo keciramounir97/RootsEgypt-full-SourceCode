@@ -19,6 +19,7 @@ import { useThemeStore } from "../../store/theme";
 import { api } from "../../api/client";
 import {
   getApiErrorMessage,
+  getGedcomLoadErrorMessage,
   normalizeTree,
   requestWithFallback,
   shouldFallbackRoute,
@@ -580,13 +581,21 @@ export default function Trees() {
       peopleDirtyRef.current = false;
 
       setSaveSuccess(t("legacy.tree_loaded", "Tree loaded."));
-    } catch (err) {
+    } catch (err: any) {
       setPeople([]);
 
-      setGedcomError(getApiErrorMessage(err, "Failed to load tree file"));
+      const gedcomMessage = getGedcomLoadErrorMessage(
+        err?.response?.status,
+        typeof err?.response?.data === "string"
+          ? err.response.data
+          : err?.response?.data?.message || err?.message,
+        getApiErrorMessage(err, "Failed to load tree file"),
+      );
+
+      setGedcomError(gedcomMessage);
 
       peopleDirtyRef.current = false;
-      setSaveError(getApiErrorMessage(err, "Failed to load tree file"));
+      setSaveError(gedcomMessage);
     } finally {
       setLoadingGedcom(false);
     }
