@@ -7,5 +7,6 @@ export declare const PRIVATE_UPLOADS_DIR: string;
 export declare const PRIVATE_BOOK_UPLOADS_DIR: string;
 export declare const PRIVATE_TREE_UPLOADS_DIR: string;
 export declare const resolveStoredFilePath: (storedPath: string) => string | null;
+export declare const resolveExistingStoredFilePath: (storedPath: string) => string | null;
 export declare const safeUnlink: (filePath: string) => void;
 export declare const safeMoveFile: (src: string, dest: string) => void;

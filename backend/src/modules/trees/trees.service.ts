@@ -12,6 +12,7 @@ import { Person } from "../../models/Person";
 import { ActivityService } from "../activity/activity.service";
 import {
   resolveStoredFilePath,
+  resolveExistingStoredFilePath,
   safeUnlink,
   safeMoveFile,
   PRIVATE_TREE_UPLOADS_DIR,
@@ -307,7 +308,7 @@ export class TreesService implements OnModuleInit {
   }
 
   getGedcomPath(tree: Tree) {
-    return resolveStoredFilePath(tree.gedcom_path);
+    return resolveExistingStoredFilePath(tree.gedcom_path);
   }
 
   /** Infer data_format from file extension and optional content. .ged with VERS 7.0 -> gedcom7. */

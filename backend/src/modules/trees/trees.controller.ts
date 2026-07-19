@@ -16,6 +16,7 @@ import {
   ForbiddenException,
   ParseIntPipe,
   Logger,
+  Inject,
 } from "@nestjs/common";
 import { TreesService } from './trees.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -23,16 +24,80 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response, Request as ExpressRequest } from "express";
+import { Knex } from "knex";
 import * as fs from 'fs';
 import * as path from 'path';
 import { CreateTreeDto, UpdateTreeDto } from './dto/tree.dto';
+import { Person } from '../../models/Person';
 
-const EMPTY_GEDCOM = '0 HEAD\n1 GEDC\n2 VERS 5.5.1\n0 TRLR\n';
+const escapeGedcomValue = (value: unknown) =>
+  String(value ?? "")
+    .replace(/\r?\n/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+export const buildFallbackGedcom = (
+  tree: { id?: number; title?: string; description?: string },
+  people: Array<{ id?: number; name?: string }> = [],
+) => {
+  const rows = people.length
+    ? people.map((person, index) => ({
+        id: `@I${index + 1}@`,
+        name: escapeGedcomValue(person.name) || `Person ${index + 1}`,
+      }))
+    : [
+        {
+          id: "@I1@",
+          name: escapeGedcomValue(tree?.title) || "Family Tree",
+        },
+      ];
+
+  const lines = [
+    "0 HEAD",
+    "1 SOUR RootsEgypt",
+    "1 GEDC",
+    "2 VERS 5.5.1",
+    "1 CHAR UTF-8",
+  ];
+
+  for (const row of rows) {
+    lines.push(`0 ${row.id} INDI`);
+    lines.push(`1 NAME ${row.name}`);
+    if (!people.length && tree?.description) {
+      lines.push(`1 NOTE ${escapeGedcomValue(tree.description)}`);
+    }
+  }
+
+  lines.push("0 TRLR");
+  return `${lines.join("\n")}\n`;
+};
 
 @Controller()
 export class TreesController {
   private readonly logger = new Logger(TreesController.name);
-  constructor(private readonly treesService: TreesService) {}
+  constructor(
+    private readonly treesService: TreesService,
+    @Inject("KnexConnection") private readonly knex: Knex,
+  ) {}
+
+  private async sendGedcomResponse(tree: any, res: Response) {
+    const filePath = tree.gedcom_path
+      ? this.treesService.getGedcomPath(tree)
+      : null;
+    if (filePath && fs.existsSync(filePath)) {
+      const ext = path.extname(filePath) || ".ged";
+      const safeName =
+        ((tree.title || "tree").replace(/[^\w.-]+/g, "_").trim() || "tree") + ext;
+      res.download(filePath, safeName);
+      return;
+    }
+
+    const people = await Person.query(this.knex)
+      .where("tree_id", tree.id)
+      .orderBy("name", "asc");
+    const fallback = buildFallbackGedcom(tree, people);
+    res.type("text/plain; charset=utf-8").send(fallback);
+  }
 
   @Get("trees")
   async listPublic() {
@@ -53,17 +118,7 @@ export class TreesController {
     @Res() res: Response,
   ) {
     const tree = await this.treesService.getPublic(id);
-    const filePath = tree.gedcom_path
-      ? this.treesService.getGedcomPath(tree)
-      : null;
-    if (!filePath || !fs.existsSync(filePath)) {
-      res.type("text/plain; charset=utf-8").send(EMPTY_GEDCOM);
-      return;
-    }
-    const ext = path.extname(filePath) || ".ged";
-    const safeName =
-      ((tree.title || "tree").replace(/[^\w.-]+/g, "_").trim() || "tree") + ext;
-    res.download(filePath, safeName);
+    await this.sendGedcomResponse(tree, res);
   }
 
   @Get("trees/:id")
@@ -151,17 +206,7 @@ export class TreesController {
     const tree = await this.treesService.findOne(id);
     if (tree.user_id !== req.user.id) throw new ForbiddenException();
 
-    const filePath = tree.gedcom_path
-      ? this.treesService.getGedcomPath(tree)
-      : null;
-    if (!filePath || !fs.existsSync(filePath)) {
-      res.type("text/plain; charset=utf-8").send(EMPTY_GEDCOM);
-      return;
-    }
-    const ext = path.extname(filePath) || ".ged";
-    const safeName =
-      ((tree.title || "tree").replace(/[^\w.-]+/g, "_").trim() || "tree") + ext;
-    res.download(filePath, safeName);
+    await this.sendGedcomResponse(tree, res);
   }
 
   // Admin Routes
@@ -187,17 +232,7 @@ export class TreesController {
     @Res() res: Response,
   ) {
     const tree = await this.treesService.findOne(id);
-    const filePath = tree.gedcom_path
-      ? this.treesService.getGedcomPath(tree)
-      : null;
-    if (!filePath || !fs.existsSync(filePath)) {
-      res.type("text/plain; charset=utf-8").send(EMPTY_GEDCOM);
-      return;
-    }
-    const ext = path.extname(filePath) || ".ged";
-    const safeName =
-      ((tree.title || "tree").replace(/[^\w.-]+/g, "_").trim() || "tree") + ext;
-    res.download(filePath, safeName);
+    await this.sendGedcomResponse(tree, res);
   }
 
   @Post("admin/trees")

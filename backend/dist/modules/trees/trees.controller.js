@@ -13,21 +13,73 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var TreesController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TreesController = void 0;
+exports.TreesController = exports.buildFallbackGedcom = void 0;
 const common_1 = require("@nestjs/common");
 const trees_service_1 = require("./trees.service");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("../auth/guards/roles.guard");
 const roles_decorator_1 = require("../../common/decorators/roles.decorator");
 const platform_express_1 = require("@nestjs/platform-express");
+const knex_1 = require("knex");
 const fs = require("fs");
 const path = require("path");
 const tree_dto_1 = require("./dto/tree.dto");
-const EMPTY_GEDCOM = '0 HEAD\n1 GEDC\n2 VERS 5.5.1\n0 TRLR\n';
+const Person_1 = require("../../models/Person");
+const escapeGedcomValue = (value) => String(value !== null && value !== void 0 ? value : "")
+    .replace(/\r?\n/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+const buildFallbackGedcom = (tree, people = []) => {
+    const rows = people.length
+        ? people.map((person, index) => ({
+            id: `@I${index + 1}@`,
+            name: escapeGedcomValue(person.name) || `Person ${index + 1}`,
+        }))
+        : [
+            {
+                id: "@I1@",
+                name: escapeGedcomValue(tree === null || tree === void 0 ? void 0 : tree.title) || "Family Tree",
+            },
+        ];
+    const lines = [
+        "0 HEAD",
+        "1 SOUR RootsEgypt",
+        "1 GEDC",
+        "2 VERS 5.5.1",
+        "1 CHAR UTF-8",
+    ];
+    for (const row of rows) {
+        lines.push(`0 ${row.id} INDI`);
+        lines.push(`1 NAME ${row.name}`);
+        if (!people.length && (tree === null || tree === void 0 ? void 0 : tree.description)) {
+            lines.push(`1 NOTE ${escapeGedcomValue(tree.description)}`);
+        }
+    }
+    lines.push("0 TRLR");
+    return `${lines.join("\n")}\n`;
+};
+exports.buildFallbackGedcom = buildFallbackGedcom;
 let TreesController = TreesController_1 = class TreesController {
-    constructor(treesService) {
+    constructor(treesService, knex) {
         this.treesService = treesService;
+        this.knex = knex;
         this.logger = new common_1.Logger(TreesController_1.name);
+    }
+    async sendGedcomResponse(tree, res) {
+        const filePath = tree.gedcom_path
+            ? this.treesService.getGedcomPath(tree)
+            : null;
+        if (filePath && fs.existsSync(filePath)) {
+            const ext = path.extname(filePath) || ".ged";
+            const safeName = ((tree.title || "tree").replace(/[^\w.-]+/g, "_").trim() || "tree") + ext;
+            res.download(filePath, safeName);
+            return;
+        }
+        const people = await Person_1.Person.query(this.knex)
+            .where("tree_id", tree.id)
+            .orderBy("name", "asc");
+        const fallback = (0, exports.buildFallbackGedcom)(tree, people);
+        res.type("text/plain; charset=utf-8").send(fallback);
     }
     async listPublic() {
         try {
@@ -40,16 +92,7 @@ let TreesController = TreesController_1 = class TreesController {
     }
     async downloadPublicGedcom(id, res) {
         const tree = await this.treesService.getPublic(id);
-        const filePath = tree.gedcom_path
-            ? this.treesService.getGedcomPath(tree)
-            : null;
-        if (!filePath || !fs.existsSync(filePath)) {
-            res.type("text/plain; charset=utf-8").send(EMPTY_GEDCOM);
-            return;
-        }
-        const ext = path.extname(filePath) || ".ged";
-        const safeName = ((tree.title || "tree").replace(/[^\w.-]+/g, "_").trim() || "tree") + ext;
-        res.download(filePath, safeName);
+        await this.sendGedcomResponse(tree, res);
     }
     async getPublic(id) {
         return this.treesService.getPublic(id);
@@ -85,16 +128,7 @@ let TreesController = TreesController_1 = class TreesController {
         const tree = await this.treesService.findOne(id);
         if (tree.user_id !== req.user.id)
             throw new common_1.ForbiddenException();
-        const filePath = tree.gedcom_path
-            ? this.treesService.getGedcomPath(tree)
-            : null;
-        if (!filePath || !fs.existsSync(filePath)) {
-            res.type("text/plain; charset=utf-8").send(EMPTY_GEDCOM);
-            return;
-        }
-        const ext = path.extname(filePath) || ".ged";
-        const safeName = ((tree.title || "tree").replace(/[^\w.-]+/g, "_").trim() || "tree") + ext;
-        res.download(filePath, safeName);
+        await this.sendGedcomResponse(tree, res);
     }
     async listAdmin() {
         return this.treesService.listAdmin();
@@ -104,16 +138,7 @@ let TreesController = TreesController_1 = class TreesController {
     }
     async downloadAdminGedcom(id, res) {
         const tree = await this.treesService.findOne(id);
-        const filePath = tree.gedcom_path
-            ? this.treesService.getGedcomPath(tree)
-            : null;
-        if (!filePath || !fs.existsSync(filePath)) {
-            res.type("text/plain; charset=utf-8").send(EMPTY_GEDCOM);
-            return;
-        }
-        const ext = path.extname(filePath) || ".ged";
-        const safeName = ((tree.title || "tree").replace(/[^\w.-]+/g, "_").trim() || "tree") + ext;
-        res.download(filePath, safeName);
+        await this.sendGedcomResponse(tree, res);
     }
     async createAdmin(body, req, file) {
         return this.treesService.create(body, req.user.id, file);
@@ -304,6 +329,7 @@ __decorate([
 ], TreesController.prototype, "deleteAdmin", null);
 exports.TreesController = TreesController = TreesController_1 = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [trees_service_1.TreesService])
+    __param(1, (0, common_1.Inject)("KnexConnection")),
+    __metadata("design:paramtypes", [trees_service_1.TreesService, Function])
 ], TreesController);
 //# sourceMappingURL=trees.controller.js.map

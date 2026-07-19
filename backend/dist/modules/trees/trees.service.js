@@ -248,7 +248,7 @@ let TreesService = class TreesService {
         return { message: "Deleted" };
     }
     getGedcomPath(tree) {
-        return (0, file_utils_1.resolveStoredFilePath)(tree.gedcom_path);
+        return (0, file_utils_1.resolveExistingStoredFilePath)(tree.gedcom_path);
     }
     inferDataFormat(filename, content) {
         const ext = (filename || "").toLowerCase().split(".").pop() || "";

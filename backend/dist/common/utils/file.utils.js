@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.safeMoveFile = exports.safeUnlink = exports.resolveStoredFilePath = exports.PRIVATE_TREE_UPLOADS_DIR = exports.PRIVATE_BOOK_UPLOADS_DIR = exports.PRIVATE_UPLOADS_DIR = exports.SITE_UPLOADS_DIR = exports.GALLERY_UPLOADS_DIR = exports.TREE_UPLOADS_DIR = exports.BOOK_UPLOADS_DIR = exports.UPLOADS_DIR = void 0;
+exports.safeMoveFile = exports.safeUnlink = exports.resolveExistingStoredFilePath = exports.resolveStoredFilePath = exports.PRIVATE_TREE_UPLOADS_DIR = exports.PRIVATE_BOOK_UPLOADS_DIR = exports.PRIVATE_UPLOADS_DIR = exports.SITE_UPLOADS_DIR = exports.GALLERY_UPLOADS_DIR = exports.TREE_UPLOADS_DIR = exports.BOOK_UPLOADS_DIR = exports.UPLOADS_DIR = void 0;
 const path = require("path");
 const fs = require("fs");
 exports.UPLOADS_DIR = path.join(__dirname, '..', '..', '..', 'uploads');
@@ -40,6 +40,59 @@ const resolveStoredFilePath = (storedPath) => {
     return path.join(path.dirname(exports.UPLOADS_DIR), rel.replace(/^\//, ''));
 };
 exports.resolveStoredFilePath = resolveStoredFilePath;
+const resolveExistingStoredFilePath = (storedPath) => {
+    const rel = String(storedPath || '').trim();
+    if (!rel)
+        return null;
+    const withoutLeadingSlash = rel.replace(/^\//, '');
+    const uploadRelative = withoutLeadingSlash.replace(/^uploads\/?/, '');
+    const privateRelative = withoutLeadingSlash.replace(/^private\/?/, '');
+    const candidates = new Set();
+    const add = (candidate) => {
+        if (candidate)
+            candidates.add(path.normalize(candidate));
+    };
+    add((0, exports.resolveStoredFilePath)(rel));
+    if (path.isAbsolute(rel))
+        add(rel);
+    const configuredUploads = process.env.UPLOADS_DIR || process.env.ROOTS_UPLOADS_DIR;
+    if (configuredUploads) {
+        if (rel.startsWith('/uploads/') || withoutLeadingSlash.startsWith('uploads/')) {
+            add(path.join(configuredUploads, uploadRelative));
+        }
+        else if (withoutLeadingSlash.startsWith('private/')) {
+            add(path.join(path.dirname(configuredUploads), 'private_uploads', privateRelative));
+        }
+    }
+    for (const base of [
+        path.join(process.cwd(), 'uploads'),
+        path.join(process.cwd(), '..', 'uploads'),
+        path.join(process.cwd(), 'public', 'uploads'),
+        path.join(process.cwd(), '..', 'public_html', 'uploads'),
+    ]) {
+        if (rel.startsWith('/uploads/') || withoutLeadingSlash.startsWith('uploads/')) {
+            add(path.join(base, uploadRelative));
+        }
+    }
+    for (const base of [
+        path.join(process.cwd(), 'private_uploads'),
+        path.join(process.cwd(), '..', 'private_uploads'),
+    ]) {
+        if (withoutLeadingSlash.startsWith('private/')) {
+            add(path.join(base, privateRelative));
+        }
+    }
+    for (const candidate of candidates) {
+        try {
+            if (fs.existsSync(candidate))
+                return candidate;
+        }
+        catch (_a) {
+        }
+    }
+    return (0, exports.resolveStoredFilePath)(rel);
+};
+exports.resolveExistingStoredFilePath = resolveExistingStoredFilePath;
 const safeUnlink = (filePath) => {
     if (!filePath)
         return;

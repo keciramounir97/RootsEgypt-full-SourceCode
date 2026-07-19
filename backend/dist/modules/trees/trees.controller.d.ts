@@ -1,10 +1,21 @@
 import { TreesService } from './trees.service';
 import { Response, Request as ExpressRequest } from "express";
+import { Knex } from "knex";
 import { CreateTreeDto, UpdateTreeDto } from './dto/tree.dto';
+export declare const buildFallbackGedcom: (tree: {
+    id?: number;
+    title?: string;
+    description?: string;
+}, people?: Array<{
+    id?: number;
+    name?: string;
+}>) => string;
 export declare class TreesController {
     private readonly treesService;
+    private readonly knex;
     private readonly logger;
-    constructor(treesService: TreesService);
+    constructor(treesService: TreesService, knex: Knex);
+    private sendGedcomResponse;
     listPublic(): Promise<import("../../models/Tree").Tree[]>;
     downloadPublicGedcom(id: number, res: Response): Promise<void>;
     getPublic(id: number): Promise<import("../../models/Tree").Tree>;

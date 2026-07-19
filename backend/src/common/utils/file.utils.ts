@@ -43,6 +43,62 @@ export const resolveStoredFilePath = (storedPath: string): string | null => {
     return path.join(path.dirname(UPLOADS_DIR), rel.replace(/^\//, ''));
 };
 
+export const resolveExistingStoredFilePath = (storedPath: string): string | null => {
+    const rel = String(storedPath || '').trim();
+    if (!rel) return null;
+
+    const withoutLeadingSlash = rel.replace(/^\//, '');
+    const uploadRelative = withoutLeadingSlash.replace(/^uploads\/?/, '');
+    const privateRelative = withoutLeadingSlash.replace(/^private\/?/, '');
+    const candidates = new Set<string>();
+
+    const add = (candidate?: string | null) => {
+        if (candidate) candidates.add(path.normalize(candidate));
+    };
+
+    add(resolveStoredFilePath(rel));
+    if (path.isAbsolute(rel)) add(rel);
+
+    const configuredUploads = process.env.UPLOADS_DIR || process.env.ROOTS_UPLOADS_DIR;
+    if (configuredUploads) {
+        if (rel.startsWith('/uploads/') || withoutLeadingSlash.startsWith('uploads/')) {
+            add(path.join(configuredUploads, uploadRelative));
+        } else if (withoutLeadingSlash.startsWith('private/')) {
+            add(path.join(path.dirname(configuredUploads), 'private_uploads', privateRelative));
+        }
+    }
+
+    for (const base of [
+        path.join(process.cwd(), 'uploads'),
+        path.join(process.cwd(), '..', 'uploads'),
+        path.join(process.cwd(), 'public', 'uploads'),
+        path.join(process.cwd(), '..', 'public_html', 'uploads'),
+    ]) {
+        if (rel.startsWith('/uploads/') || withoutLeadingSlash.startsWith('uploads/')) {
+            add(path.join(base, uploadRelative));
+        }
+    }
+
+    for (const base of [
+        path.join(process.cwd(), 'private_uploads'),
+        path.join(process.cwd(), '..', 'private_uploads'),
+    ]) {
+        if (withoutLeadingSlash.startsWith('private/')) {
+            add(path.join(base, privateRelative));
+        }
+    }
+
+    for (const candidate of candidates) {
+        try {
+            if (fs.existsSync(candidate)) return candidate;
+        } catch {
+            // Try the next candidate.
+        }
+    }
+
+    return resolveStoredFilePath(rel);
+};
+
 export const safeUnlink = (filePath: string) => {
     if (!filePath) return;
     try {
