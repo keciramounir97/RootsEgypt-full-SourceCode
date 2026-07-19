@@ -94,7 +94,7 @@ const addUniqueSourceLink = (links, raw) => {
   const candidates = urls.length ? urls : [value];
   for (const candidate of candidates) {
     const link = String(candidate || "").trim().replace(/[).,;]+$/, "");
-    if (!link || !/^https?:\/\//i.test(link)) continue;
+    if (!link || (!/^https?:\/\//i.test(link) && !LOCAL_DOC_RE.test(link))) continue;
     if (!links.some((existing) => String(existing).toLowerCase() === link.toLowerCase())) {
       links.push(link);
     }

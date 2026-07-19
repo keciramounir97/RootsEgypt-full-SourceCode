@@ -20,6 +20,7 @@
       </gedx:fact>
     </gedx:facts>
     <gedx:source descriptionRef="https://gallica.bnf.fr/ark:/12148/bpt6k9760202w"/>
+    <gedx:source descriptionRef="/uploads/documents/ould-mohamed-birth-register.pdf"/>
   </gedx:person>
   <gedx:person id="m2">
     <gedx:names>
@@ -31,6 +32,7 @@
     </gedx:names>
     <gedx:gender type="http://gedcomx.org/Female"/>
     <gedx:source descriptionRef="https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&amp;query=Fatimetou%20Mauritanie"/>
+    <gedx:source descriptionRef="/uploads/documents/fatimetou-family-register.pdf"/>
   </gedx:person>
   <gedx:person id="m3">
     <gedx:names>
@@ -42,6 +44,7 @@
     </gedx:names>
     <gedx:gender type="http://gedcomx.org/Male"/>
     <gedx:source descriptionRef="https://gallica.bnf.fr/ark:/12148/bpt6k6543210"/>
+    <gedx:source descriptionRef="/uploads/documents/sidi-mohamed-school-record.pdf"/>
   </gedx:person>
   <gedx:relationship type="http://gedcomx.org/Couple">
     <gedx:person1 resource="#m1"/>

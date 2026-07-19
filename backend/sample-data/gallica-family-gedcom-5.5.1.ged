@@ -13,6 +13,8 @@
 1 SOUR Gallica https://gallica.bnf.fr/ark:/12148/bpt6k9760202w
 1 OBJE
 2 FILE https://gallica.bnf.fr/ark:/12148/btv1b8451617s
+1 REFN /uploads/documents/ould-mohamed-birth-register.pdf
+1 NOTE Local uploaded proof: /uploads/documents/ould-mohamed-birth-register.pdf
 1 FAMS @F1@
 0 @I2@ INDI
 1 NAME Fatimetou /Mint Ahmed/
@@ -20,6 +22,8 @@
 1 BIRT
 2 DATE 1952
 1 NOTE Source Gallica: https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&query=Fatimetou%20Mauritanie
+1 OBJE
+2 FILE /uploads/documents/fatimetou-family-register.pdf
 1 FAMS @F1@
 0 @I3@ INDI
 1 NAME Sidi /Mohamed/
@@ -27,6 +31,7 @@
 1 BIRT
 2 DATE 1978
 1 WWW https://gallica.bnf.fr/ark:/12148/bpt6k6543210
+1 REFN /uploads/documents/sidi-mohamed-school-record.pdf
 1 FAMC @F1@
 0 @F1@ FAM
 1 HUSB @I1@

@@ -169,17 +169,24 @@ describe("GEDCOM source/document links", () => {
   <gedx:person id="p1">
     <gedx:names><gedx:name><gedx:nameForm><gedx:fullText>Ould Mohamed Abdallahi</gedx:fullText></gedx:nameForm></gedx:name></gedx:names>
     <gedx:source descriptionRef="https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&amp;query=Ould%20Mohamed%20Abdallahi"/>
+    <gedx:source descriptionRef="/uploads/documents/ould-mohamed-birth-register.pdf"/>
   </gedx:person>
 </gedx:Gedcomx>`);
 
     const links = extractPersonLinks(people[0]);
 
-    expect(links).toMatchObject([
-      {
-        label: "Gallica (BnF)",
-        kind: "external",
-      },
-    ]);
+    expect(links).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          label: "Gallica (BnF)",
+          kind: "external",
+        }),
+        expect.objectContaining({
+          label: "ould-mohamed-birth-register.pdf",
+          kind: "local",
+        }),
+      ])
+    );
   });
 
   it("exports source links in GEDCOM and GEDCOM X formats", () => {

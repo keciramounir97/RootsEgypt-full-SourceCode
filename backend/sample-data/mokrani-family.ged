@@ -18,6 +18,8 @@
 2 DATE 1837
 2 PLAC Kalaa des Ait Abbas, Bejaia, Algerie
 2 SOUR Gallica - Rinn, "L'insurrection de 1871 en Algerie", 1891.
+1 WWW https://gallica.bnf.fr/ark:/12148/bpt6k5683533v
+1 REFN /uploads/documents/mohamed-el-mokrani-death-note.pdf
 0 @I2@ INDI
 1 NAME Ahmed /el-Mokrani/
 1 SEX M
@@ -34,6 +36,9 @@
 2 TYPE Insurrection
 2 DATE 1871
 2 SOUR ANOM, 3B - Bureau arabe de Setif : tue au combat.
+1 OBJE
+2 FILE https://gallica.bnf.fr/ark:/12148/bpt6k9760202w
+1 REFN /uploads/documents/ahmed-el-mokrani-insurrection-report.pdf
 1 FAMC @F1@
 0 @I3@ INDI
 1 NAME Boumezrag /el-Mokrani/
@@ -45,6 +50,8 @@
 1 DEAT
 2 DATE 1900
 2 PLAC Constantine, Algerie
+1 NOTE Linked local document: /uploads/documents/boumezrag-el-mokrani-dossier.pdf
+1 WWW https://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&query=Boumezrag%20Mokrani
 1 FAMC @F1@
 0 @F1@ FAM
 1 HUSB @I1@
