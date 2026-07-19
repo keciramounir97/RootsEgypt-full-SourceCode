@@ -4344,3 +4344,157 @@ textarea::placeholder,
   color: #94a3b8 !important;
   opacity: 0.9 !important;
 }
+
+/* ============================================================
+   Neumorphism — soft-UI surfaces used by the family tree
+   person details modal (TreesBuilder) and related controls.
+   Light theme sits on the heritage paper tone; dark theme on
+   the deep navy used across the admin panel.
+   ============================================================ */
+
+:root {
+  --neu-bg: #f1ece2;
+  --neu-shadow-dark: rgba(163, 152, 128, 0.55);
+  --neu-shadow-light: rgba(255, 255, 255, 0.95);
+  --neu-text: #0d1b2a;
+  --neu-accent: #0c4a6e;
+}
+
+.dark {
+  --neu-bg: #12222f;
+  --neu-shadow-dark: rgba(0, 0, 0, 0.6);
+  --neu-shadow-light: rgba(93, 138, 168, 0.14);
+  --neu-text: #f5f1e8;
+  --neu-accent: #0d9488;
+}
+
+.neu-surface {
+  background: var(--neu-bg);
+  color: var(--neu-text);
+  border-radius: 26px;
+  border: 1px solid var(--neu-shadow-light);
+  box-shadow:
+    12px 12px 28px var(--neu-shadow-dark),
+    -10px -10px 24px var(--neu-shadow-light);
+}
+
+.neu-inset {
+  background: var(--neu-bg);
+  color: var(--neu-text);
+  border-radius: 14px;
+  box-shadow:
+    inset 4px 4px 9px var(--neu-shadow-dark),
+    inset -4px -4px 9px var(--neu-shadow-light);
+}
+
+.neu-btn {
+  background: var(--neu-bg);
+  color: var(--neu-accent);
+  border: none;
+  box-shadow:
+    4px 4px 10px var(--neu-shadow-dark),
+    -4px -4px 10px var(--neu-shadow-light);
+  transition: box-shadow 0.18s ease, transform 0.18s ease, color 0.18s ease;
+}
+
+.neu-btn:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    6px 6px 14px var(--neu-shadow-dark),
+    -6px -6px 14px var(--neu-shadow-light);
+}
+
+.neu-btn:active {
+  transform: translateY(0);
+  box-shadow:
+    inset 3px 3px 8px var(--neu-shadow-dark),
+    inset -3px -3px 8px var(--neu-shadow-light);
+}
+
+.neu-btn--primary {
+  color: #ffffff;
+  background: linear-gradient(145deg, #0c4a6e, #0d9488);
+}
+
+.dark .neu-btn--primary {
+  background: linear-gradient(145deg, #0d9488, #0c4a6e);
+}
+
+.neu-btn-icon {
+  background: var(--neu-bg);
+  color: var(--neu-accent);
+  border: none;
+  box-shadow:
+    3px 3px 7px var(--neu-shadow-dark),
+    -3px -3px 7px var(--neu-shadow-light);
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.neu-btn-icon:hover {
+  transform: translateY(-1px);
+}
+
+.neu-btn-icon:active {
+  box-shadow:
+    inset 2px 2px 6px var(--neu-shadow-dark),
+    inset -2px -2px 6px var(--neu-shadow-light);
+}
+
+.neu-chip {
+  background: var(--neu-bg);
+  color: var(--neu-accent);
+  border-radius: 999px;
+  box-shadow:
+    2px 2px 5px var(--neu-shadow-dark),
+    -2px -2px 5px var(--neu-shadow-light);
+}
+
+.neu-avatar {
+  background: var(--neu-bg);
+  box-shadow:
+    5px 5px 12px var(--neu-shadow-dark),
+    -5px -5px 12px var(--neu-shadow-light),
+    inset 1px 1px 2px var(--neu-shadow-light);
+}
+
+.neu-menu {
+  background: var(--neu-bg);
+  color: var(--neu-text);
+  border-radius: 16px;
+  border: 1px solid var(--neu-shadow-light);
+  box-shadow:
+    10px 10px 24px var(--neu-shadow-dark),
+    -6px -6px 16px var(--neu-shadow-light);
+}
+
+.neu-menu-item {
+  background: transparent;
+  color: var(--neu-text);
+  border: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.neu-menu-item:hover {
+  background: rgba(13, 148, 136, 0.12);
+  color: var(--neu-accent);
+}
+
+.neu-field,
+.neu-surface select.neu-field,
+.neu-surface input.neu-field {
+  background: var(--neu-bg);
+  color: var(--neu-text);
+  border: none;
+  border-radius: 12px;
+  box-shadow:
+    inset 3px 3px 7px var(--neu-shadow-dark),
+    inset -3px -3px 7px var(--neu-shadow-light);
+}
+
+.neu-field:focus {
+  outline: none;
+  box-shadow:
+    inset 3px 3px 7px var(--neu-shadow-dark),
+    inset -3px -3px 7px var(--neu-shadow-light),
+    0 0 0 3px rgba(13, 148, 136, 0.25);
+}

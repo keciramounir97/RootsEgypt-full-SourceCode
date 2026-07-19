@@ -6,8 +6,12 @@ import * as d3 from "d3";
 
 import {
   Archive,
+  BookOpen,
   FileText,
+  Image as ImageIcon,
+  Link2,
   LocateFixed,
+  Music,
   Plus,
   Pencil,
   Search,
@@ -213,54 +217,117 @@ export function hydrateEditableSourceLinks(person) {
   );
 }
 
-export function getDocumentSourceLink(document, apiRoot = getApiRoot()) {
-  const raw =
-    document?.file_path ??
-    document?.filePath ??
-    document?.path ??
-    document?.url ??
-    document?.href ??
-    "";
+/**
+ * Every media kind on the site a person can be linked with. Each entry knows
+ * the API endpoints to try (admin → my → public), the uploads folder used to
+ * resolve bare file names, the fields that may hold the file path, and the
+ * response keys that may wrap the list.
+ */
+export const MEDIA_LINK_TYPES = {
+  document: {
+    endpoints: ["/admin/documents", "/my/documents", "/documents"],
+    folder: "documents",
+    pathFields: ["file_path", "filePath", "path", "url", "href"],
+    listKeys: ["documents", "items", "data"],
+  },
+  image: {
+    endpoints: ["/admin/gallery", "/my/gallery", "/gallery"],
+    folder: "gallery",
+    pathFields: ["imagePath", "image_path", "file_path", "filePath", "path", "url", "href"],
+    listKeys: ["images", "items", "data"],
+  },
+  audio: {
+    endpoints: ["/admin/audios", "/my/audios", "/audios"],
+    folder: "audios",
+    pathFields: ["audioPath", "audio_path", "file_path", "filePath", "path", "url", "href"],
+    listKeys: ["audios", "items", "data"],
+  },
+  book: {
+    endpoints: ["/admin/books", "/my/books", "/books"],
+    folder: "books",
+    pathFields: [
+      "fileUrl",
+      "file_path",
+      "filePath",
+      "pdfUrl",
+      "pdf_path",
+      "coverUrl",
+      "coverImage",
+      "path",
+      "url",
+      "href",
+    ],
+    listKeys: ["books", "items", "data"],
+  },
+};
+
+export function getMediaSourceLink(item, mediaType = "document", apiRoot = getApiRoot()) {
+  const config = MEDIA_LINK_TYPES[mediaType] || MEDIA_LINK_TYPES.document;
+  let raw = "";
+  for (const field of config.pathFields) {
+    const candidate = item?.[field];
+    if (candidate !== undefined && candidate !== null && String(candidate).trim()) {
+      raw = candidate;
+      break;
+    }
+  }
   const value = String(raw || "").trim();
   if (!value) return "";
   if (/^https?:\/\//i.test(value)) return value;
   let pathname = value.startsWith("/") ? value : `/${value}`;
   if (!pathname.startsWith("/uploads/")) {
-    pathname = `/uploads/documents/${value.replace(/^\/+/, "")}`;
+    pathname = `/uploads/${config.folder}/${value.replace(/^\/+/, "")}`;
   }
   return `${String(apiRoot || "").replace(/\/+$/, "")}${pathname}`;
 }
 
-export function normalizeExistingDocumentsResponse(data, apiRoot = getApiRoot()) {
-  const list = Array.isArray(data)
-    ? data
-    : Array.isArray(data?.documents)
-      ? data.documents
-      : Array.isArray(data?.items)
-        ? data.items
-        : Array.isArray(data?.data)
-          ? data.data
-          : [];
+export function getDocumentSourceLink(document, apiRoot = getApiRoot()) {
+  return getMediaSourceLink(document, "document", apiRoot);
+}
+
+export function normalizeExistingMediaResponse(
+  data,
+  mediaType = "document",
+  apiRoot = getApiRoot()
+) {
+  const config = MEDIA_LINK_TYPES[mediaType] || MEDIA_LINK_TYPES.document;
+  let list = Array.isArray(data) ? data : null;
+  if (!list) {
+    if (data?.success && Array.isArray(data?.data)) list = data.data;
+  }
+  if (!list) {
+    for (const key of config.listKeys) {
+      if (Array.isArray(data?.[key])) {
+        list = data[key];
+        break;
+      }
+    }
+  }
+  if (!list) list = [];
 
   return list
-    .map((doc) => {
-      const url = getDocumentSourceLink(doc, apiRoot);
+    .map((item) => {
+      const url = getMediaSourceLink(item, mediaType, apiRoot);
       if (!url) return null;
       const title =
-        doc?.title ||
-        doc?.name ||
-        doc?.documentCode ||
-        doc?.document_code ||
+        item?.title ||
+        item?.name ||
+        item?.documentCode ||
+        item?.document_code ||
         url.split("/").pop() ||
         "Document";
       return {
-        ...doc,
-        id: doc?.id ?? url,
+        ...item,
+        id: item?.id ?? url,
         title,
         sourceUrl: url,
       };
     })
     .filter(Boolean);
+}
+
+export function normalizeExistingDocumentsResponse(data, apiRoot = getApiRoot()) {
+  return normalizeExistingMediaResponse(data, "document", apiRoot);
 }
 
 const createEmptyForm = () => ({
@@ -1705,13 +1772,29 @@ export default function TreesBuilder({
 
   const [sourceLinkPanelOpen, setSourceLinkPanelOpen] = useState(false);
 
-  const [documentLinkPanelOpen, setDocumentLinkPanelOpen] = useState(false);
+  const [mediaPanelOpen, setMediaPanelOpen] = useState(false);
 
-  const [existingDocuments, setExistingDocuments] = useState([]);
+  const [mediaLinkType, setMediaLinkType] = useState("document");
 
-  const [documentsLoading, setDocumentsLoading] = useState(false);
+  const [linkMenuOpen, setLinkMenuOpen] = useState(false);
 
-  const [selectedDocumentLink, setSelectedDocumentLink] = useState("");
+  const linkMenuRef = useRef(null);
+
+  const [existingMedia, setExistingMedia] = useState([]);
+
+  const [mediaLoading, setMediaLoading] = useState(false);
+
+  const [selectedMediaLink, setSelectedMediaLink] = useState("");
+
+  useEffect(() => {
+    if (!linkMenuOpen) return undefined;
+    const close = (e) => {
+      if (linkMenuRef.current?.contains(e.target)) return;
+      setLinkMenuOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [linkMenuOpen]);
 
   const [personStatus, setPersonStatus] = useState({
     message: "",
@@ -2087,11 +2170,11 @@ export default function TreesBuilder({
 
           .attr("dx", 0)
 
-          .attr("dy", 10)
+          .attr("dy", 6)
 
-          .attr("stdDeviation", 10)
+          .attr("stdDeviation", 8)
 
-          .attr("flood-opacity", 0.35);
+          .attr("flood-opacity", 0.22);
 
         const zoomRect = svg
 
@@ -2383,6 +2466,8 @@ export default function TreesBuilder({
 
           .append("rect")
 
+          .attr("class", "node-card")
+
           .attr("x", -CARD_W / 2)
 
           .attr("y", -CARD_H / 2)
@@ -2391,17 +2476,15 @@ export default function TreesBuilder({
 
           .attr("height", CARD_H)
 
-          .attr("rx", 6)
+          .attr("rx", 14)
 
           .attr("filter", "url(#shadow)")
 
           .attr("fill", (d) => d.color || (isDark ? "#0d1b2a" : "#f5f1e8"))
 
-          .attr("stroke", isDark ? "#0d1b2a" : "#e8dfca")
+          .attr("stroke", isDark ? "#1b3a52" : "#e8dfca")
 
           .attr("stroke-width", 1.4);
-
-        node;
 
         // NAME
         node
@@ -2483,13 +2566,32 @@ export default function TreesBuilder({
           .attr("y", -CARD_H / 2)
           .attr("width", CARD_W)
           .attr("height", CARD_H)
-          .attr("rx", 6)
+          .attr("rx", 14)
           .attr("fill", "transparent")
           .style("pointer-events", "all")
           .style("cursor", "pointer")
           .on("pointerdown.detail", rememberDetailPointer)
           .on("pointerup.detail", openDetailFromPointer)
-          .on("click.detail", openPersonDetails);
+          .on("click.detail", openPersonDetails)
+          .on("mouseover.highlight", function () {
+            d3.select(this.parentNode)
+              .select("rect.node-card")
+              .attr("stroke", isDark ? "#0d9488" : "#0c4a6e")
+              .attr("stroke-width", 2.4);
+          })
+          .on("mouseout.highlight", function () {
+            d3.select(this.parentNode)
+              .select("rect.node-card")
+              .attr("stroke", isDark ? "#1b3a52" : "#e8dfca")
+              .attr("stroke-width", 1.4);
+          });
+
+        // The label is translated, so size the pill to fit the current language.
+        const detailLabel = t("legacy.open_details", "Open details");
+        const detailBtnWidth = Math.min(
+          CARD_W - 24,
+          Math.max(104, detailLabel.length * 6.4 + 30)
+        );
 
         const detailButton = node
           .append("g")
@@ -2501,26 +2603,33 @@ export default function TreesBuilder({
 
         detailButton
           .append("rect")
-          .attr("x", -58)
-          .attr("y", 36)
-          .attr("width", 116)
-          .attr("height", 20)
-          .attr("rx", 5)
+          .attr("x", -detailBtnWidth / 2)
+          .attr("y", 34)
+          .attr("width", detailBtnWidth)
+          .attr("height", 22)
+          .attr("rx", 11)
           .attr("fill", isDark ? "#0d9488" : "#0c4a6e")
           .attr("stroke", isDark ? "#9de8dd" : "#e8dfca")
           .attr("stroke-width", 0.6)
-          .attr("opacity", 0.96);
+          .attr("opacity", 0.96)
+          .on("mouseover.button", function () {
+            d3.select(this).attr("opacity", 1).attr("stroke-width", 1.2);
+          })
+          .on("mouseout.button", function () {
+            d3.select(this).attr("opacity", 0.96).attr("stroke-width", 0.6);
+          });
 
         detailButton
           .append("text")
-          .attr("y", 50)
+          .attr("y", 49)
           .attr("text-anchor", "middle")
           .style("font-size", "10px")
           .style("font-weight", 700)
+          .style("letter-spacing", "0.04em")
           .style("fill", "#ffffff")
           .style("font-family", "Manrope")
           .style("pointer-events", "none")
-          .text(t("legacy.open_details", "Open details"));
+          .text(detailLabel);
 
         const couplePath = (d) => {
           const direction = d.source.x <= d.target.x ? 1 : -1;
@@ -3325,8 +3434,9 @@ export default function TreesBuilder({
     setSourceLinkDraft("");
     setSourceLinkEditIndex(null);
     setSourceLinkPanelOpen(false);
-    setDocumentLinkPanelOpen(false);
-    setSelectedDocumentLink("");
+    setMediaPanelOpen(false);
+    setLinkMenuOpen(false);
+    setSelectedMediaLink("");
   }, []);
 
   const selectPersonFromList = useCallback((person) => {
@@ -3334,8 +3444,9 @@ export default function TreesBuilder({
     setSourceLinkDraft("");
     setSourceLinkEditIndex(null);
     setSourceLinkPanelOpen(false);
-    setDocumentLinkPanelOpen(false);
-    setSelectedDocumentLink("");
+    setMediaPanelOpen(false);
+    setLinkMenuOpen(false);
+    setSelectedMediaLink("");
   }, []);
 
   const editableSourceLinkValues = useMemo(
@@ -3372,7 +3483,8 @@ export default function TreesBuilder({
     setSourceLinkDraft("");
     setSourceLinkEditIndex(null);
     setSourceLinkPanelOpen(true);
-    setDocumentLinkPanelOpen(false);
+    setMediaPanelOpen(false);
+    setLinkMenuOpen(false);
   }, [persistSelectedSourceLinks, readOnly, selectedPerson]);
 
   const openSourceLinkEdit = useCallback((index, value) => {
@@ -3382,7 +3494,8 @@ export default function TreesBuilder({
     setSourceLinkDraft(value || "");
     setSourceLinkEditIndex(index);
     setSourceLinkPanelOpen(true);
-    setDocumentLinkPanelOpen(false);
+    setMediaPanelOpen(false);
+    setLinkMenuOpen(false);
   }, [persistSelectedSourceLinks, readOnly, selectedPerson]);
 
   const saveSourceLinkDraft = useCallback(() => {
@@ -3425,75 +3538,90 @@ export default function TreesBuilder({
     [editableSourceLinkValues, notifyPerson, persistSelectedSourceLinks, t]
   );
 
-  const loadExistingDocuments = useCallback(async () => {
-    setDocumentsLoading(true);
+  const mediaTypeLabel = useCallback(
+    (type) => {
+      switch (type) {
+        case "image":
+          return t("legacy.media_type_image", "Image");
+        case "audio":
+          return t("legacy.media_type_audio", "Audio");
+        case "book":
+          return t("legacy.media_type_book", "Book");
+        case "document":
+        default:
+          return t("legacy.media_type_document", "Document");
+      }
+    },
+    [t]
+  );
+
+  const loadExistingMedia = useCallback(async (type = "document") => {
+    const config = MEDIA_LINK_TYPES[type] || MEDIA_LINK_TYPES.document;
+    setMediaLoading(true);
     try {
-      const shouldFallbackDocumentRead = (err) =>
+      const shouldFallbackMediaRead = (err) =>
         shouldFallbackRoute(err) ||
         err?.response?.status === 401 ||
         err?.response?.status === 403 ||
         err?.response?.status === 500 ||
         err?.code === "AUTH_MISSING";
       const { data } = await requestWithFallback(
-        [
-          () => api.get("/admin/documents"),
-          () => api.get("/my/documents"),
-          () => api.get("/documents"),
-        ],
-        shouldFallbackDocumentRead
+        config.endpoints.map((endpoint) => () => api.get(endpoint)),
+        shouldFallbackMediaRead
       );
-      const docs = normalizeExistingDocumentsResponse(data);
-      setExistingDocuments(docs);
-      setSelectedDocumentLink(docs[0]?.sourceUrl || "");
-      if (!docs.length) {
+      const items = normalizeExistingMediaResponse(data, type);
+      setExistingMedia(items);
+      setSelectedMediaLink(items[0]?.sourceUrl || "");
+      if (!items.length) {
         notifyPerson(
-          t("legacy.no_documents", "No documents found."),
+          t("legacy.no_media_found", "No items found for this type."),
           "error"
         );
       }
     } catch {
-      setExistingDocuments([]);
-      setSelectedDocumentLink("");
+      setExistingMedia([]);
+      setSelectedMediaLink("");
       notifyPerson(
-        t("legacy.documents_load_failed", "Failed to load documents"),
+        t("legacy.media_load_failed", "Failed to load items."),
         "error"
       );
     } finally {
-      setDocumentsLoading(false);
+      setMediaLoading(false);
     }
   }, [notifyPerson, t]);
 
-  const openDocumentLinkPanel = useCallback(() => {
-    if (!selectedPerson || readOnly) return;
-    const hydrated = hydrateEditableSourceLinks(selectedPerson);
-    persistSelectedSourceLinks(hydrated.sourceLinks);
-    setSourceLinkPanelOpen(false);
-    setDocumentLinkPanelOpen(true);
-    if (!existingDocuments.length) void loadExistingDocuments();
-  }, [
-    existingDocuments.length,
-    loadExistingDocuments,
-    persistSelectedSourceLinks,
-    readOnly,
-    selectedPerson,
-  ]);
+  const openMediaLinkPanel = useCallback(
+    (type = "document") => {
+      if (!selectedPerson || readOnly) return;
+      const hydrated = hydrateEditableSourceLinks(selectedPerson);
+      persistSelectedSourceLinks(hydrated.sourceLinks);
+      setSourceLinkPanelOpen(false);
+      setLinkMenuOpen(false);
+      setMediaLinkType(type);
+      setMediaPanelOpen(true);
+      setExistingMedia([]);
+      setSelectedMediaLink("");
+      void loadExistingMedia(type);
+    },
+    [loadExistingMedia, persistSelectedSourceLinks, readOnly, selectedPerson]
+  );
 
-  const linkSelectedDocumentToPerson = useCallback(() => {
-    const link = String(selectedDocumentLink || "").trim();
+  const linkSelectedMediaToPerson = useCallback(() => {
+    const link = String(selectedMediaLink || "").trim();
     if (!link) {
-      notifyError(t("legacy.select_document_first", "Select a document first."));
+      notifyError(t("legacy.select_media_first", "Select an item first."));
       return;
     }
     persistSelectedSourceLinks([...editableSourceLinkValues, link]);
-    setDocumentLinkPanelOpen(false);
-    setSelectedDocumentLink("");
-    notifyPerson(t("legacy.document_linked", "Document linked to person."));
+    setMediaPanelOpen(false);
+    setSelectedMediaLink("");
+    notifyPerson(t("legacy.media_linked", "Source linked to person."));
   }, [
     editableSourceLinkValues,
     notifyError,
     notifyPerson,
     persistSelectedSourceLinks,
-    selectedDocumentLink,
+    selectedMediaLink,
     t,
   ]);
 
@@ -3548,6 +3676,15 @@ export default function TreesBuilder({
 
     d3.select(svgEl).transition().duration(500).call(zoom.transform, transform);
   };
+
+  // Which GEDCOM standard this tree's data is stored in — surfaced on the
+  // person details modal so researchers know the provenance format.
+  const gedcomVersionLabel =
+    dataFormat === "gedcomx"
+      ? "GEDCOM X"
+      : dataFormat === "gedcom7"
+        ? "GEDCOM 7.0"
+        : "GEDCOM 5.5.1";
 
   return (
     <div dir={dir} className="relative">
@@ -3945,26 +4082,42 @@ export default function TreesBuilder({
                 aria-label={t("legacy.person_card", "Person card")}
               >
                 <div
-                  className={`max-h-[min(760px,calc(100vh-32px))] w-full max-w-3xl overflow-y-auto rounded-lg border ${border} ${card} p-5 shadow-2xl heritage-panel heritage-panel--grid`}
+                  className="neu-surface max-h-[min(780px,calc(100vh-32px))] w-full max-w-3xl overflow-y-auto p-6"
                 >
-                <div className="flex items-start justify-between gap-4 border-b border-current/10 pb-3">
-                  <div className="min-w-0">
-                    <div className="text-xl font-semibold truncate">
-                      {nameOf(selectedPerson)}
+                <div className="flex items-start justify-between gap-4 border-b border-current/10 pb-4">
+                  <div className="flex min-w-0 items-center gap-4">
+                    <div
+                      className="neu-avatar shrink-0 flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold font-serif"
+                      style={{
+                        color: isDark ? "#5eead4" : "#0c4a6e",
+                      }}
+                      aria-hidden="true"
+                    >
+                      {String(nameOf(selectedPerson)).charAt(0).toUpperCase()}
                     </div>
-                    <div className="text-[11px] uppercase tracking-widest opacity-60">
-                      {t("legacy.person_card", "Person card")}
+                    <div className="min-w-0">
+                      <div className="text-2xl font-semibold font-serif truncate">
+                        {nameOf(selectedPerson)}
+                      </div>
+                      <div className="mt-1 flex flex-wrap items-center gap-2">
+                        <span className="text-[11px] uppercase tracking-widest opacity-60">
+                          {t("legacy.person_card", "Person card")}
+                        </span>
+                        <span
+                          className="neu-chip inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
+                          title={`${t("legacy.gedcom_version", "GEDCOM version")}: ${gedcomVersionLabel}`}
+                        >
+                          <FileCode2 className="h-3 w-3" aria-hidden="true" />
+                          {t("legacy.gedcom_version", "GEDCOM version")}: {gedcomVersionLabel}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
                   <button
                     type="button"
                     onClick={closeSelectedPersonCard}
-                    className={`shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border ${border} ${
-                      isDark
-                        ? "bg-white/10 text-white hover:bg-white/15"
-                        : "bg-white text-[#0c4a6e] hover:bg-[#f8f5ef]"
-                    }`}
+                    className="neu-btn-icon shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full"
                     title={t("legacy.close", "Close")}
                     aria-label={t("legacy.close", "Close")}
                   >
@@ -3973,223 +4126,270 @@ export default function TreesBuilder({
                 </div>
 
                 {!readOnly ? (
-                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <div className="mt-4 flex flex-wrap items-center gap-2.5">
                     <button
                       type="button"
                       onClick={openSourceLinkAdd}
-                      className={`inline-flex h-8 w-8 items-center justify-center rounded-md border ${border} ${
-                        isDark
-                          ? "bg-white/10 text-white hover:bg-white/15"
-                          : "bg-white text-[#0c4a6e] hover:bg-[#f8f5ef]"
-                      }`}
+                      className="neu-btn inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold"
                       title={t("legacy.add_source_link", "Add source link")}
-                      aria-label={t("legacy.add_source_link", "Add source link")}
                     >
                       <Plus className="h-4 w-4" />
+                      {t("legacy.add_source_link", "Add source link")}
                     </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        openSourceLinkEdit(
-                          0,
-                          editableSourceLinkValues[0] || ""
-                        )
-                      }
-                      disabled={!editableSourceLinkValues.length}
-                      className={`inline-flex h-8 w-8 items-center justify-center rounded-md border ${border} ${
-                        isDark
-                          ? "bg-white/10 text-white hover:bg-white/15"
-                          : "bg-white text-[#0c4a6e] hover:bg-[#f8f5ef]"
-                      } disabled:cursor-not-allowed disabled:opacity-40`}
-                      title={t("legacy.edit_source_link", "Edit source link")}
-                      aria-label={t("legacy.edit_source_link", "Edit source link")}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={openDocumentLinkPanel}
-                      className={`inline-flex min-h-8 items-center gap-2 rounded-md border ${border} px-2.5 py-1.5 text-xs font-semibold ${
-                        isDark
-                          ? "bg-white/10 text-white hover:bg-white/15"
-                          : "bg-white text-[#0c4a6e] hover:bg-[#f8f5ef]"
-                      }`}
-                    >
-                      <FileText className="h-4 w-4" />
-                      {t("legacy.link_existing_document", "Lier avec existing document")}
-                    </button>
+                    <div className="relative" ref={linkMenuRef}>
+                      <button
+                        type="button"
+                        onClick={() => setLinkMenuOpen((open) => !open)}
+                        aria-haspopup="menu"
+                        aria-expanded={linkMenuOpen}
+                        className="neu-btn neu-btn--primary inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold"
+                      >
+                        <Link2 className="h-4 w-4" />
+                        {t("legacy.link_media", "Link with...")}
+                        <ChevronDown
+                          className={`h-3.5 w-3.5 transition-transform ${linkMenuOpen ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      {linkMenuOpen ? (
+                        <div
+                          className="neu-menu absolute z-40 mt-2 min-w-[220px] overflow-hidden py-1.5 ltr:left-0 rtl:right-0"
+                          role="menu"
+                        >
+                          {[
+                            {
+                              type: "document",
+                              icon: <FileText className="h-4 w-4" />,
+                            },
+                            {
+                              type: "image",
+                              icon: <ImageIcon className="h-4 w-4" />,
+                            },
+                            {
+                              type: "audio",
+                              icon: <Music className="h-4 w-4" />,
+                            },
+                            {
+                              type: "book",
+                              icon: <BookOpen className="h-4 w-4" />,
+                            },
+                          ].map(({ type, icon }) => (
+                            <button
+                              key={type}
+                              type="button"
+                              role="menuitem"
+                              onClick={() => openMediaLinkPanel(type)}
+                              className="neu-menu-item flex w-full items-center gap-3 px-4 py-2.5 text-left text-xs font-semibold"
+                            >
+                              {icon}
+                              {mediaTypeLabel(type)}
+                            </button>
+                          ))}
+                          <div className="mx-3 my-1 border-t border-current/10" />
+                          <button
+                            type="button"
+                            role="menuitem"
+                            onClick={openSourceLinkAdd}
+                            className="neu-menu-item flex w-full items-center gap-3 px-4 py-2.5 text-left text-xs font-semibold"
+                          >
+                            <Link2 className="h-4 w-4" />
+                            {t("legacy.media_type_external", "External link (URL)")}
+                          </button>
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
                 ) : null}
 
-                <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                <div className="text-sm opacity-75">
-                  {selectedPerson.birthYear
-                    ? `${t("legacy.birth_year", "Birth Year")}: ${
-                        selectedPerson.birthYear
-                      }`
-                    : `${t("legacy.birth_year", "Birth Year")}: -`}
-                </div>
-
-                <div className="text-sm opacity-75">
-                  {selectedPerson.birthPlace
-                    ? `${t("legacy.birth_place", "Birth Place")}: ${
-                        selectedPerson.birthPlace
-                      }`
-                    : `${t("legacy.birth_place", "Birth Place")}: -`}
-                </div>
-
-                <div className="text-sm opacity-75">
-                  {selectedPerson.deathDate
-                    ? `${t("legacy.death_date", "Death Date")}: ${
-                        selectedPerson.deathDate
-                      }`
-                    : `${t("legacy.death_date", "Death Date")}: -`}
-                </div>
-
-                <div className="text-sm opacity-75">
-                  {selectedPerson.deathPlace
-                    ? `${t("legacy.death_place", "Death Place")}: ${
-                        selectedPerson.deathPlace
-                      }`
-                    : `${t("legacy.death_place", "Death Place")}: -`}
-                </div>
-
-                <div className="text-sm opacity-75">
-                  {`${t("legacy.gender", "Gender")}: ${displayGender(
-                    selectedPerson.gender,
-                  )}`}
-                </div>
-
-                {selectedPerson.profession ? (
-                  <div className="text-sm opacity-75">
-                    {t("legacy.profession", "Profession")}:{" "}
-                    {selectedPerson.profession}
-                  </div>
-                ) : null}
-
-                <div className="text-sm opacity-75">
-                  {t("legacy.father", "Father")}: {relationName(selectedPerson.father)}
-                </div>
-
-                <div className="text-sm opacity-75">
-                  {t("legacy.mother", "Mother")}: {relationName(selectedPerson.mother)}
-                </div>
-
-                <div className="text-sm opacity-75">
-                  {t("legacy.spouse", "Spouse")}: {relationName(selectedPerson.spouse)}
-                </div>
-
-                <div className="text-sm opacity-75 sm:col-span-2">
-                  {t("legacy.children", "Children")}:{" "}
-                  {selectedChildren.length
-                    ? selectedChildren.map((c) => nameOf(c)).join(", ")
-                    : "-"}
-                </div>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  {[
+                    {
+                      label: t("legacy.birth_year", "Birth Year"),
+                      value: selectedPerson.birthYear,
+                    },
+                    {
+                      label: t("legacy.birth_place", "Birth Place"),
+                      value: selectedPerson.birthPlace,
+                    },
+                    {
+                      label: t("legacy.death_date", "Death Date"),
+                      value: selectedPerson.deathDate,
+                    },
+                    {
+                      label: t("legacy.death_place", "Death Place"),
+                      value: selectedPerson.deathPlace,
+                    },
+                    {
+                      label: t("legacy.gender", "Gender"),
+                      value: displayGender(selectedPerson.gender),
+                    },
+                    {
+                      label: t("legacy.profession", "Profession"),
+                      value: selectedPerson.profession,
+                    },
+                    {
+                      label: t("legacy.father", "Father"),
+                      value: relationName(selectedPerson.father),
+                    },
+                    {
+                      label: t("legacy.mother", "Mother"),
+                      value: relationName(selectedPerson.mother),
+                    },
+                    {
+                      label: t("legacy.spouse", "Spouse"),
+                      value: relationName(selectedPerson.spouse),
+                    },
+                    {
+                      label: t("legacy.children", "Children"),
+                      value: selectedChildren.length
+                        ? selectedChildren.map((c) => nameOf(c)).join(", ")
+                        : "",
+                      wide: true,
+                    },
+                  ].map(({ label, value, wide }) => (
+                    <div
+                      key={label}
+                      className={`neu-inset px-3.5 py-2.5 ${wide ? "sm:col-span-2" : ""}`}
+                    >
+                      <div className="text-[10px] font-bold uppercase tracking-widest opacity-55">
+                        {label}
+                      </div>
+                      <div className="mt-0.5 text-sm font-medium">
+                        {value || "-"}
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 {selectedPerson.archiveSource ||
                 selectedPerson.documentCode ||
                 selectedPerson.reliability ? (
-                  <div className="mt-4 space-y-1 border-t border-current/20 pt-3">
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     {selectedPerson.archiveSource ? (
-                      <div className="text-sm opacity-75">
-                        {t("legacy.archive_source", "Archive Source")}:{" "}
-                        {Array.isArray(selectedPerson.archiveSource)
-                          ? selectedPerson.archiveSource.filter(Boolean).join(", ")
-                          : selectedPerson.archiveSource}
+                      <div className="neu-inset px-3.5 py-2.5 sm:col-span-2">
+                        <div className="text-[10px] font-bold uppercase tracking-widest opacity-55">
+                          {t("legacy.archive_source", "Archive Source")}
+                        </div>
+                        <div className="mt-0.5 break-words text-sm font-medium">
+                          {Array.isArray(selectedPerson.archiveSource)
+                            ? selectedPerson.archiveSource.filter(Boolean).join(", ")
+                            : selectedPerson.archiveSource}
+                        </div>
                       </div>
                     ) : null}
                     {selectedPerson.documentCode ? (
-                      <div className="text-sm opacity-75">
-                        {t("legacy.document_code", "Document Code")}:{" "}
-                        {Array.isArray(selectedPerson.documentCode)
-                          ? selectedPerson.documentCode.filter(Boolean).join(", ")
-                          : selectedPerson.documentCode}
+                      <div className="neu-inset px-3.5 py-2.5">
+                        <div className="text-[10px] font-bold uppercase tracking-widest opacity-55">
+                          {t("legacy.document_code", "Document Code")}
+                        </div>
+                        <div className="mt-0.5 break-words text-sm font-medium">
+                          {Array.isArray(selectedPerson.documentCode)
+                            ? selectedPerson.documentCode.filter(Boolean).join(", ")
+                            : selectedPerson.documentCode}
+                        </div>
                       </div>
                     ) : null}
                     {selectedPerson.reliability ? (
-                      <div className="text-sm opacity-75">
-                        {t("legacy.reliability", "Reliability")}:{" "}
-                        {selectedPerson.reliability}
+                      <div className="neu-inset px-3.5 py-2.5">
+                        <div className="text-[10px] font-bold uppercase tracking-widest opacity-55">
+                          {t("legacy.reliability", "Reliability")}
+                        </div>
+                        <div className="mt-0.5 text-sm font-medium">
+                          {selectedPerson.reliability}
+                        </div>
                       </div>
                     ) : null}
                   </div>
                 ) : null}
 
                 {selectedPerson.details ? (
-                  <div className="mt-4 whitespace-pre-line rounded-md border border-current/10 p-3 text-sm opacity-85">
-                    {selectedPerson.details}
+                  <div className="neu-inset mt-4 px-3.5 py-3">
+                    <div className="text-[10px] font-bold uppercase tracking-widest opacity-55">
+                      {t("legacy.details", "Details / Biography")}
+                    </div>
+                    <div className="mt-1 whitespace-pre-line text-sm leading-relaxed opacity-90">
+                      {selectedPerson.details}
+                    </div>
                   </div>
                 ) : null}
 
-                {(() => {
-                  const personLinks = selectedPersonLinks;
-                  if (!personLinks.length) return null;
-                  return (
-                    <div className="mt-4 pt-3 border-t border-current/20">
-                      <div className="mb-1 flex items-center justify-between gap-2">
-                        <div className="text-xs font-semibold">
-                          {t("legacy.sources_documents", "Sources & Documents")}
-                        </div>
-                        {!readOnly ? (
-                          <button
-                            type="button"
-                            onClick={openSourceLinkAdd}
-                            className="text-xs font-semibold text-[#0d9488] hover:underline"
-                          >
-                            + {t("legacy.add", "Add")}
-                          </button>
-                        ) : null}
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        {personLinks.map((l, index) => (
-                          <div
-                            key={`${l.url}-${index}`}
-                            className="flex items-start gap-2 rounded border border-current/10 p-1.5"
-                          >
-                            <a
-                              href={l.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="min-w-0 flex-1 text-xs underline break-all text-[#0d9488] hover:opacity-80"
-                            >
-                              [link] {l.label}
-                              {l.kind === "local"
-                                ? ` (${t("legacy.local_document", "local document")})`
-                                : ""}
-                            </a>
-                            {!readOnly ? (
-                              <div className="flex shrink-0 gap-1">
-                                <button
-                                  type="button"
-                                  onClick={() => openSourceLinkEdit(index, l.url)}
-                                  className="inline-flex h-7 w-7 items-center justify-center rounded border border-current/10 text-[#0d9488] hover:bg-current/10"
-                                  title={t("legacy.edit", "Edit")}
-                                  aria-label={t("legacy.edit", "Edit")}
-                                >
-                                  <Pencil className="h-3.5 w-3.5" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => deleteSourceLinkAt(index)}
-                                  className="inline-flex h-7 w-7 items-center justify-center rounded border border-current/10 text-red-500 hover:bg-red-500/10"
-                                  title={t("legacy.delete", "Delete")}
-                                  aria-label={t("legacy.delete", "Delete")}
-                                >
-                                  <Trash2 className="h-3.5 w-3.5" />
-                                </button>
-                              </div>
-                            ) : null}
-                          </div>
-                        ))}
-                      </div>
+                <div className="mt-5 border-t border-current/10 pt-4">
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-70">
+                      <Archive className="h-3.5 w-3.5" aria-hidden="true" />
+                      {t("legacy.sources_documents", "Sources & Documents")}
                     </div>
-                  );
-                })()}
+                    {!readOnly ? (
+                      <button
+                        type="button"
+                        onClick={openSourceLinkAdd}
+                        className="neu-btn rounded-lg px-2.5 py-1 text-xs font-semibold"
+                      >
+                        + {t("legacy.add", "Add")}
+                      </button>
+                    ) : null}
+                  </div>
+                  {selectedPersonLinks.length ? (
+                    <div className="flex flex-col gap-2">
+                      {selectedPersonLinks.map((l, index) => (
+                        <div
+                          key={`${l.url}-${index}`}
+                          className="neu-inset flex items-center gap-2.5 px-3 py-2"
+                        >
+                          <span className="neu-chip inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full">
+                            {l.kind === "local" ? (
+                              <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+                            ) : (
+                              <Link2 className="h-3.5 w-3.5" aria-hidden="true" />
+                            )}
+                          </span>
+                          <a
+                            href={l.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="min-w-0 flex-1 break-all text-xs font-medium text-[#0d9488] underline-offset-2 hover:underline"
+                          >
+                            {l.label}
+                            {l.kind === "local"
+                              ? ` (${t("legacy.local_document", "local document")})`
+                              : ""}
+                          </a>
+                          {!readOnly ? (
+                            <div className="flex shrink-0 gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => openSourceLinkEdit(index, l.url)}
+                                className="neu-btn-icon inline-flex h-7 w-7 items-center justify-center rounded-lg text-[#0d9488]"
+                                title={t("legacy.edit", "Edit")}
+                                aria-label={t("legacy.edit", "Edit")}
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => deleteSourceLinkAt(index)}
+                                className="neu-btn-icon inline-flex h-7 w-7 items-center justify-center rounded-lg text-red-500"
+                                title={t("legacy.delete", "Delete")}
+                                aria-label={t("legacy.delete", "Delete")}
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="neu-inset px-3.5 py-3 text-xs italic opacity-60">
+                      {t("legacy.no_sources_yet",
+                        "No sources linked yet. Use \"Link with...\" or add a source link.",
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 {!readOnly && sourceLinkPanelOpen ? (
-                  <div className="mt-2 rounded-md border border-current/15 p-2">
-                    <label className="mb-1 block text-xs font-semibold">
+                  <div className="neu-inset mt-3 px-3.5 py-3">
+                    <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest opacity-70">
                       {sourceLinkEditIndex === null || sourceLinkEditIndex === undefined
                         ? t("legacy.add_source_link", "Add source link")
                         : t("legacy.edit_source_link", "Edit source link")}
@@ -4199,12 +4399,12 @@ export default function TreesBuilder({
                         value={sourceLinkDraft}
                         onChange={(event) => setSourceLinkDraft(event.target.value)}
                         placeholder={t("legacy.source_link_placeholder", "https://... or /uploads/documents/file.pdf")}
-                        className={`min-w-0 flex-1 rounded-md border ${border} ${inputBg} ${inputText} px-2 py-1.5 text-xs`}
+                        className={`neu-field min-w-0 flex-1 px-3 py-2 text-xs ${inputText}`}
                       />
                       <button
                         type="button"
                         onClick={saveSourceLinkDraft}
-                        className="rounded-md bg-[#0d9488] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#0f766e]"
+                        className="neu-btn neu-btn--primary rounded-xl px-4 py-2 text-xs font-semibold"
                       >
                         {t("legacy.save", "Save")}
                       </button>
@@ -4212,52 +4412,52 @@ export default function TreesBuilder({
                   </div>
                 ) : null}
 
-                {!readOnly && documentLinkPanelOpen ? (
-                  <div className="mt-2 rounded-md border border-current/15 p-2">
-                    <div className="mb-1 flex items-center justify-between gap-2">
-                      <label className="block text-xs font-semibold">
-                        {t("legacy.link_existing_document", "Lier avec existing document")}
+                {!readOnly && mediaPanelOpen ? (
+                  <div className="neu-inset mt-3 px-3.5 py-3">
+                    <div className="mb-1.5 flex items-center justify-between gap-2">
+                      <label className="block text-[10px] font-bold uppercase tracking-widest opacity-70">
+                        {t("legacy.link_media", "Link with...")}: {mediaTypeLabel(mediaLinkType)}
                       </label>
                       <button
                         type="button"
-                        onClick={loadExistingDocuments}
+                        onClick={() => loadExistingMedia(mediaLinkType)}
                         className="text-[11px] font-semibold text-[#0d9488] hover:underline disabled:opacity-50"
-                        disabled={documentsLoading}
+                        disabled={mediaLoading}
                       >
-                        {documentsLoading
+                        {mediaLoading
                           ? t("legacy.loading", "Loading...")
                           : t("legacy.refresh", "Refresh")}
                       </button>
                     </div>
                     <div className="flex gap-2">
                       <select
-                        value={selectedDocumentLink}
-                        onChange={(event) => setSelectedDocumentLink(event.target.value)}
-                        disabled={documentsLoading || !existingDocuments.length}
-                        className={`min-w-0 flex-1 rounded-md border ${border} ${inputBg} ${inputText} px-2 py-1.5 text-xs disabled:opacity-50`}
+                        value={selectedMediaLink}
+                        onChange={(event) => setSelectedMediaLink(event.target.value)}
+                        disabled={mediaLoading || !existingMedia.length}
+                        className={`neu-field min-w-0 flex-1 px-3 py-2 text-xs ${inputText} disabled:opacity-50`}
                       >
-                        {existingDocuments.length ? (
-                          existingDocuments.map((doc) => (
-                            <option key={`${doc.id}-${doc.sourceUrl}`} value={doc.sourceUrl}>
-                              {doc.title}
-                              {doc.documentCode || doc.document_code
-                                ? ` - ${doc.documentCode || doc.document_code}`
+                        {existingMedia.length ? (
+                          existingMedia.map((item) => (
+                            <option key={`${item.id}-${item.sourceUrl}`} value={item.sourceUrl}>
+                              {item.title}
+                              {item.documentCode || item.document_code
+                                ? ` - ${item.documentCode || item.document_code}`
                                 : ""}
                             </option>
                           ))
                         ) : (
                           <option value="">
-                            {documentsLoading
+                            {mediaLoading
                               ? t("legacy.loading", "Loading...")
-                              : t("legacy.no_documents", "No documents found.")}
+                              : t("legacy.no_media_found", "No items found for this type.")}
                           </option>
                         )}
                       </select>
                       <button
                         type="button"
-                        onClick={linkSelectedDocumentToPerson}
-                        disabled={documentsLoading || !selectedDocumentLink}
-                        className="rounded-md bg-[#0d9488] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#0f766e] disabled:cursor-not-allowed disabled:opacity-50"
+                        onClick={linkSelectedMediaToPerson}
+                        disabled={mediaLoading || !selectedMediaLink}
+                        className="neu-btn neu-btn--primary rounded-xl px-4 py-2 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {t("legacy.link", "Link")}
                       </button>
