@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 if (!window.localStorage) {
@@ -76,6 +76,45 @@ describe("TreesBuilder rendering", () => {
 
     await waitFor(() => {
       expect(screen.queryByText("Person card")).toBeNull();
+    });
+  });
+
+  it("shows the GEDCOM version badge and opens the Link with... media menu as a portal", async () => {
+    const people = parseGedcom(SAMPLE_GEDCOM);
+    const { container } = render(
+      <TreesBuilder people={people} setPeople={() => {}} dataFormat="gedcom7" />
+    );
+
+    await waitFor(() => {
+      expect(container.querySelectorAll("g.node-open-details-button").length).toBe(3);
+    });
+
+    fireEvent.click(container.querySelector("g.node-open-details-button") as Element, {
+      clientX: 220,
+      clientY: 180,
+    });
+
+    const dialog = await screen.findByRole("dialog", { name: "Person card" });
+    expect(dialog).toBeTruthy();
+    expect(within(dialog).getByText(/GEDCOM 7\.0/)).toBeTruthy();
+
+    fireEvent.click(within(dialog).getByRole("button", { name: /Link with/i }));
+
+    const menu = await screen.findByRole("menu");
+    // The menu is portaled straight into document.body, not nested inside
+    // the scrollable dialog panel — guards against the overflow-clipping bug.
+    expect(menu.closest('[role="dialog"]')).toBeNull();
+    expect(document.body.contains(menu)).toBe(true);
+
+    expect(screen.getByRole("menuitem", { name: /Document/i })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: /Image/i })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: /Audio/i })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: /Book/i })).toBeTruthy();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    await waitFor(() => {
+      expect(screen.queryByRole("menu")).toBeNull();
     });
   });
 });

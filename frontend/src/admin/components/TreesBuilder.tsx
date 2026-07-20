@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 // @ts-nocheck
-import { useCallback, useEffect, useMemo, useRef, useState, memo } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
+import { createPortal } from "react-dom";
 
 import * as d3 from "d3";
 
@@ -364,11 +365,19 @@ const PersonListItem = memo(function PersonListItem({
 }: any) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className={`w-full text-left p-3 rounded-lg border transition-all duration-200 group ${active
-          ? "bg-[#0c4a6e] border-[#0c4a6e] text-white shadow-md transform scale-[1.02]"
-          : `bg-white dark:bg-[#0d1b2a]/30 border-transparent hover:border-[#0d9488]/50 hover:bg-[#0c4a6e]/5 dark:hover:bg-[#0d9488]/10 ${inputText}`
-        }`}
+      aria-pressed={!!active}
+      className={`w-full text-left p-3 rounded-xl border transition-all duration-200 group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+        active
+          ? "border-transparent text-white shadow-md scale-[1.02] focus-visible:outline-white"
+          : `bg-white dark:bg-[#0d1b2a]/30 border-transparent hover:border-[#0d9488]/50 hover:bg-[#0c4a6e]/5 dark:hover:bg-[#0d9488]/10 focus-visible:outline-[#0c4a6e] dark:focus-visible:outline-[#5eead4] ${inputText}`
+      }`}
+      style={
+        active
+          ? { background: "linear-gradient(145deg, #1f7aa8, #0a3550)" }
+          : undefined
+      }
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -382,13 +391,80 @@ const PersonListItem = memo(function PersonListItem({
           </div>
           <span className="font-serif font-medium text-base">{item.name}</span>
         </div>
-        <span className={`text-xs ${active ? "opacity-80" : "opacity-50"}`}>
+        <span className={`text-xs font-medium ${active ? "opacity-90" : "opacity-80"}`}>
           {item.person.birthYear || "-"}
         </span>
       </div>
     </button>
   );
 });
+
+/**
+ * Dropdown menu rendered through a portal into document.body with
+ * fixed positioning computed from the trigger element. The person
+ * details modal scrolls its own content (`overflow-y-auto`), and an
+ * `absolute`-positioned menu anchored inside it would get clipped by
+ * that ancestor once the panel scrolls — this escapes that stacking
+ * context entirely. Closes on outside click, Escape, scroll, or resize.
+ */
+const AnchoredMenu = ({ open, anchorRef, onClose, align = "start", children }: any) => {
+  const menuRef = useRef(null);
+  const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
+
+  useLayoutEffect(() => {
+    if (!open) return undefined;
+
+    const place = () => {
+      const anchor = anchorRef.current;
+      if (!anchor) return;
+      const rect = anchor.getBoundingClientRect();
+      const menuWidth = menuRef.current?.offsetWidth || rect.width;
+      let left = align === "end" ? rect.right - menuWidth : rect.left;
+      left = Math.min(Math.max(8, left), window.innerWidth - menuWidth - 8);
+      setPosition({ top: rect.bottom + 8, left, width: rect.width });
+    };
+
+    place();
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [open, anchorRef, align]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const handlePointer = (event) => {
+      if (anchorRef.current?.contains(event.target)) return;
+      if (menuRef.current?.contains(event.target)) return;
+      onClose();
+    };
+    const handleKey = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("mousedown", handlePointer);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handlePointer);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [open, anchorRef, onClose]);
+
+  if (!open || typeof document === "undefined") return null;
+
+  return createPortal(
+    <div
+      ref={menuRef}
+      role="menu"
+      className="neu-menu fixed z-[1100] min-w-[220px] overflow-hidden py-1.5"
+      style={{ top: position.top, left: position.left }}
+    >
+      {children}
+    </div>,
+    document.body
+  );
+};
 
 const normalizeGenderValue = (value) => {
   const normalized = String(value || "")
@@ -3740,9 +3816,9 @@ export default function TreesBuilder({
                     .transition()
                     .call(zoomRef.current.scaleBy, 1.3);
               }}
-              className={`p-2 rounded-lg ${isDark ? "bg-white/10 hover:bg-white/15 text-white" : "bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]"} 
-              border ${border} transition-all shadow-sm hover:shadow-md`}
+              className="interactive-btn btn-neu-icon !h-10 !w-10"
               title={t("legacy.zoom_in", "Zoom In")}
+              aria-label={t("legacy.zoom_in", "Zoom In")}
             >
               <Plus className="w-4 h-4" />
             </button>
@@ -3753,17 +3829,15 @@ export default function TreesBuilder({
                     .transition()
                     .call(zoomRef.current.scaleBy, 0.7);
               }}
-              className={`p-2 rounded-lg ${isDark ? "bg-white/10 hover:bg-white/15 text-white" : "bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]"} 
-              border ${border} transition-all shadow-sm hover:shadow-md flex items-center justify-center`}
+              className="interactive-btn btn-neu-icon !h-10 !w-10 flex items-center justify-center"
               title={t("legacy.zoom_out", "Zoom Out")}
+              aria-label={t("legacy.zoom_out", "Zoom Out")}
             >
               <div className="w-4 h-0.5 bg-current" />
             </button>
             <button
               type="button"
-              className={`px-4 py-2 rounded-lg border ${border} 
-              ${isDark ? "bg-[#0c4a6e]/30 hover:bg-[#0c4a6e]/40 text-white" : "bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]"} 
-              inline-flex items-center gap-2 text-sm font-semibold shadow-sm hover:shadow-md transition-all ml-2`}
+              className="interactive-btn btn-neu ml-2 inline-flex items-center gap-2 !px-4 !py-2 !text-xs"
               onClick={centerTree}
             >
               <LocateFixed className="w-4 h-4" />
@@ -3771,7 +3845,7 @@ export default function TreesBuilder({
             </button>
             {dataFormat === "gedcomx" ? (
               <span
-                className="ml-2 px-3 py-1.5 rounded-lg border border-[#0c4a6e]/40 bg-[#0c4a6e]/10 text-[#0c4a6e] dark:text-[#0d9488] dark:border-[#0d9488]/40 dark:bg-[#0d9488]/10 text-xs font-semibold uppercase tracking-wide"
+                className="neu-chip ml-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide"
                 title={t("legacy.tree_saved_gedcomx",
                   "This tree is saved in GEDCOM X format.",
                 )}
@@ -3781,7 +3855,7 @@ export default function TreesBuilder({
             ) : null}
             {dataFormat === "gedcom7" ? (
               <span
-                className="ml-2 px-3 py-1.5 rounded-lg border border-[#0c4a6e]/40 bg-[#0c4a6e]/10 text-[#0c4a6e] dark:text-[#0d9488] dark:border-[#0d9488]/40 dark:bg-[#0d9488]/10 text-xs font-semibold uppercase tracking-wide"
+                className="neu-chip ml-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide"
                 title={t("legacy.tree_saved_gedcom7",
                   "This tree is saved in GEDCOM 7.0 format.",
                 )}
@@ -3800,9 +3874,9 @@ export default function TreesBuilder({
                   setGedcomXImportOpen(false);
                   setGedcomXExportOpen(false);
                 }}
-                className={`w-full min-w-0 px-3 py-2.5 rounded-lg border ${border} 
-                ${isDark ? "bg-white/10 hover:bg-white/15 text-white" : "bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]"} 
-                flex items-center justify-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md`}
+                aria-haspopup="menu"
+                aria-expanded={gedcomImportOpen}
+                className="interactive-btn btn-neu w-full min-w-0 !flex items-center justify-center gap-2 !px-3 !py-2.5 !text-xs"
               >
                 <Upload className="w-4 h-4 shrink-0" />
                 <span className="truncate">
@@ -3812,7 +3886,7 @@ export default function TreesBuilder({
               </button>
               {gedcomImportOpen ? (
                 <div
-                  className={`absolute left-0 right-0 top-full mt-1 py-1 rounded-lg border ${border} ${card} shadow-lg z-30 min-w-[180px]`}
+                  className="neu-menu absolute left-0 right-0 top-full mt-2 py-1.5 z-30 min-w-[180px]"
                   role="menu"
                 >
                   <button
@@ -3823,7 +3897,7 @@ export default function TreesBuilder({
                       setGedcomImportOpen(false);
                       importGedcomRef.current?.click();
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
+                    className="neu-menu-item w-full text-left px-3.5 py-2.5 text-sm"
                   >
                     {t("legacy.gedcom_format_551", "GEDCOM 5.5.1")}
                   </button>
@@ -3835,7 +3909,7 @@ export default function TreesBuilder({
                       setGedcomImportOpen(false);
                       importGedcomRef.current?.click();
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
+                    className="neu-menu-item w-full text-left px-3.5 py-2.5 text-sm"
                   >
                     {t("legacy.format_gedcom7", "GEDCOM 7.0")}
                   </button>
@@ -3850,9 +3924,9 @@ export default function TreesBuilder({
                   setGedcomXImportOpen(false);
                   setGedcomXExportOpen(false);
                 }}
-                className={`w-full min-w-0 px-3 py-2.5 rounded-lg border ${border} 
-                ${isDark ? "bg-[#0c4a6e]/30 hover:bg-[#0c4a6e]/40 text-white" : "bg-[#0c4a6e] hover:bg-[#0c4a6e]/90 text-white"} 
-                flex items-center justify-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md`}
+                aria-haspopup="menu"
+                aria-expanded={gedcomExportOpen}
+                className="interactive-btn btn-neu btn-neu--primary w-full min-w-0 !flex items-center justify-center gap-2 !px-3 !py-2.5 !text-xs"
               >
                 <FileCode2 className="w-4 h-4 shrink-0" />
                 <span className="truncate">
@@ -3862,7 +3936,7 @@ export default function TreesBuilder({
               </button>
               {gedcomExportOpen ? (
                 <div
-                  className={`absolute left-0 right-0 top-full mt-1 py-1 rounded-lg border ${border} ${card} shadow-lg z-30 min-w-[180px]`}
+                  className="neu-menu absolute left-0 right-0 top-full mt-2 py-1.5 z-30 min-w-[180px]"
                   role="menu"
                 >
                   <button
@@ -3872,7 +3946,7 @@ export default function TreesBuilder({
                       setGedcomExportOpen(false);
                       exportGedcomFile();
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
+                    className="neu-menu-item w-full text-left px-3.5 py-2.5 text-sm"
                   >
                     {t("legacy.gedcom_format_551", "GEDCOM 5.5.1")}
                   </button>
@@ -3883,7 +3957,7 @@ export default function TreesBuilder({
                       setGedcomExportOpen(false);
                       exportGedcom7File();
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
+                    className="neu-menu-item w-full text-left px-3.5 py-2.5 text-sm"
                   >
                     {t("legacy.format_gedcom7", "GEDCOM 7.0")}
                   </button>
@@ -3896,9 +3970,9 @@ export default function TreesBuilder({
                   setGedcomXImportOpen((o) => !o);
                   setGedcomXExportOpen(false);
                 }}
-                className={`w-full min-w-0 px-3 py-2.5 rounded-lg border ${border} 
-                ${isDark ? "bg-white/10 hover:bg-white/15 text-white" : "bg-white hover:bg-[#f8f5ef] text-[#0c4a6e]"} 
-                flex items-center justify-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md`}
+                aria-haspopup="menu"
+                aria-expanded={gedcomXImportOpen}
+                className="interactive-btn btn-neu w-full min-w-0 !flex items-center justify-center gap-2 !px-3 !py-2.5 !text-xs"
               >
                 <Upload className="w-4 h-4 shrink-0" />
                 <span className="truncate">
@@ -3908,7 +3982,7 @@ export default function TreesBuilder({
               </button>
               {gedcomXImportOpen ? (
                 <div
-                  className={`absolute left-0 right-0 top-full mt-1 py-1 rounded-lg border ${border} ${card} shadow-lg z-30 min-w-[180px]`}
+                  className="neu-menu absolute left-0 right-0 top-full mt-2 py-1.5 z-30 min-w-[180px]"
                   role="menu"
                 >
                   <button
@@ -3919,7 +3993,7 @@ export default function TreesBuilder({
                       setGedcomXImportOpen(false);
                       importGedcomXRef.current?.click();
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
+                    className="neu-menu-item w-full text-left px-3.5 py-2.5 text-sm"
                   >
                     {t("legacy.gedcomx_format_xml", "XML format")}
                   </button>
@@ -3931,7 +4005,7 @@ export default function TreesBuilder({
                       setGedcomXImportOpen(false);
                       importGedcomXRef.current?.click();
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
+                    className="neu-menu-item w-full text-left px-3.5 py-2.5 text-sm"
                   >
                     {t("legacy.gedcomx_format_json", "JSON format")}
                   </button>
@@ -3943,7 +4017,7 @@ export default function TreesBuilder({
                       setGedcomXImportOpen(false);
                       importGedcomXRef.current?.click();
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
+                    className="neu-menu-item w-full text-left px-3.5 py-2.5 text-sm"
                   >
                     {t("legacy.gedcomx_format_gedx", ".gedx file")}
                   </button>
@@ -3956,9 +4030,9 @@ export default function TreesBuilder({
                   setGedcomXExportOpen((o) => !o);
                   setGedcomXImportOpen(false);
                 }}
-                className={`w-full min-w-0 px-3 py-2.5 rounded-lg border ${border} 
-                ${isDark ? "bg-[#0c4a6e]/30 hover:bg-[#0c4a6e]/40 text-white" : "bg-[#0c4a6e] hover:bg-[#0c4a6e]/90 text-white"} 
-                flex items-center justify-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md`}
+                aria-haspopup="menu"
+                aria-expanded={gedcomXExportOpen}
+                className="interactive-btn btn-neu btn-neu--primary w-full min-w-0 !flex items-center justify-center gap-2 !px-3 !py-2.5 !text-xs"
               >
                 <FileCode2 className="w-4 h-4 shrink-0" />
                 <span className="truncate">
@@ -3968,14 +4042,14 @@ export default function TreesBuilder({
               </button>
               {gedcomXExportOpen ? (
                 <div
-                  className={`absolute left-0 right-0 top-full mt-1 py-1 rounded-lg border ${border} ${card} shadow-lg z-30 min-w-[180px]`}
+                  className="neu-menu absolute left-0 right-0 top-full mt-2 py-1.5 z-30 min-w-[180px]"
                   role="menu"
                 >
                   <button
                     type="button"
                     role="menuitem"
                     onClick={() => exportGedcomXFile("xml")}
-                    className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
+                    className="neu-menu-item w-full text-left px-3.5 py-2.5 text-sm"
                   >
                     {t("legacy.gedcomx_format_xml", "XML format")}
                   </button>
@@ -3983,7 +4057,7 @@ export default function TreesBuilder({
                     type="button"
                     role="menuitem"
                     onClick={() => exportGedcomXFile("json")}
-                    className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
+                    className="neu-menu-item w-full text-left px-3.5 py-2.5 text-sm"
                   >
                     {t("legacy.gedcomx_format_json", "JSON format")}
                   </button>
@@ -3991,7 +4065,7 @@ export default function TreesBuilder({
                     type="button"
                     role="menuitem"
                     onClick={() => exportGedcomXFile("gedx")}
-                    className={`w-full text-left px-3 py-2 text-sm ${inputText} hover:opacity-90`}
+                    className="neu-menu-item w-full text-left px-3.5 py-2.5 text-sm"
                   >
                     {t("legacy.gedcomx_format_gedx", ".gedx file")}
                   </button>
@@ -4018,17 +4092,22 @@ export default function TreesBuilder({
 
             {!people.length ? (
               <div className="absolute inset-0 flex items-center justify-center text-center px-6 pointer-events-none">
-                <div
-                  className={`max-w-md rounded-xl border ${border} ${card} p-6 shadow-lg pointer-events-auto`}
-                >
-                  <div className="text-lg font-semibold">
+                <div className="neu-panel max-w-md p-7 pointer-events-auto">
+                  <div className="neu-avatar mx-auto flex h-14 w-14 items-center justify-center rounded-full">
+                    <Network
+                      className="h-6 w-6"
+                      style={{ color: isDark ? "#5eead4" : "#0c4a6e" }}
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <div className="mt-4 text-lg font-semibold font-serif">
                     {readOnly
                       ? t("legacy.tree_empty", "No people to display yet.")
                       : t("legacy.tree_empty_prompt",
                           "Start building your family tree.",
                         )}
                   </div>
-                  <p className="text-sm opacity-70 mt-2">
+                  <p className="neu-label mt-2 text-sm">
                     {readOnly
                       ? t("legacy.tree_empty_readonly_hint",
                           "There is no GEDCOM data for this tree yet.",
@@ -4038,10 +4117,10 @@ export default function TreesBuilder({
                         )}
                   </p>
                   {!readOnly ? (
-                    <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                    <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                       <button
                         type="button"
-                        className="px-4 py-2 rounded-md bg-[#0c4a6e] text-white text-sm font-semibold"
+                        className="interactive-btn btn-neu btn-neu--primary !px-5 !py-2.5 !text-xs"
                         onClick={() => {
                           resetAddForm();
                           setPanelTab("add");
@@ -4051,14 +4130,14 @@ export default function TreesBuilder({
                       </button>
                       <button
                         type="button"
-                        className={`px-4 py-2 rounded-md border ${border} text-sm font-semibold`}
+                        className="interactive-btn btn-neu !px-5 !py-2.5 !text-xs"
                         onClick={() => importGedcomRef.current?.click()}
                       >
                         {t("legacy.import_gedcom", "Import GEDCOM")}
                       </button>
                       <button
                         type="button"
-                        className={`px-4 py-2 rounded-md border ${border} text-sm font-semibold`}
+                        className="interactive-btn btn-neu !px-5 !py-2.5 !text-xs"
                         onClick={() => {
                           gedcomXImportFormatRef.current = "xml";
                           importGedcomXRef.current?.click();
@@ -4082,7 +4161,7 @@ export default function TreesBuilder({
                 aria-label={t("legacy.person_card", "Person card")}
               >
                 <div
-                  className="neu-surface max-h-[min(780px,calc(100vh-32px))] w-full max-w-3xl overflow-y-auto p-6"
+                  className="neu-panel max-h-[min(780px,calc(100vh-32px))] w-full max-w-3xl overflow-y-auto p-6"
                 >
                 <div className="flex items-start justify-between gap-4 border-b border-current/10 pb-4">
                   <div className="flex min-w-0 items-center gap-4">
@@ -4100,7 +4179,7 @@ export default function TreesBuilder({
                         {nameOf(selectedPerson)}
                       </div>
                       <div className="mt-1 flex flex-wrap items-center gap-2">
-                        <span className="text-[11px] uppercase tracking-widest opacity-60">
+                        <span className="neu-label text-[11px] uppercase tracking-widest">
                           {t("legacy.person_card", "Person card")}
                         </span>
                         <span
@@ -4117,7 +4196,7 @@ export default function TreesBuilder({
                   <button
                     type="button"
                     onClick={closeSelectedPersonCard}
-                    className="neu-btn-icon shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full"
+                    className="interactive-btn btn-neu-icon shrink-0"
                     title={t("legacy.close", "Close")}
                     aria-label={t("legacy.close", "Close")}
                   >
@@ -4130,73 +4209,78 @@ export default function TreesBuilder({
                     <button
                       type="button"
                       onClick={openSourceLinkAdd}
-                      className="neu-btn inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold"
+                      className="interactive-btn btn-neu inline-flex items-center gap-2 !px-4 !py-2 !text-xs"
                       title={t("legacy.add_source_link", "Add source link")}
                     >
                       <Plus className="h-4 w-4" />
                       {t("legacy.add_source_link", "Add source link")}
                     </button>
-                    <div className="relative" ref={linkMenuRef}>
+                    <button
+                      ref={linkMenuRef}
+                      type="button"
+                      onClick={() => setLinkMenuOpen((open) => !open)}
+                      aria-haspopup="menu"
+                      aria-expanded={linkMenuOpen}
+                      className="interactive-btn btn-neu btn-neu--primary inline-flex items-center gap-2 !px-4 !py-2 !text-xs"
+                    >
+                      <Link2 className="h-4 w-4" />
+                      {t("legacy.link_media", "Link with...")}
+                      <ChevronDown
+                        className={`h-3.5 w-3.5 transition-transform ${linkMenuOpen ? "rotate-180" : ""}`}
+                      />
+                    </button>
+                    <AnchoredMenu
+                      open={linkMenuOpen}
+                      anchorRef={linkMenuRef}
+                      onClose={() => setLinkMenuOpen(false)}
+                      align={dir === "rtl" ? "end" : "start"}
+                    >
+                      {[
+                        {
+                          type: "document",
+                          icon: <FileText className="h-4 w-4" aria-hidden="true" />,
+                        },
+                        {
+                          type: "image",
+                          icon: <ImageIcon className="h-4 w-4" aria-hidden="true" />,
+                        },
+                        {
+                          type: "audio",
+                          icon: <Music className="h-4 w-4" aria-hidden="true" />,
+                        },
+                        {
+                          type: "book",
+                          icon: <BookOpen className="h-4 w-4" aria-hidden="true" />,
+                        },
+                      ].map(({ type, icon }) => (
+                        <button
+                          key={type}
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            setLinkMenuOpen(false);
+                            openMediaLinkPanel(type);
+                          }}
+                          className="neu-menu-item flex w-full items-center gap-3 px-4 py-2.5 text-left text-xs font-semibold"
+                        >
+                          {icon}
+                          {mediaTypeLabel(type)}
+                        </button>
+                      ))}
+                      <div className="mx-3 my-1 border-t border-current/10" />
                       <button
                         type="button"
-                        onClick={() => setLinkMenuOpen((open) => !open)}
-                        aria-haspopup="menu"
-                        aria-expanded={linkMenuOpen}
-                        className="neu-btn neu-btn--primary inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold"
+                        role="menuitem"
+                        onClick={() => {
+                          setLinkMenuOpen(false);
+                          openSourceLinkAdd();
+                        }}
+                        className="neu-menu-item flex w-full items-center gap-3 px-4 py-2.5 text-left text-xs font-semibold"
                       >
-                        <Link2 className="h-4 w-4" />
-                        {t("legacy.link_media", "Link with...")}
-                        <ChevronDown
-                          className={`h-3.5 w-3.5 transition-transform ${linkMenuOpen ? "rotate-180" : ""}`}
-                        />
+                        <Link2 className="h-4 w-4" aria-hidden="true" />
+                        {t("legacy.media_type_external", "External link (URL)")}
                       </button>
-                      {linkMenuOpen ? (
-                        <div
-                          className="neu-menu absolute z-40 mt-2 min-w-[220px] overflow-hidden py-1.5 ltr:left-0 rtl:right-0"
-                          role="menu"
-                        >
-                          {[
-                            {
-                              type: "document",
-                              icon: <FileText className="h-4 w-4" />,
-                            },
-                            {
-                              type: "image",
-                              icon: <ImageIcon className="h-4 w-4" />,
-                            },
-                            {
-                              type: "audio",
-                              icon: <Music className="h-4 w-4" />,
-                            },
-                            {
-                              type: "book",
-                              icon: <BookOpen className="h-4 w-4" />,
-                            },
-                          ].map(({ type, icon }) => (
-                            <button
-                              key={type}
-                              type="button"
-                              role="menuitem"
-                              onClick={() => openMediaLinkPanel(type)}
-                              className="neu-menu-item flex w-full items-center gap-3 px-4 py-2.5 text-left text-xs font-semibold"
-                            >
-                              {icon}
-                              {mediaTypeLabel(type)}
-                            </button>
-                          ))}
-                          <div className="mx-3 my-1 border-t border-current/10" />
-                          <button
-                            type="button"
-                            role="menuitem"
-                            onClick={openSourceLinkAdd}
-                            className="neu-menu-item flex w-full items-center gap-3 px-4 py-2.5 text-left text-xs font-semibold"
-                          >
-                            <Link2 className="h-4 w-4" />
-                            {t("legacy.media_type_external", "External link (URL)")}
-                          </button>
-                        </div>
-                      ) : null}
-                    </div>
+                    </AnchoredMenu>
                   </div>
                 ) : null}
 
@@ -4250,7 +4334,7 @@ export default function TreesBuilder({
                       key={label}
                       className={`neu-inset px-3.5 py-2.5 ${wide ? "sm:col-span-2" : ""}`}
                     >
-                      <div className="text-[10px] font-bold uppercase tracking-widest opacity-55">
+                      <div className="neu-label text-[10px] font-bold uppercase tracking-widest">
                         {label}
                       </div>
                       <div className="mt-0.5 text-sm font-medium">
@@ -4266,7 +4350,7 @@ export default function TreesBuilder({
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     {selectedPerson.archiveSource ? (
                       <div className="neu-inset px-3.5 py-2.5 sm:col-span-2">
-                        <div className="text-[10px] font-bold uppercase tracking-widest opacity-55">
+                        <div className="neu-label text-[10px] font-bold uppercase tracking-widest">
                           {t("legacy.archive_source", "Archive Source")}
                         </div>
                         <div className="mt-0.5 break-words text-sm font-medium">
@@ -4278,7 +4362,7 @@ export default function TreesBuilder({
                     ) : null}
                     {selectedPerson.documentCode ? (
                       <div className="neu-inset px-3.5 py-2.5">
-                        <div className="text-[10px] font-bold uppercase tracking-widest opacity-55">
+                        <div className="neu-label text-[10px] font-bold uppercase tracking-widest">
                           {t("legacy.document_code", "Document Code")}
                         </div>
                         <div className="mt-0.5 break-words text-sm font-medium">
@@ -4290,7 +4374,7 @@ export default function TreesBuilder({
                     ) : null}
                     {selectedPerson.reliability ? (
                       <div className="neu-inset px-3.5 py-2.5">
-                        <div className="text-[10px] font-bold uppercase tracking-widest opacity-55">
+                        <div className="neu-label text-[10px] font-bold uppercase tracking-widest">
                           {t("legacy.reliability", "Reliability")}
                         </div>
                         <div className="mt-0.5 text-sm font-medium">
@@ -4303,10 +4387,10 @@ export default function TreesBuilder({
 
                 {selectedPerson.details ? (
                   <div className="neu-inset mt-4 px-3.5 py-3">
-                    <div className="text-[10px] font-bold uppercase tracking-widest opacity-55">
+                    <div className="neu-label text-[10px] font-bold uppercase tracking-widest">
                       {t("legacy.details", "Details / Biography")}
                     </div>
-                    <div className="mt-1 whitespace-pre-line text-sm leading-relaxed opacity-90">
+                    <div className="mt-1 whitespace-pre-line text-sm leading-relaxed">
                       {selectedPerson.details}
                     </div>
                   </div>
@@ -4314,7 +4398,7 @@ export default function TreesBuilder({
 
                 <div className="mt-5 border-t border-current/10 pt-4">
                   <div className="mb-2 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-70">
+                    <div className="neu-label flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
                       <Archive className="h-3.5 w-3.5" aria-hidden="true" />
                       {t("legacy.sources_documents", "Sources & Documents")}
                     </div>
@@ -4322,7 +4406,7 @@ export default function TreesBuilder({
                       <button
                         type="button"
                         onClick={openSourceLinkAdd}
-                        className="neu-btn rounded-lg px-2.5 py-1 text-xs font-semibold"
+                        className="interactive-btn btn-neu !px-3 !py-1.5 !text-[11px]"
                       >
                         + {t("legacy.add", "Add")}
                       </button>
@@ -4335,7 +4419,7 @@ export default function TreesBuilder({
                           key={`${l.url}-${index}`}
                           className="neu-inset flex items-center gap-2.5 px-3 py-2"
                         >
-                          <span className="neu-chip inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full">
+                          <span className="neu-chip inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
                             {l.kind === "local" ? (
                               <FileText className="h-3.5 w-3.5" aria-hidden="true" />
                             ) : (
@@ -4354,11 +4438,11 @@ export default function TreesBuilder({
                               : ""}
                           </a>
                           {!readOnly ? (
-                            <div className="flex shrink-0 gap-1.5">
+                            <div className="flex shrink-0 gap-1">
                               <button
                                 type="button"
                                 onClick={() => openSourceLinkEdit(index, l.url)}
-                                className="neu-btn-icon inline-flex h-7 w-7 items-center justify-center rounded-lg text-[#0d9488]"
+                                className="rounded-lg p-2 text-[#0d9488] opacity-80 transition hover:bg-[#0d9488]/15 hover:opacity-100"
                                 title={t("legacy.edit", "Edit")}
                                 aria-label={t("legacy.edit", "Edit")}
                               >
@@ -4367,7 +4451,7 @@ export default function TreesBuilder({
                               <button
                                 type="button"
                                 onClick={() => deleteSourceLinkAt(index)}
-                                className="neu-btn-icon inline-flex h-7 w-7 items-center justify-center rounded-lg text-red-500"
+                                className="rounded-lg p-2 text-red-500 opacity-80 transition hover:bg-red-500/15 hover:opacity-100"
                                 title={t("legacy.delete", "Delete")}
                                 aria-label={t("legacy.delete", "Delete")}
                               >
@@ -4379,17 +4463,19 @@ export default function TreesBuilder({
                       ))}
                     </div>
                   ) : (
-                    <div className="neu-inset px-3.5 py-3 text-xs italic opacity-60">
-                      {t("legacy.no_sources_yet",
-                        "No sources linked yet. Use \"Link with...\" or add a source link.",
-                      )}
+                    <div className="neu-inset px-3.5 py-3 text-xs italic">
+                      <span className="neu-label">
+                        {t("legacy.no_sources_yet",
+                          "No sources linked yet. Use \"Link with...\" or add a source link.",
+                        )}
+                      </span>
                     </div>
                   )}
                 </div>
 
                 {!readOnly && sourceLinkPanelOpen ? (
                   <div className="neu-inset mt-3 px-3.5 py-3">
-                    <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest opacity-70">
+                    <label className="neu-label mb-1.5 block text-[10px] font-bold uppercase tracking-widest">
                       {sourceLinkEditIndex === null || sourceLinkEditIndex === undefined
                         ? t("legacy.add_source_link", "Add source link")
                         : t("legacy.edit_source_link", "Edit source link")}
@@ -4399,12 +4485,12 @@ export default function TreesBuilder({
                         value={sourceLinkDraft}
                         onChange={(event) => setSourceLinkDraft(event.target.value)}
                         placeholder={t("legacy.source_link_placeholder", "https://... or /uploads/documents/file.pdf")}
-                        className={`neu-field min-w-0 flex-1 px-3 py-2 text-xs ${inputText}`}
+                        className="neu-field min-w-0 flex-1 px-3 py-2.5 text-xs"
                       />
                       <button
                         type="button"
                         onClick={saveSourceLinkDraft}
-                        className="neu-btn neu-btn--primary rounded-xl px-4 py-2 text-xs font-semibold"
+                        className="interactive-btn btn-neu btn-neu--primary !px-4 !py-2 !text-xs"
                       >
                         {t("legacy.save", "Save")}
                       </button>
@@ -4415,7 +4501,7 @@ export default function TreesBuilder({
                 {!readOnly && mediaPanelOpen ? (
                   <div className="neu-inset mt-3 px-3.5 py-3">
                     <div className="mb-1.5 flex items-center justify-between gap-2">
-                      <label className="block text-[10px] font-bold uppercase tracking-widest opacity-70">
+                      <label className="neu-label block text-[10px] font-bold uppercase tracking-widest">
                         {t("legacy.link_media", "Link with...")}: {mediaTypeLabel(mediaLinkType)}
                       </label>
                       <button
@@ -4434,7 +4520,7 @@ export default function TreesBuilder({
                         value={selectedMediaLink}
                         onChange={(event) => setSelectedMediaLink(event.target.value)}
                         disabled={mediaLoading || !existingMedia.length}
-                        className={`neu-field min-w-0 flex-1 px-3 py-2 text-xs ${inputText} disabled:opacity-50`}
+                        className="neu-field min-w-0 flex-1 px-3 py-2.5 text-xs disabled:opacity-50"
                       >
                         {existingMedia.length ? (
                           existingMedia.map((item) => (
@@ -4457,7 +4543,7 @@ export default function TreesBuilder({
                         type="button"
                         onClick={linkSelectedMediaToPerson}
                         disabled={mediaLoading || !selectedMediaLink}
-                        className="neu-btn neu-btn--primary rounded-xl px-4 py-2 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+                        className="interactive-btn btn-neu btn-neu--primary !px-4 !py-2 !text-xs disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {t("legacy.link", "Link")}
                       </button>
@@ -4469,9 +4555,9 @@ export default function TreesBuilder({
             ) : null}
           </div>
 
-          <div className={`w-full border-t ${border} p-4 ${inputText}`}>
+          <div className={`w-full p-4 ${inputText}`}>
             {/* Sidebar/Editor Content - theme-aware colors */}
-            <div className="flex flex-col md:flex-row gap-6 h-[600px]">
+            <div className="neu-panel flex flex-col gap-6 p-5 md:flex-row h-[calc(600px+2.5rem)] md:h-[600px]">
               {/* Search / List Column */}
               <div
                 className={`w-full md:w-1/3 flex flex-col gap-4 border-r pr-4 ${isDark ? "border-[#0d9488]/20" : "border-[#0d9488]/30"}`}
@@ -4484,18 +4570,18 @@ export default function TreesBuilder({
                   >
                     {t("legacy.people_list", "People List")}
                   </span>
-                  <div className="text-xs opacity-60 font-serif italic">
+                  <div className="neu-label text-xs font-serif italic">
                     {people.length} {t("legacy.records", "records")}
                   </div>
                 </div>
 
                 <div className="relative">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 opacity-50 text-[#0c4a6e] dark:text-[#0d9488]" />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 opacity-70 text-[#0c4a6e] dark:text-[#0d9488]" />
                   <input
                     value={peopleQuery}
                     onChange={(e) => setPeopleQuery(e.target.value)}
                     placeholder={t("legacy.search_people", "Search people...")}
-                    className={`w-full pl-9 pr-3 py-2 rounded-md border ${border} ${inputBg} ${inputText} focus:ring-2 focus:ring-[#0d9488]/50 focus:border-[#0d9488] transition-all`}
+                    className="neu-field w-full pl-9 pr-3 py-2.5 text-sm"
                   />
                 </div>
 
@@ -4514,7 +4600,7 @@ export default function TreesBuilder({
                       />
                     ))
                   ) : (
-                    <div className="text-center py-8 opacity-50 italic font-serif">
+                    <div className="neu-label text-center py-8 italic font-serif">
                       {t("legacy.no_results", "No results found")}
                     </div>
                   )}
@@ -4525,16 +4611,14 @@ export default function TreesBuilder({
               <div className="w-full md:w-2/3 flex flex-col">
                 {!readOnly ? (
                   <div className="h-full flex flex-col">
-                    <div className="flex items-center gap-1 bg-[#0c4a6e]/5 dark:bg-white/5 p-1 rounded-lg mb-4 self-start">
+                    <div className="neu-tabs inline-flex items-center gap-1 mb-4 self-start">
                       <button
                         onClick={() => {
                           resetAddForm();
                           setPanelTab("add");
                         }}
-                        className={`px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-md transition-all ${
-                          panelTab === "add"
-                            ? "bg-[#0c4a6e] text-white shadow-sm"
-                            : "text-[#0c4a6e] dark:text-[#0d9488] hover:bg-black/5 dark:hover:bg-white/5"
+                        className={`neu-tab px-4 py-2 text-sm font-bold uppercase tracking-wider ${
+                          panelTab === "add" ? "neu-tab--active" : ""
                         }`}
                       >
                         {t("legacy.add_person", "Add Person")}
@@ -4542,12 +4626,8 @@ export default function TreesBuilder({
                       <button
                         onClick={() => startEdit(selectedPerson)}
                         disabled={!selectedPerson}
-                        className={`px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-md transition-all ${
-                          panelTab === "editor"
-                            ? "bg-[#0c4a6e] text-white shadow-sm"
-                            : "text-[#0c4a6e] dark:text-[#0d9488] hover:bg-black/5 dark:hover:bg-white/5"
-                        } ${
-                          !selectedPerson ? "cursor-not-allowed opacity-30" : ""
+                        className={`neu-tab px-4 py-2 text-sm font-bold uppercase tracking-wider ${
+                          panelTab === "editor" ? "neu-tab--active" : ""
                         }`}
                       >
                         {t("legacy.edit_person", "Edit Person")}
@@ -4995,14 +5075,14 @@ export default function TreesBuilder({
                             <button
                               type="button"
                               onClick={() => deletePerson(addForm.id)}
-                              className="mr-auto px-4 py-2 text-red-600 hover:bg-red-50 rounded text-sm font-bold uppercase tracking-wider transition"
+                              className="mr-auto rounded-lg px-4 py-2 text-sm font-bold uppercase tracking-wider text-red-600 transition hover:bg-red-500/10 dark:text-red-400"
                             >
                               {t("legacy.delete", "Delete")}
                             </button>
                           )}
                           <button
                             type="submit"
-                            className="px-8 py-3 bg-[#0c4a6e] text-white font-cinzel font-bold text-sm uppercase tracking-widest rounded shadow-lg hover:bg-[#4a322c] hover:translate-y-[-1px] transition-all"
+                            className="interactive-btn btn-neu btn-neu--primary !px-8 !py-3 !text-sm"
                           >
                             {panelTab === "add"
                               ? t("legacy.add_person", "Add Person")
