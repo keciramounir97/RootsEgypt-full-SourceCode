@@ -1877,7 +1877,7 @@ export default function TreesBuilder({
     type: "success",
   });
 
-  const [panelTab, setPanelTab] = useState(readOnly ? "selected" : "editor");
+  const [panelTab, setPanelTab] = useState(readOnly ? "selected" : "add");
 
   const [peopleQuery, setPeopleQuery] = useState("");
 

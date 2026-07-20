@@ -1,6 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/**
+ * The app's theme toggle (frontend/src/store/theme.ts) manages light/dark
+ * by setting a `dark` class on <html> — it never relies on OS preference.
+ * Tailwind v4's `dark:` variant defaults to `@media (prefers-color-scheme)`
+ * unless told otherwise, which left every `dark:*` utility in the codebase
+ * driven by the OS theme instead of the in-app toggle. This ties `dark:` to
+ * the same class the store already sets, matching the intended behavior.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Nile + papyrus + desert gold + terracotta accent */
   --color-nile: #0c4a6e;
