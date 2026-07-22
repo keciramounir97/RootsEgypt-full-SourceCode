@@ -332,7 +332,7 @@ export default function AdminUserApprovals() {
                     <th className={`px-4 py-3 text-center text-sm font-semibold ${textColor}`}>{t("legacy.validation", "Validation")}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y ${border}">
+                <tbody className={`divide-y ${border}`}>
                   {filteredUsers.map((pendingUser) => (
                     <tr key={pendingUser.id} className="hover:bg-white/5 transition">
                       <td className="px-4 py-4">

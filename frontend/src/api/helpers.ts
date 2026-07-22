@@ -14,6 +14,8 @@ interface TreeRaw {
   gedcom_path?: string;
   gedcomPath?: string;
   hasGedcom?: boolean;
+  has_gedcom_backup?: boolean | number;
+  hasGedcomBackup?: boolean;
   owner?: unknown;
   owner_name?: unknown;
   created_at?: string;
@@ -57,6 +59,11 @@ export const normalizeTree = (
   const hasGedcom = Boolean(
     tree.gedcom_path ?? tree.gedcomPath ?? tree.hasGedcom,
   );
+  // True once the tree's full content is captured in the database (not just
+  // referenced by file path) — safe even if the uploads folder is lost.
+  const hasGedcomBackup = Boolean(
+    tree.has_gedcom_backup ?? tree.hasGedcomBackup,
+  );
   const scope = options?.gedcomScope ?? (isPublic ? "public" : "my");
   const gedcomPathPrefix =
     scope === "admin" ? "/api/admin/trees" : scope === "my" ? "/api/my/trees" : "/api/trees";
@@ -73,6 +80,7 @@ export const normalizeTree = (
     documentCode: tree.document_code ?? tree.documentCode ?? "",
     isPublic: !!isPublic,
     hasGedcom,
+    hasGedcomBackup,
     gedcomUrl,
     owner,
     personCount: people.length,

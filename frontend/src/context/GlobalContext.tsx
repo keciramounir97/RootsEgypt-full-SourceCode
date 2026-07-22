@@ -4,20 +4,17 @@ import { createContext, useContext, useReducer, type Dispatch, type ReactNode } 
 interface State {
     isAuthenticated: boolean;
     user: any | null;
-    theme: 'light' | 'dark';
 }
 
 // Define action types
 type Action =
     | { type: 'LOGIN'; payload: any }
-    | { type: 'LOGOUT' }
-    | { type: 'SET_THEME'; payload: 'light' | 'dark' };
+    | { type: 'LOGOUT' };
 
 // Initial state
 const initialState: State = {
     isAuthenticated: !!localStorage.getItem('token'),
     user: JSON.parse(localStorage.getItem('user') || 'null'),
-    theme: (localStorage.getItem('theme') as 'light' | 'dark') || 'light',
 };
 
 // Reducer function
@@ -30,9 +27,6 @@ const reducer = (state: State, action: Action): State => {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             return { ...state, isAuthenticated: false, user: null };
-        case 'SET_THEME':
-            localStorage.setItem('theme', action.payload);
-            return { ...state, theme: action.payload };
         default:
             return state;
     }

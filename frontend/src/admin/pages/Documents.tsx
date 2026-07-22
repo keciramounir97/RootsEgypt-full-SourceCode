@@ -500,7 +500,7 @@ export default function AdminDocuments() {
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t ${border}">
+                  <div className={`flex items-center justify-between mt-3 pt-3 border-t ${border}`}>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleEdit(doc)}

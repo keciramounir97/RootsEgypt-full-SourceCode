@@ -22,7 +22,7 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { api } from "../api/client";
-import { getApiErrorMessage } from "../api/helpers";
+import { getApiErrorMessage, getApiRoot } from "../api/helpers";
 import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
 
@@ -94,6 +94,7 @@ export default function GalleryAudios() {
   const [suggestionSubmitting, setSuggestionSubmitting] = useState(false);
   const [suggestionSuccess, setSuggestionSuccess] = useState(false);
   const [newComment, setNewComment] = useState("");
+  const apiRoot = useMemo(() => getApiRoot(), []);
   const playlists = useMemo<Playlist[]>(
     () => [
       { id: 1, name: t("legacy.oral_histories", "Oral Histories"), audios: [] },
@@ -150,6 +151,50 @@ export default function GalleryAudios() {
       mounted = false;
     };
   }, [t]);
+
+  const fileUrl = (path: string | undefined) => {
+    if (!path) return "";
+    const raw = String(path).trim();
+    if (raw.startsWith("http")) return raw;
+    const p = raw.startsWith("/") ? raw : `/${raw}`;
+    return `${apiRoot.replace(/\/+$/, "")}${p}`;
+  };
+
+  // Keep the hidden <audio> element in sync with the selected track.
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el || !currentAudio) return;
+    const src = fileUrl(currentAudio.audioPath);
+    if (!src) return;
+    if (el.src !== src) {
+      el.src = src;
+      el.load();
+    }
+    if (isPlaying) {
+      el.play().catch(() => setIsPlaying(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentAudio?.id]);
+
+  // Keep actual playback in sync with the isPlaying toggle.
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el || !currentAudio) return;
+    if (isPlaying) {
+      el.play().catch(() => setIsPlaying(false));
+    } else {
+      el.pause();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying]);
+
+  // Keep actual volume/mute in sync with the volume controls.
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    el.volume = volume;
+    el.muted = isMuted;
+  }, [volume, isMuted]);
 
   const filteredAudios = useMemo(() => {
     let result = audios;
@@ -580,6 +625,7 @@ export default function GalleryAudios() {
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+        onEnded={() => setIsPlaying(false)}
       />
 
       {/* Detail Modal */}

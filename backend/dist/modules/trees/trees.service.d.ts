@@ -17,10 +17,11 @@ export declare class TreesService implements OnModuleInit {
     private ensureTreeSchema;
     private parseBoolean;
     private getPublicInput;
-    listPublic(): Promise<Tree[]>;
+    private withGedcomBackupFlag;
+    listPublic(): Promise<import("objection").Model[]>;
     getPublic(id: number): Promise<Tree>;
-    listByUser(userId: number): Promise<Tree[]>;
-    listAdmin(): Promise<Tree[]>;
+    listByUser(userId: number): Promise<import("objection").Model[]>;
+    listAdmin(): Promise<import("objection").Model[]>;
     findOne(id: number): Promise<Tree>;
     create(data: any, userId: number, file?: Express.Multer.File): Promise<Tree>;
     update(id: number, data: any, userId: number, userRole: number, file?: Express.Multer.File): Promise<{

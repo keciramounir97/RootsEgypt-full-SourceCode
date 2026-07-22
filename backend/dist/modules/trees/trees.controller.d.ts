@@ -19,10 +19,10 @@ export declare class TreesController {
     private readonly logger;
     constructor(treesService: TreesService, knex: Knex);
     private sendGedcomResponse;
-    listPublic(): Promise<import("../../models/Tree").Tree[]>;
+    listPublic(): Promise<import("objection").Model[]>;
     downloadPublicGedcom(id: number, res: Response): Promise<void>;
     getPublic(id: number): Promise<import("../../models/Tree").Tree>;
-    listMy(req: ExpressRequest): Promise<import("../../models/Tree").Tree[]>;
+    listMy(req: ExpressRequest): Promise<import("objection").Model[]>;
     getMy(id: number, req: ExpressRequest): Promise<import("../../models/Tree").Tree>;
     createMy(body: CreateTreeDto, req: ExpressRequest, file?: Express.Multer.File): Promise<import("../../models/Tree").Tree>;
     updateMy(id: number, body: UpdateTreeDto, req: ExpressRequest, file?: Express.Multer.File): Promise<{
@@ -35,7 +35,7 @@ export declare class TreesController {
         message: string;
     }>;
     downloadMyGedcom(id: number, res: Response, req: ExpressRequest): Promise<void>;
-    listAdmin(): Promise<import("../../models/Tree").Tree[]>;
+    listAdmin(): Promise<import("objection").Model[]>;
     getAdmin(id: number): Promise<import("../../models/Tree").Tree>;
     downloadAdminGedcom(id: number, res: Response): Promise<void>;
     createAdmin(body: CreateTreeDto, req: ExpressRequest, file?: Express.Multer.File): Promise<import("../../models/Tree").Tree>;

@@ -27,6 +27,21 @@ function AppWithRouter() {
 }
 
 // ===== EAGER-LOAD ALL ROUTE COMPONENTS =====
+import Library from "./pages/library";
+import About from "./pages/about";
+import Cookies from "./pages/cookies";
+import Privacy from "./pages/privacy";
+import Terms from "./pages/terms";
+import Subscriptions from "./pages/subscriptions";
+import Payment from "./pages/payment";
+import Tasks from "./pages/tasks";
+import Notes from "./pages/notes";
+import Reminders from "./pages/reminders";
+import AdminNotes from "./admin/pages/AdminNotes";
+import AdminTasks from "./admin/pages/AdminTasks";
+import SubscriptionPayments from "./admin/pages/SubscriptionPayments";
+import SubscriptionsAdmin from "./admin/pages/Subscriptions";
+import UserUpgrade from "./admin/pages/UserUpgrade";
 import Home from "./pages/home";
 import GalleryPage from "./pages/Gallery";
 import GalleryTrees from "./pages/GalleryTrees";
@@ -192,10 +207,19 @@ function AppRoutes() {
         path="/library"
         element={
           <PageTransition>
-            <GalleryBooks />
+            <Library />
           </PageTransition>
         }
       />
+      <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+      <Route path="/cookies" element={<PageTransition><Cookies /></PageTransition>} />
+      <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
+      <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+      <Route path="/subscriptions" element={<PageTransition><Subscriptions /></PageTransition>} />
+      <Route path="/payment/:tier" element={<PageTransition><Payment /></PageTransition>} />
+      <Route path="/tasks" element={<PageTransition><Tasks /></PageTransition>} />
+      <Route path="/notes" element={<PageTransition><Notes /></PageTransition>} />
+      <Route path="/reminders" element={<PageTransition><Reminders /></PageTransition>} />
       <Route
         path="/audio"
         element={
@@ -543,6 +567,56 @@ function AppRoutes() {
             <Suspense fallback={<AdminLoadingFallback />}>
               <ProtectedRoute roles={[3]}>
                 <AdminManagement />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="notes"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute privileges={["notes"]}>
+                <AdminNotes />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="tasks"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute privileges={["tasks"]}>
+                <AdminTasks />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="subscriptions"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute privileges={["subscriptions"]}>
+                <SubscriptionsAdmin />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="subscription-payments"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute roles={[3]}>
+                <SubscriptionPayments />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="user-upgrade"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute roles={[3]}>
+                <UserUpgrade />
               </ProtectedRoute>
             </Suspense>
           }

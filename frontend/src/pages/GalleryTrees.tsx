@@ -386,25 +386,71 @@ export default function GalleryTrees() {
       {/* Tree Viewer Modal */}
       {viewTree && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
           onClick={() => setViewTree(null)}
         >
           <div
-            className={`w-full max-w-6xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden ${cardBg} border ${borderColor}`}
+            className={`flex h-[94vh] w-[97vw] max-w-[1680px] flex-col overflow-hidden rounded-2xl shadow-2xl ${cardBg} border ${borderColor}`}
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className={`flex items-center justify-between p-4 border-b ${borderColor}`}
+              className={`flex shrink-0 items-start justify-between gap-4 p-4 sm:p-5 border-b ${borderColor} bg-gradient-to-r from-[#24766f]/10 via-[#d9a441]/5 to-transparent`}
             >
-              <h3 className="text-xl font-bold">{viewTree.title}</h3>
-              <button
-                onClick={() => setViewTree(null)}
-                className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-[#24766f] opacity-70 mb-1">
+                  {t("legacy.family_tree", "Family Tree")}
+                </p>
+                <h3 className="text-xl sm:text-2xl font-bold truncate">{viewTree.title}</h3>
+                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs sm:text-sm opacity-80">
+                  <span className="flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5 text-[#d9a441]" />
+                    {viewTree.owner || t("legacy.unknown", "Unknown")}
+                  </span>
+                  {Number(viewTree.personCount) > 0 && (
+                    <span className="flex items-center gap-1.5">
+                      <Network className="w-3.5 h-3.5 text-[#24766f]" />
+                      {viewTree.personCount} {t("legacy.people", "people")}
+                    </span>
+                  )}
+                  {viewTree.archiveSource && (
+                    <span className="flex items-center gap-1.5 truncate">
+                      <Archive className="w-3.5 h-3.5 text-[#24766f]" />
+                      {viewTree.archiveSource}
+                    </span>
+                  )}
+                  <span
+                    className={`text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 rounded-full ${
+                      viewTree.isPublic
+                        ? "bg-[#24766f]/15 text-[#24766f] border border-[#24766f]/30"
+                        : "bg-[#d9a441]/15 text-[#d9a441] border border-[#d9a441]/30"
+                    }`}
+                  >
+                    {viewTree.isPublic ? t("legacy.public", "Public") : t("legacy.private", "Private")}
+                  </span>
+                </div>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                {Number.isFinite(Number(viewTree.id)) && viewTree.hasGedcom && (
+                  <button
+                    type="button"
+                    onClick={() => void downloadTreeFile(viewTree)}
+                    className={`hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg border ${borderColor} text-sm font-medium hover:bg-[#d9a441]/10 hover:border-[#d9a441] transition-colors`}
+                  >
+                    <Download className="w-4 h-4" />
+                    {t("legacy.download", "Download")}
+                  </button>
+                )}
+                <button
+                  onClick={() => setViewTree(null)}
+                  className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                  title={t("legacy.close", "Close")}
+                  aria-label={t("legacy.close", "Close")}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
-            <div className="h-[70vh] overflow-auto">
+            <div className="flex-1 min-h-0 overflow-auto custom-scrollbar">
               {viewLoading ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="w-8 h-8 border-2 border-[#d9a441] border-t-transparent rounded-full animate-spin" />

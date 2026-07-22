@@ -68,6 +68,17 @@
   --space-2xl: clamp(3rem, 2rem + 3vw, 6rem);
   --space-3xl: clamp(4rem, 2.5rem + 4vw, 8rem);
   --admin-container-max: clamp(320px, 96vw, 2400px);
+
+  /* Aliases for the newer account/legal pages (about, terms, privacy, cookies,
+     subscriptions, payment, tasks, notes, reminders) — these were written
+     against token names that were never defined, so var() silently fell back
+     to inherited/initial values and most of their brand-color styling never
+     rendered. Point them at the same palette the rest of the site uses. */
+  --brand-teal: var(--color-nile);
+  --brand-gold: var(--accent-gold);
+  --gold-light: var(--accent-gold);
+  --teal-dark: var(--color-nile-deep);
+  --bg-dark: var(--neu-surface);
 }
 
 .dark {
@@ -86,6 +97,10 @@
   --neu-pressed: inset 3px 3px 10px rgba(0, 0, 0, 0.5), inset -1px -1px 4px rgba(255, 255, 255, 0.04);
   --box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
   --book-shadow: 4px 4px 14px rgba(0, 0, 0, 0.6);
+
+  /* Brighter teal in dark mode so text/borders using --brand-teal stay
+     readable against dark backgrounds instead of a muted navy-on-navy. */
+  --brand-teal: #0d9488;
 }
 
 * {
@@ -730,8 +745,8 @@ select:focus-visible {
 }
 
 html {
-  /* Slightly reduced root size (15px) — the whole site reads a touch less zoomed. */
-  font-size: 93.75%;
+  /* Reduced root size (~14.5px) — dezoomed a bit further so the site reads less zoomed-in overall. */
+  font-size: 90.625%;
   transition: font-size 0.4s ease-out;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -4145,34 +4160,12 @@ button,
   }
 }
 
-/* ---- 22. Scrollbar styling (universal, subtle) ---- */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(12, 74, 110, 0.25);
-  border-radius: 999px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Firefox scrollbar */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(12, 74, 110, 0.25) transparent;
-}
-
-.dark * {
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-}
+/* ---- 22. Scrollbar styling: intentionally omitted here — the global
+   "keep scroll functionality, hide the visual bar" rule near the top of
+   this file (see HIDE SCROLLBAR block) is the single source of truth.
+   A visible-thin-scrollbar block used to live here and silently won the
+   cascade over that rule (later + equal specificity), so scrollbars were
+   showing up everywhere despite the site intending them hidden. ---- */
 
 /* ---- 23. Safe-area top (notch phones) ---- */
 @supports (padding-top: env(safe-area-inset-top)) {
@@ -4189,7 +4182,7 @@ button,
 
 /* ---- Modern public navbar refinement ---- */
 .navbar-header {
-  padding: 0.55rem clamp(0.75rem, 2vw, 1.5rem);
+  padding: 1rem clamp(1rem, 2.75vw, 2.25rem);
   background: transparent;
   border-bottom: 0;
   box-shadow: none;
@@ -4204,7 +4197,7 @@ button,
 .navbar-container {
   min-height: 64px;
   height: auto;
-  padding: 0.55rem 0.75rem;
+  padding: 0.65rem 1rem;
   border: 1px solid rgba(212, 168, 67, 0.22);
   border-radius: 24px;
   background:
@@ -4324,12 +4317,12 @@ button,
 
 @media (max-width: 480px) {
   .navbar-header {
-    padding-inline: 0.45rem;
+    padding: 0.6rem 0.6rem 0.35rem;
   }
 
   .navbar-container {
     border-radius: 18px;
-    padding: 0.45rem;
+    padding: 0.5rem;
   }
 }
 

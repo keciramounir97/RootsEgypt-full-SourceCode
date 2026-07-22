@@ -173,13 +173,26 @@ export class TreesService implements OnModuleInit {
     return this.parseBoolean(data?.isPublic ?? data?.is_public, fallback);
   }
 
+  /** Adds a derived, storage-agnostic flag: true once the tree's full GEDCOM
+   * content is captured in `gedcom_text`, meaning it survives even if the
+   * uploads/private_uploads folder is lost, not just referenced by path. */
+  private withGedcomBackupFlag(query: ReturnType<typeof Tree.query>) {
+    return query.select(
+      "family_trees.*",
+      this.knex.raw(
+        "(CASE WHEN gedcom_text IS NOT NULL AND gedcom_text <> '' THEN 1 ELSE 0 END) as has_gedcom_backup",
+      ),
+    );
+  }
+
   async listPublic() {
     await this.ensureTreeSchema();
-    return Tree.query(this.knex)
-      .where("is_public", true)
-      .orderBy("created_at", "desc")
+    return this.withGedcomBackupFlag(
+      Tree.query(this.knex).where("is_public", true).orderBy("created_at", "desc"),
+    )
       .withGraphFetched("owner")
-      .modifyGraph("owner", (builder) => builder.select("id", "full_name"));
+      .modifyGraph("owner", (builder) => builder.select("id", "full_name"))
+      .withGraphFetched("people");
   }
 
   async getPublic(id: number) {
@@ -196,9 +209,9 @@ export class TreesService implements OnModuleInit {
 
   async listByUser(userId: number) {
     await this.ensureTreeSchema();
-    return Tree.query(this.knex)
-      .where("user_id", userId)
-      .orderBy("created_at", "desc")
+    return this.withGedcomBackupFlag(
+      Tree.query(this.knex).where("user_id", userId).orderBy("created_at", "desc"),
+    )
       .withGraphFetched("owner")
       .modifyGraph("owner", (builder: any) =>
         builder.select("id", "full_name", "email"),
@@ -208,9 +221,9 @@ export class TreesService implements OnModuleInit {
 
   async listAdmin() {
     await this.ensureTreeSchema();
-    return Tree.query(this.knex)
-      .orderBy("created_at", "desc")
-      .withGraphFetched("owner")
+    return this.withGedcomBackupFlag(
+      Tree.query(this.knex).orderBy("created_at", "desc"),
+    ).withGraphFetched("owner")
       .modifyGraph("owner", (builder: any) =>
         builder.select("id", "full_name", "email"),
       );

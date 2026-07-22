@@ -1503,6 +1503,30 @@ export default function Trees() {
                           {tree.hasGedcom
                             ? t("legacy.has_file", "Has file")
                             : t("legacy.no_file", "No file")}
+                          {tree.hasGedcom ? (
+                            <span
+                              className={`px-2 py-0.5 rounded font-medium inline-flex items-center gap-1 ${
+                                tree.hasGedcomBackup
+                                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                                  : "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                              }`}
+                              title={
+                                tree.hasGedcomBackup
+                                  ? t(
+                                      "legacy.tree_db_backed_up_hint",
+                                      "This tree's data is stored in the database and is safe even if the uploads folder is lost.",
+                                    )
+                                  : t(
+                                      "legacy.tree_file_only_hint",
+                                      "This tree currently relies on its uploaded file only. Save it again (Edit → Save) to also store it safely in the database.",
+                                    )
+                              }
+                            >
+                              {tree.hasGedcomBackup
+                                ? t("legacy.tree_db_backed_up", "Backed up in database")
+                                : t("legacy.tree_file_only", "File-only – re-save to protect")}
+                            </span>
+                          ) : null}
                           {tree.hasGedcom && tree.data_format === "gedcomx" ? (
                             <span className="px-2 py-0.5 rounded bg-[#24766f]/20 text-[#24766f] dark:text-[#d9a441] font-medium">
                               {t("legacy.saved_with_gedcomx", "Saved with GEDCOM X")}

@@ -28,10 +28,13 @@ interface Book {
   description?: string;
   category?: string;
   filePath?: string;
+  file_path?: string;
   coverImage?: string;
+  cover_path?: string;
   pages?: number;
   year?: number;
   createdAt?: string;
+  created_at?: string;
   likes?: number;
   comments?: Comment[];
   isLiked?: boolean;
@@ -47,8 +50,10 @@ interface Comment {
 
 const sortByDateDesc = (items: Book[]) =>
   [...items].sort((a, b) => {
-    const da = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
-    const db = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+    const aDate = a?.createdAt ?? a?.created_at;
+    const bDate = b?.createdAt ?? b?.created_at;
+    const da = aDate ? new Date(aDate).getTime() : 0;
+    const db = bDate ? new Date(bDate).getTime() : 0;
     return db - da;
   });
 
@@ -335,9 +340,9 @@ export default function GalleryBooks() {
                 >
                   {/* Cover */}
                   <div className="h-48 bg-gradient-to-br from-[#24766f]/20 via-[#d9a441]/10 to-[#0f2742]/20 flex items-center justify-center relative overflow-hidden">
-                    {book.coverImage ? (
+                    {(book.coverImage || book.cover_path) ? (
                       <img
-                        src={fileUrl(book.coverImage)}
+                        src={fileUrl(book.coverImage || book.cover_path)}
                         alt={book.title}
                         className="w-full h-full object-cover"
                       />
@@ -368,7 +373,7 @@ export default function GalleryBooks() {
                       </p>
                     )}
 
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t ${borderColor}">
+                    <div className={`flex items-center justify-between mt-4 pt-3 border-t ${borderColor}`}>
                       <div className="flex items-center gap-4">
                         <button
                           onClick={(e) => {
@@ -411,11 +416,11 @@ export default function GalleryBooks() {
           onClick={() => setSelectedBook(null)}
         >
           <div
-            className={`w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col ${cardBg} border ${borderColor}`}
+            className={`w-full max-w-3xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col ${cardBg} border ${borderColor}`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="p-6 border-b ${borderColor} flex items-start justify-between">
+            <div className={`p-6 border-b ${borderColor} flex items-start justify-between`}>
               <div className="flex items-start gap-4">
                 <div className="w-20 h-28 rounded-lg bg-gradient-to-br from-[#24766f]/20 to-[#d9a441]/10 flex items-center justify-center shrink-0">
                   <BookOpen className="w-8 h-8 text-[#d9a441]" />
@@ -469,7 +474,7 @@ export default function GalleryBooks() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-3 py-4 border-y ${borderColor}">
+              <div className={`flex items-center gap-3 py-4 border-y ${borderColor}`}>
                 <button
                   onClick={() => handleLike(selectedBook.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
@@ -489,7 +494,7 @@ export default function GalleryBooks() {
                   <Bookmark className="w-5 h-5" />
                   {t("legacy.save", "Save")}
                 </button>
-                {selectedBook.filePath && (
+                {(selectedBook.filePath || selectedBook.file_path) && (
                   <a
                     href={downloadBookUrl(selectedBook.id)}
                     download
@@ -519,7 +524,7 @@ export default function GalleryBooks() {
             </div>
 
             {/* Comment Input */}
-            <div className="p-4 border-t ${borderColor}">
+            <div className={`p-4 border-t ${borderColor}`}>
               <div className="flex items-center gap-2">
                 <input
                   type="text"

@@ -77,6 +77,17 @@ const formatTimeAgo = (dateString: string, t: (key: string, fallback?: string) =
   return date.toLocaleDateString();
 };
 
+// Deterministic placeholder so the "shares" count doesn't jump around on every
+// re-render (e.g. when liking/commenting) while there is no real share tracking.
+const stablePlaceholderCount = (id: number | string, max = 10) => {
+  const str = String(id);
+  let hash = 0;
+  for (let i = 0; i < str.length; i += 1) {
+    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return hash % max;
+};
+
 const sortByDateDesc = (items: Post[]) =>
   [...items].sort((a, b) => {
     const da = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
@@ -502,7 +513,7 @@ export default function GalleryArticles() {
                 </div>
                 <div className="flex items-center gap-4 text-sm opacity-70">
                   <span>{post.comments?.length || 0} {t("legacy.comments", "comments")}</span>
-                  <span>{Math.floor(Math.random() * 10)} {t("legacy.shares", "shares")}</span>
+                  <span>{stablePlaceholderCount(post.id)} {t("legacy.shares", "shares")}</span>
                 </div>
               </div>
 
@@ -630,10 +641,10 @@ export default function GalleryArticles() {
           onClick={() => setShowCreatePost(false)}
         >
           <div
-            className={`w-full max-w-xl rounded-2xl shadow-2xl ${cardBg} border ${borderColor}`}
+            className={`w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col ${cardBg} border ${borderColor}`}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={`p-4 border-b ${borderColor} flex items-center justify-between`}>
+            <div className={`p-4 border-b ${borderColor} flex items-center justify-between shrink-0`}>
               <h3 className="text-xl font-bold">{t("legacy.create_post", "Create Post")}</h3>
               <button
                 onClick={() => setShowCreatePost(false)}
@@ -643,7 +654,7 @@ export default function GalleryArticles() {
               </button>
             </div>
 
-            <div className="p-4">
+            <div className="p-4 overflow-y-auto">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#24766f] to-[#d9a441] flex items-center justify-center text-white font-bold shrink-0">
                   {t("legacy.user", "User").charAt(0)}
@@ -744,7 +755,7 @@ export default function GalleryArticles() {
               </div>
             </div>
 
-            <div className={`p-4 border-t ${borderColor}`}>
+            <div className={`p-4 border-t ${borderColor} shrink-0`}>
               <button
                 onClick={handleCreatePost}
                 disabled={!newPostContent.trim() || posting}

@@ -357,7 +357,7 @@ export default function AdminManagement() {
                     <th className={`px-4 py-3 text-center text-sm font-semibold ${textColor}`}>{t("legacy.actions", "Actions")}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y ${border}">
+                <tbody className={`divide-y ${border}`}>
                   {admins.map((admin) => (
                     <tr key={admin.id} className="hover:bg-white/5 transition">
                       <td className="px-4 py-4">
@@ -448,7 +448,7 @@ export default function AdminManagement() {
             className={`w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl ${cardBg} border ${border}`}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-6 border-b ${border} flex items-center justify-between">
+            <div className={`p-6 border-b ${border} flex items-center justify-between`}>
               <h3 className={`text-xl font-bold ${textColor}`}>
                 {editingAdmin ? t("legacy.edit_admin", "Edit Admin") : t("legacy.create_new_admin", "Create New Admin")}
               </h3>

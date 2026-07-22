@@ -15,7 +15,7 @@ import {
   Archive,
 } from "lucide-react";
 import { api } from "../api/client";
-import { getApiErrorMessage } from "../api/helpers";
+import { getApiErrorMessage, getApiRoot } from "../api/helpers";
 import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
 
@@ -25,11 +25,14 @@ interface Document {
   description?: string;
   category?: string;
   filePath?: string;
+  file_path?: string;
   fileType?: string;
+  file_type?: string;
   archiveSource?: string;
   documentCode?: string;
   date?: string;
   createdAt?: string;
+  created_at?: string;
   likes?: number;
   comments?: Comment[];
   isLiked?: boolean;
@@ -45,8 +48,10 @@ interface Comment {
 
 const sortByDateDesc = (items: Document[]) =>
   [...items].sort((a, b) => {
-    const da = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
-    const db = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+    const aDate = a?.createdAt ?? a?.created_at;
+    const bDate = b?.createdAt ?? b?.created_at;
+    const da = aDate ? new Date(aDate).getTime() : 0;
+    const db = bDate ? new Date(bDate).getTime() : 0;
     return db - da;
   });
 
@@ -86,6 +91,16 @@ export default function GalleryDocuments() {
     archiveSource: "",
     documentCode: "",
   });
+
+  const apiRoot = useMemo(() => getApiRoot(), []);
+
+  const fileUrl = (path: string | undefined) => {
+    if (!path) return "";
+    const raw = String(path).trim();
+    if (raw.startsWith("http")) return raw;
+    const p = raw.startsWith("/") ? raw : `/${raw}`;
+    return `${apiRoot.replace(/\/+$/, "")}${p}`;
+  };
 
   useEffect(() => {
     AOS.init({ duration: 900, once: true });
@@ -330,10 +345,10 @@ export default function GalleryDocuments() {
                 >
                   {/* File Type Header */}
                   <div className="h-24 bg-gradient-to-br from-[#0f2742]/10 via-[#24766f]/10 to-[#d9a441]/10 flex items-center justify-center relative">
-                    <div className="text-4xl">{getFileIcon(doc.fileType)}</div>
+                    <div className="text-4xl">{getFileIcon(doc.fileType ?? doc.file_type)}</div>
                     <div className="absolute top-3 right-3">
                       <span className="px-2 py-1 rounded-full text-xs bg-[#24766f]/20 text-[#24766f]">
-                        {doc.fileType || t("legacy.file", "File").toUpperCase()}
+                        {doc.fileType || doc.file_type || t("legacy.file", "File").toUpperCase()}
                       </span>
                     </div>
                   </div>
@@ -353,7 +368,7 @@ export default function GalleryDocuments() {
                       <p className="text-xs opacity-50 font-mono mt-1">{doc.documentCode}</p>
                     )}
 
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t ${borderColor}">
+                    <div className={`flex items-center justify-between mt-4 pt-3 border-t ${borderColor}`}>
                       <div className="flex items-center gap-4">
                         <button
                           onClick={(e) => {
@@ -396,14 +411,14 @@ export default function GalleryDocuments() {
           onClick={() => setSelectedDocument(null)}
         >
           <div
-            className={`w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col ${cardBg} border ${borderColor}`}
+            className={`w-full max-w-3xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col ${cardBg} border ${borderColor}`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="p-6 border-b ${borderColor} flex items-start justify-between">
+            <div className={`p-6 border-b ${borderColor} flex items-start justify-between`}>
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#24766f]/20 to-[#d9a441]/10 flex items-center justify-center shrink-0 text-3xl">
-                  {getFileIcon(selectedDocument.fileType)}
+                  {getFileIcon(selectedDocument.fileType ?? selectedDocument.file_type)}
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold">{selectedDocument.title}</h3>
@@ -455,12 +470,12 @@ export default function GalleryDocuments() {
                 )}
                 <div className={`p-3 rounded-xl ${isDark ? "bg-white/5" : "bg-black/5"}`}>
                   <p className="text-xs uppercase opacity-60 mb-1">{t("legacy.file_type", "File Type")}</p>
-                  <p className="font-medium">{selectedDocument.fileType || t("legacy.unknown", "Unknown")}</p>
+                  <p className="font-medium">{selectedDocument.fileType || selectedDocument.file_type || t("legacy.unknown", "Unknown")}</p>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-3 py-4 border-y ${borderColor}">
+              <div className={`flex items-center gap-3 py-4 border-y ${borderColor}`}>
                 <button
                   onClick={() => handleLike(selectedDocument.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
@@ -476,9 +491,9 @@ export default function GalleryDocuments() {
                   <Share2 className="w-5 h-5" />
                   {t("legacy.share", "Share")}
                 </button>
-                {selectedDocument.filePath && (
+                {(selectedDocument.filePath || selectedDocument.file_path) && (
                   <a
-                    href={selectedDocument.filePath}
+                    href={fileUrl(selectedDocument.filePath || selectedDocument.file_path)}
                     download
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#24766f] text-white hover:bg-[#24766f]/90 transition-colors"
                   >
@@ -506,7 +521,7 @@ export default function GalleryDocuments() {
             </div>
 
             {/* Comment Input */}
-            <div className="p-4 border-t ${borderColor}">
+            <div className={`p-4 border-t ${borderColor}`}>
               <div className="flex items-center gap-2">
                 <input
                   type="text"

@@ -157,13 +157,15 @@ let TreesService = class TreesService {
         var _a;
         return this.parseBoolean((_a = data === null || data === void 0 ? void 0 : data.isPublic) !== null && _a !== void 0 ? _a : data === null || data === void 0 ? void 0 : data.is_public, fallback);
     }
+    withGedcomBackupFlag(query) {
+        return query.select("family_trees.*", this.knex.raw("(CASE WHEN gedcom_text IS NOT NULL AND gedcom_text <> '' THEN 1 ELSE 0 END) as has_gedcom_backup"));
+    }
     async listPublic() {
         await this.ensureTreeSchema();
-        return Tree_1.Tree.query(this.knex)
-            .where("is_public", true)
-            .orderBy("created_at", "desc")
+        return this.withGedcomBackupFlag(Tree_1.Tree.query(this.knex).where("is_public", true).orderBy("created_at", "desc"))
             .withGraphFetched("owner")
-            .modifyGraph("owner", (builder) => builder.select("id", "full_name"));
+            .modifyGraph("owner", (builder) => builder.select("id", "full_name"))
+            .withGraphFetched("people");
     }
     async getPublic(id) {
         await this.ensureTreeSchema();
@@ -178,18 +180,14 @@ let TreesService = class TreesService {
     }
     async listByUser(userId) {
         await this.ensureTreeSchema();
-        return Tree_1.Tree.query(this.knex)
-            .where("user_id", userId)
-            .orderBy("created_at", "desc")
+        return this.withGedcomBackupFlag(Tree_1.Tree.query(this.knex).where("user_id", userId).orderBy("created_at", "desc"))
             .withGraphFetched("owner")
             .modifyGraph("owner", (builder) => builder.select("id", "full_name", "email"))
             .withGraphFetched("people");
     }
     async listAdmin() {
         await this.ensureTreeSchema();
-        return Tree_1.Tree.query(this.knex)
-            .orderBy("created_at", "desc")
-            .withGraphFetched("owner")
+        return this.withGedcomBackupFlag(Tree_1.Tree.query(this.knex).orderBy("created_at", "desc")).withGraphFetched("owner")
             .modifyGraph("owner", (builder) => builder.select("id", "full_name", "email"));
     }
     async findOne(id) {
