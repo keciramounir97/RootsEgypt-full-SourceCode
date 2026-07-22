@@ -21,6 +21,7 @@ import {
   Trees,
   Headphones,
   Newspaper,
+  CheckCircle,
 } from "lucide-react";
 
 import { useForm } from "react-hook-form";
@@ -335,16 +336,23 @@ export default function Navbar() {
               </NavLink>
             ))}
             {user && (
-              <NavLink
-                to="/admin"
-                className={({ isActive }) =>
-                  `navbar-link${isActive ? " active" : ""}`
-                }
-              >
-                {user?.role === 1 || user?.role === 3
-                  ? t("legacy.admin", "Admin")
-                  : t("legacy.dashboard", "Dashboard")}
-              </NavLink>
+              <span className="inline-flex items-center gap-1.5">
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    `navbar-link${isActive ? " active" : ""}`
+                  }
+                >
+                  {user?.role === 1 || user?.role === 3
+                    ? t("legacy.admin", "Admin")
+                    : t("legacy.dashboard", "Dashboard")}
+                </NavLink>
+                {(user.status === "validated" || user.status === "approved") && (
+                  <span title={t("validated_account", "Validated Account")}>
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                  </span>
+                )}
+              </span>
             )}
           </nav>
 
@@ -559,10 +567,15 @@ export default function Navbar() {
               onClick={closeSidebar}
             >
               <LayoutDashboard className="sidebar-link-icon" />
-              <span>
+              <span className="inline-flex items-center gap-1.5">
                 {user?.role === 1 || user?.role === 3
                   ? t("legacy.admin", "Admin Panel")
                   : t("legacy.dashboard", "My Dashboard")}
+                {(user.status === "validated" || user.status === "approved") && (
+                  <span title={t("validated_account", "Validated Account")}>
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                  </span>
+                )}
               </span>
               <ChevronRight className="sidebar-link-arrow" />
             </NavLink>

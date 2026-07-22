@@ -4843,6 +4843,32 @@ const parityTranslations: Record<SupportedLocale, Record<string, string>> = {
       "Account deletion request sent to super admin.",
     no_password_reset_requests: "No password reset requests",
     no_account_deletion_requests: "No account deletion requests",
+    terms_of_service: "Terms of Service",
+    privacy_policy: "Privacy Policy",
+    cookie_policy: "Cookie Policy",
+    last_updated: "Last updated",
+    terms_intro: "Please read these terms carefully before using Roots Egypt.",
+    privacy_intro:
+      "We respect your privacy and are committed to protecting your personal data.",
+    cookies_intro:
+      "We use cookies and similar technologies to enhance your experience on Roots Egypt.",
+    validated_account: "Validated Account",
+    legal_content: "Legal Content",
+    legal_content_desc:
+      "Edit the Terms of Service, Privacy Policy, and Cookie Policy shown on the public site, per language.",
+    legal_content_disclaimer:
+      "This starting content is a general template covering common EU (GDPR) and US (CCPA/CPRA) concepts. It is not a substitute for legal advice - have qualified counsel review it before relying on it for your jurisdiction.",
+    legal_content_title: "Title",
+    legal_content_intro: "Introduction",
+    legal_content_sections: "Sections",
+    legal_content_add_section: "Add Section",
+    legal_content_section_heading: "Section heading",
+    legal_content_section_body: "Section body text",
+    legal_content_no_sections: "No sections yet.",
+    legal_content_not_translated:
+      "No content saved yet for this language - showing the English version as a starting point. Edit and save to create the translation.",
+    legal_content_load_failed: "Failed to load legal document",
+    legal_content_save_failed: "Failed to save legal document",
   },
   fr: {
     checking_authentication: "Verification de l'authentification...",
@@ -4862,6 +4888,32 @@ const parityTranslations: Record<SupportedLocale, Record<string, string>> = {
       "Demande de suppression envoyee au super admin.",
     no_password_reset_requests: "Aucune demande de reinitialisation",
     no_account_deletion_requests: "Aucune demande de suppression",
+    terms_of_service: "Conditions d'utilisation",
+    privacy_policy: "Politique de confidentialite",
+    cookie_policy: "Politique de cookies",
+    last_updated: "Derniere mise a jour",
+    terms_intro: "Veuillez lire attentivement ces conditions avant d'utiliser Roots Egypt.",
+    privacy_intro:
+      "Nous respectons votre vie privee et nous engageons a proteger vos donnees personnelles.",
+    cookies_intro:
+      "Nous utilisons des cookies et technologies similaires pour ameliorer votre experience sur Roots Egypt.",
+    validated_account: "Compte valide",
+    legal_content: "Contenu juridique",
+    legal_content_desc:
+      "Modifiez les conditions d'utilisation, la politique de confidentialite et la politique de cookies affichees sur le site public, par langue.",
+    legal_content_disclaimer:
+      "Ce contenu de depart est un modele general couvrant les concepts courants du RGPD (UE) et du CCPA/CPRA (Etats-Unis). Il ne remplace pas un avis juridique - faites-le relire par un avocat qualifie avant de vous y fier pour votre juridiction.",
+    legal_content_title: "Titre",
+    legal_content_intro: "Introduction",
+    legal_content_sections: "Sections",
+    legal_content_add_section: "Ajouter une section",
+    legal_content_section_heading: "Titre de la section",
+    legal_content_section_body: "Texte de la section",
+    legal_content_no_sections: "Aucune section pour le moment.",
+    legal_content_not_translated:
+      "Aucun contenu enregistre pour cette langue - affichage de la version anglaise comme point de depart. Modifiez et enregistrez pour creer la traduction.",
+    legal_content_load_failed: "Echec du chargement du document juridique",
+    legal_content_save_failed: "Echec de l'enregistrement du document juridique",
   },
   ar: {
     checking_authentication: "جار التحقق من المصادقة...",
@@ -4881,6 +4933,30 @@ const parityTranslations: Record<SupportedLocale, Record<string, string>> = {
       "تم ارسال طلب حذف الحساب الى المدير العام.",
     no_password_reset_requests: "لا توجد طلبات اعادة تعيين",
     no_account_deletion_requests: "لا توجد طلبات حذف حساب",
+    terms_of_service: "شروط الخدمة",
+    privacy_policy: "سياسة الخصوصية",
+    cookie_policy: "سياسة ملفات تعريف الارتباط",
+    last_updated: "اخر تحديث",
+    terms_intro: "يرجى قراءة هذه الشروط بعناية قبل استخدام روتس إيجيبت.",
+    privacy_intro: "نحن نحترم خصوصيتك وملتزمون بحماية بياناتك الشخصية.",
+    cookies_intro: "نستخدم ملفات تعريف الارتباط وتقنيات مماثلة لتحسين تجربتك على روتس إيجيبت.",
+    validated_account: "حساب موثق",
+    legal_content: "المحتوى القانوني",
+    legal_content_desc:
+      "قم بتحرير شروط الخدمة وسياسة الخصوصية وسياسة ملفات تعريف الارتباط المعروضة على الموقع العام، لكل لغة.",
+    legal_content_disclaimer:
+      "هذا المحتوى الاولي هو نموذج عام يغطي مفاهيم اللائحة العامة لحماية البيانات (الاتحاد الاوروبي) وقوانين الخصوصية الاميركية (CCPA/CPRA). وهو ليس بديلاً عن الاستشارة القانونية - يرجى مراجعته من قبل محامٍ مختص قبل الاعتماد عليه في نطاقك القانوني.",
+    legal_content_title: "العنوان",
+    legal_content_intro: "المقدمة",
+    legal_content_sections: "الاقسام",
+    legal_content_add_section: "اضافة قسم",
+    legal_content_section_heading: "عنوان القسم",
+    legal_content_section_body: "نص القسم",
+    legal_content_no_sections: "لا توجد اقسام بعد.",
+    legal_content_not_translated:
+      "لم يتم حفظ محتوى لهذه اللغة بعد - يتم عرض النسخة الانجليزية كنقطة انطلاق. قم بالتحرير والحفظ لإنشاء الترجمة.",
+    legal_content_load_failed: "فشل تحميل المستند القانوني",
+    legal_content_save_failed: "فشل حفظ المستند القانوني",
   },
   es: {
     checking_authentication: "Comprobando autenticacion...",
@@ -4900,6 +4976,32 @@ const parityTranslations: Record<SupportedLocale, Record<string, string>> = {
       "Solicitud de eliminacion enviada al super admin.",
     no_password_reset_requests: "No hay solicitudes de restablecimiento",
     no_account_deletion_requests: "No hay solicitudes de eliminacion",
+    terms_of_service: "Terminos de servicio",
+    privacy_policy: "Politica de privacidad",
+    cookie_policy: "Politica de cookies",
+    last_updated: "Ultima actualizacion",
+    terms_intro: "Lea atentamente estos terminos antes de usar Roots Egypt.",
+    privacy_intro:
+      "Respetamos su privacidad y nos comprometemos a proteger sus datos personales.",
+    cookies_intro:
+      "Utilizamos cookies y tecnologias similares para mejorar su experiencia en Roots Egypt.",
+    validated_account: "Cuenta validada",
+    legal_content: "Contenido legal",
+    legal_content_desc:
+      "Edite los Terminos de servicio, la Politica de privacidad y la Politica de cookies mostrados en el sitio publico, por idioma.",
+    legal_content_disclaimer:
+      "Este contenido inicial es una plantilla general que cubre conceptos comunes del RGPD (UE) y la CCPA/CPRA (EE. UU.). No sustituye el asesoramiento legal: haga que un abogado calificado lo revise antes de confiar en el para su jurisdiccion.",
+    legal_content_title: "Titulo",
+    legal_content_intro: "Introduccion",
+    legal_content_sections: "Secciones",
+    legal_content_add_section: "Agregar seccion",
+    legal_content_section_heading: "Titulo de la seccion",
+    legal_content_section_body: "Texto de la seccion",
+    legal_content_no_sections: "Aun no hay secciones.",
+    legal_content_not_translated:
+      "Aun no se ha guardado contenido para este idioma - se muestra la version en ingles como punto de partida. Edite y guarde para crear la traduccion.",
+    legal_content_load_failed: "Error al cargar el documento legal",
+    legal_content_save_failed: "Error al guardar el documento legal",
   },
 };
 

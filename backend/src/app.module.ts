@@ -18,6 +18,7 @@ import { DocumentsModule } from './modules/documents/documents.module';
 import { SuggestionsModule } from './modules/suggestions/suggestions.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { LegalModule } from './modules/legal/legal.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     SuggestionsModule,
     SettingsModule,
     NotificationsModule,
+    LegalModule,
   ],
   controllers: [],
   providers: [],

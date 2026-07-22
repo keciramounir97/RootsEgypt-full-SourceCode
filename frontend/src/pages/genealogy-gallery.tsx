@@ -491,20 +491,20 @@ export default function GenealogyGallery() {
         >
           <ErrorBoundary>
             <div
-              className={`${cardBg} w-full max-w-[92vw] h-[calc(90vh-6rem)] mt-16 rounded-2xl border ${borderColor} shadow-2xl flex flex-col overflow-hidden`}
+              className={`${cardBg} w-full max-w-[95vw] h-[calc(94vh-3rem)] mt-8 rounded-2xl border ${borderColor} shadow-2xl flex flex-col overflow-hidden`}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="p-4 border-b border-white/5 flex items-center justify-between bg-black/5">
-                <div>
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <Trees className="w-5 h-5 text-teal" />
-                    {viewTree.title}
+              <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between gap-4 bg-black/5">
+                <div className="min-w-0">
+                  <h2 className="text-xl font-bold flex items-center gap-2 truncate">
+                    <Trees className="w-5 h-5 text-teal shrink-0" />
+                    <span className="truncate">{viewTree.title}</span>
                   </h2>
-                  <p className="text-xs opacity-60">
+                  <p className="text-xs opacity-60 mt-0.5">
                     {t("legacy.viewing_mode", "Viewing Mode - Read Only")}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   {Number.isFinite(Number(viewTree.id)) && viewTree.hasGedcom ? (
                     <a
                       href={downloadTreeUrl(viewTree.id)}

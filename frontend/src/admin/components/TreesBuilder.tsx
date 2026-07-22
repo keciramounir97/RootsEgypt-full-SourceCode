@@ -37,6 +37,30 @@ const CARD_W = 220;
 
 const CARD_H = 120;
 
+// Sentinel used as the "no custom color chosen" default when a person is created/edited.
+// Persisted records almost universally carry this value, so it must NOT be treated as an
+// intentional theme override at render time (see resolveCardFill/getContrastTextColor below).
+const DEFAULT_CARD_COLOR = "#f5f1e8";
+
+function resolveCardFill(color, isDark) {
+  const hasCustomColor = Boolean(color) && color !== DEFAULT_CARD_COLOR;
+  if (hasCustomColor) return color;
+  return isDark ? "#0d1b2a" : "#f5f1e8";
+}
+
+// Picks readable text based on the actual resolved background's luminance, rather than
+// trusting the theme flag alone — a custom-colored card can be light even in dark mode.
+function getContrastTextColor(bgHex) {
+  const hex = String(bgHex || "").replace("#", "");
+  if (hex.length !== 6) return "#0d1b2a";
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  if ([r, g, b].some((channel) => Number.isNaN(channel))) return "#0d1b2a";
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.55 ? "#0d1b2a" : "#f5f1e8";
+}
+
 const MAX_GEDCOM_BYTES = 50 * 1024 * 1024;
 
 const GEDCOM_EXTENSIONS = new Set(["ged", "gedcom"]);
@@ -2556,7 +2580,7 @@ export default function TreesBuilder({
 
           .attr("filter", "url(#shadow)")
 
-          .attr("fill", (d) => d.color || (isDark ? "#0d1b2a" : "#f5f1e8"))
+          .attr("fill", (d) => resolveCardFill(d.color, isDark))
 
           .attr("stroke", isDark ? "#1b3a52" : "#e8dfca")
 
@@ -2569,7 +2593,7 @@ export default function TreesBuilder({
           .attr("text-anchor", "middle")
           .style("font-weight", 700)
           .style("font-size", "14px")
-          .style("fill", isDark ? "#f5f1e8" : "#0d1b2a")
+          .style("fill", (d) => getContrastTextColor(resolveCardFill(d.color, isDark)))
           .style("font-family", "Cinzel, serif")
           .text((d) => {
             const n = String(nameOf(d));
@@ -2628,7 +2652,7 @@ export default function TreesBuilder({
           .attr("text-anchor", "middle")
           .style("font-size", "9px")
           .style("font-style", "italic")
-          .style("fill", isDark ? "#ffffff60" : "#00000060")
+          .style("fill", (d) => `${getContrastTextColor(resolveCardFill(d.color, isDark))}99`)
           .style("font-family", "Manrope")
           .text((d) => {
             const loc = d.birthPlace || d.deathPlace || "";

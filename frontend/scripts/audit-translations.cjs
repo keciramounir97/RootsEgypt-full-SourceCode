@@ -320,6 +320,9 @@ const hardcodedJsx = collectHardcodedJsxLiterals();
 const curated = collectTranslationObject(translationsPath, "translations");
 const generated = collectTranslationObject(generatedPath, "AUTO_TRANSLATIONS");
 const sourceFallback = collectTranslationObject(sourceFallbackPath, "SOURCE_FALLBACK_TRANSLATIONS");
+// Small, hand-maintained dictionary Object.assign-merged into `translations` at runtime
+// (see bottom of translations.ts) for keys added after the main dict was built.
+const parity = collectTranslationObject(translationsPath, "parityTranslations");
 const required = collectTranslationObject(translationsPath, "requiredI18nTranslations");
 const overrides = collectFlatTranslationObject(translationsPath, "contentOverrides");
 const keys = [...calls.keys()].sort();
@@ -332,6 +335,7 @@ for (const locale of supportedLocales) {
     ...(generated[locale] || {}),
     ...(sourceFallback[locale] || {}),
     ...(curated[locale] || {}),
+    ...(parity[locale] || {}),
     ...(required[locale] || {}),
     ...(locale === "en" ? overrides : {}),
   };

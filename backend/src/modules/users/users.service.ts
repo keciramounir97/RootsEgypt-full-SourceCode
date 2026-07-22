@@ -241,6 +241,7 @@ export class UsersService {
             { key: 'activity', label: 'Activity Log' },
             { key: 'settings', label: 'Settings' },
             { key: 'footer-settings', label: 'Footer Settings' },
+            { key: 'legal-content', label: 'Legal Content' },
         ];
     }
 

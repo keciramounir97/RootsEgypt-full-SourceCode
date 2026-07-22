@@ -30,6 +30,7 @@ import {
   Trash2,
   UserCog,
   ShieldCheck,
+  Scale,
   X,
   LogOut,
   ChevronRight,
@@ -60,6 +61,7 @@ const links = [
   { to: "/admin/activity", labelKey: "activity", Icon: Activity },
   { to: "/admin/settings", labelKey: "settings", Icon: Settings },
   { to: "/admin/footer-settings", labelKey: "footer_settings", Icon: Globe },
+  { to: "/admin/legal-content", labelKey: "legal_content", Icon: Scale },
 ];
 
 const labelFallbacks: Record<string, string> = {
@@ -71,6 +73,7 @@ const labelFallbacks: Record<string, string> = {
   background_images: "Background Images",
   footer_settings: "Footer Settings",
   contactMessages: "Contact Messages",
+  legal_content: "Legal Content",
 };
 
 export default function AdminSidebar({
@@ -98,6 +101,7 @@ export default function AdminSidebar({
       "/admin/account-deletion-requests",
       "/admin/role-distribution",
       "/admin/admins",
+      "/admin/legal-content",
     ];
     if ((user?.role === 1 || user?.role === 3) && granted.length === 0) {
       return !superAdminOnly.includes(link.to);

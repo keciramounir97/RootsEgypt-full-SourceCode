@@ -1317,15 +1317,15 @@ export default function Home() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-dark2 w-full max-w-[90vw] h-[90vh] rounded-lg shadow-2xl border border-dark-beige flex flex-col overflow-hidden relative"
+              className="bg-white dark:bg-dark2 w-full max-w-[95vw] h-[94vh] rounded-xl shadow-2xl border border-dark-beige dark:border-brand/40 flex flex-col overflow-hidden relative"
             >
-              <div className="p-4 border-b border-teal/25 flex items-center justify-between bg-paper-color dark:bg-leather-brown">
-                <div>
-                  <h2 className="text-xl font-bold flex items-center gap-2 text-primary-brown dark:text-teal">
-                    <Users className="w-5 h-5" />
-                    {viewTree.title}
+              <div className="px-5 py-4 border-b border-teal/25 dark:border-brand/30 flex items-center justify-between gap-4 bg-paper-color dark:bg-leather-brown">
+                <div className="min-w-0">
+                  <h2 className="text-xl font-bold flex items-center gap-2 text-primary-brown dark:text-teal truncate">
+                    <Users className="w-5 h-5 shrink-0" />
+                    <span className="truncate">{viewTree.title}</span>
                   </h2>
-                  <p className="text-xs opacity-60">
+                  <p className="text-xs opacity-60 mt-0.5">
                     {t("legacy.viewing_mode", "Viewing Mode - Read Only")}
                   </p>
                 </div>

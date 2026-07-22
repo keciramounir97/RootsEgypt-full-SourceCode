@@ -466,15 +466,15 @@ export default function Research() {
       {viewTree && (
         <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div
-            className={`${sectionCard} w-full max-w-[90vw] h-[calc(90vh-6rem)] mt-24 rounded-lg shadow-2xl border ${sectionBorder} flex flex-col overflow-hidden relative`}
+            className={`${sectionCard} w-full max-w-[95vw] h-[calc(94vh-3rem)] mt-12 rounded-xl shadow-2xl border ${sectionBorder} flex flex-col overflow-hidden relative`}
           >
-            <div className="p-4 border-b border-gray-500/20 flex items-center justify-between bg-black/5">
-              <div>
-                <h2 className="text-xl font-bold flex items-center gap-2">
-                  <Users className="w-5 h-5 text-[color:var(--color-nile)]" />
-                  {viewTree.title}
+            <div className="px-5 py-4 border-b border-gray-500/20 flex items-center justify-between gap-4 bg-black/5">
+              <div className="min-w-0">
+                <h2 className="text-xl font-bold flex items-center gap-2 truncate">
+                  <Users className="w-5 h-5 text-[color:var(--color-nile)] shrink-0" />
+                  <span className="truncate">{viewTree.title}</span>
                 </h2>
-                <p className="text-xs opacity-60">{t("legacy.viewing_mode_read_only", "Viewing Mode - Read Only")}</p>
+                <p className="text-xs opacity-60 mt-0.5">{t("legacy.viewing_mode_read_only", "Viewing Mode - Read Only")}</p>
               </div>
               <button
                 onClick={() => {

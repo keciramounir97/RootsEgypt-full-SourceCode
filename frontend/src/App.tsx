@@ -86,6 +86,7 @@ import ValidationApprovals from "./admin/pages/ValidationApprovals";
 import PasswordResetRequests from "./admin/pages/PasswordResetRequests";
 import AccountDeletionRequests from "./admin/pages/AccountDeletionRequests";
 import RoleDistribution from "./admin/pages/RoleDistribution";
+import LegalContent from "./admin/pages/LegalContent";
 
 /**
  * Loading Fallback Component
@@ -407,6 +408,16 @@ function AppRoutes() {
             <Suspense fallback={<AdminLoadingFallback />}>
               <ProtectedRoute privileges={["footer-settings", "settings"]}>
                 <FooterSettings />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="legal-content"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute roles={[3]}>
+                <LegalContent />
               </ProtectedRoute>
             </Suspense>
           }
