@@ -482,7 +482,7 @@ const AnchoredMenu = ({ open, anchorRef, onClose, align = "start", children }: a
     <div
       ref={menuRef}
       role="menu"
-      className="neu-menu fixed z-[1100] min-w-[220px] overflow-hidden py-1.5"
+      className="neu-menu fixed z-[2100] min-w-[220px] overflow-hidden py-1.5"
       style={{ top: position.top, left: position.left }}
     >
       {children}
