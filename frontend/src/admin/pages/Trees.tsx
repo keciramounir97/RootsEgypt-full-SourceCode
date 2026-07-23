@@ -115,6 +115,8 @@ export default function Trees() {
     documentCode: "",
 
     isPublic: isAdmin,
+
+    saveToDb: false,
   });
 
   const [saving, setSaving] = useState(false);
@@ -287,6 +289,7 @@ export default function Trees() {
         archiveSource: "",
         documentCode: "",
         isPublic: isAdmin,
+        saveToDb: false,
       });
 
       setSelectedScope(null);
@@ -306,6 +309,9 @@ export default function Trees() {
       documentCode: selectedTree.documentCode || "",
 
       isPublic: !!selectedTree.isPublic,
+
+      // Existing trees are already persisted, so the consent box starts checked.
+      saveToDb: true,
     });
   }, [selectedTree, isAdmin]);
 
@@ -887,6 +893,17 @@ export default function Trees() {
       return;
     }
 
+    if (!treeForm.saveToDb) {
+      setSaveError(
+        t(
+          "legacy.save_to_db_required",
+          'Please check "Save this tree to the database" before saving.',
+        ),
+      );
+
+      return;
+    }
+
     if (!hasPeople && !isUpdateMode) {
       const confirmed = window.confirm(
         t("legacy.save_empty_tree_confirm", "Save this tree without any people yet?")
@@ -1258,6 +1275,37 @@ export default function Trees() {
                     : t("legacy.private", "Private")}
                 </span>
               </label>
+
+              {/* Obligatory consent: the tree (its GEDCOM pointer + full file
+                  content) is only persisted to the database when this is checked. */}
+              <label
+                className={`flex items-start gap-3 p-3 rounded-lg border transition-all cursor-pointer ${
+                  treeForm.saveToDb
+                    ? "border-[#24766f]/50 " + (isDark ? "bg-[#24766f]/15" : "bg-[#24766f]/5")
+                    : "border-red-400/60 " + (isDark ? "bg-red-500/10" : "bg-red-50")
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={treeForm.saveToDb}
+                  onChange={(e) =>
+                    setTreeForm((s) => ({ ...s, saveToDb: e.target.checked }))
+                  }
+                  className={`mt-0.5 h-5 w-5 rounded border-2 ${border} ${isDark ? "accent-[#d9a441]" : "accent-[#24766f]"} cursor-pointer`}
+                />
+                <span
+                  className={`text-sm font-semibold ${isDark ? "text-[#e8e4dc]" : "text-[#24766f]"}`}
+                >
+                  {t("legacy.save_to_db_label", "Save this tree to the database")}{" "}
+                  <span className="text-red-500">*</span>
+                  <span className="block text-xs font-normal opacity-70">
+                    {t(
+                      "legacy.save_to_db_hint",
+                      "Required. Stores the tree and its GEDCOM content in the database so it is never lost.",
+                    )}
+                  </span>
+                </span>
+              </label>
             </div>
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -1296,7 +1344,12 @@ export default function Trees() {
                     : "bg-[#24766f] hover:bg-[#24766f]/90 text-white"
                 }`}
                 onClick={() => void saveCurrentAsTree()}
-                disabled={saving || loadingGedcom || deletingTree}
+                disabled={saving || loadingGedcom || deletingTree || !treeForm.saveToDb}
+                title={
+                  !treeForm.saveToDb
+                    ? t("legacy.save_to_db_required", 'Please check "Save this tree to the database" before saving.')
+                    : undefined
+                }
               >
                 <Save className="w-4 h-4" />
                 {saving

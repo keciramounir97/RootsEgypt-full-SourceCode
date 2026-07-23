@@ -3542,6 +3542,21 @@ export default function TreesBuilder({
     setSelectedMediaLink("");
   }, []);
 
+  // Lock page scroll and allow Escape to close while the person modal is open.
+  useEffect(() => {
+    if (!selectedPerson) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeSelectedPersonCard();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [selectedPerson, closeSelectedPersonCard]);
+
   const selectPersonFromList = useCallback((person) => {
     setSelectedPerson(person);
     setSourceLinkDraft("");
@@ -4188,17 +4203,19 @@ export default function TreesBuilder({
               </div>
             ) : null}
 
-            {selectedPerson ? (
+            {selectedPerson ? createPortal(
               <div
-                className={`fixed inset-0 z-[1000] flex items-center justify-center p-4 ${
+                className={`fixed inset-0 z-[2000] flex items-center justify-center p-4 ${
                   isDark ? "bg-black/75" : "bg-[#0d1b2a]/45"
                 } backdrop-blur-sm`}
                 role="dialog"
                 aria-modal="true"
                 aria-label={t("legacy.person_card", "Person card")}
+                onClick={closeSelectedPersonCard}
               >
                 <div
-                  className="neu-panel flex h-[94vh] w-full max-w-[95vw] flex-col overflow-hidden rounded-2xl"
+                  className="neu-panel flex max-h-[80vh] w-full max-w-[960px] flex-col overflow-hidden rounded-2xl"
+                  onClick={(e) => e.stopPropagation()}
                 >
                 <div className="flex shrink-0 items-start justify-between gap-4 border-b border-current/10 bg-black/[0.03] px-5 py-4 dark:bg-white/[0.03] sm:px-7 sm:py-5">
                   <div className="flex min-w-0 items-center gap-4">
@@ -4590,7 +4607,8 @@ export default function TreesBuilder({
                 ) : null}
                 </div>
                 </div>
-              </div>
+              </div>,
+              document.body,
             ) : null}
           </div>
 
