@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLanguage as useTranslation } from "../../i18n";
 import { api } from "../../api/client";
+import { getApiRoot } from "../../api/helpers";
 import { Search, CheckCircle, XCircle, Crown, Loader2, RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 
 interface Payment {
@@ -15,10 +16,14 @@ interface Payment {
   reviewed_by?: number;
   reviewed_at?: string;
   created_at: string;
+  user_email?: string;
+  user_name?: string;
+  tier_name?: string;
 }
 
 export default function SubscriptionPayments() {
   const { t } = useTranslation();
+  const apiRoot = getApiRoot();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -118,8 +123,8 @@ export default function SubscriptionPayments() {
                 <>
                   <tr key={payment.id} className="border-b border-[var(--border-color)] hover:bg-[var(--paper-color)] transition-colors cursor-pointer" onClick={() => setExpanded(expanded === payment.id ? null : payment.id)}>
                     <td className="px-4 py-3 font-mono text-xs">#{payment.id}</td>
-                    <td className="px-4 py-3">User #{payment.user_id}</td>
-                    <td className="px-4 py-3">Tier #{payment.tier_id}</td>
+                    <td className="px-4 py-3">{payment.user_name || payment.user_email || `User #${payment.user_id}`}</td>
+                    <td className="px-4 py-3">{payment.tier_name || `Tier #${payment.tier_id}`}</td>
                     <td className="px-4 py-3 font-semibold">${payment.amount.toFixed(2)}</td>
                     <td className="px-4 py-3">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -142,7 +147,30 @@ export default function SubscriptionPayments() {
                           {payment.proof_url && (
                             <div>
                               <p className="text-xs font-semibold opacity-60 mb-1">{t("proof", "Proof")}</p>
-                              <a href={payment.proof_url} target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--brand-gold)] hover:underline break-all">{payment.proof_url}</a>
+                              {payment.proof_url.startsWith("/uploads/") ? (
+                                <a
+                                  href={`${apiRoot}${payment.proof_url}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <img
+                                    src={`${apiRoot}${payment.proof_url}`}
+                                    alt={t("proof", "Proof")}
+                                    className="max-w-[220px] rounded-lg border border-[var(--border-color)]"
+                                  />
+                                </a>
+                              ) : (
+                                <a
+                                  href={payment.proof_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="text-sm text-[var(--brand-gold)] hover:underline break-all"
+                                >
+                                  {payment.proof_url}
+                                </a>
+                              )}
                             </div>
                           )}
                           {payment.notes && (
@@ -171,7 +199,7 @@ export default function SubscriptionPayments() {
                           )}
                           {payment.reviewed_at && (
                             <p className="text-xs opacity-50">
-                              {t("reviewed_by", "Reviewed by")} admin #{payment.reviewed_by} on {new Date(payment.reviewed_at).toLocaleString()}
+                              {t("reviewed_by", "Reviewed by")} {t("admin_hash", "admin #")}{payment.reviewed_by} {t("reviewed_on_prefix", "on")} {new Date(payment.reviewed_at).toLocaleString()}
                             </p>
                           )}
                         </div>

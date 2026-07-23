@@ -28,6 +28,7 @@ import * as path from 'path';
 import { CreateBookDto, UpdateBookDto } from './dto/book.dto';
 import { getStoredFilePayload } from '../../common/utils/db-file.util';
 import { DownloadRequestsService } from '../download-requests/download-requests.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 
 @Controller()
 export class BooksController {
@@ -35,6 +36,7 @@ export class BooksController {
   constructor(
     private readonly booksService: BooksService,
     private readonly downloadRequestsService: DownloadRequestsService,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   // Public Routes
@@ -73,11 +75,9 @@ export class BooksController {
     const isOwner = book.uploaded_by != null && Number(book.uploaded_by) === Number(userId);
     const isAdmin = roleId === 1 || roleId === 3;
     if (!isOwner && !isAdmin) {
-      const hasApprovedRequest = await this.downloadRequestsService.hasApprovedAccess(
-        "book",
-        id,
-        userId,
-      );
+      const hasApprovedRequest =
+        (await this.downloadRequestsService.hasApprovedAccess("book", id, userId)) ||
+        (await this.subscriptionsService.hasFeature(userId, "skip_download_requests"));
       if (!hasApprovedRequest) {
         throw new ForbiddenException(
           "Downloading this book requires an approved download request.",

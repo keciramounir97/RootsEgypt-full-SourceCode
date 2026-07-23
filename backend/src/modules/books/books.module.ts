@@ -3,6 +3,7 @@ import { BooksController } from './books.controller';
 import { BooksService } from './books.service';
 import { ActivityModule } from '../activity/activity.module';
 import { DownloadRequestsModule } from '../download-requests/download-requests.module';
+import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { BOOK_UPLOADS_DIR } from '../../common/utils/file.utils'; // fixed import path
 import * as multer from 'multer';
@@ -13,6 +14,7 @@ import * as crypto from 'crypto';
     imports: [
         ActivityModule,
         DownloadRequestsModule,
+        SubscriptionsModule,
         MulterModule.register({
             storage: multer.diskStorage({
                 destination: (req, file, cb) => {

@@ -8,6 +8,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Request as ExpressRequest, Response } from "express";
 import { CreateGalleryDto, UpdateGalleryDto } from './dto/gallery.dto';
 import { DownloadRequestsService } from '../download-requests/download-requests.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { getStoredFilePayload } from '../../common/utils/db-file.util';
 import { resolveStoredFilePath } from '../../common/utils/file.utils';
 import * as fs from 'fs';
@@ -19,6 +20,7 @@ export class GalleryController {
   constructor(
     private readonly galleryService: GalleryService,
     private readonly downloadRequestsService: DownloadRequestsService,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   @Get("gallery/:id/download")
@@ -36,11 +38,9 @@ export class GalleryController {
     const isOwner = item.uploaded_by != null && Number(item.uploaded_by) === Number(userId);
     const isAdmin = roleId === 1 || roleId === 3;
     if (!isOwner && !isAdmin) {
-      const hasApprovedRequest = await this.downloadRequestsService.hasApprovedAccess(
-        "gallery",
-        id,
-        userId,
-      );
+      const hasApprovedRequest =
+        (await this.downloadRequestsService.hasApprovedAccess("gallery", id, userId)) ||
+        (await this.subscriptionsService.hasFeature(userId, "skip_download_requests"));
       if (!hasApprovedRequest) {
         throw new ForbiddenException(
           "Downloading this item requires an approved download request.",

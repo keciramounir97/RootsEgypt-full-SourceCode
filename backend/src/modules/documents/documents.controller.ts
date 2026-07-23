@@ -11,6 +11,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DOCUMENT_UPLOADS_DIR } from './documents.service';
 import { DownloadRequestsService } from '../download-requests/download-requests.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { getStoredFilePayload } from '../../common/utils/db-file.util';
 import { resolveStoredFilePath } from '../../common/utils/file.utils';
 import { Response } from 'express';
@@ -39,6 +40,7 @@ export class DocumentsController {
     constructor(
         private readonly documentsService: DocumentsService,
         private readonly downloadRequestsService: DownloadRequestsService,
+        private readonly subscriptionsService: SubscriptionsService,
     ) {}
 
     @Get('documents')
@@ -65,7 +67,9 @@ export class DocumentsController {
         const isOwner = doc.uploaded_by != null && Number(doc.uploaded_by) === Number(userId);
         const isAdmin = roleId === 1 || roleId === 3;
         if (!isOwner && !isAdmin) {
-            const hasApprovedRequest = await this.downloadRequestsService.hasApprovedAccess('document', id, userId);
+            const hasApprovedRequest =
+                (await this.downloadRequestsService.hasApprovedAccess('document', id, userId)) ||
+                (await this.subscriptionsService.hasFeature(userId, 'skip_download_requests'));
             if (!hasApprovedRequest) {
                 throw new ForbiddenException('Downloading this document requires an approved download request.');
             }

@@ -87,7 +87,7 @@ export default function UserUpgrade() {
               <th className="text-left px-4 py-3 font-semibold text-[var(--text-color)]">ID</th>
               <th className="text-left px-4 py-3 font-semibold text-[var(--text-color)]">{t("name", "Name")}</th>
               <th className="text-left px-4 py-3 font-semibold text-[var(--text-color)]">{t("email", "Email")}</th>
-              <th className="text-left px-4 py-3 font-semibold text-[var(--text-color)]">{t("subscriptions", "Plan")}</th>
+              <th className="text-left px-4 py-3 font-semibold text-[var(--text-color)]">{t("plan", "Plan")}</th>
               <th className="text-left px-4 py-3 font-semibold text-[var(--text-color)]">{t("status", "Status")}</th>
               <th className="text-left px-4 py-3 font-semibold text-[var(--text-color)]">{t("date", "End Date")}</th>
               <th className="text-left px-4 py-3 font-semibold text-[var(--text-color)]">{t("actions", "Actions")}</th>

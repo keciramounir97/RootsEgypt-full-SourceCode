@@ -11,6 +11,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AUDIO_UPLOADS_DIR } from './audios.service';
 import { DownloadRequestsService } from '../download-requests/download-requests.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { resolveStoredFilePath } from '../../common/utils/file.utils';
 import { Response } from 'express';
 import * as crypto from 'crypto';
@@ -38,6 +39,7 @@ export class AudiosController {
     constructor(
         private readonly audiosService: AudiosService,
         private readonly downloadRequestsService: DownloadRequestsService,
+        private readonly subscriptionsService: SubscriptionsService,
     ) {}
 
     @Get('audios')
@@ -64,7 +66,9 @@ export class AudiosController {
         const isOwner = audio.uploaded_by != null && Number(audio.uploaded_by) === Number(userId);
         const isAdmin = roleId === 1 || roleId === 3;
         if (!isOwner && !isAdmin) {
-            const hasApprovedRequest = await this.downloadRequestsService.hasApprovedAccess('audio', id, userId);
+            const hasApprovedRequest =
+                (await this.downloadRequestsService.hasApprovedAccess('audio', id, userId)) ||
+                (await this.subscriptionsService.hasFeature(userId, 'skip_download_requests'));
             if (!hasApprovedRequest) {
                 throw new ForbiddenException('Downloading this audio requires an approved download request.');
             }

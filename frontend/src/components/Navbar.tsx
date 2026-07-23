@@ -23,6 +23,7 @@ import {
   Newspaper,
   CheckCircle,
   Download,
+  HelpCircle,
 } from "lucide-react";
 
 import { useForm } from "react-hook-form";
@@ -211,6 +212,7 @@ export default function Navbar() {
       icon: Headphones,
     },
     { to: "/articles", label: t("legacy.articles", "Articles"), icon: Newspaper },
+    { to: "/help-center", label: t("help_center", "Help Center"), icon: HelpCircle },
   ];
 
   const secondaryNav = [

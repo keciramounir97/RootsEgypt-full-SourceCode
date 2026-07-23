@@ -33,6 +33,7 @@ import Cookies from "./pages/cookies";
 import Privacy from "./pages/privacy";
 import Terms from "./pages/terms";
 import MyDownloadRequests from "./pages/MyDownloadRequests";
+import HelpCenter from "./pages/HelpCenter";
 import Subscriptions from "./pages/subscriptions";
 import Payment from "./pages/payment";
 import Tasks from "./pages/tasks";
@@ -42,6 +43,7 @@ import AdminNotes from "./admin/pages/AdminNotes";
 import AdminTasks from "./admin/pages/AdminTasks";
 import SubscriptionPayments from "./admin/pages/SubscriptionPayments";
 import SubscriptionsAdmin from "./admin/pages/Subscriptions";
+import TierFeatures from "./admin/pages/TierFeatures";
 import UserUpgrade from "./admin/pages/UserUpgrade";
 import Home from "./pages/home";
 import GalleryPage from "./pages/Gallery";
@@ -219,6 +221,7 @@ function AppRoutes() {
       <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
       <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
       <Route path="/my-download-requests" element={<PageTransition><MyDownloadRequests /></PageTransition>} />
+      <Route path="/help-center" element={<PageTransition><HelpCenter /></PageTransition>} />
       <Route path="/subscriptions" element={<PageTransition><Subscriptions /></PageTransition>} />
       <Route path="/payment/:tier" element={<PageTransition><Payment /></PageTransition>} />
       <Route path="/tasks" element={<PageTransition><Tasks /></PageTransition>} />
@@ -619,8 +622,18 @@ function AppRoutes() {
           path="subscriptions"
           element={
             <Suspense fallback={<AdminLoadingFallback />}>
-              <ProtectedRoute privileges={["subscriptions"]}>
+              <ProtectedRoute roles={[3]}>
                 <SubscriptionsAdmin />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="tier-features"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute roles={[3]}>
+                <TierFeatures />
               </ProtectedRoute>
             </Suspense>
           }

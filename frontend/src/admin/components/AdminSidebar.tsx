@@ -32,6 +32,10 @@ import {
   ShieldCheck,
   Scale,
   Download,
+  Crown,
+  ListChecks,
+  Wallet,
+  ArrowUpCircle,
   X,
   LogOut,
   ChevronRight,
@@ -64,6 +68,10 @@ const links = [
   { to: "/admin/settings", labelKey: "settings", Icon: Settings },
   { to: "/admin/footer-settings", labelKey: "footer_settings", Icon: Globe },
   { to: "/admin/legal-content", labelKey: "legal_content", Icon: Scale },
+  { to: "/admin/subscriptions", labelKey: "subscription_management", Icon: Crown },
+  { to: "/admin/tier-features", labelKey: "tier_features_title", Icon: ListChecks },
+  { to: "/admin/subscription-payments", labelKey: "subscription_payments", Icon: Wallet },
+  { to: "/admin/user-upgrade", labelKey: "user_upgrade", Icon: ArrowUpCircle },
 ];
 
 const labelFallbacks: Record<string, string> = {
@@ -77,6 +85,10 @@ const labelFallbacks: Record<string, string> = {
   contactMessages: "Contact Messages",
   legal_content: "Legal Content",
   download_requests: "Download Requests",
+  subscription_management: "Subscription Tiers",
+  tier_features_title: "Tier Features",
+  subscription_payments: "Subscription Payments",
+  user_upgrade: "User Upgrade",
 };
 
 export default function AdminSidebar({
@@ -105,6 +117,10 @@ export default function AdminSidebar({
       "/admin/role-distribution",
       "/admin/admins",
       "/admin/legal-content",
+      "/admin/subscriptions",
+      "/admin/tier-features",
+      "/admin/subscription-payments",
+      "/admin/user-upgrade",
     ];
     if ((user?.role === 1 || user?.role === 3) && granted.length === 0) {
       return !superAdminOnly.includes(link.to);

@@ -51,6 +51,10 @@ export class RolesGuard implements CanActivate {
         if (normalized.includes('/admin/site-images')) return 'settings';
         if (normalized.includes('/admin/legal')) return 'legal-content';
         if (normalized.includes('/admin/download-requests')) return 'download-requests';
+        if (normalized.includes('/admin/subscription-tier-features')) return 'subscriptions';
+        if (normalized.includes('/admin/subscription-tiers')) return 'subscriptions';
+        if (normalized.includes('/admin/subscription-payments')) return 'subscriptions';
+        if (normalized.includes('/admin/subscriptions')) return 'subscriptions';
         if (normalized.includes('/admin/footer')) return 'footer-settings';
         if (normalized.includes('/admin/stats')) return 'dashboard';
         return null;

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { GalleryController } from './gallery.controller';
 import { GalleryService } from './gallery.service';
 import { DownloadRequestsModule } from '../download-requests/download-requests.module';
+import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
 import { ActivityModule } from '../activity/activity.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { GALLERY_UPLOADS_DIR } from '../../common/utils/file.utils';
@@ -13,6 +14,7 @@ import * as crypto from 'crypto';
     imports: [
         ActivityModule,
         DownloadRequestsModule,
+        SubscriptionsModule,
         MulterModule.register({
             storage: multer.diskStorage({
                 destination: (req, file, cb) => {

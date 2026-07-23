@@ -3,8 +3,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage as useTranslation } from "../i18n";
 import { useAuth } from "../admin/components/AuthContext";
 import { api } from "../api/client";
-import { CheckCircle2, AlertCircle, Upload, Loader2, ArrowLeft } from "lucide-react";
+import { getApiRoot } from "../api/helpers";
+import {
+  CheckCircle2,
+  AlertCircle,
+  Upload,
+  Loader2,
+  ArrowLeft,
+  ImageIcon,
+  X,
+} from "lucide-react";
 import { useThemeStore } from "../store/theme";
+
+type Tier = { id: number; slug: string; name: string; price: number };
 
 export default function Payment() {
   const { theme } = useThemeStore();
@@ -14,27 +25,65 @@ export default function Payment() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [tierData, setTierData] = useState<any>(null);
+  const [tierData, setTierData] = useState<Tier | null>(null);
   const [loading, setLoading] = useState(true);
   const [amount, setAmount] = useState("");
-  const [proofUrl, setProofUrl] = useState("");
+  const [proofPath, setProofPath] = useState("");
+  const [proofPreviewUrl, setProofPreviewUrl] = useState("");
+  const [uploadingProof, setUploadingProof] = useState(false);
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<{ type: string; msg: string }>({ type: "", msg: "" });
 
-  const tierNames: Record<string, { name: string; price: number }> = {
-    basic: { name: "Basic", price: 0 },
-    premium: { name: "Premium", price: 9.99 },
-    pro: { name: "Family Historian", price: 19.99 },
-  };
+  const apiRoot = getApiRoot();
 
   useEffect(() => {
-    if (tier && tierNames[tier]) {
-      setTierData(tierNames[tier]);
-      setAmount(tierNames[tier].price.toString());
-    }
-    setLoading(false);
+    let cancelled = false;
+    api
+      .get("/subscriptions/tiers")
+      .then(({ data }) => {
+        if (cancelled || !Array.isArray(data)) return;
+        const match = data.find((row: Tier) => row.slug === tier);
+        if (match) {
+          setTierData(match);
+          setAmount(String(match.price));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [tier]);
+
+  const handleProofChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setProofPreviewUrl(URL.createObjectURL(file));
+    setUploadingProof(true);
+    setStatus({ type: "", msg: "" });
+    try {
+      const formData = new FormData();
+      formData.append("proof", file);
+      const { data } = await api.post("/my/subscription/payment/proof", formData);
+      setProofPath(data?.path || "");
+    } catch (err: any) {
+      setStatus({
+        type: "error",
+        msg: err.response?.data?.message || t("proof_upload_failed", "Failed to upload proof. Please try again."),
+      });
+      setProofPreviewUrl("");
+    } finally {
+      setUploadingProof(false);
+    }
+  };
+
+  const clearProof = () => {
+    setProofPath("");
+    setProofPreviewUrl("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,17 +91,16 @@ export default function Payment() {
       navigate("/login");
       return;
     }
-    if (!amount || parseFloat(amount) <= 0) return;
+    if (!amount || parseFloat(amount) <= 0 || !tierData) return;
 
     setSubmitting(true);
     setStatus({ type: "", msg: "" });
 
     try {
-      const tierId = tier === "basic" ? 1 : tier === "premium" ? 2 : 3;
       await api.post("/my/subscription/payment", {
-        tier_id: tierId,
+        tier_id: tierData.id,
         amount: parseFloat(amount),
-        proof_url: proofUrl || undefined,
+        proof_url: proofPath || undefined,
         notes: notes || undefined,
       });
       setStatus({ type: "success", msg: t("payment_submitted", "Payment confirmation submitted! We will review it shortly.") });
@@ -132,14 +180,40 @@ export default function Payment() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-[var(--text-color)] mb-1.5">{t("proof_url", "Proof URL / Screenshot Link")}</label>
-            <input
-              value={proofUrl}
-              onChange={e => setProofUrl(e.target.value)}
-              placeholder="https://imgur.com/..."
-              className={`w-full px-4 py-3 rounded-xl border text-sm transition-all outline-none ${isDark ? "bg-[#0d2220] border-white/10 text-white placeholder:text-white/30 focus:border-[var(--brand-gold)]" : "bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[var(--brand-teal)]"}`}
-            />
-            <p className="text-xs text-[var(--text-color)] opacity-50 mt-1">{t("upload_proof_hint", "Upload your transfer receipt to any image hosting and paste the link")}</p>
+            <label className="block text-sm font-semibold text-[var(--text-color)] mb-1.5">{t("proof_screenshot", "Proof of Payment (Screenshot)")}</label>
+            {proofPreviewUrl ? (
+              <div className="relative w-full max-w-[220px]">
+                <img
+                  src={proofPath ? `${apiRoot}${proofPath}` : proofPreviewUrl}
+                  alt={t("proof_screenshot", "Proof of Payment (Screenshot)")}
+                  className="w-full rounded-xl border border-[var(--border-color)] object-cover"
+                />
+                {uploadingProof && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-xl">
+                    <Loader2 className="w-6 h-6 animate-spin text-white" />
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={clearProof}
+                  className="absolute -top-2 -right-2 p-1 rounded-full bg-red-600 text-white shadow-lg"
+                  aria-label={t("remove", "Remove")}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <label
+                className={`flex flex-col items-center justify-center gap-2 w-full py-8 rounded-xl border-2 border-dashed cursor-pointer transition-colors ${
+                  isDark ? "border-white/15 hover:border-[var(--brand-gold)] text-white/60" : "border-gray-300 hover:border-[var(--brand-teal)] text-gray-500"
+                }`}
+              >
+                <ImageIcon className="w-6 h-6" />
+                <span className="text-sm">{t("upload_screenshot", "Click to upload a screenshot")}</span>
+                <input type="file" accept="image/*" className="hidden" onChange={handleProofChange} />
+              </label>
+            )}
+            <p className="text-xs text-[var(--text-color)] opacity-50 mt-1.5">{t("upload_proof_hint_v2", "Upload a screenshot of your bank transfer receipt.")}</p>
           </div>
 
           <div>
@@ -155,7 +229,7 @@ export default function Payment() {
 
           <button
             type="submit"
-            disabled={submitting || !amount || parseFloat(amount) <= 0}
+            disabled={submitting || uploadingProof || !amount || parseFloat(amount) <= 0}
             className="w-full py-3 rounded-full bg-gradient-to-r from-[var(--brand-gold)] to-[var(--gold-light)] text-[var(--teal-dark)] font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {submitting ? (

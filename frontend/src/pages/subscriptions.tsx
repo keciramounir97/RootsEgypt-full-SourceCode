@@ -1,49 +1,108 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Check, Crown, Sparkles, Star, Zap } from "lucide-react";
 import { useLanguage as useTranslation } from "../i18n";
 import { useThemeStore } from "../store/theme";
 import { Link } from "react-router-dom";
 import RootsPageShell from "../components/RootsPageShell";
+import { api } from "../api/client";
 
-const tiers = [
-  { key: "basic", icon: Star, price: 0, trialDays: 14 },
-  { key: "premium", icon: Crown, price: 9.99, trialDays: 14, popular: true },
-  { key: "pro", icon: Sparkles, price: 19.99, trialDays: 14 },
-];
-
-const featuresByTier: Record<string, string[]> = {
-  basic: [
-    "Build up to 3 family trees",
-    "Basic tree visualization",
-    "Add up to 50 people per tree",
-    "Community access",
-    "Email support",
-  ],
-  premium: [
-    "Unlimited family trees",
-    "Advanced tree visualization",
-    "Unlimited people per tree",
-    "Archive document uploads",
-    "GEDCOM import/export",
-    "Priority email support",
-    "Advanced search & filters",
-  ],
-  pro: [
-    "Everything in Premium",
-    "AI-powered tree suggestions",
-    "AI note summarization",
-    "Task management & reminders",
-    "WhatsApp priority support",
-    "Early access to new features",
-    "Contribute to archive database",
-  ],
+type Tier = {
+  id?: number;
+  slug: string;
+  name: string;
+  price: number;
+  trial_days?: number;
+  tagline?: string;
+  description?: string;
+  features: string[];
+  is_active?: boolean;
 };
+
+const ICON_BY_SLUG: Record<string, typeof Star> = {
+  basic: Star,
+  premium: Crown,
+  pro: Sparkles,
+};
+
+const FALLBACK_TIERS: Tier[] = [
+  {
+    slug: "basic",
+    name: "Basic",
+    price: 0,
+    trial_days: 14,
+    features: [
+      "Build up to 3 family trees",
+      "Basic tree visualization",
+      "Add up to 50 people per tree",
+      "Community access",
+      "Email support",
+    ],
+  },
+  {
+    slug: "premium",
+    name: "Premium",
+    price: 9.99,
+    trial_days: 14,
+    features: [
+      "Unlimited family trees",
+      "Advanced tree visualization",
+      "Unlimited people per tree",
+      "Archive document uploads",
+      "GEDCOM import/export",
+      "Priority email support",
+      "Advanced search & filters",
+    ],
+  },
+  {
+    slug: "pro",
+    name: "Family Historian",
+    price: 19.99,
+    trial_days: 14,
+    features: [
+      "Everything in Premium",
+      "AI-powered tree suggestions",
+      "AI note summarization",
+      "Task management & reminders",
+      "WhatsApp priority support",
+      "Early access to new features",
+      "Contribute to archive database",
+    ],
+  },
+];
 
 export default function Subscriptions() {
   const { t } = useTranslation();
   const { theme } = useThemeStore();
   const [annual, setAnnual] = useState(false);
+  const [tiers, setTiers] = useState<Tier[]>(FALLBACK_TIERS);
   const isDark = theme === "dark";
+
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get("/subscriptions/tiers")
+      .then(({ data }) => {
+        if (cancelled || !Array.isArray(data) || !data.length) return;
+        const active = data.filter((tier: Tier) => tier.is_active !== false);
+        if (active.length) setTiers(active);
+      })
+      .catch(() => {
+        // Keep the built-in fallback tiers if the API is unavailable.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const displayTiers = useMemo(
+    () =>
+      tiers.map((tier, index) => ({
+        ...tier,
+        icon: ICON_BY_SLUG[tier.slug] || [Star, Crown, Sparkles][index % 3],
+        popular: tier.slug === "premium",
+      })),
+    [tiers],
+  );
 
   return (
     <RootsPageShell
@@ -99,12 +158,12 @@ export default function Subscriptions() {
 
       {/* Tier cards */}
       <div className="grid md:grid-cols-3 gap-8">
-        {tiers.map((tier) => {
+        {displayTiers.map((tier) => {
           const Icon = tier.icon;
           const price = annual
             ? (tier.price * 10 * 0.8).toFixed(2)
             : tier.price.toFixed(2);
-          const features = featuresByTier[tier.key];
+          const features = tier.features;
 
           const isPopular = tier.popular;
 
@@ -122,11 +181,12 @@ export default function Subscriptions() {
           const priceColor = isPopular ? "text-white" : "text-[var(--text-color)]";
           const featureColor = isPopular ? "text-white/90" : "text-[var(--text-color)]";
           const subTextColor = isPopular ? "text-white/60" : "text-[var(--text-color)] opacity-60";
+          const taglineColor = isPopular ? "text-white/75" : "text-[var(--text-color)] opacity-70";
           const checkColor = isPopular ? "text-[var(--brand-gold)]" : "text-[var(--brand-teal)]";
 
           return (
             <div
-              key={tier.key}
+              key={tier.slug}
               className={`relative rounded-2xl border-2 p-8 transition-all hover:shadow-xl ${cardBg} ${
                 isPopular ? "shadow-lg scale-105 md:scale-[1.06]" : ""
               }`}
@@ -149,15 +209,11 @@ export default function Subscriptions() {
                   <Icon className="w-7 h-7" />
                 </div>
                 <h3 className={`text-2xl font-bold font-cinzel ${titleColor}`}>
-                  {t(
-                    `tier_${tier.key}`,
-                    tier.key === "basic"
-                      ? "Basic"
-                      : tier.key === "premium"
-                        ? "Premium"
-                        : "Family Historian"
-                  )}
+                  {t(`tier_${tier.slug}`, tier.name)}
                 </h3>
+                {tier.tagline && (
+                  <p className={`mt-1.5 text-sm ${taglineColor}`}>{tier.tagline}</p>
+                )}
                 <div className="mt-3">
                   <span className={`text-4xl font-bold ${priceColor}`}>
                     ${price}
@@ -166,7 +222,7 @@ export default function Subscriptions() {
                     {annual ? t("per_year", "/year") : t("per_month", "/month")}
                   </span>
                 </div>
-                {tier.trialDays > 0 && (
+                {(tier.trial_days || 0) > 0 && (
                   <p className="text-sm text-[var(--brand-gold)] font-semibold mt-2">
                     {t("trial_days", "14-day free trial")}
                   </p>
@@ -188,7 +244,7 @@ export default function Subscriptions() {
               </ul>
 
               <Link
-                to={`/payment/${tier.key}`}
+                to={`/payment/${tier.slug}`}
                 className={`block w-full py-3.5 rounded-full text-center font-bold text-sm uppercase tracking-wider transition-all ${
                   isPopular
                     ? "bg-gradient-to-r from-[var(--brand-gold)] to-[var(--gold-light)] text-[#092C2B] shadow-lg hover:shadow-xl hover:scale-[1.02]"

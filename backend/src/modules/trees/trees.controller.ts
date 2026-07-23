@@ -30,6 +30,7 @@ import * as path from 'path';
 import { CreateTreeDto, UpdateTreeDto } from './dto/tree.dto';
 import { Person } from '../../models/Person';
 import { DownloadRequestsService } from '../download-requests/download-requests.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 
 const escapeGedcomValue = (value: unknown) =>
   String(value ?? "")
@@ -88,6 +89,7 @@ export class TreesController {
     private readonly treesService: TreesService,
     @Inject("KnexConnection") private readonly knex: Knex,
     private readonly downloadRequestsService: DownloadRequestsService,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   private async sendGedcomResponse(tree: any, res: Response) {
@@ -166,7 +168,8 @@ export class TreesController {
     const hasApprovedRequest =
       isOwner || isAdmin
         ? true
-        : await this.downloadRequestsService.hasApprovedAccess("tree", id, userId);
+        : (await this.downloadRequestsService.hasApprovedAccess("tree", id, userId)) ||
+          (await this.subscriptionsService.hasFeature(userId, "skip_download_requests"));
     if (!isOwner && !isAdmin && !hasApprovedRequest) {
       throw new ForbiddenException(
         "Downloading this tree requires an approved download request.",
