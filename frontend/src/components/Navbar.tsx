@@ -228,7 +228,7 @@ export default function Navbar() {
       label: t("legacy.subscriptions", "Subscriptions"),
       icon: Crown,
     },
-    { to: "/help-center", label: t("legacy.help_center", "Help Center"), icon: HelpCircle },
+    { to: "/help-center", label: t("legacy.help_center", "Help Center"), icon: HelpCircle, iconOnly: true },
   ];
 
   const resourcePaths = [
@@ -334,18 +334,24 @@ export default function Navbar() {
               ) : null}
             </div>
 
-            {secondaryNav.map(({ to, label, icon: Icon }) => (
+            {secondaryNav.map(({ to, label, icon: Icon, iconOnly }) => (
               <NavLink
                 key={to}
                 to={to}
+                title={iconOnly ? label : undefined}
+                aria-label={iconOnly ? label : undefined}
                 className={({ isActive }) =>
-                  `navbar-link${isActive || (to === "/sources-and-periods" && secondaryActivePaths.some((path) => location.pathname.startsWith(path))) ? " active" : ""}`
+                  `navbar-link${iconOnly ? " navbar-link--icon" : ""}${isActive || (to === "/sources-and-periods" && secondaryActivePaths.some((path) => location.pathname.startsWith(path))) ? " active" : ""}`
                 }
               >
-                <span className="inline-flex items-center gap-1.5">
-                  <Icon className="w-4 h-4" />
-                  {label}
-                </span>
+                {iconOnly ? (
+                  <Icon className="w-[18px] h-[18px]" />
+                ) : (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Icon className="w-4 h-4" />
+                    {label}
+                  </span>
+                )}
               </NavLink>
             ))}
             {user && (

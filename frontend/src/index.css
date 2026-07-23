@@ -1714,6 +1714,42 @@ html.light .admin-surface-header {
   color: #5eead4;
 }
 
+/* Icon-only nav item (e.g. Help Center): round button, no underline */
+.navbar-link--icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  border-radius: 9999px;
+  color: #0d9488;
+  border: 1px solid rgba(13, 148, 136, 0.28);
+  transition: color 0.2s ease, background-color 0.2s ease,
+    border-color 0.2s ease, transform 0.2s ease;
+}
+.dark .navbar-link--icon {
+  color: #5eead4;
+  border-color: rgba(94, 234, 212, 0.3);
+}
+.navbar-link--icon::after,
+.navbar-link--icon::before {
+  display: none;
+}
+.navbar-link--icon:hover,
+.navbar-link--icon.active {
+  color: #fff;
+  background: #0d9488;
+  border-color: #0d9488;
+  transform: translateY(-1px);
+}
+.dark .navbar-link--icon:hover,
+.dark .navbar-link--icon.active {
+  color: #062925;
+  background: #5eead4;
+  border-color: #5eead4;
+}
+
 /* Resources dropdown (desktop) */
 .navbar-dropdown {
   position: relative;
