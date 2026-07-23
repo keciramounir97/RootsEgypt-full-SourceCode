@@ -59,6 +59,26 @@ export class SettingsController {
   async updateSettings(@Body() body: UpdateSettingsDto, @Request() req) {
     return this.settingsService.updateSettings(body, req.user.id);
   }
+
+  @Get("payment")
+  getPaymentSettings() {
+    return this.settingsService.getPaymentSettings();
+  }
+
+  @Put("payment")
+  updatePaymentSettings(@Body() body: any, @Request() req) {
+    return this.settingsService.updatePaymentSettings(body, req.user.id);
+  }
+}
+
+@Controller("payment-settings")
+export class PublicPaymentSettingsController {
+  constructor(private readonly settingsService: SettingsService) {}
+
+  @Get()
+  getPaymentSettings() {
+    return this.settingsService.getPaymentSettings();
+  }
 }
 
 @Controller("site-images")

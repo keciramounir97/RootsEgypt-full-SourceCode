@@ -81,6 +81,8 @@ import AdminManagement from "./admin/pages/AdminManagement";
 import UserApprovals from "./admin/pages/UserApprovals";
 import UsersPage from "./admin/pages/Users";
 import Settings from "./admin/pages/Settings";
+import PaymentSettings from "./admin/pages/PaymentSettings";
+import Backups from "./admin/pages/Backups";
 import ActivityLog from "./admin/pages/ActivityLog";
 import FooterSettings from "./admin/pages/FooterSettings";
 import HeroImages from "./admin/pages/HeroImages";
@@ -418,6 +420,8 @@ function AppRoutes() {
             </Suspense>
           }
         />
+        <Route path="payment-settings" element={<PaymentSettings />} />
+        <Route path="backups" element={<Backups />} />
         <Route
           path="legal-content"
           element={

@@ -274,6 +274,18 @@ export class TreesController {
     return this.treesService.listAdmin();
   }
 
+  @Get("admin/backups")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin", "super_admin")
+  listBackups() { return this.treesService.listBackups(); }
+
+  @Post("admin/backups/:id/restore")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin", "super_admin")
+  restoreBackup(@Param("id", ParseIntPipe) id: number, @Request() req: ExpressRequest) {
+    return this.treesService.restoreBackup(id, req.user.id);
+  }
+
   @Get("admin/trees/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin", "super_admin")

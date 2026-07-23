@@ -398,6 +398,7 @@ export class TreesService implements OnModuleInit {
       throw new ForbiddenException("Forbidden");
     }
 
+    await this.createBackup(id, userId, "before-delete");
     if (tree.gedcom_path) safeUnlink(resolveStoredFilePath(tree.gedcom_path));
 
     // Delete people first (cascade usually handles this in DB, but safe to do manual)
@@ -409,7 +410,37 @@ export class TreesService implements OnModuleInit {
       "trees",
       `Deleted tree: ${tree.title}`,
     );
-    return { message: "Deleted" };
+    return { message: "Deleted", backupCreated: true };
+  }
+
+  async createBackup(treeId: number, actorId: number, reason = "manual") {
+    const tree = await Tree.query(this.knex).findById(treeId);
+    if (!tree) throw new NotFoundException("Tree not found");
+    const people = await Person.query(this.knex).where("tree_id", treeId);
+    const [id] = await this.knex("tree_backup_snapshots").insert({ tree_id: treeId, actor_id: actorId, reason, payload_json: JSON.stringify({ tree, people }) });
+    await this.activityService.log(actorId, "trees", `Created backup #${id} for tree #${treeId}`);
+    return this.knex("tree_backup_snapshots").where({ id }).first();
+  }
+
+  async listBackups() {
+    return this.knex("tree_backup_snapshots").select("id", "tree_id", "actor_id", "reason", "created_at", "restored_at", "restored_by").orderBy("created_at", "desc");
+  }
+
+  async restoreBackup(snapshotId: number, actorId: number) {
+    const snapshot = await this.knex("tree_backup_snapshots").where({ id: snapshotId }).first();
+    if (!snapshot) throw new NotFoundException("Backup not found");
+    if (snapshot.restored_at) return { treeId: snapshot.tree_id, alreadyRestored: true };
+    const payload = JSON.parse(snapshot.payload_json || "{}");
+    const treeId = await this.knex.transaction(async (trx) => {
+      const tree = { ...payload.tree }; delete tree.id; delete tree.created_at; delete tree.updated_at;
+      const [restoredId] = await trx("family_trees").insert(tree);
+      const people = Array.isArray(payload.people) ? payload.people.map((person: any) => ({ ...person, id: undefined, tree_id: restoredId })) : [];
+      if (people.length) await trx("persons").insert(people);
+      await trx("tree_backup_snapshots").where({ id: snapshotId }).update({ restored_at: new Date().toISOString().slice(0, 19).replace("T", " "), restored_by: actorId });
+      return restoredId;
+    });
+    await this.activityService.log(actorId, "trees", `Restored backup #${snapshotId} as tree #${treeId}`);
+    return { treeId, alreadyRestored: false };
   }
 
   getGedcomPath(tree: Tree) {

@@ -4,6 +4,9 @@ import { Book } from '../../models/Book';
 import { Tree } from '../../models/Tree';
 import { Person } from '../../models/Person';
 import { User } from '../../models/User';
+import { Audio } from '../../models/Audio';
+import { Document } from '../../models/Document';
+import { Gallery } from '../../models/Gallery';
 
 @Injectable()
 export class SearchService {
@@ -12,7 +15,7 @@ export class SearchService {
   constructor(@Inject("KnexConnection") private readonly knex: Knex) {}
 
   async search(query: string, user?: User) {
-    if (!query) return { books: [], trees: [], people: [] };
+    if (!query) return { books: [], trees: [], people: [], audios: [], documents: [], gallery: [] };
     const q = query.trim();
 
     const roleId = Number(
@@ -94,6 +97,19 @@ export class SearchService {
           builder.select("id", "full_name"),
         );
 
+      const publicOnly = (builder: any) => {
+        if (!canSeeAllTrees) builder.where("is_public", true);
+      };
+      const audios = await Audio.query(this.knex)
+        .where((builder) => builder.where("title", "like", `%${q}%`).orWhere("description", "like", `%${q}%`).orWhere("category", "like", `%${q}%`).orWhere("archive_source", "like", `%${q}%`))
+        .modify(publicOnly).orderBy("title", "asc").limit(20);
+      const documents = await Document.query(this.knex)
+        .where((builder) => builder.where("title", "like", `%${q}%`).orWhere("description", "like", `%${q}%`).orWhere("category", "like", `%${q}%`).orWhere("archive_source", "like", `%${q}%`).orWhere("document_code", "like", `%${q}%`))
+        .modify(publicOnly).orderBy("title", "asc").limit(20);
+      const gallery = await Gallery.query(this.knex)
+        .where((builder) => builder.where("title", "like", `%${q}%`).orWhere("description", "like", `%${q}%`).orWhere("archive_source", "like", `%${q}%`).orWhere("document_code", "like", `%${q}%`).orWhere("location", "like", `%${q}%`).orWhere("photographer", "like", `%${q}%`))
+        .modify(publicOnly).orderBy("title", "asc").limit(20);
+
       return {
         books,
         trees: trees.map((t: any) => ({
@@ -109,12 +125,15 @@ export class SearchService {
           tree_is_public: !!p.tree?.is_public,
           owner_name: p.tree?.owner?.full_name,
         })),
+        audios,
+        documents,
+        gallery,
       };
     } catch (error: any) {
       this.logger.warn(
         `Search unavailable, returning empty result set: ${error?.message || error}`,
       );
-      return { books: [], trees: [], people: [] };
+      return { books: [], trees: [], people: [], audios: [], documents: [], gallery: [] };
     }
   }
 }

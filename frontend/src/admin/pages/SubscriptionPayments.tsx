@@ -55,7 +55,7 @@ export default function SubscriptionPayments() {
   };
 
   const filtered = payments.filter(p =>
-    String(p.id).includes(search) || String(p.user_id).includes(search)
+    [p.id, p.user_id, p.user_email, p.user_name, p.tier_name, p.status].some((value) => String(value ?? "").toLowerCase().includes(search.toLowerCase()))
   );
 
   return (

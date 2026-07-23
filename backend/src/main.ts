@@ -17,6 +17,7 @@ import {
   getStoredGedcomText,
 } from "./modules/trees/trees.controller";
 import { getStoredFilePayload } from "./common/utils/db-file.util";
+import { shouldCreateSeedUser } from "./common/utils/seed-policy";
 
 /** Production CORS origins: RootsEgypt .org domains + EasyPanel + dev localhost */
 const ALLOWED_CORS_ORIGINS = [
@@ -648,7 +649,7 @@ async function seedInitialData(knex: Knex) {
       }
 
       const existing = await knex("users").where({ email: seedEmail }).first();
-      if (!existing) {
+      if (shouldCreateSeedUser(existing)) {
         const hash = await bcrypt.hash(seedPassword, 10);
         await knex("users").insert({
           full_name: seedFullName,
@@ -659,26 +660,7 @@ async function seedInitialData(knex: Knex) {
         });
         console.log(`✅ ${prefix} → ${seedEmail} (${seedFullName}) — CREATED`);
       } else {
-        const matches = await bcrypt.compare(
-          seedPassword,
-          existing.password || "",
-        );
-        if (!matches) {
-          const hash = await bcrypt.hash(seedPassword, 10);
-          await knex("users").where({ id: existing.id }).update({
-            password: hash,
-            role_id: seedRoleId,
-            status: "active",
-            full_name: seedFullName,
-          });
-          console.log(
-            `✅ ${prefix} → ${seedEmail} (${seedFullName}) — PASSWORD REFRESHED`,
-          );
-        } else {
-          console.log(
-            `✅ ${prefix} → ${seedEmail} (${seedFullName}) — OK (already exists)`,
-          );
-        }
+        console.log(`✅ ${prefix} → ${seedEmail} — OK (existing record preserved)`);
       }
     }
   } catch (err: any) {

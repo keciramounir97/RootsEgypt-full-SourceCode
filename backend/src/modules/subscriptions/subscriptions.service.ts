@@ -173,6 +173,7 @@ export class SubscriptionsService {
 
         // Free tiers activate immediately — no manual review needed.
         const isFree = tier.price === 0 && amount === 0;
+        if (!isFree && !String(data?.proof_url || '').trim()) throw new BadRequestException('Payment proof is required');
         const [id] = await this.knex('subscription_payments').insert({
             user_id: userId,
             tier_id: tier.id,
@@ -225,20 +226,17 @@ export class SubscriptionsService {
     async reviewPayment(adminId: number, id: number, decision: PaymentDecision) {
         const payment = await this.knex('subscription_payments').where('id', id).first();
         if (!payment) throw new NotFoundException('Payment not found');
-        if (payment.status !== 'pending') {
-            throw new BadRequestException('Payment has already been reviewed');
-        }
+        if (payment.status !== 'pending') return this.mapPayment(payment);
 
-        await this.knex('subscription_payments').where('id', id).update({
-            status: decision,
-            reviewed_by: adminId,
-            reviewed_at: this.now(),
-            updated_at: this.now(),
+        await this.knex.transaction(async (trx) => {
+            const locked = await trx('subscription_payments').where('id', id).forUpdate().first();
+            if (!locked || locked.status !== 'pending') return;
+            await trx('subscription_payments').where('id', id).update({ status: decision, reviewed_by: adminId, reviewed_at: this.now(), updated_at: this.now() });
+            if (decision === 'approved') {
+                await trx('user_subscriptions').where({ user_id: locked.user_id, status: 'active' }).update({ status: 'replaced', updated_at: this.now() });
+                await trx('user_subscriptions').insert({ user_id: locked.user_id, tier_id: locked.tier_id, status: 'active', started_at: this.now() });
+            }
         });
-
-        if (decision === 'approved') {
-            await this.activateSubscription(payment.user_id, payment.tier_id);
-        }
 
         await this.activityService.log(
             adminId,

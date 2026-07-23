@@ -18,6 +18,30 @@ type SettingsShape = {
   activityRetentionDays: number;
 };
 
+export type PaymentSettingsShape = {
+  enabled: boolean;
+  method: string;
+  beneficiary: string;
+  bank: string;
+  account: string;
+  reference: string;
+  currency: string;
+  instructions: string;
+  proofRequired: boolean;
+};
+
+const DEFAULT_PAYMENT_SETTINGS: PaymentSettingsShape = {
+  enabled: true,
+  method: "Bank Transfer",
+  beneficiary: "",
+  bank: "",
+  account: "",
+  reference: "",
+  currency: "USD",
+  instructions: "",
+  proofRequired: true,
+};
+
 type SiteImageRecord = {
   id: number;
   imagePath: string;
@@ -205,6 +229,34 @@ export class SettingsService implements OnModuleInit {
         stored.get("activityRetentionDays"),
       ) as number,
     };
+  }
+
+  async getPaymentSettings(): Promise<PaymentSettingsShape> {
+    await this.ensureSettingsSchema();
+    const keys = Object.keys(DEFAULT_PAYMENT_SETTINGS).map((key) => `payment.${key}`);
+    const rows = await this.knex("app_settings").whereIn("key", keys).select("key", "value");
+    const stored = new Map<string, string>(rows.map((row: any) => [String(row.key), String(row.value)] as [string, string]));
+    const result = { ...DEFAULT_PAYMENT_SETTINGS };
+    for (const key of Object.keys(result) as Array<keyof PaymentSettingsShape>) {
+      const value = stored.get(`payment.${key}`);
+      if (value === undefined) continue;
+      if (key === "enabled" || key === "proofRequired") (result[key] as boolean) = this.parseBooleanSetting(value, result[key] as boolean);
+      else (result[key] as string) = value;
+    }
+    return result;
+  }
+
+  async updatePaymentSettings(data: Partial<PaymentSettingsShape>, actorId: number) {
+    const current = await this.getPaymentSettings();
+    const next: PaymentSettingsShape = {
+      ...current,
+      ...Object.fromEntries(Object.entries(data).filter(([, value]) => value !== undefined)),
+    } as PaymentSettingsShape;
+    for (const key of Object.keys(next) as Array<keyof PaymentSettingsShape>) {
+      await this.writeSetting(`payment.${key}`, next[key] as string | number | boolean);
+    }
+    await this.activityService.log(actorId, "settings", "Updated payment settings");
+    return next;
   }
 
   async updateSettings(

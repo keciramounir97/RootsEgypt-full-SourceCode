@@ -26,6 +26,9 @@
   --leather-brown: #0f1729;
   --text-color: #2c3e50;
   --border-color: rgba(12, 74, 110, 0.12);
+  --input-bg: #ffffff;
+  --placeholder-color: #64748b;
+  --surface-elevated: #ffffff;
   --olive-green: #0f766e;
   --terracotta: #c45c3e;
   --antique-brown: #0c4a6e;
@@ -91,6 +94,9 @@
   --leather-brown: #060e1c;
   --text-color: #f1f4f8;
   --border-color: rgba(232, 201, 106, 0.12);
+  --input-bg: #0d2220;
+  --placeholder-color: #94a3b8;
+  --surface-elevated: #162a38;
   --neu-surface: #141e2e;
   --neu-highlight: #1a2638;
   --neu-shadow: 6px 6px 16px rgba(0, 0, 0, 0.45), -3px -3px 10px rgba(255, 255, 255, 0.03);

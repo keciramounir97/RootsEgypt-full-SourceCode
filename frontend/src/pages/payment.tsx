@@ -16,6 +16,7 @@ import {
 import { useThemeStore } from "../store/theme";
 
 type Tier = { id: number; slug: string; name: string; price: number };
+type PaymentSettings = { enabled: boolean; method: string; beneficiary: string; bank: string; account: string; reference: string; currency: string; instructions: string; proofRequired: boolean };
 
 export default function Payment() {
   const { theme } = useThemeStore();
@@ -34,8 +35,10 @@ export default function Payment() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<{ type: string; msg: string }>({ type: "", msg: "" });
+  const [paymentSettings, setPaymentSettings] = useState<PaymentSettings | null>(null);
 
   const apiRoot = getApiRoot();
+  const requiresProof = Boolean(tierData && tierData.price > 0 && (paymentSettings?.proofRequired ?? true));
 
   useEffect(() => {
     let cancelled = false;
@@ -52,6 +55,7 @@ export default function Payment() {
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
+    api.get("/payment-settings").then(({ data }) => { if (!cancelled) setPaymentSettings(data); });
     return () => {
       cancelled = true;
     };
@@ -92,6 +96,14 @@ export default function Payment() {
       return;
     }
     if (!amount || parseFloat(amount) <= 0 || !tierData) return;
+    if (paymentSettings && !paymentSettings.enabled) {
+      setStatus({ type: "error", msg: t("payments_disabled", "Paid subscriptions are temporarily unavailable. Please try again later.") });
+      return;
+    }
+    if (requiresProof && !proofPath) {
+      setStatus({ type: "error", msg: t("payment_proof_required", "Please upload your payment proof before submitting.") });
+      return;
+    }
 
     setSubmitting(true);
     setStatus({ type: "", msg: "" });
@@ -156,7 +168,13 @@ export default function Payment() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="p-6 rounded-2xl border border-[var(--border-color)] bg-white dark:bg-gray-900 space-y-5">
+        <form onSubmit={handleSubmit} className="p-6 rounded-2xl border border-[var(--border-color)] bg-[var(--surface-elevated)] space-y-5">
+          {!paymentSettings?.enabled && paymentSettings && (
+            <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-sm text-[var(--text-color)]">
+              {t("payments_disabled", "Paid subscriptions are temporarily unavailable. Please try again later.")}
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-semibold text-[var(--text-color)] mb-1.5">{t("amount_usd", "Amount (USD)")}</label>
             <input
@@ -165,17 +183,19 @@ export default function Payment() {
               value={amount}
               onChange={e => setAmount(e.target.value)}
               required
-              className={`w-full px-4 py-3 rounded-xl border text-sm transition-all outline-none ${isDark ? "bg-[#0d2220] border-white/10 text-white placeholder:text-white/30 focus:border-[var(--brand-gold)]" : "bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[var(--brand-teal)]"}`}
+              className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--input-bg)] text-[var(--text-color)] placeholder:text-[var(--placeholder-color)] text-sm transition-all outline-none focus:border-[var(--brand-gold)]"
             />
           </div>
 
           <div>
             <label className="block text-sm font-semibold text-[var(--text-color)] mb-1.5">{t("payment_method", "Payment Method")}</label>
             <div className="p-4 rounded-xl border border-[var(--border-color)] bg-[var(--paper-color)] text-sm text-[var(--text-color)]">
-              <p className="font-semibold mb-1">{t("bank_transfer", "Bank Transfer")}</p>
-              <p className="opacity-70">Beneficiary: Roots Egypt</p>
-              <p className="opacity-70">IBAN: XX00 0000 0000 0000 0000 0000</p>
-              <p className="opacity-70">Bank: Example Bank</p>
+              <p className="font-semibold mb-1">{paymentSettings?.method || t("bank_transfer", "Bank Transfer")}</p>
+              {paymentSettings?.beneficiary && <p className="opacity-70">{t("beneficiary", "Beneficiary")}: {paymentSettings.beneficiary}</p>}
+              {paymentSettings?.account && <p className="opacity-70">{t("account", "Account")}: {paymentSettings.account}</p>}
+              {paymentSettings?.bank && <p className="opacity-70">{t("bank", "Bank")}: {paymentSettings.bank}</p>}
+              {paymentSettings?.reference && <p className="opacity-70">{t("reference", "Reference")}: {paymentSettings.reference}</p>}
+              {paymentSettings?.instructions && <p className="mt-2 whitespace-pre-wrap opacity-70">{paymentSettings.instructions}</p>}
             </div>
           </div>
 
@@ -213,7 +233,7 @@ export default function Payment() {
                 <input type="file" accept="image/*" className="hidden" onChange={handleProofChange} />
               </label>
             )}
-            <p className="text-xs text-[var(--text-color)] opacity-50 mt-1.5">{t("upload_proof_hint_v2", "Upload a screenshot of your bank transfer receipt.")}</p>
+            <p className="text-xs text-[var(--text-color)] opacity-50 mt-1.5">{requiresProof ? t("upload_proof_hint_required", "A payment proof screenshot is required for paid subscriptions.") : t("upload_proof_hint_v2", "Upload a screenshot of your bank transfer receipt.")}</p>
           </div>
 
           <div>
@@ -223,13 +243,13 @@ export default function Payment() {
               onChange={e => setNotes(e.target.value)}
               rows={3}
               placeholder={t("payment_notes_placeholder", "Any additional information...")}
-              className={`w-full px-4 py-3 rounded-xl border text-sm transition-all outline-none resize-none ${isDark ? "bg-[#0d2220] border-white/10 text-white placeholder:text-white/30 focus:border-[var(--brand-gold)]" : "bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[var(--brand-teal)]"}`}
+              className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--input-bg)] text-[var(--text-color)] placeholder:text-[var(--placeholder-color)] text-sm transition-all outline-none resize-none focus:border-[var(--brand-gold)]"
             />
           </div>
 
           <button
             type="submit"
-            disabled={submitting || uploadingProof || !amount || parseFloat(amount) <= 0}
+            disabled={submitting || uploadingProof || !amount || parseFloat(amount) <= 0 || (paymentSettings !== null && !paymentSettings.enabled) || (requiresProof && !proofPath)}
             className="w-full py-3 rounded-full bg-gradient-to-r from-[var(--brand-gold)] to-[var(--gold-light)] text-[var(--teal-dark)] font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {submitting ? (
