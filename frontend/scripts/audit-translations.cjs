@@ -18,6 +18,7 @@ const JSX_ATTRIBUTE_IGNORELIST = new Set([
   "buttonClassName",
   "className",
   "cols",
+  "contentType",
   "cx",
   "cy",
   "d",

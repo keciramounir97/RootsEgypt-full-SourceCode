@@ -22,6 +22,7 @@ import {
   Headphones,
   Newspaper,
   CheckCircle,
+  Download,
 } from "lucide-react";
 
 import { useForm } from "react-hook-form";
@@ -352,6 +353,14 @@ export default function Navbar() {
                     <CheckCircle className="w-4 h-4 text-green-500" />
                   </span>
                 )}
+                <NavLink
+                  to="/my-download-requests"
+                  className={({ isActive }) =>
+                    `navbar-link${isActive ? " active" : ""}`
+                  }
+                >
+                  {t("my_download_requests", "My Requests")}
+                </NavLink>
               </span>
             )}
           </nav>
@@ -577,6 +586,19 @@ export default function Navbar() {
                   </span>
                 )}
               </span>
+              <ChevronRight className="sidebar-link-arrow" />
+            </NavLink>
+          )}
+          {user && (
+            <NavLink
+              to="/my-download-requests"
+              className={({ isActive }) =>
+                `sidebar-link${isActive ? " active" : ""}`
+              }
+              onClick={closeSidebar}
+            >
+              <Download className="sidebar-link-icon" />
+              <span>{t("my_download_requests", "My Requests")}</span>
               <ChevronRight className="sidebar-link-arrow" />
             </NavLink>
           )}

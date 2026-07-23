@@ -4,7 +4,6 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import {
   Archive,
-  Download,
   Eye,
   FileText,
   Filter,
@@ -23,6 +22,7 @@ import {
 } from "../api/helpers";
 import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
+import RequestDownloadButton from "../components/RequestDownloadButton";
 import TreesBuilder, { parseGedcom, parseGedcomX } from "../admin/components/TreesBuilder";
 
 const sortByDateDesc = (items: any[]) =>
@@ -94,10 +94,6 @@ export default function GalleryTrees() {
     return `${apiRoot.replace(/\/+$/, "")}${p}`;
   };
 
-  const downloadTreeUrl = (id: number | string) => {
-    return `${apiRoot}/api/trees/${id}/gedcom`;
-  };
-
   const filteredTrees = useMemo(() => {
     let result = trees;
 
@@ -163,32 +159,9 @@ export default function GalleryTrees() {
     }
   };
 
-  const downloadTreeFile = async (tree: any) => {
-    if (!tree?.id) return;
-
-    try {
-      let text = typeof tree.gedcom === "string" ? tree.gedcom : "";
-      if (!text) {
-        const response = await fetch(downloadTreeUrl(tree.id));
-        if (!response.ok) throw new Error("Download failed");
-        text = await response.text();
-      }
-
-      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      const safeName = String(tree.title || "tree")
-        .trim()
-        .replace(/[^\w.-]+/g, "_") || "tree";
-      link.href = url;
-      link.download = `${safeName}.${tree.data_format === "gedcomx" ? "xml" : "ged"}`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    } catch {
-      setViewTreeError(t("legacy.no_gedcom_available", "No GEDCOM file available yet."));
-    }
+  const treeFileName = (tree: any) => {
+    const safeName = String(tree?.title || "tree").trim().replace(/[^\w.-]+/g, "_") || "tree";
+    return `${safeName}.${tree?.data_format === "gedcomx" ? "xml" : "ged"}`;
   };
 
   const isDark = theme === "dark";
@@ -364,14 +337,12 @@ export default function GalleryTrees() {
                           </button>
                         )}
                         {canDownload && (
-                          <button
-                            type="button"
-                            onClick={() => void downloadTreeFile(tree)}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border ${borderColor} text-sm font-medium hover:bg-[#d9a441]/10 hover:border-[#d9a441] transition-colors`}
-                          >
-                            <Download className="w-4 h-4" />
-                            {t("legacy.download", "Download")}
-                          </button>
+                          <RequestDownloadButton
+                            contentType="tree"
+                            contentId={tree.id}
+                            downloadHref={`${apiRoot}/api/trees/${tree.id}/download`}
+                            fileName={treeFileName(tree)}
+                          />
                         )}
                       </div>
                     </div>
@@ -431,14 +402,13 @@ export default function GalleryTrees() {
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 {Number.isFinite(Number(viewTree.id)) && viewTree.hasGedcom && (
-                  <button
-                    type="button"
-                    onClick={() => void downloadTreeFile(viewTree)}
-                    className={`hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg border ${borderColor} text-sm font-medium hover:bg-[#d9a441]/10 hover:border-[#d9a441] transition-colors`}
-                  >
-                    <Download className="w-4 h-4" />
-                    {t("legacy.download", "Download")}
-                  </button>
+                  <RequestDownloadButton
+                    contentType="tree"
+                    contentId={viewTree.id}
+                    downloadHref={`${apiRoot}/api/trees/${viewTree.id}/download`}
+                    fileName={treeFileName(viewTree)}
+                    className="hidden sm:block"
+                  />
                 )}
                 <button
                   onClick={() => setViewTree(null)}
@@ -463,6 +433,7 @@ export default function GalleryTrees() {
                 <TreesBuilder
                   people={viewPeople}
                   readOnly
+                  treeId={viewTree.id}
                 />
               )}
             </div>

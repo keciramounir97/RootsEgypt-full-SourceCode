@@ -32,6 +32,7 @@ import About from "./pages/about";
 import Cookies from "./pages/cookies";
 import Privacy from "./pages/privacy";
 import Terms from "./pages/terms";
+import MyDownloadRequests from "./pages/MyDownloadRequests";
 import Subscriptions from "./pages/subscriptions";
 import Payment from "./pages/payment";
 import Tasks from "./pages/tasks";
@@ -87,6 +88,7 @@ import PasswordResetRequests from "./admin/pages/PasswordResetRequests";
 import AccountDeletionRequests from "./admin/pages/AccountDeletionRequests";
 import RoleDistribution from "./admin/pages/RoleDistribution";
 import LegalContent from "./admin/pages/LegalContent";
+import DownloadRequests from "./admin/pages/DownloadRequests";
 
 /**
  * Loading Fallback Component
@@ -216,6 +218,7 @@ function AppRoutes() {
       <Route path="/cookies" element={<PageTransition><Cookies /></PageTransition>} />
       <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
       <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+      <Route path="/my-download-requests" element={<PageTransition><MyDownloadRequests /></PageTransition>} />
       <Route path="/subscriptions" element={<PageTransition><Subscriptions /></PageTransition>} />
       <Route path="/payment/:tier" element={<PageTransition><Payment /></PageTransition>} />
       <Route path="/tasks" element={<PageTransition><Tasks /></PageTransition>} />
@@ -498,6 +501,16 @@ function AppRoutes() {
             <Suspense fallback={<AdminLoadingFallback />}>
               <ProtectedRoute privileges={["validation-approvals"]}>
                 <ValidationApprovals />
+              </ProtectedRoute>
+            </Suspense>
+          }
+        />
+        <Route
+          path="download-requests"
+          element={
+            <Suspense fallback={<AdminLoadingFallback />}>
+              <ProtectedRoute privileges={["download-requests"]}>
+                <DownloadRequests />
               </ProtectedRoute>
             </Suspense>
           }

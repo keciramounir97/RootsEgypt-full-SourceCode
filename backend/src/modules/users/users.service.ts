@@ -242,6 +242,7 @@ export class UsersService {
             { key: 'settings', label: 'Settings' },
             { key: 'footer-settings', label: 'Footer Settings' },
             { key: 'legal-content', label: 'Legal Content' },
+            { key: 'download-requests', label: 'Download Requests' },
         ];
     }
 

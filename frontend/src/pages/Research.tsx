@@ -8,7 +8,6 @@ import {
   Users,
   Compass,
   FileText,
-  Download,
   ExternalLink,
   UserCircle2,
   Eye,
@@ -22,6 +21,7 @@ import { getGedcomLoadErrorMessage } from "../api/helpers";
 import TreesBuilder, { parseGedcom, parseGedcomX } from "../admin/components/TreesBuilder";
 import ErrorBoundary from "../components/ErrorBoundary";
 import RootsPageShell from "../components/RootsPageShell";
+import RequestDownloadButton from "../components/RequestDownloadButton";
 
 export default function Research() {
   const { theme } = useThemeStore();
@@ -528,6 +528,7 @@ export default function Research() {
                     people={viewPeople}
                     setPeople={setViewPeople}
                     readOnly
+                    treeId={viewTree?.id}
                   />
                 </ErrorBoundary>
               )}
@@ -578,15 +579,13 @@ function BookResult({ book, downloadUrl, borderColor }) {
         </div>
       </div>
       {book?.id ? (
-        <a
-          href={downloadUrl(book.id)}
-          target="_blank"
-          rel="noreferrer"
-          className="interactive-btn btn-neu btn-neu--primary px-4 py-2 text-sm flex items-center gap-2 self-start sm:self-center shrink-0"
-        >
-          <Download className="w-4 h-4" />
-          {t("legacy.download", "Download")}
-        </a>
+        <RequestDownloadButton
+          contentType="book"
+          contentId={book.id}
+          downloadHref={downloadUrl(book.id)}
+          fileName={`${String(book.title || "book").trim().replace(/[^\w.-]+/g, "_") || "book"}.pdf`}
+          className="self-start sm:self-center shrink-0"
+        />
       ) : (
         <span className="text-xs opacity-50 italic self-start sm:self-center">
           {t("legacy.unavailable", "Unavailable")}

@@ -1,7 +1,8 @@
 import {
     Controller, Get, Post, Put, Patch, Delete, Body, Param,
     UseGuards, Request, UseInterceptors, UploadedFile,
-    ParseIntPipe, Logger,
+    ForbiddenException, NotFoundException,
+    ParseIntPipe, Logger, Res,
 } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -9,6 +10,10 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DOCUMENT_UPLOADS_DIR } from './documents.service';
+import { DownloadRequestsService } from '../download-requests/download-requests.service';
+import { getStoredFilePayload } from '../../common/utils/db-file.util';
+import { resolveStoredFilePath } from '../../common/utils/file.utils';
+import { Response } from 'express';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as multer from 'multer';
@@ -31,7 +36,10 @@ const documentUploadOptions = {
 @Controller()
 export class DocumentsController {
     private readonly logger = new Logger(DocumentsController.name);
-    constructor(private readonly documentsService: DocumentsService) {}
+    constructor(
+        private readonly documentsService: DocumentsService,
+        private readonly downloadRequestsService: DownloadRequestsService,
+    ) {}
 
     @Get('documents')
     async listPublic() {
@@ -46,6 +54,39 @@ export class DocumentsController {
     @Get('documents/:id')
     async getPublic(@Param('id', ParseIntPipe) id: number) {
         return this.documentsService.getPublic(id);
+    }
+
+    @Get('documents/:id/download')
+    @UseGuards(JwtAuthGuard)
+    async downloadPublic(@Param('id', ParseIntPipe) id: number, @Request() req, @Res() res: Response) {
+        const doc = await this.documentsService.findOne(id);
+        const userId = req.user?.id;
+        const roleId = Number(req.user?.role_id ?? req.user?.roleId ?? req.user?.role ?? 0);
+        const isOwner = doc.uploaded_by != null && Number(doc.uploaded_by) === Number(userId);
+        const isAdmin = roleId === 1 || roleId === 3;
+        if (!isOwner && !isAdmin) {
+            const hasApprovedRequest = await this.downloadRequestsService.hasApprovedAccess('document', id, userId);
+            if (!hasApprovedRequest) {
+                throw new ForbiddenException('Downloading this document requires an approved download request.');
+            }
+        }
+
+        const stored = getStoredFilePayload(
+            doc as any,
+            'file_data',
+            'file_mime_type',
+            'file_path',
+            'application/octet-stream',
+            'document-download',
+        );
+        if (stored) {
+            res.type(stored.mimeType).attachment(stored.filename).send(stored.data);
+            return;
+        }
+
+        const filePath = resolveStoredFilePath(doc.file_path);
+        if (!filePath || !fs.existsSync(filePath)) throw new NotFoundException('File not found');
+        res.download(filePath, path.basename(filePath));
     }
 
     @Get('my/documents')

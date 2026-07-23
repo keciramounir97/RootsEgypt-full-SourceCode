@@ -29,6 +29,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { CreateTreeDto, UpdateTreeDto } from './dto/tree.dto';
 import { Person } from '../../models/Person';
+import { DownloadRequestsService } from '../download-requests/download-requests.service';
 
 const escapeGedcomValue = (value: unknown) =>
   String(value ?? "")
@@ -86,6 +87,7 @@ export class TreesController {
   constructor(
     private readonly treesService: TreesService,
     @Inject("KnexConnection") private readonly knex: Knex,
+    private readonly downloadRequestsService: DownloadRequestsService,
   ) {}
 
   private async sendGedcomResponse(tree: any, res: Response) {
@@ -142,6 +144,34 @@ export class TreesController {
     @Res() res: Response,
   ) {
     const tree = await this.treesService.getPublic(id);
+    await this.sendGedcomResponse(tree, res);
+  }
+
+  // Gated "save this file" action — distinct from /gedcom above, which the read-only
+  // tree viewer already fetches unauthenticated to parse and render the tree in the UI.
+  @Get("trees/:id/download")
+  @UseGuards(JwtAuthGuard)
+  async downloadGedcomFile(
+    @Param("id", ParseIntPipe) id: number,
+    @Request() req: ExpressRequest,
+    @Res() res: Response,
+  ) {
+    const tree = await this.treesService.getPublic(id);
+    const userId = (req as any).user?.id;
+    const roleId = Number(
+      (req as any).user?.role_id ?? (req as any).user?.roleId ?? (req as any).user?.role ?? 0,
+    );
+    const isOwner = tree.user_id != null && Number(tree.user_id) === Number(userId);
+    const isAdmin = roleId === 1 || roleId === 3;
+    const hasApprovedRequest =
+      isOwner || isAdmin
+        ? true
+        : await this.downloadRequestsService.hasApprovedAccess("tree", id, userId);
+    if (!isOwner && !isAdmin && !hasApprovedRequest) {
+      throw new ForbiddenException(
+        "Downloading this tree requires an approved download request.",
+      );
+    }
     await this.sendGedcomResponse(tree, res);
   }
 

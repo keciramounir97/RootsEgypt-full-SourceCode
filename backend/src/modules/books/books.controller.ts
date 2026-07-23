@@ -27,11 +27,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { CreateBookDto, UpdateBookDto } from './dto/book.dto';
 import { getStoredFilePayload } from '../../common/utils/db-file.util';
+import { DownloadRequestsService } from '../download-requests/download-requests.service';
 
 @Controller()
 export class BooksController {
   private readonly logger = new Logger(BooksController.name);
-  constructor(private readonly booksService: BooksService) {}
+  constructor(
+    private readonly booksService: BooksService,
+    private readonly downloadRequestsService: DownloadRequestsService,
+  ) {}
 
   // Public Routes
   @Get("books")
@@ -53,12 +57,33 @@ export class BooksController {
   }
 
   @Get("books/:id/download")
+  @UseGuards(JwtAuthGuard)
   async downloadPublic(
     @Param("id", ParseIntPipe) id: number,
+    @Request() req: ExpressRequest,
     @Res() res: Response,
   ) {
     const book = await this.booksService.getPublic(id);
     if (!book.is_public) throw new ForbiddenException("Not public");
+
+    const userId = (req as any).user?.id;
+    const roleId = Number(
+      (req as any).user?.role_id ?? (req as any).user?.roleId ?? (req as any).user?.role ?? 0,
+    );
+    const isOwner = book.uploaded_by != null && Number(book.uploaded_by) === Number(userId);
+    const isAdmin = roleId === 1 || roleId === 3;
+    if (!isOwner && !isAdmin) {
+      const hasApprovedRequest = await this.downloadRequestsService.hasApprovedAccess(
+        "book",
+        id,
+        userId,
+      );
+      if (!hasApprovedRequest) {
+        throw new ForbiddenException(
+          "Downloading this book requires an approved download request.",
+        );
+      }
+    }
 
     const stored = getStoredFilePayload(
       book as any,

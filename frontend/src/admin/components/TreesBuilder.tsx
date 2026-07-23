@@ -32,6 +32,7 @@ import { useLanguage } from "../../i18n";
 import { getApiRoot } from "../../api/helpers";
 import { api } from "../../api/client";
 import { requestWithFallback, shouldFallbackRoute } from "../../api/helpers";
+import RequestDownloadButton from "../../components/RequestDownloadButton";
 
 const CARD_W = 220;
 
@@ -1810,6 +1811,8 @@ export default function TreesBuilder({
   readOnly = false,
   onAutoSave,
   dataFormat = "gedcom", // "gedcom" | "gedcom7" | "gedcomx" – affects display label and format-specific display
+  treeId,
+  canDownloadDirectly = false,
 }: any) {
   const { theme } = useThemeStore();
 
@@ -3889,6 +3892,7 @@ export default function TreesBuilder({
             ) : null}
           </div>
 
+          {!readOnly ? (
           <div className="grid grid-cols-4 gap-2 max-w-3xl">
             <div className="relative min-w-0" ref={gedcomImportDropdownRef}>
               <button
@@ -4097,6 +4101,15 @@ export default function TreesBuilder({
               ) : null}
             </div>
           </div>
+          ) : treeId != null ? (
+            <RequestDownloadButton
+              contentType="tree"
+              contentId={treeId}
+              downloadHref={`${getApiRoot()}/api/trees/${treeId}/download`}
+              fileName={`tree-${treeId}.ged`}
+              canDownloadDirectly={canDownloadDirectly}
+            />
+          ) : null}
         </div>
 
         {/* MAIN AREA – fixed canvas height to prevent ResizeObserver → draw() → height change → loop */}
@@ -4185,9 +4198,9 @@ export default function TreesBuilder({
                 aria-label={t("legacy.person_card", "Person card")}
               >
                 <div
-                  className="neu-panel max-h-[min(860px,calc(100vh-32px))] w-full max-w-4xl overflow-y-auto p-6 custom-scrollbar"
+                  className="neu-panel flex h-[94vh] w-full max-w-[95vw] flex-col overflow-hidden rounded-2xl"
                 >
-                <div className="flex items-start justify-between gap-4 border-b border-current/10 pb-4">
+                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-current/10 bg-black/[0.03] px-5 py-4 dark:bg-white/[0.03] sm:px-7 sm:py-5">
                   <div className="flex min-w-0 items-center gap-4">
                     <div
                       className="neu-avatar shrink-0 flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold font-serif"
@@ -4228,8 +4241,9 @@ export default function TreesBuilder({
                   </button>
                 </div>
 
+                <div className="flex-1 overflow-y-auto custom-scrollbar px-5 py-5 sm:px-7">
                 {!readOnly ? (
-                  <div className="mt-4 flex flex-wrap items-center gap-2.5">
+                  <div className="flex flex-wrap items-center gap-2.5">
                     <button
                       type="button"
                       onClick={openSourceLinkAdd}
@@ -4574,6 +4588,7 @@ export default function TreesBuilder({
                     </div>
                   </div>
                 ) : null}
+                </div>
                 </div>
               </div>
             ) : null}

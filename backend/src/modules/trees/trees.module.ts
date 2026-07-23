@@ -3,6 +3,7 @@ import { TreesController } from './trees.controller';
 import { PersonsController } from './persons.controller';
 import { TreesService } from './trees.service';
 import { ActivityModule } from '../activity/activity.module';
+import { DownloadRequestsModule } from '../download-requests/download-requests.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { TREE_UPLOADS_DIR } from '../../common/utils/file.utils';
 import * as multer from 'multer';
@@ -12,6 +13,7 @@ import * as crypto from 'crypto';
 @Module({
     imports: [
         ActivityModule,
+        DownloadRequestsModule,
         MulterModule.register({
             storage: multer.diskStorage({
                 destination: (req, file, cb) => {

@@ -10,7 +10,6 @@ import {
   Search,
   BookOpen,
   X,
-  Download,
   Send,
   User,
   Bookmark,
@@ -20,6 +19,7 @@ import { api } from "../api/client";
 import { getApiErrorMessage, getApiRoot } from "../api/helpers";
 import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
+import RequestDownloadButton from "../components/RequestDownloadButton";
 
 interface Book {
   id: number | string;
@@ -495,14 +495,12 @@ export default function GalleryBooks() {
                   {t("legacy.save", "Save")}
                 </button>
                 {(selectedBook.filePath || selectedBook.file_path) && (
-                  <a
-                    href={downloadBookUrl(selectedBook.id)}
-                    download
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#24766f] text-white hover:bg-[#24766f]/90 transition-colors"
-                  >
-                    <Download className="w-5 h-5" />
-                    {t("legacy.download", "Download")}
-                  </a>
+                  <RequestDownloadButton
+                    contentType="book"
+                    contentId={selectedBook.id}
+                    downloadHref={downloadBookUrl(selectedBook.id)}
+                    fileName={`${String(selectedBook.title || "book").trim().replace(/[^\w.-]+/g, "_") || "book"}.pdf`}
+                  />
                 )}
               </div>
 

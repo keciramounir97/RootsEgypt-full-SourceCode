@@ -12,7 +12,6 @@ import {
   X,
   MapPin,
   Archive,
-  Download,
   Send,
 } from "lucide-react";
 import { api } from "../api/client";
@@ -23,6 +22,7 @@ import {
   shouldFallbackRoute,
 } from "../api/helpers";
 import { useLanguage } from "../i18n";
+import RequestDownloadButton from "../components/RequestDownloadButton";
 import RootsPageShell from "../components/RootsPageShell";
 import { useAuth } from "../admin/components/AuthContext";
 import {
@@ -592,13 +592,12 @@ export default function GalleryImages() {
                     <Share2 className="w-5 h-5" />
                     {t("legacy.share", "Share")}
                   </button>
-                  <a
-                    href={fileUrl(selectedImage.imagePath)}
-                    download
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
-                  >
-                    <Download className="w-5 h-5" />
-                  </a>
+                  <RequestDownloadButton
+                    contentType="gallery"
+                    contentId={selectedImage.id}
+                    downloadHref={`${apiRoot}/api/gallery/${selectedImage.id}/download`}
+                    fileName={`${String(selectedImage.title || "image").trim().replace(/[^\w.-]+/g, "_") || "image"}`}
+                  />
                 </div>
 
                 {/* Comments */}

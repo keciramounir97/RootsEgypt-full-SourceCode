@@ -31,6 +31,7 @@ import {
   UserCog,
   ShieldCheck,
   Scale,
+  Download,
   X,
   LogOut,
   ChevronRight,
@@ -51,6 +52,7 @@ const links = [
   { to: "/admin/contact-messages", labelKey: "contactMessages", Icon: Mail },
   { to: "/admin/users", labelKey: "users", Icon: Users },
   { to: "/admin/validation-approvals", labelKey: "validation_approvals", Icon: ShieldCheck },
+  { to: "/admin/download-requests", labelKey: "download_requests", Icon: Download },
   { to: "/admin/hero-images", labelKey: "hero_images", Icon: Image },
   { to: "/admin/background-images", labelKey: "background_images", Icon: Globe },
   { to: "/admin/approvals", labelKey: "approvals", Icon: UserCheck },
@@ -74,6 +76,7 @@ const labelFallbacks: Record<string, string> = {
   footer_settings: "Footer Settings",
   contactMessages: "Contact Messages",
   legal_content: "Legal Content",
+  download_requests: "Download Requests",
 };
 
 export default function AdminSidebar({

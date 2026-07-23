@@ -4,7 +4,6 @@ import { useThemeStore } from "../store/theme";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Archive,
-  Download,
   Eye,
   Filter,
   FileText,
@@ -25,6 +24,7 @@ import {
 import { useLanguage } from "../i18n";
 import { useFavorites } from "../context/FavoritesContext";
 import RootsPageShell from "../components/RootsPageShell";
+import RequestDownloadButton from "../components/RequestDownloadButton";
 import TreesBuilder, { parseGedcom, parseGedcomX } from "../admin/components/TreesBuilder";
 import ErrorBoundary from "../components/ErrorBoundary";
 
@@ -112,8 +112,9 @@ export default function GenealogyGallery() {
     return `${apiRoot}${path}`;
   };
 
-  const downloadTreeUrl = (id) => {
-    return `${apiRoot}/api/trees/${id}/gedcom`;
+  const treeFileName = (tree) => {
+    const safeName = String(tree?.title || "tree").trim().replace(/[^\w.-]+/g, "_") || "tree";
+    return `${safeName}.${tree?.data_format === "gedcomx" ? "xml" : "ged"}`;
   };
 
   const shareTree = (tree) => {
@@ -456,19 +457,12 @@ export default function GenealogyGallery() {
                           {t("legacy.view_tree", "View Tree")}
                         </button>
                         {canDownload ? (
-                          <a
-                            href={downloadTreeUrl(tree.id)}
-                            className="interactive-btn btn-neu btn-neu--primary px-4 py-2 inline-flex items-center gap-2"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            <Download className="w-4 h-4" />
-                            {tree.data_format === "gedcomx"
-                              ? t("legacy.download_gedcomx", "Download GEDCOM X")
-                              : tree.data_format === "gedcom7"
-                                ? t("legacy.download_gedcom7", "Download GEDCOM 7.0")
-                                : t("legacy.download_gedcom551", "Download GEDCOM 5.5.1")}
-                          </a>
+                          <RequestDownloadButton
+                            contentType="tree"
+                            contentId={tree.id}
+                            downloadHref={`${apiRoot}/api/trees/${tree.id}/download`}
+                            fileName={treeFileName(tree)}
+                          />
                         ) : null}
                       </div>
                     </div>
@@ -506,19 +500,12 @@ export default function GenealogyGallery() {
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {Number.isFinite(Number(viewTree.id)) && viewTree.hasGedcom ? (
-                    <a
-                      href={downloadTreeUrl(viewTree.id)}
-                      className="interactive-btn btn-neu btn-neu--primary px-3 py-2 inline-flex items-center gap-2 text-sm"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Download className="w-4 h-4" />
-                      {viewTree.data_format === "gedcomx"
-                        ? t("legacy.download_gedcomx", "Download GEDCOM X")
-                        : viewTree.data_format === "gedcom7"
-                          ? t("legacy.download_gedcom7", "Download GEDCOM 7.0")
-                          : t("legacy.download_gedcom551", "Download GEDCOM 5.5.1")}
-                    </a>
+                    <RequestDownloadButton
+                      contentType="tree"
+                      contentId={viewTree.id}
+                      downloadHref={`${apiRoot}/api/trees/${viewTree.id}/download`}
+                      fileName={treeFileName(viewTree)}
+                    />
                   ) : null}
                   <button
                     type="button"
@@ -551,7 +538,7 @@ export default function GenealogyGallery() {
                     </div>
                   </div>
                 ) : (
-                  <TreesBuilder people={viewPeople} readOnly />
+                  <TreesBuilder people={viewPeople} readOnly treeId={viewTree.id} />
                 )}
               </div>
             </div>

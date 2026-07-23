@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AudiosController } from './audios.controller';
 import { AudiosService, AUDIO_UPLOADS_DIR } from './audios.service';
 import { ActivityModule } from '../activity/activity.module';
+import { DownloadRequestsModule } from '../download-requests/download-requests.module';
 import { MulterModule } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import * as path from 'path';
@@ -15,6 +16,7 @@ if (!fs.existsSync(AUDIO_UPLOADS_DIR)) {
 @Module({
     imports: [
         ActivityModule,
+        DownloadRequestsModule,
         MulterModule.register({
             storage: multer.diskStorage({
                 destination: (_req, _file, cb) => cb(null, AUDIO_UPLOADS_DIR),

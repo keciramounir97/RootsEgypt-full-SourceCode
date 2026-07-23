@@ -10,7 +10,6 @@ import {
   Search,
   FileText,
   X,
-  Download,
   Send,
   Archive,
 } from "lucide-react";
@@ -18,6 +17,7 @@ import { api } from "../api/client";
 import { getApiErrorMessage, getApiRoot } from "../api/helpers";
 import { useLanguage } from "../i18n";
 import RootsPageShell from "../components/RootsPageShell";
+import RequestDownloadButton from "../components/RequestDownloadButton";
 
 interface Document {
   id: number | string;
@@ -492,14 +492,12 @@ export default function GalleryDocuments() {
                   {t("legacy.share", "Share")}
                 </button>
                 {(selectedDocument.filePath || selectedDocument.file_path) && (
-                  <a
-                    href={fileUrl(selectedDocument.filePath || selectedDocument.file_path)}
-                    download
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#24766f] text-white hover:bg-[#24766f]/90 transition-colors"
-                  >
-                    <Download className="w-5 h-5" />
-                    {t("legacy.download", "Download")}
-                  </a>
+                  <RequestDownloadButton
+                    contentType="document"
+                    contentId={selectedDocument.id}
+                    downloadHref={`${apiRoot}/api/documents/${selectedDocument.id}/download`}
+                    fileName={`${String(selectedDocument.title || "document").trim().replace(/[^\w.-]+/g, "_") || "document"}`}
+                  />
                 )}
               </div>
 

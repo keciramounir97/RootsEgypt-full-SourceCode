@@ -5,7 +5,6 @@ import {
   ArrowRight,
   BookOpen,
   Compass,
-  Download,
   Eye,
   Feather,
   FileText,
@@ -42,6 +41,7 @@ import TreesBuilder, {
   parseGedcomX,
 } from "../admin/components/TreesBuilder";
 import ErrorBoundary from "../components/ErrorBoundary";
+import RequestDownloadButton from "../components/RequestDownloadButton";
 import ScrollReveal from "../components/motion/ScrollReveal";
 import {
   StaggerContainer,
@@ -200,8 +200,8 @@ export default function Home() {
     ? "bg-white/5 border-white/10"
     : "bg-primary-brown/5 border-[#d8c7b0]/60";
   const apiRoot = String(api.defaults.baseURL || "").replace(/\/api\/?$/, "");
-  const downloadTreeUrl = (id: string | number) =>
-    `${apiRoot}/api/trees/${id}/gedcom`;
+  const treeFileName = (tree: FeaturedTree) =>
+    `${String(tree?.title || "tree").trim().replace(/[^\w.-]+/g, "_") || "tree"}.ged`;
 
   const homeSectionSpace = "mt-8 md:mt-10 lg:mt-12";
 
@@ -872,15 +872,12 @@ export default function Home() {
                               {t("legacy.view_tree", "View Tree")}
                             </motion.button>
                             {canDownload && (
-                              <a
-                                href={downloadTreeUrl(tree.id)}
-                                className="interactive-btn btn-neu btn-neu--primary px-4 py-2.5 inline-flex items-center gap-2 text-sm"
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                <Download className="w-4 h-4" />
-                                {t("legacy.download", "Download")}
-                              </a>
+                              <RequestDownloadButton
+                                contentType="tree"
+                                contentId={tree.id}
+                                downloadHref={`${apiRoot}/api/trees/${tree.id}/download`}
+                                fileName={treeFileName(tree)}
+                              />
                             )}
                           </div>
                         </div>
@@ -1379,6 +1376,7 @@ export default function Home() {
                       setPeople={setViewPeople}
                       readOnly={true}
                       onAutoSave={undefined}
+                      treeId={viewTree?.id}
                     />
                   </ErrorBoundary>
                 )}

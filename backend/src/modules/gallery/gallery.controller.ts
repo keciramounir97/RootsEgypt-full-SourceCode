@@ -1,17 +1,70 @@
 
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request, UseInterceptors, UploadedFile, ForbiddenException, ParseIntPipe, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request, UseInterceptors, UploadedFile, ForbiddenException, NotFoundException, ParseIntPipe, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Logger, Res } from '@nestjs/common';
 import { GalleryService } from './gallery.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Request as ExpressRequest } from "express";
+import { Request as ExpressRequest, Response } from "express";
 import { CreateGalleryDto, UpdateGalleryDto } from './dto/gallery.dto';
+import { DownloadRequestsService } from '../download-requests/download-requests.service';
+import { getStoredFilePayload } from '../../common/utils/db-file.util';
+import { resolveStoredFilePath } from '../../common/utils/file.utils';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Controller()
 export class GalleryController {
   private readonly logger = new Logger(GalleryController.name);
-  constructor(private readonly galleryService: GalleryService) {}
+  constructor(
+    private readonly galleryService: GalleryService,
+    private readonly downloadRequestsService: DownloadRequestsService,
+  ) {}
+
+  @Get("gallery/:id/download")
+  @UseGuards(JwtAuthGuard)
+  async downloadPublic(
+    @Param("id", ParseIntPipe) id: number,
+    @Request() req: ExpressRequest,
+    @Res() res: Response,
+  ) {
+    const item = await this.galleryService.findOne(id);
+    const userId = (req as any).user?.id;
+    const roleId = Number(
+      (req as any).user?.role_id ?? (req as any).user?.roleId ?? (req as any).user?.role ?? 0,
+    );
+    const isOwner = item.uploaded_by != null && Number(item.uploaded_by) === Number(userId);
+    const isAdmin = roleId === 1 || roleId === 3;
+    if (!isOwner && !isAdmin) {
+      const hasApprovedRequest = await this.downloadRequestsService.hasApprovedAccess(
+        "gallery",
+        id,
+        userId,
+      );
+      if (!hasApprovedRequest) {
+        throw new ForbiddenException(
+          "Downloading this item requires an approved download request.",
+        );
+      }
+    }
+
+    const stored = getStoredFilePayload(
+      item as any,
+      "image_data",
+      "image_mime_type",
+      "image_path",
+      "application/octet-stream",
+      "gallery-download",
+    );
+    if (stored) {
+      res.type(stored.mimeType).attachment(stored.filename).send(stored.data);
+      return;
+    }
+
+    const filePath = resolveStoredFilePath(item.image_path);
+    if (!filePath || !fs.existsSync(filePath)) throw new NotFoundException("File not found");
+    res.download(filePath, path.basename(filePath));
+  }
 
   @Get("gallery")
   async listPublic() {
