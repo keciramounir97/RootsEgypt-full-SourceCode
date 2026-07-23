@@ -778,6 +778,39 @@ html {
   }
 }
 
+/* Person card parity with the Abraham Roots modal while preserving Egypt's palette. */
+.person-card-modal .neu-inset {
+  border: 1px solid #e8dfca;
+  border-radius: 0.75rem;
+  background: #f8f5ef;
+  box-shadow: none;
+}
+
+.person-card-modal .neu-label {
+  color: #0c4a6e;
+}
+
+.person-card-modal .neu-chip {
+  border-radius: 9999px;
+  background: rgb(12 74 110 / 0.1);
+  color: #0c4a6e;
+  box-shadow: none;
+}
+
+.dark .person-card-modal .neu-inset {
+  border-color: rgb(255 255 255 / 0.1);
+  background: rgb(255 255 255 / 0.03);
+}
+
+.dark .person-card-modal .neu-label {
+  color: #5eead4;
+}
+
+.dark .person-card-modal .neu-chip {
+  background: rgb(94 234 212 / 0.1);
+  color: #5eead4;
+}
+
 h1,
 h2,
 h3,

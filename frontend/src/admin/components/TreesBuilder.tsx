@@ -4214,14 +4214,15 @@ export default function TreesBuilder({
                 onClick={closeSelectedPersonCard}
               >
                 <div
-                  className="neu-panel flex max-h-[80vh] w-full max-w-[960px] flex-col overflow-hidden rounded-2xl"
+                  className={`person-card-modal flex max-h-[80vh] w-full max-w-[960px] flex-col overflow-hidden rounded-2xl border ${border} ${card} shadow-2xl`}
                   onClick={(e) => e.stopPropagation()}
                 >
-                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-current/10 bg-black/[0.03] px-5 py-4 dark:bg-white/[0.03] sm:px-7 sm:py-5">
+                <div className={`flex shrink-0 items-start justify-between gap-4 border-b ${border} px-5 py-4 sm:px-7 sm:py-5 ${isDark ? "bg-[#071827]/60" : "bg-[#f8f5ef]"}`}>
                   <div className="flex min-w-0 items-center gap-4">
                     <div
-                      className="neu-avatar shrink-0 flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold font-serif"
+                      className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-xl font-bold font-cinzel"
                       style={{
+                        background: isDark ? "#0f2742" : "#e7f0ee",
                         color: isDark ? "#5eead4" : "#0c4a6e",
                       }}
                       aria-hidden="true"
@@ -4229,7 +4230,7 @@ export default function TreesBuilder({
                       {String(nameOf(selectedPerson)).charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
-                      <div className="text-2xl font-semibold font-serif truncate">
+                      <div className="truncate text-2xl font-semibold font-cinzel">
                         {nameOf(selectedPerson)}
                       </div>
                       <div className="mt-1 flex flex-wrap items-center gap-2">
@@ -4237,7 +4238,7 @@ export default function TreesBuilder({
                           {t("legacy.person_card", "Person card")}
                         </span>
                         <span
-                          className="neu-chip inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-[#0c4a6e]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#0c4a6e] dark:bg-[#5eead4]/10 dark:text-[#5eead4]"
                           title={`${t("legacy.gedcom_version", "GEDCOM version")}: ${gedcomVersionLabel}`}
                         >
                           <FileCode2 className="h-3 w-3" aria-hidden="true" />
@@ -4250,7 +4251,7 @@ export default function TreesBuilder({
                   <button
                     type="button"
                     onClick={closeSelectedPersonCard}
-                    className="interactive-btn btn-neu-icon shrink-0"
+                    className={`shrink-0 rounded-lg p-2 transition ${isDark ? "hover:bg-white/10" : "hover:bg-black/5"}`}
                     title={t("legacy.close", "Close")}
                     aria-label={t("legacy.close", "Close")}
                   >
