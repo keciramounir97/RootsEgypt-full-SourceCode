@@ -24,6 +24,7 @@ import {
   CheckCircle,
   Download,
   HelpCircle,
+  Crown,
 } from "lucide-react";
 
 import { useForm } from "react-hook-form";
@@ -212,7 +213,7 @@ export default function Navbar() {
       icon: Headphones,
     },
     { to: "/articles", label: t("legacy.articles", "Articles"), icon: Newspaper },
-    { to: "/help-center", label: t("help_center", "Help Center"), icon: HelpCircle },
+    { to: "/help-center", label: t("legacy.help_center", "Help Center"), icon: HelpCircle },
   ];
 
   const secondaryNav = [
@@ -222,6 +223,12 @@ export default function Navbar() {
       icon: Archive,
     },
     { to: "/periods", label: t("legacy.periods", "Periods"), icon: Clock },
+    {
+      to: "/subscriptions",
+      label: t("legacy.subscriptions", "Subscriptions"),
+      icon: Crown,
+    },
+    { to: "/help-center", label: t("legacy.help_center", "Help Center"), icon: HelpCircle },
   ];
 
   const resourcePaths = [
@@ -327,7 +334,7 @@ export default function Navbar() {
               ) : null}
             </div>
 
-            {secondaryNav.map(({ to, label }) => (
+            {secondaryNav.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -335,7 +342,10 @@ export default function Navbar() {
                   `navbar-link${isActive || (to === "/sources-and-periods" && secondaryActivePaths.some((path) => location.pathname.startsWith(path))) ? " active" : ""}`
                 }
               >
-                {label}
+                <span className="inline-flex items-center gap-1.5">
+                  <Icon className="w-4 h-4" />
+                  {label}
+                </span>
               </NavLink>
             ))}
             {user && (
